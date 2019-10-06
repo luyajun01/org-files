@@ -1,0 +1,15 @@
+* emacs wiki
+
+** 快捷键
+
+
+| 功能 | 快捷键  |
+| 切换read/write mode |  c-x c-q |
+
+
+** 
+
+** 
+
+** org
+
