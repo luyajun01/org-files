@@ -1,0 +1,74 @@
+source("coxprep.r")
+sourceCpp("delta.cpp")
+source("Afun.r")
+library(coxrobust)
+scaleC <- function(X) {
+  .Call('Coxnet_scaleC', PACKAGE = 'Coxnet', X)
+}
+softC <- function(z, lambda) {
+  .Call('Coxnet_softC', PACKAGE = 'Coxnet', z, lambda)
+}
+coxlad.re <- function(beta,time,status,prev_ezbeta,z,M,lambda,verbose=T) {
+  tol <- 1e-06
+  iter<- 3000
+  i=1;tol_curr=1
+  y=cbind(time,status)
+  #tem=scaleC(z);zscale=tem$sd;z=tem$x
+  #rm(tem);
+  dt <- data.frame(cbind(y,z));dt <- dt[order(dt[,1]),]
+  #z <- dt[,3:ncol(dt)];
+  prep0=coxprep(z,y);nevent= prep0$nevent;#nevent1= prep0$nevent1;
+  #loc1=prep0$loc1;n=prep0$n;tevent=prep0$tevent;N=prep0$N;
+  eventx <- subset(dt,dt$status==1);unique_time<- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  tmp=M-time*prev_ezbeta
+  A=Afun(tmp,z,M)
+  tollist=list()
+while (tol < tol_curr && i < iter){
+  beta.old=beta
+  eta=z%*%beta.old
+  #xb=eta
+  #exb=exp(eta)
+  #### first and second derive
+  h2<-cumsum(sapply(c(1:length(unique_time)), function(i){
+  1/sum(A[R[[i]]]*exp(eta[R[[i]],]))
+  }))
+  h3<-cumsum(sapply(c(1:length(unique_time)), function(i){
+    1/(sum(A[R[[i]]]*exp(eta[R[[i]],])))^2
+  }))
+  dl1<-list();d1<-list();dl2<-list();d2<-list()
+  for (i in 1:length(unique_time)) {
+    d1[[i]]<-A[R[[i]]]*dt[,2][R[[i]]]-A[R[[i]]]*A[R[[i]]]*exp(eta[R[[i]],])*h2[i]    
+    dl1[[i]]<-d1[[i]][1:nevent[i]]
+    d2[[i]]<-A[R[[i]]]*exp(eta[R[[i]],])*h2[i]-A[R[[i]]]*A[R[[i]]]*A[R[[i]]]*exp(2*eta[R[[i]],])*h3[i]
+    dl2[[i]]<-d2[[i]][1:nevent[i]]
+  }
+  d1=matrix(as.numeric(unlist(dl1)))
+  d2=matrix(as.numeric(unlist(dl2)))
+  #dl1<-rep(NA,nrow(z));dl2<-rep(NA,nrow(z))
+  #de=dletaCm(exb,A,tevent,N,nevent,nevent1,loc1,n)
+  #d1=de$pl1;d2=de$pl2
+  #z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+  hessian=eta+d1/d2
+  if(length(d1)!=nrow(z))break;
+  h=rep(NA,ncol(z));l=rep(NA,ncol(z))
+  for (k in 1:ncol(z)) {
+    h[k]<-sum(d2*z[,k]*as.vector(hessian-z[,-k]%*%beta.old[-k]))/nrow(z)
+    l[k]<-sum(d2*(z[,k]^2))/nrow(z)
+    beta[k]=softC(h[k],lambda)/l[k]
+    #/zscale[k]
+  }
+  tol_curr=sqrt(sum((beta - beta.old)^2))
+  #tol_curr=crossprod(beta-beta.old)  
+  tollist[[i]]=tol_curr
+  if(is.na(tol_curr)) break
+  i = i + 1
+  if (verbose && i%%10 == 0) message(i)
+}
+  #if(is.na(tol_curr)) 
+  #beta=coef(coxr(Surv(y)~.,data=data.frame(y,x)))
+  #else beta=beta
+  return(list(beta=as.double(beta),tolist=tollist))
+}  

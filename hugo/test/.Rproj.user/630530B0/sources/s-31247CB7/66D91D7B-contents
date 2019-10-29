@@ -1,0 +1,49 @@
+\documentclass{article}
+\title{A note to learn tidyverse}
+\begin{document}
+
+\SweaveOpts{concordance=TRUE}
+
+Firstly,I want to use chinese to recording this note. But, I failed. Anyway, let me begin leaning to \emph{tidyverse}, and \emph{latex},\emph{english} gramma.:)
+
+\section*{Introdction}
+
+First,some simple code would be given to import the tidyverse package.
+
+\begin{enumerate}
+  \item Importing data
+\end{enumerate}
+
+
+<<>>=
+library(tidyverse)
+mpg
+@
+
+\begin{enumerate}
+  \item Ploting using ggplot2 package
+\end{enumerate}
+
+<<fig=TRUE,tidy=TRUE,highlight=FALSE>>=
+ggplot2::ggplot(data = mpg)+geom_point(mapping=aes(x=displ,y=hwy))
+@
+
+\section*{dplyr}
+
+This package mainly used to deal with data transformation.
+
+This package include some useful functions,including \emph{filter(),pick observations by their values},\emph{arrange(),reorder the rows},\emph{select(),pick variables by their names,mutate(),create new variables with functions of existing variables}.
+
+Next,I will introduce them one by one.
+
+<<>>=
+library(nycflights13)
+library(tidyverse)
+filter(flights,month==1,day==1)
+filter(flights,month%in%c(11,12))
+@
+
+
+
+
+\end{document}

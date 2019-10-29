@@ -1,0 +1,57 @@
+library(survival)
+library(glmnet)
+library(rqPen)
+library(Coxnet)
+source("cox.lasso4.r")
+source("plr.r")
+source("coxloglik.r")
+max_lambdaC <- function(X, tevent, N, nevent, nevent1, loc1, n, alpha, wbeta, N0) {
+  .Call('Coxnet_max_lambdaC', PACKAGE = 'Coxnet', X, tevent, N, nevent, nevent1, loc1, n, alpha, wbeta, N0)
+}
+cv.coxlasso<-function(y,z,foldid=NULL,nfolds=150,lambda=NULL,nlambda=50) 
+{
+  n = dim(z)[1]
+  p = dim(z)[2]
+  if (is.null(foldid)) {
+    foldid <-randomly_assign(n,nfolds)
+  }
+  ##
+  prep0=coxprep(z,y)
+  wbeta=rep(1, p)
+  rlambda=NULL
+  N0=nrow(z)
+  alpha=1
+  ### Lambda path
+  if (is.null(lambda)) {
+    lambda_max=max_lambdaC(prep0$x, prep0$tevent, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, alpha, wbeta, N0)
+    lambda_min=ifelse(is.null(rlambda), ifelse(N0>p, lambda_max*0.0001, lambda_max*0.01), lambda_max*rlambda)
+    lambda=lambda_max*(lambda_min/lambda_max)^(c(0:(nlambda-1))/(nlambda-1))
+  } else {
+    nlambda=length(lambda)
+  }
+  cv_model=list()
+  cverror<-matrix(NA,nr=nfolds,nc=nlambda)
+  train_z=list()
+  train_y=list()
+  for (i in 1:nfolds) {
+    train_z[[i]] <- z[foldid!=i, ]
+    train_y[[i]] <- y[foldid!=i,]
+    cv_model[[i]]<-sapply(lambda,cox.lasso,y=train_y[[i]],z=train_z[[i]])
+  }
+  for (i in 1:nfolds) {
+    for (j in 1:length(lambda)){
+      #cverror[i,j]<-coxloglik(z=z,y=y,beta=as.double(cv_model[[i]][,j]))-coxloglik(z=train_z[[i]],y=train_y[[i]],beta=as.double(cv_model[[i]][,j]))
+      #cverror[i,j]=plr(x=z,y=y,beta=as.double(cv_model[[i]][,j]))-plr(x=train_z[[i]],y=train_y[[i]],beta=as.double(cv_model[[i]][,j]))
+      #cverror[i,j]<-coxloglik(z=train_z[[i]],y=train_y[[i]],beta=as.double(cv_model[[i]][,j]))/n*((1-length(as.double(cv_model[[i]][,j]))!=0)/n)^2 #GCV
+      cverror[i,j]<-coxloglik(z=z,y=y,beta=as.double(cv_model[[i]][,j]))-coxloglik(z=train_z[[i]],y=train_y[[i]],beta=as.double(cv_model[[i]][,j]))
+      }
+  }
+  weighti=as.vector(tapply(y[, "status"], foldid, sum))
+  cvraw=cverror/weighti;nfoldi=apply(!is.na(cvraw), 2, sum);rm(cverror) #
+  cvm=apply(cvraw, 2, weighted.mean, w=weighti, na.rm=TRUE)
+  cvse=sqrt(apply(sweep(cvraw, 2, cvm, "-")^2, 2, weighted.mean, w=weighti, na.rm=TRUE)/(nfoldi-1))
+  #lam.opt=lambda[which.max((colSums(cverror)))]
+  lam.opt=lambda[which.min(cvse)]
+  coef=cox.lasso(z=z,y=y,lambda=lam.opt)
+  return(list(coef=coef,lambda=lam.opt))
+} 

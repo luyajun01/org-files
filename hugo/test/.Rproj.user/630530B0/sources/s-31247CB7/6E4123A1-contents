@@ -1,0 +1,28 @@
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet.h>
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet_RcppExports.h>
+using namespace Rcpp;
+using namespace Eigen;
+// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::export]]
+List dletaCm(Eigen::VectorXd& exb,Eigen::VectorXd& A ,Eigen::VectorXd& tevent, int& N, 
+             Eigen::VectorXi& nevent, Eigen::VectorXi& nevent1, Eigen::VectorXi& loc1,
+             int& n){
+  int i, j, q;
+  double denSi, c1=0.0, c2=0.0;
+  Eigen::VectorXd denS(n);
+  Eigen::VectorXd Aexb(n);
+  Eigen::VectorXd pl1(N), pl2(N);
+  Aexb=A*exb;
+  denSi=Aexb.sum();
+  for(i=0;i<n;++i){
+    c1+=(nevent1(i)/denSi);c2+=(nevent1(i)/pow(denSi, 2));
+    //c1=h1(i);c2=h2(i);
+    for(j=loc1(i)-1, q=0;q<nevent(i);j++, q++){
+      denSi-=exb(j);
+      pl1(j)=A(j)*tevent(j)-A(j)*A(j)*exb(j)*c1;
+      pl2(j)=A(j)*A(j)*exb(j)*(c1-A(j)*exb(j)*c2);
+    }
+  }
+  return(List::create(Named("pl1")=pl1, Named("pl2")=pl2)); 
+}
+

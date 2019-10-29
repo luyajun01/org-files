@@ -1,0 +1,12 @@
+Afun<-function(tmp,z,M){
+  A=rep(NA,nrow(z))
+  for (i in 1:nrow(z)) {
+    if (tmp[i]>0){
+      #A[i] =M -tmp[i];
+      A[i] = (tmp[i]*tmp[i])/(M^2);
+    } else {
+      A[i] = 1e-6;
+    }  
+  }
+  return(A)
+} 

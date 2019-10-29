@@ -1,0 +1,21 @@
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet.h>
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet_RcppExports.h>
+using namespace Rcpp;
+using namespace Eigen;
+// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::export]]
+double pletaCm(Eigen::VectorXd& xb,Eigen::VectorXd& A,Eigen::VectorXd& exb, Eigen::VectorXi& nevent, 
+               Eigen::VectorXi& nevent1, Eigen::VectorXi& loc1, int& n){
+  int i, j, q, iSS=0;
+  double ll=0.0, SSi;
+  Eigen::VectorXd SS(n);
+  Eigen::VectorXd AS(n);
+  SSi=exb.sum();
+  for(i=0;i<n;++i){
+    if(SSi<=0.0)iSS=1;
+    for(j=loc1(i)-1, q=0;q<nevent1(i);j++, q++){ll+=A(j)*xb(j);}
+    ll-=nevent1(i)*log(SSi);
+    for(j=loc1(i)-1, q=0;q<nevent(i);j++, q++){SSi-=exb(j);}
+  }
+  return(ll);
+}

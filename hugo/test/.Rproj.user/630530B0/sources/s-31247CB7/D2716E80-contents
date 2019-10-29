@@ -1,0 +1,85 @@
+library(rqPen)
+source("coxprep.r")
+library(Rcpp)
+sourceCpp("dletaC.cpp")
+library(Coxnet)
+library(coxrobust)
+#system("R CMD SHLIB coxr.c")
+source("coxr.re.r")
+source("coxr.lambda.r")
+scaleC <- function(X) {
+  .Call('Coxnet_scaleC', PACKAGE = 'Coxnet', X)
+}
+softC <- function(z, lambda) {
+  .Call('Coxnet_softC', PACKAGE = 'Coxnet', z, lambda)
+}
+cox.ladlasso<-function(y,z,lambda=lambda,tol=1e-6,iter=3000,verbose=T)
+{
+  data=data.frame(y,z)
+  beta=coef(coxr(y~.,data=data));
+  x=z;tem=scaleC(z);zscale=tem$sd;z=tem$x
+  rm(tem);dt <- data.frame(cbind(y,z));dt <- dt[order(dt[,1]),]
+  z <- dt[,3:ncol(dt)];eventx <- subset(dt,dt$status==1);unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  prep0=coxprep(z,y);nevent= prep0$nevent;nevent1= prep0$nevent1;
+  loc1=prep0$loc1;n=prep0$n;tevent=prep0$tevent;N=prep0$N;
+  i=1;tol_curr=1
+  trunc=0.9
+  prev_ezbeta <- exp(x %*% beta)
+  M<-quantile(time*prev_ezbeta,trunc,names = FALSE)
+  for (i in 1:3) {
+    lmb<-coxr.lambda(beta,time,status, x, prev_ezbeta, M, nrow(z), f.weight=1)
+    M <- quantile(lmb * prev_ezbeta, trunc, names = FALSE)
+    #res <-coxr.re(rep(0, ncol(z)),lmb,status,x,prev_ezbeta, M, nrow=n, ncol=ncol(z),f.weight=1)
+    #beta<- res$beta
+  }
+  while (tol < tol_curr && i < iter){
+  beta.old=beta
+  eta=matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))%*%beta.old
+  xb=eta
+  prev_ezbeta<-exp(eta)
+  #M<-quantile(time*prev_ezbeta,trunc,names = FALSE)
+  exb= prev_ezbeta
+  A=rep(NA,nrow(z))
+  tmp=M-time*prev_ezbeta
+  #tmp=time*prev_ezbeta
+  for (i in 1:nrow(z)) {
+    if (tmp[i]>0){
+      #A[i] =M -tmp[i];
+      A[i] = (tmp[i]^2)/(M^2);
+    } else {
+      A[i] = 1e-5;
+    }  
+  }
+  #### first and second derive
+  h2<-cumsum(sapply(c(1:length(unique_time)), function(i){
+   1/sum(exp(A[R[[i]]]*eta[R[[i]],]))
+  }))
+  h3<-cumsum(sapply(c(1:length(unique_time)), function(i){
+    1/(sum(exp(A[R[[i]]]*eta[R[[i]],])))^2
+  }))
+  dl1<-list();d1<-list();dl2<-list();d2<-list()
+  for (i in 1:length(unique_time)) {
+      d1[[i]]<-A[R[[i]]]*dt[,2][R[[i]]]-A[R[[i]]]*A[R[[i]]]*exp(eta[R[[i]],])*h2[i]    
+      dl1[[i]]<-d1[[i]][1:nevent[i]]
+      d2[[i]]<-A[R[[i]]]*exp(eta[R[[i]],])*h2[i]-A[R[[i]]]*A[R[[i]]]*A[R[[i]]]*exp(2*eta[R[[i]],])*h3[i]
+      dl2[[i]]<-d2[[i]][1:nevent[i]]
+      }
+  d1=matrix(as.numeric(unlist(dl1)))
+  d2=matrix(as.numeric(unlist(dl2)))
+  z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+  hessian=xb+d1/d2
+  h=rep(NA,ncol(z));l=rep(NA,ncol(z))
+  for (k in 1:ncol(z)) {
+    h[k]<-sum(d2*z[,k]*as.vector(hessian-z[,-k]%*%beta.old[-k]))/nrow(z)
+    l[k]<-sum(d2*(z[,k]^2))/nrow(z)
+    beta[k]=softC(h[k],lambda)/l[k]/zscale[k]
+  }
+  tol_curr=crossprod(beta-beta.old)  
+  i = i + 1
+  if (verbose && i%%10 == 0) message(i)
+  }
+  beta
+}

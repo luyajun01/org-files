@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533032844840.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1760138399",
+    "id" : "F7618FA6",
+    "lastKnownWriteTime" : 1530251453,
+    "last_content_update" : 1530251453,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/survival analysis/simulexp.r",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "16,30",
+        "scrollLine" : "8"
+    },
+    "relative_order" : 35,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

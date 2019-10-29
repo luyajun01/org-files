@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533278921664.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A0EC68B1",
+    "lastKnownWriteTime" : 1533282742,
+    "last_content_update" : 1533282743102,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression/coxAloglik.r",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled11"
+    },
+    "relative_order" : 28,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

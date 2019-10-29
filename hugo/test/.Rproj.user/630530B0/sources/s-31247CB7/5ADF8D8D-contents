@@ -1,0 +1,38 @@
+coxr.re <- function(beta, time, status, z, prev_ezbeta, M, nrow, ncol, f.weight) {
+  eps <- 1e-06
+  iter.max <- 100
+  l <- 0.8;
+  for (i in 1:iter.max) {
+    res <- .C("re", as.double(beta), as.double(time), as.integer(status),
+              as.double(z), as.double(prev_ezbeta), as.double(M),
+              as.integer(nrow),  as.integer(ncol), as.integer(f.weight),
+              res = double(1),  gradient = double(ncol),
+              hessian  = double(ncol*ncol))
+    
+    hess <- matrix(res$hessian, ncol, ncol)
+    hessinv <- chol2inv(chol(hess))
+    beta_new    <- beta - l*(res$gradient %*% hessinv)
+    minimum_new <- res$res
+    
+    norm_re <- sqrt(sum((beta - beta_new)^2))
+    if ( norm_re <= eps ) {
+      beta <- beta_new
+      res <- .C("re", as.double(beta), as.double(time), as.integer(status),
+                as.double(z), as.double(prev_ezbeta), as.double(M),
+                as.integer(nrow),  as.integer(ncol), as.integer(f.weight),
+                res = double(1),  gradient = double(ncol),
+                hessian  = double(ncol*ncol), PACKAGE = "coxrobust")
+      
+      hess <- matrix(res$hessian, ncol, ncol)
+      hessinv <- chol2inv(chol(hess))
+      break
+    } else if ( i>1 && minimum_new > minimum ) {
+      beta <- (beta + beta_new) / 2
+    } else {
+      beta <- beta_new
+      minimum <- minimum_new
+    }
+  }
+  return(list(beta = as.double(beta), hess = hess, hessinv = hessinv))
+  
+}

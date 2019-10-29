@@ -1,0 +1,113 @@
+library(survival)
+library(glmnet)
+library(rqPen)
+library(Coxnet)
+source("cox.ladlasso5.r")
+source("plr.r")
+source("coxAloglik.r")
+sourceCpp("pleta.cpp")
+max_lambdaC <- function(X, tevent, N, nevent, nevent1, loc1, n, alpha, wbeta, N0) {
+  .Call('Coxnet_max_lambdaC', PACKAGE = 'Coxnet', X, tevent, N, nevent, nevent1, loc1, n, alpha, wbeta, N0)
+}
+cv.coxladlasso<-function(y,x,foldid=NULL,nfolds=7,lambda=NULL,nlambda=50) 
+{
+  n = dim(x)[1]
+  p = dim(x)[2]
+  if (is.null(foldid)) {
+    foldid <-randomly_assign(n,nfolds)
+  }
+  ##
+  prep0=coxprep(x,y)
+  wbeta=rep(1, p)
+  rlambda=NULL
+  N0=nrow(x)
+  alpha=1
+  ### Lambda path
+  if (is.null(lambda)) {
+    lambda_max=max_lambdaC(prep0$x, prep0$tevent, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, alpha, wbeta, N0)
+    lambda_min=ifelse(is.null(rlambda), ifelse(N0>p, lambda_max*0.0001, lambda_max*0.01), lambda_max*rlambda)
+    lambda=lambda_max*(lambda_min/lambda_max)^(c(0:(nlambda-1))/(nlambda-1))
+  } else {
+    nlambda=length(lambda)
+  }
+  cv_model1=list()
+  cv_model2=list()
+  cverror<-matrix(NA,nr=nfolds,nc=nlambda)
+  train_x=list()
+  train_y=list()
+  prep1=list()
+  for (i in 1:nfolds) {
+    train_x[[i]] <- x[foldid!=i, ]
+    train_y[[i]] <- y[foldid!=i,]
+    cv_model1[[i]]<-sapply(lambda,cox.ladlasso,y=train_y[[i]],x=train_x[[i]])
+    cv_model2[[i]]<-sapply(lambda,cox.ladlasso,y=y,x=x)
+  }
+  prep0=coxprep(x,y)
+  prep1=list()
+  for (i in 1:nfolds) {
+    for (j in 1:length(lambda)){
+      #prep1[[i]]=coxprep(train_x[[i]],train_y[[i]])
+      #A1=cv_model1[[i]][,j]$A
+      #A2=cv_model2[[i]][,j]$A
+      #beta1=cv_model1[[i]][,j]$beta
+      #beta2=cv_model2[[i]][,j]$beta
+      #cverror[i,j]<-pletaCm(x%*%beta2,A2,A2*exp(x%*%beta2),prep0$nevent,prep0$nevent1,prep0$loc1,prep0$n)-pletaCm(train_x[[i]]%*%beta1,A1,A1*exp(train_x[[i]]%*%beta1),prep1[[i]]$nevent,prep1[[i]]$nevent1,prep1[[i]]$loc1,prep1[[i]]$n)
+      cverror[i,j]<-coxAloglik(y,x,cv_model2[[i]][,j]$A,cv_model2[[i]][,j]$beta)-coxAloglik(train_y[[i]],train_x[[i]],cv_model1[[i]][,j]$A,cv_model1[[i]][,j]$beta)
+      #cverror[i,j]<-coxAloglik(y,x,cv_model2[[i]][,j]$A,cv_model2[[i]][,j]$beta)-coxAloglik(train_y[[i]],train_x[[i]],cv_model1[[i]][,j]$A,cv_model1[[i]][,j]$beta)
+      #cverror[i,j] <- .C("re", as.double(cv_model2[[i]][,j]$beta), as.double(y[,1]), as.integer(y[,2]),
+      #          as.double(x), as.double(exp(x%*%cv_model2[[i]][,j]$beta)), as.double(cv_model2[[i]][,j]$M),
+      #          as.integer(n),as.integer(p), as.integer(2),res = double(1),
+      #         gradient = double(p),hessian=double(p*p),PACKAGE = "coxrobust")$res-
+      #  .C("re",as.double(cv_model1[[i]][,j]$beta),
+      #   as.double(train_y[[i]][,1]),as.integer(train_y[[i]][,2]),
+      #     as.double(train_x[[i]]), as.double(exp(train_x[[i]]%*%cv_model1[[i]][,j]$beta)), 
+       #    as.double(cv_model1[[i]][,j]$M),as.integer(length(train_y[[i]][,1])),as.integer(p),as.integer(2),res = double(1),gradient = double(p),hessian=double(p*p),PACKAGE = "coxrobust")$res
+    }
+  }
+  weighti=as.vector(tapply(y[, "status"], foldid, sum))
+  cvraw=cverror/weighti;nfoldi=apply(!is.na(cvraw), 2, sum);rm(cverror) #
+  cvm=apply(cvraw, 2,weighted.mean, w=weighti, na.rm=TRUE)
+  cvse=sqrt(apply(sweep(cvraw, 2, cvm, "-")^2, 2, weighted.mean, w=weighti, na.rm=TRUE)/(nfoldi-1))
+  ########
+  #########
+  out=sapply(lambda,cox.ladlasso,y=y,x=x)
+  nzero<-sapply(1:nlambda,function(i){length(which(out[,i]$beta!=0))})
+  indexi=which.max(cvm)##find the maxi cvm /lambda
+  indexij=which(cvm>=(cvm[indexi]-cvse[indexi]))[1]
+  #####  Cross-validation Trimming  #####
+  il0=indexi;cvm=list();cv.max=rep(NA,nlambdai)
+  repeat{
+    numi=nzero[il0]#原始数据跑出来系数为0个数在i10个lambda时候
+    Betai=sapply(cv_model1,function(x){x[, il0]})##将10折迭代出来的第i10列系数萃取出来 
+    Betao=sapply(1:nfolds,function(i){length(which(Betai[,i]$beta!=0))})##每列不为0的个数
+    numi2=min(max(Betao),numi)
+    if (numi2>0) {
+      cvPL=matrix(NA, nrow=nfolds, ncol=numi2)
+      for (i in 1:nfolds) {
+        Betaj=Betai[,i]$beta
+        numj=min(Betao[i],numi)
+        if (numj==0) {
+          cvPL[i,]=cvtrimC(c(0.0,0.0),numj,numi2,c(0,0),prep0$x, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, prepk[[i]]$x, prepk[[i]]$N, prepk[[i]]$nevent, prepk[[i]]$nevent1, prepk[[i]]$loc1, prepk[[i]]$n, 0, 1)
+        } else {
+          temo=rank(-abs(Betaj),ties.method="min") #对Betaj进行绝对值排序
+          temo=data.frame(temo[which(temo<=numj)], which(temo<=numj))###惊奇发现0系数变量消失了
+          temo=temo[order(temo[, 1]), ]##对变量按照系数大小进行重新排序
+          cvPL[i, ]=cvtrimC(Betaj[temo[, 2]], numj, numi2, temo[, 2]-1, prep0$x, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, prepk[[i]]$x, prepk[[i]]$N, prepk[[i]]$nevent, prepk[[i]]$nevent1, prepk[[i]]$loc1, prepk[[i]]$n, 0, 1)
+        }
+      }
+    } 
+    else {
+      cvPL=matrix(NA, nrow=nfolds,ncol=1)
+      for (i in 1:nfolds)
+        cvPL[i, ]=cvtrimC(c(0.0, 0.0),0,0, c(0, 0), prep0$x, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, prepk[[i]]$x, prepk[[i]]$N, prepk[[i]]$nevent, prepk[[i]]$nevent1, prepk[[i]]$loc1, prepk[[i]]$n, 0, 1)
+    }
+    
+    
+    
+    
+    
+    
+    lam.opt=lambda[which.max(cvm)]
+    coef=cox.ladlasso(y=y,x=x,lambda=lam.opt)$beta
+    return(list(coef=coef,lambda=lam.opt))
+  }

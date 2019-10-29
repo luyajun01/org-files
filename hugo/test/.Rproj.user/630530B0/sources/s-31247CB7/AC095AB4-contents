@@ -1,0 +1,10 @@
+coxr.lambda <- function(beta, time, status, z, prev_exp_zbeta, M, nrow, f.weight) {
+  
+  cres <- .C("lambda", as.double(exp(z %*% beta)), as.double(time),
+             as.integer(status), as.double(prev_exp_zbeta), as.double(M),
+             as.integer(nrow), as.integer(f.weight), lmb = double(nrow))#,
+  #PACKAGE = "coxrobust")
+  
+  return(cres$lmb)
+  
+}

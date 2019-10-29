@@ -1,0 +1,74 @@
+source("concordance.index.r")
+eval <- function(x, y, beta, h0, s0, foldid, nfolds)
+{
+  n = dim(x)[1]
+  p = dim(x)[2]
+  prep0=coxprep(x,y)
+  wbeta=rep(1, p)
+  rlambda=NULL
+  N0=nrow(z)
+  alpha=1
+  lambda=NULL
+  nlambda=50
+  nfolds=20
+  ### Lambda path
+  if (is.null(lambda)) {
+    lambda_max=max_lambdaC(prep0$x, prep0$tevent, prep0$N, prep0$nevent, prep0$nevent1, prep0$loc1, prep0$n, alpha, wbeta, N0)
+    lambda_min=ifelse(is.null(rlambda), ifelse(N0>p, lambda_max*0.0001, lambda_max*0.01), lambda_max*rlambda)
+    lambda=lambda_max*(lambda_min/lambda_max)^(c(0:(nlambda-1))/(nlambda-1))
+  } else {
+    nlambda=length(lambda)
+  }
+  x_size <- dim(x)[1]
+  y_size <- dim(x)[2]
+  events <- sum(y[,2])
+  t=y[,1]
+  tem=scaleC(x);xscale=tem$sd;x=tem$x
+  rm(tem)
+  dt <- data.frame(cbind(y,x));dt <- dt[order(dt[,1]),];x <- dt[,3:ncol(dt)]
+  eventx <- subset(dt,dt$status==1);unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  
+  # Find the prediction on the training data
+  cv_model<-sapply(lambda,cox.lasso,y=y,z=z)
+  ht=list();st=list();p<-list()
+  h0=rep(NA,nlambda)
+  for (j in 1:nlambda) {
+    h0[j] <- sum(sapply(1:length(unique_time), function(i){
+      temp <- x[R[[i]],]
+      1/sum((exp(as.matrix(temp) %*%as.matrix(cv_model[,j]))))
+    }))   
+  }
+  for (i in 1:nlambda) {
+    s0 <- exp(-h0[i])
+    ht[[i]] <- -log(s0^(exp(matrix(as.numeric(unlist(x)),nr=x_size)%*%as.matrix(cv_model[,i]))))
+    st[[i]] <- s0^(exp(matrix(as.numeric(unlist(x)),nr=x_size)%*%as.matrix(cv_model[,i])))
+    p[[i]]<- ht[[i]]  
+  }
+  # AUC calculation
+  x1=list()
+  foldid <- coxsplit(y, nfolds)
+  output=matrix(NA,nc=nlambda,nr=nfolds)
+auc<-sapply(c(1:nlambda), function(m){
+       sapply(c(1:nfolds), function(n){
+    x1<- ht[[m]][which(foldid==n),]
+    t1 <- y[which(foldid==n),1]
+    e1 <- y[which(foldid==n),2]
+    output<-concordance.index(x=x1, surv.time=t1, surv.event=e1, method="noether")
+  return(output$c.index)
+    })})
+plot(apply(auc,2,mean))
+which.max(apply(auc,2,mean))
+  # R square calculation
+  R2 <- 1-exp((2/events)*(coxloglik(y, x, rep(0, y_size)) - coxloglik(y, x, beta)))
+  # Martingale Residual calculation
+  MR <- sapply(c(1:nfolds), function(n) { 
+    sum((y[which(foldid==n),2] - (exp(x[which(foldid==n), ] %*% beta)*h0))^2
+    )/sum(foldid==n) } )
+  
+  brier_score = sum((y[,2]-st)^2)/x_size
+  
+  return(c(auc=mean(auc), auc_sd=sd(auc), R2=R2, MR=mean(MR), MR_sd = sd(MR), brier_score = brier_score[[1]]))
+}

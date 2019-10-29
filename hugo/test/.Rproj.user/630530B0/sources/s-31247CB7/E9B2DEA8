@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533300931715.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1841927869",
+    "id" : "E9B2DEA8",
+    "lastKnownWriteTime" : 1533362420,
+    "last_content_update" : 1533362420896,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression/coxprep.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "13,2",
+        "scrollLine" : "4"
+    },
+    "relative_order" : 38,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

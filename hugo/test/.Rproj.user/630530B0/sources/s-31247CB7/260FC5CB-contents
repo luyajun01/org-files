@@ -1,0 +1,49 @@
+library(rqPen)
+library(coxrobust)
+source("coxprep.r")
+library(Rcpp)
+source("coxprep.r")
+sourceCpp("dletaC.cpp")
+cox.ladlasso<-function(y,z)
+{
+  x=z;z=scale(z);dt<-data.frame(cbind(y,z));dt<-dt[order(dt[,1]),]
+  z <- dt[,3:ncol(dt)];eventx <- subset(dt,dt$status==1);unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  prep0=coxprep(z,y);nevent= prep0$nevent;nevent1= prep0$nevent1;
+  loc1=prep0$loc1;n=prep0$n;tevent=prep0$tevent;N=prep0$N;
+  tol_curr=1;i=1 
+  data=data.frame(y,x)
+  beta.old=coef(coxr(y~.,data=data,trunc=0.9))
+  #beta=coef(coxph(Surv(y)~x))
+  #while (tol < tol_curr && i < iter) {
+  #beta.old=beta
+  eta=matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))%*%beta.old
+  xb=eta
+  exb=exp(eta)  
+  dl1<-rep(NA,nrow(z));dl2<-rep(NA,nrow(z))
+  de=dletaCm(exb,tevent,N,nevent,nevent1,loc1,n)
+  d1=de$pl1;d2=de$pl2
+  z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+  hessian=xb+d1/d2  
+  #z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+  #hessian=z%*%beta.old+solve(diag(as.vector(d2)))%*%d1
+  #yt=c(d2*hessian,rep(0,ncol(z)))  
+  yt=d2*hessian
+  newx=matrix(NA,nc=ncol(z),nr=nrow(z))
+  for (i in 1:nrow(z)) {
+    newx[i,]<-d2[i]*z[i,]  
+  }
+  #lambda=0.05
+  #lambdai=log(nrow(z))/(nrow(z)*abs(beta.old))
+  #x<-rbind(newx,nrow(z)*lambdai*diag(ncol(z)))
+  #beta<-coef(rq(yt~x-1))
+  beta<-coef(cv.rq.pen(newx,yt,tau=0.5,penalty="LASSO",nfolds=10,nlambda=100,eps=.0001,intercept=FALSE))
+  #tol_curr=crossprod(beta-beta.old)  
+  #i = i + 1
+  #if (verbose && i%%10 == 0) message(i)
+  #}
+  #beta
+  return(beta)
+}

@@ -1,0 +1,17 @@
+coxAloglik = function(y,x,A,beta){
+  sorted <- order(y[,1])
+  time    <- y[sorted,1]
+  status  <- y[sorted,2]
+  x       <- as.matrix(x[sorted,])
+  L <- c(A*time)%*%(x%*%as.matrix(beta)) -
+    c(A*time)%*%log(sapply(y[,1], function(p){
+      # find instances of R
+      # foreach j in R
+      R <- x[which(y[,1] >= p),]
+      sum(A[which(y[,1] >= p)]*exp(R %*% beta))
+    }))
+  return(L)
+}
+
+
+

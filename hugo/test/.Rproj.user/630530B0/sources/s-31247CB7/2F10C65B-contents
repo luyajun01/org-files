@@ -1,0 +1,142 @@
+setwd("/Users/luyajun/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression")
+#setwd("E:\\?ҵļ?????\\work\\paper\\ideas\\random lasso")
+source("coxloglik.r")
+source("cv.coxlasso1.r")
+#source("cox.lasso4.r")
+source("cox.ladlasso1.r")
+library(MASS)
+n=200
+numvar=8
+x<-mvrnorm(n=n,mu=rep(0,numvar),Sigma=diag(numvar))
+beta=c(3,1.5,0,0.23,1,0,-0.5,0)
+C<-runif(n,0,10)
+#survival time:
+h<-as.vector(exp(x%*%beta))
+X<-rexp(n,h)
+delta<-ifelse(C>=X, 1, 0)
+T<-ifelse(C>=X,X,C)
+y<-cbind(time=T,status=delta)
+z=x
+cox.ladlasso(y,z)
+coef(cv.glmnet(z,y,family = "cox"))
+cv.coxlasso(y,z)
+
+sourceCpp("pletaCm.cpp")
+pletaCm(xb,exb,nevent,nevent1,loc1,n)
+
+coxloglik(z=x,y=y,beta=as.double(beta))  
+
+coef(glmnet(z,y,family = "cox",lambda = 0.08208805))
+plot(cv.glmnet(z,y,family = "cox")$dev)
+coef(cv.glmnet(z,y,family = "cox"))
+eps<-0.0001
+lambda_star<-10
+lambda_min<-eps*lambda_star
+lam<-exp(seq(log(lambda_star),log(lambda_min),length.out = 99))
+
+model1=coxnet(x=z,y=y,maxit = 1000,weights = 1,offset = NULL,is.sparse = FALSE,alpha = 0,nobs=n,nvars=numvar)
+source("cv.coxnet.r")
+
+foldid=sample(rep(seq(10),length=n))
+cv.coxnet(fit,x=z,y=y)
+library(Coxnet)
+fit <- Coxnet(z,y,penalty="Lasso")
+
+la=rep(NA,ncol(z))
+for (j in 1:ncol(z)) {
+  la[j]<-sum(sapply(c(1:nrow(z)), function(i){
+    d2[i]*z[i,j]*hessian[i]  
+    }))
+}
+
+for (j in 1:ncol(z)) {
+la[j]<-sum(d2*z[,j]*hessian)/nrow(z)
+}
+
+la[which.max(la)]
+
+
+lambda = 0.5
+a=matrix(c(4,1,1,4),nc=2,nr=2)
+cox.lasso(y,z,lambda= 0.5)
+
+cox.lasso<-function(y,z,tol=1e-6,lambda=lambda,iter=1000,verbose=T)
+  {
+  x=z
+  meanz=apply(z,2,mean)
+  z= scale(z,meanz,FALSE)
+  dt <- data.frame(cbind(y,z))
+  dt <- dt[order(dt[,1]),]
+  z <- dt[,3:ncol(dt)]
+  eventx <- subset(dt,dt$status==1)
+  unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  #beta=coef(coxph(Surv(y)~x))
+  beta=rep(0,ncol(z))
+  d1=rep(NA,nrow(z))
+  h=rep(NA,ncol(z))
+  l=rep(NA,ncol(z))
+  soft_thresh<-function(a, b) {
+    out = rep(0, length(a))
+    out[a > b] = a[a > b] - b
+    out[a < -b] = a[a < -b] + b
+    out
+  }
+  d2=rep(NA,nrow(z))
+  i=1
+  while (tol < tol_curr && i < iter) {
+    beta.old=beta
+    eta=matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))%*%beta.old
+    #M <- quantile(as.vector(dt[,1]*exp(eta)),trunc,names = FALSE)
+    #A=M-min(M,as.vector(dt[,1]*exp(eta)))
+    #lmb.ple <- as.double(cumsum(dt[,2]/rev( cumsum( rev(exp(eta)) ) ) ))
+    h2<-sum(sapply(c(1:length(unique_time)), function(i){
+      1/sum(exp(as.matrix(z[R[[i]],])%*%as.matrix(beta.old)))
+    }))
+    for (j in 1:nrow(z)) {
+      d1[j]<-dt[,2][j]-exp(eta[j])*h2
+    }
+    h3<-sum(sapply(c(1:length(unique_time)), function(i){
+      1/(sum(exp(as.matrix(z[R[[i]],])%*%as.matrix(beta.old))))^2
+    }))
+    for (k in 1:nrow(z)) {
+      d2[k]<--exp(eta[k])*h2+exp(2*eta[k])*h3
+    } 
+    z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+    hessian=z%*%beta.old-solve(diag(as.vector(d2)))%*%d1
+    yt=c(d2*hessian,rep(0,ncol(z)))  
+    newx=matrix(NA,nc=ncol(z),nr=nrow(z))
+    for (i in 1:nrow(z)) {
+      newx[i,]<-d2[i]*z[i,]  
+    }
+    lambda=log(nrow(z))/(nrow(z)*abs(beta.old))
+    #lambda=0.1
+    xt<-rbind(newx,nrow(z)*lambda*diag(ncol(z)))
+    #beta=coef(rq(yt~xt,tau=0.5,int=FALSE))
+    beta<-coef(rq.lasso.fit(xt,yt,lambda=0,tau=0.5,intercept = FALSE))
+    
+    rq(yt~xt, method="lasso",lambda = 0)
+    #beta<-coef(rq.lasso.fit(newx,d2*hessian,lambda=lambda,tau=0.5,intercept = FALSE))
+    #beta<-rq.lasso.fit(xt,yt,lambda=0,tau=0.5,intercept = FALSE)
+    
+        #beta=coef(rq(yt~xt,tau=0.5,int=FALSE))
+    #beta=beta[-1]
+    #newx[[i]]<-rbind(x,n*diag(length(groups))*alpha*lambda[i])
+    #newy<-c(y,rep(0,length(groups)))
+    # for (k in 1:ncol(z)) {
+    #   h[k]<-sum(sapply(c(1:nrow(z)),function(i){
+    #     d2[i]*z[i,k]*(hessian[i]-z[i,-k]%*%beta.old[-k])
+    #   }))/nrow(z)  
+    #   l[k]<-sum(sapply(c(1:nrow(z)),function(i){
+    #     d2[i]*(z[i,k])^2
+    #   }))/nrow(z)
+    #   beta[k]=soft_thresh(h[k],lambda)/l[k]
+    # }
+    tol_curr=crossprod(beta-beta.old)  
+    i = i + 1
+    if (verbose && i%%10 == 0) message(i)
+  }
+  beta
+}

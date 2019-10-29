@@ -1,0 +1,48 @@
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet.h>
+#include </Users/luyajun/Downloads/Coxnet/inst/include/Coxnet_RcppExports.h>
+using namespace Rcpp;
+using namespace Eigen;
+// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::export]]
+List dletaCm(Eigen::VectorXd& exb, Eigen::VectorXd& tevent, int& N, 
+             Eigen::VectorXi& nevent, Eigen::VectorXi& nevent1, Eigen::VectorXi& loc1,
+             int& n,Eigen::VectorXd& pl1, Eigen::VectorXd& pl2,int& ifast, int& itwo){
+  int i, j, q, ipl2=0;
+  double denSi, c1=0.0, c2=0.0;
+  Eigen::VectorXd denS(n);
+  //Eigen::VectorXd pl1(N), pl2(N);
+ // Eigen::VectorXd h(N);
+  if(ifast==0 || itwo==1)goto two;
+  denSi=exb.sum();
+  for(i=0;i<n;++i){
+    c1+=(nevent1(i)/denSi);c2+=(nevent1(i)/pow(denSi, 2));
+    for(j=loc1(i)-1, q=0;q<nevent(i);j++, q++){
+      h(j)=exb(j);
+      denSi-=exb(j);
+      pl1(j)=tevent(j)-exb(j)*c1;
+      pl2(j)=exb(j)*(c1-exb(j)*c2);
+      if(pl2(j)<=0.0)ipl2=1;
+    }
+  }
+  if(ipl2==1){itwo=1;if(ifast==0){goto two;}};
+  return(List::create(Named("pl1")=pl1, Named("pl2")=pl2, Named("cl")=c1, Named("c2")=c2)); 
+  
+  two:
+    denSi=0.0;c1=0.0;c2=0.0;
+    for(i=n-1;i>=0;--i){
+      for(j=loc1(i)-1, q=0;q<nevent(i);j++, q++){denSi+=exb(j);}
+      denS(i)=denSi;
+    }
+    for(i=0;i<n;++i){
+      c1+=(nevent1(i)/denS(i));c2+=(nevent1(i)/pow(denS(i), 2));
+      for(j=loc1(i)-1, q=0;q<nevent(i);j++, q++){
+        h(j)=exb(j);
+        pl1(j)=tevent(j)-exb(j)*c1;
+        pl2(j)=exb(j)*(c1-exb(j)*c2);
+      }
+    }
+    return(List::create(Named("pl1")=pl1, Named("pl2")=pl2,Named("h")=h ,Named("cl")=c1, Named("c2")=c2)); 
+    }
+
+
+

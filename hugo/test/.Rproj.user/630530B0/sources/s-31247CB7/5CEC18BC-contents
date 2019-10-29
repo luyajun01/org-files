@@ -1,0 +1,68 @@
+library(rqPen)
+source("coxprep.r")
+cox.ladlasso<-function(y,z,lambda,tol=1e-7,iter=100000,verbose=T)
+{
+  x=z
+  z=scale(z)
+  dt <- data.frame(cbind(y,z))
+  dt <- dt[order(dt[,1]),]
+  z <- dt[,3:ncol(dt)]
+  eventx <- subset(dt,dt$status==1)
+  unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  prep0=coxprep(z,y);nevent= prep0$nevent;nevent1= prep0$nevent1;
+  loc1=prep0$loc1;n=prep0$n;tevent=prep0$tevent;N=prep0$N;
+  beta=coef(coxph(Surv(y)~x))
+  d1=rep(NA,nrow(z))
+  h=rep(NA,ncol(z))
+  l=rep(NA,ncol(z))
+  soft_thresh<-function(a, b) {
+    out = rep(0, length(a))
+    out[a > b] = a[a > b] - b
+    out[a < -b] = a[a < -b] + b
+    out
+  }
+  d2=rep(NA,nrow(z))
+  i=1
+  tol_curr = 1
+  #lambdai=rep(lambda,ncol(z))
+  #lambdai=lambda
+  while (tol < tol_curr && i < iter) {
+    beta.old=beta
+    eta=matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))%*%beta.old
+    #M <- quantile(as.vector(dt[,1]*exp(eta)),trunc,names = FALSE)
+    #A=M-min(M,as.vector(dt[,1]*exp(eta)))
+    #lmb.ple <- as.double(cumsum(dt[,2]/rev( cumsum( rev(exp(eta)) ) ) ))
+    h2<-cumsum(sapply(c(1:length(unique_time)), function(i){
+      nevent1[i]/sum(exp(eta[R[[i]],]))
+    }))
+    h3<-cumsum(sapply(c(1:length(unique_time)), function(i){
+      nevent1[i]/(sum(exp(eta[R[[i]],])))^2
+    }))
+    dl1<-list();d1<-list();dl2<-list();d2<-list()
+    for (i in 1:length(unique_time)) {
+        d1[[i]]<-dt[,2][R[[i]]]-exp(eta[R[[i]],])*h2[i]    
+        dl1[[i]]<-d1[[i]][1:nevent[i]]
+        d2[[i]]<-exp(eta[R[[i]],])*h2[i]-exp(2*eta[R[[i]],])*h3[i]
+        dl2[[i]]<-d2[[i]][1:nevent[i]]
+        }
+    d1=matrix(as.numeric(unlist(dl1)))
+    d2=matrix(as.numeric(unlist(dl2)))
+    z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+    hessian=z%*%beta.old+solve(diag(as.vector(d2)))%*%d1
+    yt=c(d2*hessian,rep(0,ncol(z)))  
+    newx=matrix(NA,nc=ncol(z),nr=nrow(z))
+    for (i in 1:nrow(z)) {
+      newx[i,]<-d2[i]*z[i,]  
+    }
+    lambdai=log(nrow(z))/(nrow(z)*abs(beta.old))
+    x<-rbind(newx,nrow(z)*lambdai*diag(ncol(z)))
+    beta<-coef(rq(yt~x-1))
+    #tol_curr=crossprod(beta-beta.old)  
+    #i = i + 1
+    #if (verbose && i%%10 == 0) message(i)
+  }
+  beta
+}

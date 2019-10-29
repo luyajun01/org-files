@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533194610981.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CCA16AD7",
+    "lastKnownWriteTime" : 1533341291,
+    "last_content_update" : 1533341291737,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression/coxlad.re.r",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "73,3",
+        "scrollLine" : "62",
+        "tempName" : "Untitled10"
+    },
+    "relative_order" : 21,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

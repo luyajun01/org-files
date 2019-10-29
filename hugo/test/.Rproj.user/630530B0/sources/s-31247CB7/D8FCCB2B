@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533191178361.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D8FCCB2B",
+    "lastKnownWriteTime" : 1533345807,
+    "last_content_update" : 1533349839054,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression/cox.ladlasso5.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "63,2",
+        "scrollLine" : "54",
+        "tempName" : "Untitled10"
+    },
+    "relative_order" : 20,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

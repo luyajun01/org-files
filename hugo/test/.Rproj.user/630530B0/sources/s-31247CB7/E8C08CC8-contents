@@ -1,0 +1,80 @@
+library("glmnet")
+library("survival")
+library("survAUC")
+rcox.2step = function(object,x,y,B=200,f2,r1,mode='fraction',trace=TRUE) {
+  n = dim(x)[1]
+  p = dim(x)[2]
+  avebeta1 = object$beta1
+  if(norm(avebeta1,"2")<1e-6){
+    avebeta1=rep(1e-6,p)
+  }
+  ## Bootstrap samples + random feature selection to estimate coefficient using weights
+  probs = abs(avebeta1)^r1/sum(abs(avebeta1)^r1)
+  optbeta2 = rep(0,p)
+  indexmat2 = matrix(0,B,ceiling(p*f2))
+  somebetamat2 = matrix(0,B,ceiling(p*f2))
+  denominator2 = rep(1e-8,p)
+  beta2=matrix(0,nc=p,nr=B)
+  for (b in 1:B) {
+    #samp.y = sample(1:n, n, replace=TRUE)
+    samp.x = sample(1:p, ceiling(p*f2), replace=FALSE, prob=probs)
+    newx  = x[, samp.x]
+    meanx  = apply(newx,2,mean)
+    newx   = scale(newx, meanx,FALSE)
+    scalex = sqrt(apply(newx^2, 2, sum))
+    newx   = scale(newx, FALSE, scalex)
+    if (mode=='fraction') {
+      errvec2 = 0
+      betamat = matrix(0,99,ceiling(p*f2))
+      fit<-glmnet(newx,Surv(y),family="cox")
+      eps<-0.0001
+      lambda_star<-10
+      lambda_min<- eps*lambda_star
+      lam<-exp(seq(log(lambda_star),log(lambda_min),length.out =99))
+      for (i in 1:99) {       
+        pred=coef(fit,s=lam[i])
+        betahat = rep(0,ceiling(p*f2))
+        betahat[seq(length(pred))]=pred
+        #errvec2[i]=2*length(pred!=0)/n-plr(newx,y[,2],as.double(pred))-log(n)
+        #errvec2[i]=log(n)*length(pred!=0)/n-plr(newx,y[,2],as.double(pred))+log(n)
+        #errvec2[i]=n^{1/(2+length(pred!=0))-1}-plr(newx,y[,2],as.double(pred))-log(n) #adjust BIC
+        #plr=.C("foo",as.double(newx),as.double(as.double(pred)),as.integer(n),as.integer(p),as.integer(y[,2]),double(n),double(n),double(n),double(1),double(1),loglik=double(1))$loglik
+        #errvec2[i]=plr/n*(1-length(pred!=0)/n)^2 #GCV
+        #errvec2[i]=-plr(newx,y[,2],as.double(pred))/n*(1-length(pred!=0)/n)^2 #GCV
+        betamat[i,] = betahat/scalex
+      }
+    }
+    ind = order(errvec2)[1]
+    optbeta2[samp.x] = optbeta2[samp.x] + betamat[ind,]
+    denominator2[samp.x] = denominator2[samp.x] + rep(1,ceiling(p*f2))
+    indexmat2[b,] = sort(samp.x)
+    somebetamat2[b,] = betamat[ind,order(samp.x)]
+    avebeta2 = optbeta2/denominator2
+    beta2[,sort(samp.x)]=somebetamat2[b,]  
+    if (trace==TRUE & mode=='penalty') {
+      cat('Second step', b, 'Optimal penalty', lam[ind], '\n')
+      write.table(avebeta2, 'avebeta2.txt')
+      write.table(somebetamat2, 'somebetamat2.txt')
+      write.table(indexmat2, 'indexmat2.txt')
+      write.table(denominator2, 'denominator2.txt')
+    }
+    
+    if (trace==TRUE & mode=='fraction') {
+      cat('Second step', b, 'Optimal fraction', 0.01*ind, '\n')
+      write.table(avebeta2, 'avebeta2.txt')
+      write.table(somebetamat2, 'somebetamat2.txt')
+      write.table(indexmat2, 'indexmat2.txt')
+      write.table(denominator2, 'denominator2.txt')
+    }       
+  }
+  #mux.tr = apply(x.tr,2,mean)
+  #muy.tr = mean(y.tr)
+  #yhat2 = x.val%*%avebeta2 + muy.tr -sum(mux.tr*avebeta2)  
+  #prederr2 = mean((yhat2-y.val)^2)
+  beta2=1/B*colSums(beta2)
+  avebeta3 = avebeta2*denominator2/B
+  #yhat3 = x.val%*%avebeta3 + muy.tr -sum(mux.tr*avebeta3)  
+  #prederr3 = mean((yhat3-y.val)^2)
+  return(list(denominator2=denominator2, avebeta1=avebeta1,beta2=beta2, avebeta3=avebeta3,errvec2=errvec2))
+  #return(list(denominator2=denominator2, avebeta1=avebeta1, avebeta2=avebeta2, avebeta3=avebeta3, weights=weights, yhat2=yhat2, yhat3=yhat3, prederr2=prederr2, prederr3=prederr3, mux.tr=mux.tr, muy.tr=muy.tr))
+}

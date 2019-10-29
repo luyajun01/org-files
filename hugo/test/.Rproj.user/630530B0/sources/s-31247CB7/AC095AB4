@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1533110074679.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2983574577",
+    "id" : "AC095AB4",
+    "lastKnownWriteTime" : 1533110087,
+    "last_content_update" : 1533110087042,
+    "path" : "~/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression/coxr.lambda.r",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "4,51",
+        "scrollLine" : "0",
+        "tempName" : "Untitled7"
+    },
+    "relative_order" : 32,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

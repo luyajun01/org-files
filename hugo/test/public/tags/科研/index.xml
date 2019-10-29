@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>科研 on A Hugo website</title>
+    <link>/tags/%E7%A7%91%E7%A0%94/</link>
+    <description>Recent content in 科研 on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 28 Jul 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/%E7%A7%91%E7%A0%94/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>近期学术研究思考</title>
+      <link>/2018/07/28/a-test/</link>
+      <pubDate>Sat, 28 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/07/28/a-test/</guid>
+      <description>根据近期研究学习生活，客观的说，我博士期间根本没学会如何开展统计理论研究，特别是数理统计研究，没有认真思考一门统计理论是怎么回事，里面细节是怎么样，到底是不是自己认为的那样。好在博后生活给我时间去思考、重新学习一门统计理论的机会。
+最近一直忙于研究生存分析理论。一篇文章把生存分析列为经典统计模型之一，其他还包括线性回归模型、Logistic回归等。博士期间虽经常接触到Cox模型概念，但是一直没有深入学习这个理论模型，颇为惭愧。我彻底搞明白这个理论模型，前后花费了将近有2月时间。下面一篇日志会对Cox模型理论进行详细介绍，这里不做赘述。</description>
+    </item>
+    
+  </channel>
+</rss>

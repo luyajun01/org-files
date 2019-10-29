@@ -1,0 +1,69 @@
+library(Rcpp)
+source("coxprep.r")
+sourceCpp("dletaC.cpp")
+softC <- function(z, lambda) {
+  .Call('Coxnet_softC', PACKAGE = 'Coxnet', z, lambda)
+}
+scaleC <- function(X) {
+  .Call('Coxnet_scaleC', PACKAGE = 'Coxnet', X)
+}
+#soft_thresh<-function(a, b) {
+#  out = rep(0, length(a))
+#  out[a > b] = a[a > b] - b
+#  out[a < -b] = a[a < -b] + b
+#  out
+#}
+cox.lasso<-function(y,z,lambda=lambda,tol=1e-7,iter=10^5,verbose=T){
+  ####initial parameter
+  x<-z;tem=scaleC(z);zscale=tem$sd;z=tem$x
+  rm(tem)
+  dt <- data.frame(cbind(y,z));dt <- dt[order(dt[,1]),];z <- dt[,3:ncol(dt)]
+  eventx <- subset(dt,dt$status==1);unique_time <- unique(eventx[,1])
+  R <- sapply(unique(eventx[,1]), function(t){
+    which(dt[,1]>=t)
+  })
+  beta=coef(coxph(Surv(y)~x))#initial beta
+  h=rep(NA,ncol(z));l=rep(NA,ncol(z));d2=rep(NA,nrow(z))
+  prep0=coxprep(z,y);nevent= prep0$nevent;nevent1= prep0$nevent1;
+  loc1=prep0$loc1;n=prep0$n;tevent=prep0$tevent;N=prep0$N;
+  i=1
+  tol_curr = 1
+  pl1=rep(NA,nrow(z));pl2=rep(NA,nrow(z))
+  while (tol < tol_curr && i < iter){
+    beta.old=beta
+    eta=matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))%*%as.matrix(beta.old)
+    xb=eta
+    exb=exp(eta)
+    h2<-cumsum(sapply(c(1:length(unique_time)), function(i){
+      nevent1[i]/sum(exp(eta[R[[i]],]))
+    }))
+    h3<-cumsum(sapply(c(1:length(unique_time)), function(i){
+     nevent1[i]/(sum(exp(eta[R[[i]],])))^2
+    }))
+    dl1<-list();d1<-list();dl2<-list();d2<-list()
+    for (i in 1:length(unique_time)) {
+        d1[[i]]<-dt[,2][R[[i]]]-exp(eta[R[[i]],])*h2[i]    
+        dl1[[i]]<-d1[[i]][1:nevent[i]]
+        d2[[i]]<-exp(eta[R[[i]],])*h2[i]-exp(2*eta[R[[i]],])*h3[i]
+        dl2[[i]]<-d2[[i]][1:nevent[i]]
+        }
+    dl1=matrix(as.numeric(unlist(dl1)))
+    dl2=matrix(as.numeric(unlist(dl2)))
+    #dl1<-rep(NA,nrow(z));dl2<-rep(NA,nrow(z))
+    #de=dletaCm(exb,tevent,N,nevent,nevent1,loc1,n)
+    #dl1=de$pl1;dl2=de$pl2
+    z<-matrix(as.numeric(unlist(z)),nc=ncol(z),nr=nrow(z))  
+    hessian=xb+dl1/dl2  
+    #hessian=xb-solve(diag(as.vector(dl2)))%*%dl1
+    for (k in 1:ncol(z)) {
+      h[k]<-sum(dl2*z[,k]*as.vector(hessian-z[,-k]%*%beta.old[-k]))/nrow(z)
+      l[k]<-sum(dl2*(z[,k]^2))/nrow(z)
+      beta[k]=softC(h[k],lambda)/l[k]/zscale[k]
+    }
+    tol_curr=crossprod(beta-beta.old)  
+    i = i + 1
+    if (verbose && i%%10 == 0) message(i)
+  }
+  return(beta)
+}
+

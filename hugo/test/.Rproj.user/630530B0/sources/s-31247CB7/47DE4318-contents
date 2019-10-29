@@ -1,0 +1,113 @@
+# simultion for coxlad lasso
+# thoughts from "Robust estimation for the Cox regression model based on trimming"
+setwd("/Users/luyajun/Documents/坚果云/我的坚果云/work/paper/ideas/robust cox regression")
+library(MASS)
+library(Rlab)
+library(tidyverse)
+library(survival)
+library(glmnet)
+library(coxrobust)
+source("cox.ladlasso2.r")
+n=200
+#x1<-runif(n,0,1)
+#x2<-runif(n,0,1)
+#x3<-runif(n,0,1)
+#x4<-runif(n,0,1)
+#x5<-rbern(n,prob=0.4)
+#x6<-rbern(n,prob=0.4)
+#x7<-rbern(n,prob=0.4)
+#x8<-rbern(n,prob=0.4)
+#x=cbind(x1,x2,x3,x4,x5,x6,x7,x8)
+#n=200
+numvar=8
+x<-mvrnorm(n=n,mu=rep(0,numvar),Sigma=diag(numvar))
+beta=c(3,1.5,0,1,0,0,-0.5,0)
+HR<-rep(NA,2)
+HR<-c(exp(x%*%beta)[which.max(exp(x%*%beta))],exp(x%*%beta)[which.min(exp(x%*%beta))])
+u=rbern(n,prob=0.5)
+p1<-sample(n,n*0.15)
+outlier<-u*HR[2]+(1-u)*HR[1]
+h<-as.vector(exp(x%*%beta))
+h[p1]=outlier[p1]
+C<-runif(n,0,10)
+U=runif(1,.1,.15)
+X<-rexp(n,U*h)
+delta<-ifelse(C>=X,1,0)
+T<-ifelse(C>=X,X,C)
+y<-cbind(time=T,status=delta)
+
+cox.ladlasso(y,x)
+ coef(cv.glmnet(x=x,y=y,family="cox"))
+
+ 
+ 
+source("cox.ladlasso5.r") 
+source("cv.coxlladasso.r")
+source("coxprep.r") 
+ n=200
+ beta=c(3,1.5,0,1,0,0,-1,0)
+ data=gen_data(n=n,beta=beta,cont=0.1,p.censor=0.15) 
+ data=matrix(as.numeric(unlist(data)),nr=n)
+ time=data[,1]
+ status=data[,2]
+ y=Surv(time,status)
+ x=data[,-c(1,2)]
+ result=list()
+ prepk=list()
+ nfolds=20
+ foldid=NULL
+ if (is.null(foldid)) {
+   foldid <-randomly_assign(n,nfolds)
+ }
+ train_x=list()
+ train_y=list()
+ for (i in 1:nfolds) {
+   train_x[[i]] <- x[foldid!=i, ]
+   train_y[[i]] <- y[foldid!=i,]
+   result[[i]]<-cox.ladlasso(train_y[[i]],train_x[[i]],lambda=4.819062e-05)$beta   
+   #cv_model1[[i]]<-sapply(lambda,cox.ladlasso,y=train_y[[i]],x=train_x[[i]])
+   #cv_model2[[i]]<-sapply(lambda,cox.ladlasso,y=y,x=x)
+ }
+
+
+
+
+#cv.coxladlasso(y,x)
+cox.ladlasso(y,x,lambda=1.303728e-02)$beta
+
+4.819062e-05
+cv.coxladlasso(y,x)
+
+result<-cox.ladlasso(y,x,lambda=0.01)
+
+
+
+coef(glmnet(train_x[[i]],train_y[[i]],family="cox",lambda=4.819062e-05))
+data=data.frame(train_y[[i]],train_x[[i]])
+result=coef(coxr(train_y[[i]]~.,data=data,trunc=0.90))
+result
+cv.coxladlasso(y,x)
+
+result<-cox.ladlasso(y,x,lambda=0.023)
+
+####test simualtion
+foldid=NULL;nfolds=7;lambda=NULL;nlambda=50
+
+
+
+coef(cv.glmnet(x,y,family="cox"))
+
+
+coef(glmnet(x,y,family="cox",lambda = 0.05))
+
+coxph(Surv(y)~.,data = data)
+
+library(coxrobust)
+data=gen_data(200,beta=c(3,1.5),cont=0.15,p.censor=0.15)
+coxr(Surv(time,status)~X1+X2,data=data,trunc=0.9)
+data=matrix(as.numeric(unlist(data)),nr=200)
+cox.ladlasso(y=cbind(time=data[,1],status=data[,2]),z=data[,-c(1,2)])
+
+
+library(Rcpp)
+sourceCpp("delta.cpp")

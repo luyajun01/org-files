@@ -1,0 +1,76 @@
+.C("re",as.double(cv_model[[i]][,j]$beta),as.double(y[,1]), as.integer(y[,2]),
+   as.double(x), as.double(exp(train_z[[i]]%*%cv_model[[i]][,j]$beta)), 
+   as.double(cv_model[[i]][,j]$M),as.integer(n),as.integer(p), 
+   as.integer(2),res = double(1),gradient = double(p),
+   hessian=double(p*p),PACKAGE = "coxrobust")$res
+
+
+
+.C("re",as.double(cv_model[[i]][,j]$beta),as.double(train_y[[i]][,1]),
+   as.integer(train_y[[i]][,2]),as.double(train_z[[i]]), 
+   as.double(exp(train_z[[i]]%*%cv_model[[i]][,j]$beta)), 
+   as.double(cv_model[[i]][,j]$M),as.integer(n1),as.integer(p),
+   as.integer(2),res = double(1),gradient = double(p),
+   hessian=double(p*p),PACKAGE = "coxrobust")$res
+
+
+coxloglik(y,x,result$A)
+
+
+
+
+sourceCpp("pleta.cpp")
+source("coxprep.r")
+prep0=coxprep(x,y)
+nevent=prep0$nevent;nevent1=prep0$nevent;loc1=prep0$loc1;n=prep0$n
+A=result$A
+#xb=prep0$x%*%result$beta
+xb=x%*%result$beta
+exb=A*exp(xb)
+pletaCm(xb,A,exb,nevent,nevent1,loc1,n)
+
+coxAloglik(y,x,A,beta)
+
+
+
+.C("re",as.double(result$beta),as.double(y[,1]), as.integer(y[,2]),
+   as.double(x), as.double(exp(x%*%result$beta)), 
+   as.double(result$M),as.integer(200),as.integer(8), 
+   as.integer(2),res = double(1),gradient = double(8),
+   hessian=double(8*8),PACKAGE = "coxrobust")$res
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cverror[i,j] <- 
+  
+  l<-matrix(NA,nr=nfolds,nc=nlambda)
+
+for (i in 1:nfolds) {
+  for (j in 1:length(lambda)){
+  l[i,j]=.C("re", as.double(cv_model2[[i]][,j]$beta), as.double(y[,1]), as.integer(y[,2]),
+                   as.double(x), as.double(exp(x%*%cv_model2[[i]][,j]$beta)), as.double(cv_model2[[i]][,j]$M),
+                   as.integer(n),as.integer(p), as.integer(2),res = double(1),
+                   gradient = double(p),hessian=double(p*p),PACKAGE = "coxrobust")$res
+}}
+
+
+for (i in 1:nfolds) {
+  for (j in 1:length(lambda)){
+    l[i,j]=.C("re",as.double(cv_model1[[i]][,j]$beta),as.double(train_y[[i]][,1]),as.integer(train_y[[i]][,2]),
+                                                                                            as.double(train_x[[i]]), as.double(exp(train_x[[i]]%*%cv_model1[[i]][,j]$beta)), 
+                                                                                          as.double(cv_model1[[i]][,j]$M),as.integer(length(train_y[[i]][,1])),as.integer(p),as.integer(2),res = double(1),gradient = double(p),hessian=double(p*p),PACKAGE = "coxrobust")$res
+}}
+    
+    
