@@ -1,0 +1,127 @@
+* emacs wiki
+** 常用快捷键
+| 功能                                            | 快捷键                 |
+|-------------------------------------------------+------------------------|
+| 切换read/write mode                             | c-x c-q                |
+| 关闭当前buffer                                  | c-x k                  |
+| 插入src-block                                   | C-c s i                |
+| 编辑src-block                                   | C-c s e                |
+| 新建                                            | C-x C-f                |
+| 保存                                            | C-x C-s                |
+| 另存为                                          | C-x C-w                |
+| 全选                                            | C-x h                  |
+| 选取一段                                        | M-h                    |
+| 光标下移                                        | C-n                    |
+| 光标上移                                        | C-p                    |
+| 标记环（用于选择区域）                          | C-@ C-@                |
+| 快速选择文本                                    | C-x C-x                |
+| (在C-y之后使用，粘贴剪贴板内以前的项目)yank-pop | M-y                    |
+| (选中段落) mark-paragraph                       | M-h                    |
+| markdown/org 预览                               | M-x maple-preview-mode |
+| 注释脚本                                        | S-c-l                  |
+| 光标从不同的buffer间切换                             | C-x o                  |
+
+** emacs mode
+
+** markdown mode
+| 快捷键                    | 功能               |
+| S-TAB (markdown-shifttab) | visibility cycling |
+| 加粗                      | c-c c-s b          |
+| 斜线                      | c-c c-s i          |
+| M-RET h I                 | 插入header         |
+| M-RET h s                 | 插入下级标题             |
+
+** helm
+
+1、利用helm-imenu查看目录结构，比如markdown文件的目录结构。
+
+2、利用helm-mark-ring可以查看最近的鼠标光标停留的记录（真的太爽了！）。
+
+3、利用helm-recentf可以查看最近打开的文件位置。
+
+** org
+*** 配置
+    #+begin_src lisp
+      (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-, 
+    #+end_src
+
+ | 功能                                               | 快捷键                     |
+ |----------------------------------------------------+----------------------------|
+ | 把当前位置压入mark ring中,以方便以后方便跳回该位置 | C-c % (org-mark-ring-push) |
+ | org-structure-template-alist                       | C-c C-,                     |
+** magit
+*** git使用
+Git工作流程
+
+代码仓库的管理，即管理四棵“Tree”，远程仓库(remote repository)、本地仓库(HEAD/local repository)、缓冲区(INDEX/stage)、本地目录(Local directory)。
+
+严格来说，管理的三棵树：仓库、缓冲区、本地目录；使用频繁的基本操作：
+
+检出仓库：git clone <server:/repository>
+
+跟踪文件：git add <filename>，添加至缓存区
+
+取消跟踪文件：git rm --cached <filename>
+
+提交：git commit -m "代码提交信息"，提交到本地仓库(Local repository)
+
+删除文件：git rm <filename>，取消HEAD的提交，并将本地文件置为“Stage：delete”状态
+
+检出文件：git checkout <filename>，使用最新的提交覆盖目标文件
+
+rollback：git reset --soft <commit>，保持当前文件修改的状态，版本rollback至commit版本
+
+                git reset --hard <commit>, 版本rollback至commit版本
+
+新建/切换分支：git branch <branch_name>
+
+删除分支：git branch -d <branch_name>
+
+检出(远程)分支：git checkout -b <(origin/)branch_name>
+
+推送分支：git push origin <branch_name>，推送至远程仓库
+
+设置推送的目标远程仓库：git remote add origin <server>，在推送分支前，需先配置
+
+同步代码：git pull，本地仓库更新到远程仓库的最新提交
+
+合并分支至当前分支：git merge <branch_name>
+
+丢弃本地改动及提交，同步最新远程仓库版本：git reset --hard <origin/branch_name> 或 git fetch orgin
+
+** shell
+在spacemacs中，有专门的shell layer，但是目前还不是很熟悉，可以先用eshell代替，后面再做研究。
+| 功能  | 快捷键     |
+|-------+------------|
+| shell | M-x eshell |
+** yas-nippet
+
+要使用某个snippet很简单,只需要输入缩写然后按下 M-/ or tab就行了. 
+
+| 功能              | 快捷键                      |
+| yas-expand        | M-/                         |
+| yas-insert-sippet | M-x yas-insert-sippet       |
+| 查看Yasnippet       | helm-yas-visit-snippet-file |
+
+参考文献：
+https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
+
+** 安装各种包遇到的坑
+*** ess
+这个包遇到的坑何其多，所以记录详细配置过程。
+
+#+BEGIN_SRC lisp
+  (ess :variables
+       ess-assign-key "\M--"
+       ;;windows版本需要加以下语法，mac不需要
+       inferior-R-program-name "F:\\LJ\\R-3.6.1\\bin\\x64\\Rterm.exe")
+#+END_SRC
+
+ess环境配置比较麻烦，主要要确认系统默认的R version，这涉及到环境变量的配置。在mac中，环境变量主要在~/.bashrc和~/.bash_profile两个文件中。
+
+#+BEGIN_SRC R
+  .libPaths()
+  Sys.getenv()
+  sessionInfo()
+  #+END_SRC
+

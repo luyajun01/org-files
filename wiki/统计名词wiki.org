@@ -1,0 +1,87 @@
+#+TITLE: 统计名词解释wiki
+#+HTML_HEAD: <link href="/Users/luyajun/Documents/坚果云/我的坚果云/github/code/css/org-mode.css" rel="stylesheet" type="text/css">
+#+OPTIONS: TeX:t LaTeX:t TOC:t
+#+latex_class: article
+#+latex_compiler: xelatex
+#+OPTIONS: author:nil email:nil creator:nil timestamp:nil html-postamble:nil
+
+* 线性回归模型
+*** 数据变换
+
+- 单变量数据变换
+
+包括中心化和标准化，数据变换可以解决偏度问题，比如利用 box-cox 数据变换。
+
+- 多变量数据变换
+
+解决离群值问题数据变换：空间表示变换
+
+*** 处理缺失值
+
+在处理缺失值的时候s，应该首先了解缺失的原因，应该调查数据缺失是否和结果变量有关。例如，药物无效，病人不来就医，直接退出实验，这种缺失就不行。
+*** 移除预测变量
+
+需要注意近零方差预测变量的黄金准则：
+
+1、不重复取值的数目与样本量的比值低（如 10%）
+
+2、最高频数和次高频数的比值高（如 20%左右）
+
+*** 相关系数
+
+\[
+r ( X , Y ) = \frac { \operatorname { Cov } ( X , Y ) } { \sqrt { \operatorname { Var } [ X ] \operatorname { Var } [ Y ] } }
+\]
+
+其中， $cov(X,Y)$ 为 $X$ 与 $Y$ 的协方差, $Var[X]$ 为 $X$ 的方差，$Var[Y]$
+为 $Y$ 的方差。
+
+样本协方差的计算公式：$cov _ { x y } = \frac { 1 } { n - 1 } \sum _ { i = 1 } ^ { n } \left( x _ { i } - \overline { x } \right) \left( y _ { i } - \overline { y } \right)$
+
+样本方差的计算公式： $s ^ { 2 } = \frac { \sum \left( X _ { i } - \bar{X} \right) ^ { 2 } } { n - 1 }$
+
+*** 训练集、验证集、测试集
+
+现在假设你在两个模型（一个线性模型和一个多项式模型）之间犹豫不决：如何判断？做法是训练两个模型，然后对比它们对测试数据的泛化能力。（说白了用新的数据去验证模型的预测能力，用mse、auc指标去验证）。
+
+*如果数据是80%的数据进行训练，保留另外的20%来做测试,这样的模型泛化误差最小，比如5%，但是实际生产环境中，这样的误差可能会达到15%。*
+
+为啥会出现这样的问题？
+
+问题出在你对测试集的泛化误差进行了多次度量，并且调整模型和超参数来得到拟合那个测试集的最佳模型。这就意味着该模型对于新的数据不太可能有良好的表现。
+
+常见的解决方案是再单独分出来一个保留集合， **称为验证集**.在训练集上，使用不同的超参数训练多个模型，然后通过验证集，选择最好的那个模型和对应的超参数，当你对模型基本满意之后，再用测试集运行最后一轮测试，并得到泛化误差的估值。
+
+为了避免验证集“浪费“太多的训练数据，常见的技术是使用交叉验证；
+将训练集分成若干个互补子集进行验证。一旦模型和超参数都被选定，
+最终的模型会带着这些超参数对整个训练集进行一次训练，最后再用
+测试集测量泛化误差。
+* logistic回归模型
+** deviance 
+Deviance is a measure of goodness of fit of a generalized linear model.
+Or rather, it’s a measure of badness of fit–higher numbers indicate worse fit.R reports two forms of deviance – the null deviance and the residual deviance.
+*** null deviance
+
+ The null deviance shows how well the response variable is predicted by a model that includes only the intercept (grand mean).
+
+ Null Deviance = 2(LL(Saturated Model) - LL(Null Model)) on df = df_Sat - df_Null
+*** residual deviance
+
+  Residual Deviance = 2(LL(Saturated Model) - LL(Proposed Model)) df = df_Sat - df_Proposed
+
+  The Saturated Model is a model that assumes each data point has its own parameters (which means you have n parameters to estimate.)
+
+  The Null Model assumes the exact "opposite", in that is assumes one parameter for all of the data points, which means you only estimate 1 parameter.
+
+  The Proposed Model assumes you can explain your data points with p parameters + an intercept term, so you have p+1 parameters.
+
+  If your Null Deviance is really small, it means that the Null Model explains the data pretty well. Likewise with your Residual Deviance.
+
+  What does really small mean? If your model is "good" then your Deviance is approx Chi^2 with (df_sat - df_model) degrees of freedom.
+
+  (Null Deviance - Residual Deviance) approx Chi^2 with df Proposed - df Null = (n-(p+1))-(n-1)=p
+
+
+
+
+

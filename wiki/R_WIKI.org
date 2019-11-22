@@ -1,0 +1,2486 @@
+#+TITLE: R_wiki
+#+SETUPFILE: /Users/luyajun/org-html-themes/setup/theme-bigblow.setup
+#+OPTIONS: TeX:t LaTeX:t TOC:nil
+#+latex_class: article
+#+latex_compiler: xelatex
+#+OPTIONS: author:nil email:nil creator:nil timestamp:nil html-postamble:nil
+
+* 0环境配置
+  
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  ## delete all saved object
+  rm(list = ls())
+  gc()
+  library(tidyverse)
+  library(tidyr)
+  library(nycflights13)
+  ## rscodeio::install_theme() #vs样式的界面
+  library(data.table)
+  library(styler) # 代码美观
+  library(lintr) # 检查代码错误
+  ## only style with scope = "spaces" when using the Addin
+  options(
+    styler.addins_style_transformer = "styler::tidyverse_style(scope = 'spaces')"
+  )
+                                        # Get a List of all files named with a key word, say all `.csv` files
+  filenames <- ist.files("C:/your/folder", pattern = glob2rx("*.csv"), full.names = TRUE)
+                                        # Load and bind all data sets
+  data <- rbindlist(lapply(filenames, fread))
+#+END_SRC
+
+* 1常见R函数
+** 显示对象个数
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  x <- 1
+  y <- 2
+  z <- 3
+  objects()
+#+END_SRC
+
+** 删除某个对象
+
+   #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+     rm(x)
+     objects()
+   #+END_SRC
+
+** 向环境中添加/删除对象
+   #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+     attach()
+     detach(name,pos = 2,unload = FALSE)
+   #+END_SRC
+
+** 捕获错误
+
+   #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+     res <- try({x <- 1},silent = TRUE)
+     res
+     res <- try({open("file that doesn't exist")},silent = TRUE)
+     res
+   #+END_SRC
+
+**  改变其他环境
+
+<<-操作符，var <<- value。它会使解释器首先在当前环境中检索寻找符号var。如果解释器无法在当前环境中找到符号var，那么接下来就会在父环境中继续寻找。解释器将这样递归地在各个环境中寻找直到找到该符号或达到全局环境。
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  rm(x)
+  doesnt.assign.x <- function(i) {x <- i}
+  doesnt.assign.x(4)
+  x
+  assign.x <- function(i){x <<- i}
+  assign.x(4)
+  x
+#+END_SRC
+
+* 2导入数据
+** fread/fwrite
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  library(data.table)
+  modelpath <- "/home/work/rstudio-home/luyajun/project/project/juxinli_fqz"
+  fread("/home/work/rstudio-home/luyajun/project/main_model_ws_cluster/rh_model/train_woe_data.csv", integer64 = "character", data.table = F)
+  fwrite(app, "/home/work/rstudio-home/luyajun/mifi_model_test/model/main_model/app.csv")
+  fwrite(app, sprintf("%s/dataset_sep.csv", modelpath))
+
+  fread(sprintf("%s/dataset_sep.csv", modelpath), integer64 = "character", data.table = F)
+#+END_SRC
+
+** spark_read_parquet/spark_write_parquet
+
+此函数可以迅速将spark object存储到hdfs上
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  spark_write_parquet(sdf_data3, path = "/user/h_data_platform/platform/mifi/mifimodel_antifraud_jxl_rule_replace_br/data", mode = "overwrite") #需注意sdf_data3必须是一个spark object
+  hj_parser=spark_read_parquet(sc, "hj_parser",path = sprintf("%s/hujin_parser_1017", hdfs_report_path), memory = F)
+  sdf_data <- spark_read_csv(sc, "sdf_data",path = sprintf("%s/data1.csv", hdfs_report_path)) #表名应该要取
+#+END_SRC
+
+** get_file_from_hdfs/push_file_to_hdfs
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  hdfs_data_path <- "/user/h_mifi/user/luyajun/data/data/model/cluster"
+  get_file_from_hdfs("/user/h_mifi/user/gonghaoxuan/project/main_model_based_low_risk_data/ensemble_model/train_data/ensemble_model_feature.csv", "/home/work/rstudio-home/luyajun/project/main_model_ws_cluster/br_model")
+  get_file_from_hdfs(sprintf("%s/train_cluster_data.csv", hdfs_data_path), modelpath)
+  push_file_to_hdfs("/home/work/rstudio-home/gonghaoxuan/project/main_model_ws_cluster/data/dataset_without_jxl.csv", "/user/h_mifi/user/luyajun/data/bairong")
+  push_file_to_hdfs(sprintf("%s/rh_model/train_cluster_data.csv", modelpath), hdfs_data_path)
+  ###获取hdfs数据并转换为本地数据
+  ###TODO:回头试试！！！
+  mf_load_remote_to_local_cluster(hdfs_path, local_path,
+                                  num_partitions = 50)
+#+END_SRC
+
+* 3数据处理
+** 宽表处理
+*** 常用宽表查询地址
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  mf_dm_data_library()
+  mf_dm_data_library() %>% pull(hdfs_path) %>% str_match("fact")
+#+END_SRC
+
+这部分因为工作原因，所以特别添加。
+***  读取jason数据
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  hujin <- spark_read_parquet(sc, name = "hujin", path = "/user/h_mifi/user/jiyue/output_anti_fraud_blacklist_query_log", memory = F) %>% filter(date >= 20190801 & date <= 20190924 & source == 44)
+  head(hujin %>% select(response),2) #快速看下jason数据结构
+#+END_SRC
+
+jason的数据形式很像Python中的字典型数据。
+![jason_data](img/jason_data.PNG)
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  ###利用get_json_object命令完成变量提取-------------------------------
+  hujin_parser <- hujin %>%
+      mutate(
+          xiaomi_id = get_json_object(response, "$.entity.xiaomiId"),
+          create_time = get_json_object(response, "$.entity.createTime"),
+          update_time = get_json_object(response, "$.entity.updateTime"),
+          data = get_json_object(response, "$.entity.data")
+      )
+#+END_SRC
+
+***  利用sparklyr对spark中的dataframe复制行
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  df_tbl %>% 
+      mutate(arr = explode(array(1, 1, 1))) %>%  #复制3行
+      select(-arr)
+                                        #or同样操作
+  library(rlang)
+  df_tbl %>%  
+      mutate(arr = !!rlang::parse_quo(
+                                paste("explode(array(", paste(rep(1, 3), collapse = ","), "))")
+                            )) %>% select(-arr)
+  
+                                        #参考链接 https://stackoverflow.com/questions/44530564/r-how-to-replicate-rows-in-a-spark-dataframe-using-sparklyr
+
+#+END_SRC
+
+***  本地数据框转成hdfs
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  ###这个应该很快--------------------------------------------
+  to_sdf(df, sc, repartition = NULL, ncores = 12, part_size = 512)
+#+END_SRC
+
+### 本地数据转化成h2o frame
+据说这个函数比as_h2o_frame快很多
+```{r}
+my_as_h2o_frame(df, use_parquet = F)
+```
+
+### sdf_solidate
+```{r}
+##saves an sdf to a parquet on hdfs and then read it back as a new sdf. This is useful to avoid spark OOM in situations where the spark workflow is too long.
+my_sdf_solidate(sdf)
+```
+### hdfs.load
+```{r}
+hdfs.load(path)#Arguments,path:an hdfs path to a .rda file
+```
+
+## 数据类型转换
+list to matrix:注意在list to matrix过程中，字符型变量也会转换为数字型
+```{r}
+list1=data.frame(x1=c(1,2,3,3,2,1),x2=letters[1:6])
+list2mat <- function(data){
+  output <- matrix(unlist(data), ncol = dim(data)[2])
+return(output)
+  }
+list2mat(list1)
+data.matrix(list1)
+```
+
+### 数据切分
+可以利用purrr包进行数据切分。
+```{r}
+ins
+typeof(mtcars$gear)
+mtcars %>%
+  split(.$cyl)
+```
+### 重塑数据(reshape data)
+melt:这个函数可以将data.frame数据拉直
+tibble:构建一个数据框
+gather：可以将多列原始数据进行合并，按照一定组名，这样可以更好ggplot2
+spread：将一列数据分割成多列，多用于char型数据
+unite:是spread的逆操作，可以将多个序列连接起来
+```{r}
+ceshi <- tibble(a = 1:3, b = 4:6) # 构建一个数据框
+ceshi
+melt(ceshi) # 将数据框拉直
+melt(smiths)
+dcast(smiths, time + subject ~ .)
+stocks <- tibble(
+  time = as.Date("2009-01-01") + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4)
+)
+##这里变量的值是一个维度，把值全部拉直
+head(stocks)
+s <- gather(stocks, "stock", "price", -time) # 这里stock涉及了组，也就是key，price是值,value
+head(s)
+### more example
+## Section:如果数据长度一样
+################################################
+score <- data.frame(score1 = c(1, 2, 3), score2 = c(2, 3, 4))
+melt(score, measured = c("score1", "score2"))
+gather(score, "score", "value") # 这样就能实现分组
+score <- list(score1 = c(1, 2, 3), score2 = c(2, 3, 4, 5))
+score <- data.frame(score1 = c(1, 2, 3, NA), score2 = c(2, 3, 4, 5))
+###列的合并--------------------------
+# 合并列
+## unite()直接使用列名即可，unite_()需要在列名两边使用引号
+iris %>% head
+#构造了一个新的变量unite_sepal，根据sepal.length，Sepal.Width两个变量进行合并
+demo <- iris %>%
+  unite(unite_sepal, Sepal.Length, Sepal.Width, sep="_", remove=TRUE) %>%
+  unite_("unite_petal", c("Petal.Length", "Petal.Width"), sep="_", remove=TRUE)
+#separate是unite的逆操作
+demo %>%
+  separate(unite_sepal, c("Sepal.Length", "Sepal.Width"), sep="_") %>%
+  separate_("unite_petal", c("Petal.Length", "Petal.Width"), sep="_")
+## Section:如果数据长度不相同
+################################################
+library(rowr)
+score <- cbind.fill(score1 = c(1, 2, 3), score2 = c(2, 3, 4, 5), fill = NA)
+colnames(score) <- c("score1", "score2")
+a <- gather(score, "score", "value") # 这样就能实现分组
+a %<>% as.tibble()
+str(a)
+head(a)
+ggplot(a, aes(x = score, y = value, colour = score)) + geom_point(aes(score, value))
+stroms <- tibble(date=c("2019,01,01"))
+tidyr::separate(stroms,date,c("y","m","d"))
+
+s %>%
+  separate(price, c("stock", "price"))
+gather()
+separate()
+df <- data.frame(x = c(NA, "a.b", "a.d", "b.c"))
+head(df)
+df %>% separate(x, c("A", "B")) # 将字符分隔开了
+
+df <- data.frame(x = c("a:1", "a:2", "c:4", "d", NA))
+df %>%
+  separate(x, c("key", "value"), ":") %>%
+  str()
+df %>%
+  separate(x, c("key", "value"), ":", convert = TRUE) %>%
+  str()
+
+df <- expand_grid(x = c("a", NA), y = c("b", NA))
+df
+
+df %>% unite("z", x:y, remove = FALSE)
+
+# Implicit missings ---------------------------------------------------------
+df <- tibble(
+  year    = c(2010, 2010, 2010, 2010, 2012, 2012, 2012),
+  qtr     = c(   1,    2,    3,    4,    1,    2,    3),
+  return = rnorm(7)
+)
+df %>% expand(year, qtr)
+df %>% expand(year = 2010:2012, qtr) #加了一年的数据
+df %>% expand(year = full_seq(year, 1), qtr)
+df %>% complete(year = full_seq(year, 1), qtr) #相当于对原有数据做了扩充
+full_seq(c(2010,2010,2011),1) #相当于去重了
+# You can also choose to fill in missing values
+df <- tibble(
+  group = c(1:2, 1),
+  item_id = c(1:2, 2),
+  item_name = c("a", "b", "b"),
+  value1 = 1:3,
+  value2 = 4:6
+)
+df
+df %>% nesting(item_id)
+df %>% complete(group, nesting(item_id, item_name))
+df %>% complete(group, nesting(item_id, item_name), fill = list(value1 = 0))
+###啥叫nest?--------------------------
+df <- tibble(x = c(1, 1, 1, 2, 2, 3), y = 1:6, z = 6:1)
+df
+# Note that we get one row of output for each unique combination of
+# non-nested variables
+#这个操作是把两个变量数据连接成list类型，把x作了去重处理，留下了y和z的信息
+(df %>% nest(data = c(y, z)))$data
+# chop does something similar, but retains individual columns
+(df %>% chop(c(y, z)))$z
+# use tidyselect syntax and helpers, just like in dplyr::select()
+# one_of("")是可以替换select的功能
+(df %>% nest(data = one_of("y", "z")))$data
+iris %>% select(Species) %>% unique()
+(iris %>% nest(data = -Species))$data #可以将数据按照一个类别进行分组
+iris %>%
+  nest(petal = starts_with("Petal"), sepal = starts_with("Sepal"))
+iris %>%
+  nest(width = contains("Width"), length = contains("Length"))
+# Nesting a grouped data frame nests all variables apart from the group vars
+fish_encounters %>%
+  group_by(fish) %>%
+  nest()
+# Nesting is often useful for creating per group models
+mtcars %>%
+  group_by(cyl) %>%
+  nest() %>%
+  mutate(models = lapply(data, function(df) lm(mpg ~ wt, data = df)))
+# unnest() is primarily designed to work with lists of data frames
+df <- tibble(
+  x = 1:3,
+  y = list(
+    NULL,
+    tibble(a = 1, b = 2),
+    tibble(a = 1:3, b = 3:1)
+  )
+)
+df
+df %>% unnest(y)
+df %>% unnest(y, keep_empty = TRUE)
+# You can unnest multiple columns simultaneously
+df <- tibble(
+  a = list(c("a", "b"), "c"),
+  b = list(1:2, 3),
+  c = c(11, 22)
+)
+df %>% unnest(c(a, b))
+# Compare with unnesting one column at a time, which generates
+                                        # the Cartesian product
+df %>% unnest(a) %>% unnest(b)
+df %>% unnest(a)
+```
+
+### TODO:join
+- inner_join
+连接方式包括内连接、外连接。内连接就是inner_join,这种连接就是等值连接,内连接最重要的性质是，没有匹配的行不会包含在结果中。这意味着内连接一般不适合在 分析中使用，因为太容易丢失观测了。。
+```{r }
+inner_join(a, b, by = "x1") 
+Join data. Retain only rows in both sets.
+```
+- 外连接
+
+内连接保留同时存在于两个表中的观测，外连接则保留至少存在于一个表中的观测。外连 接有 3 种类型。
+
+- 左连接 ：保留 x 中的所有观测。
+
+- 右连接 ：保留 y 中的所有观测 
+
+- 全连接 ：保留 x 和 y 中的所有观测。
+
+- 筛选连接
+
+- semi_join(x, y) ： 保留 x 表中与 y 表中的观测相匹配的所有观测。q:和内连接有何不同？
+
+- anti_join(x, y) ： 丢弃 x 表中与 y 表中的观测相匹配的所有观测。
+
+
+#### mutating joins
+left_join(a, b, by = "x1")
+Join matching rows from b to a.
+
+right_join(a, b, by = "x1")
+Join matching rows from a to b.
+
+full_join(a, b, by = "x1") 
+Join data. Retain all values, all rows.
+
+#### filtering joins
+semi_join(a, b, by = "x1") 
+All rows in a that have a match in b. b数据集只挑选出A中也有的列，A都保留
+
+anti_join(a, b, by = "x1") 
+All rows in a that do not have a match in b.
+
+#### 集合操作
+
+intersect(x, y) 返回既在 x 表，又在y表中的观测。
+
+union(x, y) 返回 x 表或 y 表中的唯一观测。
+
+setdiff(x, y) 返回在 x 表，但不在y表中的观测。
+
+intersect(y, z) 
+Rows that appear in both y and z.
+
+union(y, z) 
+Rows that appear in either or both y an
+
+setdiﬀ(y, z) 
+Rows that appear in y but not z.
+
+```{r}
+y <- tibble(x1 = c("A", "B", "C"), x2 = c(1, 2, 3))
+z <- tibble(x1 = c("B", "C", "D"), x2 = c(2, 3, 4))
+union(y, z)
+```
+
+#### do
+这个函数可以灵活利用各种函数，棒！目标对象应该是data.frame型。
+```{r}
+by_cyl <- mtcars %>%
+  group_by(cyl)
+do(by_cyl, head(., 2)) # 意思就是head(by_cyl,2)
+
+models <- by_cyl %>% do(mod = lm(mpg ~ disp, data = .))
+models %>% do(data.frame(coef = coef(.$mod)))
+
+
+iris %>%
+  group_by(Species) %>%
+  do({
+    mod <- lm(Sepal.Length ~ Sepal.Width, data = .)
+    pred <- predict(mod, newdata = .["Sepal.Width"])
+    data.frame(., pred)
+  })
+```
+
+### 非标准计算
+
+流程：read-eval-print 是读入文本，然后进行解析，然后求值，最后打印，这个就是我们日常看到的命令行操作。
+
+- 语法解析：substitute(), parse(), deparse()
+- 表达式构造：quote()
+- 表达式求值：eval(), source()
+- 表达式：expression()
+
+先看一个例子：
+```{r}
+library(magrittr)
+df <- tibble(x = 1:3, y = 3:1)
+filter(df, x == 1)
+my_var <- x
+#> Error in eval(expr, envir, enclos): object 'x' not found
+filter(df, my_var == 1)
+#> Error: object 'my_var' not found
+```
+
+明明my_var是x，但是filter就是不起作用。再举一个例子：
+```{r}
+greet <- function(name) {
+  "How do you do, name?"
+}
+greet("Hadley") #这个name变量不起作用
+```
+
+```{r }
+mutate_y <- function(df) {
+  mutate(df, y = a + x)
+}
+df1 <- tibble(x = 1:3)
+a <- 10
+mutate_y(df1)
+```
+
+```{r }
+quo(g1)
+quo(a+b+c)
+quo("a")
+my_summarise(df,quo(g1))
+my_summarise <- function(df, group_var) {
+  df %>%
+    group_by(!! group_var) %>%
+    summarise(a = mean(a))
+}
+df <- tibble(
+  g1 = c(1, 1, 2, 2, 2),
+  g2 = c(1, 2, 1, 2, 1),
+  a = sample(5),
+  b = sample(5)
+)
+my_summarise(df,quo(g1))#这就可以了！！！
+qu
+my_summarise(df,g1)
+```
+
+parse函数用于解析文件，解析字符串就是parse中用text参数表示。deparse是相反的，是把R表达式逆解析为字符。
+
+```{r}
+parse(text = "1+2")
+parse(text = "1+2") %>% class()
+parse(text = "1+2") %>% typeof()
+deparse(expression(1 + 2))
+```
+
+quote则是用于捕捉未计算的表达式。
+
+```{r}
+quote(1 + 2)
+quote(1 + 2) %>% typeof()
+quote(1 + 2) %>% class()
+```
+eval来完成对表达式进行计算（求值）
+
+```{r}
+eval(quote(1 + 2))
+eval(parse(text = "1+2"))
+```
+
+一般是用parse从字符串（或者是硬盘上的文件）解析成一个expression对象，是表达式列表，而后使用eval()函数对表达式求解。
+```{r}
+q <- quote(1 + 2)
+q <- as.list(q)
+q[[1]] <- "-"
+q
+eval(parse(q))
+q
+```
+# 3描述性统计
+## 数据值预览
+```{r}
+data <- data.frame(score1 = rnorm(100), score2 = rnorm(100))
+head(data)
+str(data)
+data %>% head(10) #显示前10行
+data %>% tail(-1) #减去第一行
+data %>% tail(10) #显示后10行
+```
+## 缺失值分析
+在sparklyr中，常用na.replace()函数对缺失值进行插补。
+```{r}
+data <- data.frame(score1 = c(1, 2, 3), score2 = c(2, 3, 4))
+inspect_na(data) #require inspect package
+###删除缺失值
+data1 <- data.frame(x=c(NA,1,2))
+drop_na(data1) #删除NA值
+data <- data.frame(x=c(NA,1,2),y=c(1,2,NA))
+data %>% head
+## x  y
+## 1 NA  1
+## 2  1  2
+## 3  2 NA
+###drop_na--------------------------
+data %>% drop_na(x,y) #只保留全为非空的数值行
+data %>% drop_na(x) #删除x为NA的行
+###缺失值填补--------------------------
+##Currently either "down" (the default), "up", "downup" (i.e. first down and then up) or "updown" (first up and then down)
+data %>% fill(x,.direction = c("updown")) #根据最靠近下面的数值来填充插补
+data %>% replace_na()
+?replace_na
+data <- tibble(x=c(1,2,NA),y=c("a",NA,"b"))
+###缺失值填充--------------------------
+replace_na(data,replace = list(x=1,y="down"))
+## A tibble: 3 x 2
+## x y
+## 1 a
+## 2 down
+## 1 b
+df <- tibble(
+  group = c(1:2, 1),
+  item_id = c(1:2, 2),
+  item_name = c("a", "b", "b"),
+  value1 = 1:3,
+  value2 = 4:6
+)
+###more examples--------------------------
+num_mean <- mean(data$num, na.rm = TRUE)
+> type_mode <- as.character(data$type[which.max(table(data$type))])
+> data <- replace_na(data = data, replace = list(num = num_mean, 
+                                                 + type = type_mode))
+
+```
+## 单变量分析
+```{r}
+summary(data) # return min,1st quantile,median,mean,3rd quantile, max
+library(moments)
+skewness(data) #偏度
+kurtosis(data) #峰度
+##summary statisics
+mystats <- function(x,na.omit=FALSE){
+  if(na.omit)
+    x=x[!is.na(x)]
+  m=mean(x)
+  n=length(x)
+  s=sd(x)
+  skew=sum((x-m)^3/s^3)/n
+  kurt=sum((x-m)^4/s^4)/n-3
+  return(c(n=n,mean=m,stdev=s,skew=skew,kurtosis=kurt))
+}
+mystats(data.matrix(data))
+sapply(data, mystats) #return statstics
+library(Hmisc)
+describe(data) #可以知道缺失值
+library(pastecs)
+stat.desc(data,basic=T,desc = T,norm = T,p=0.95) #可以知道 NA个数
+
+missmap(data, main = "Missing values vs observed")
+sapply(data, function(x) length(unique(x))) #
+sapply(data,function(x) sum(is.na(x))) #缺失值个数
+```
+## 多变量分析
+### 二维列联表
+```{r}
+##可以生成SAS形式的结果
+library(gmodels)
+CrossTable(data$score1,data$score2) #生成CrossTable
+##dplyr形式
+case_when(mtcars$carb <= 2 ~ "low",
+          mtcars$carb > 2 ~ "high") %>% table
+###compelete-------------------------- 
+###这个函数可以快速插入几个特征,其他特征插入自然均为0
+df <- tibble(
+  group = c(1:2, 1),
+  item_id = c(1:2, 2),
+  item_name = c("a", "b", "b"),
+  value1 = 1:3,
+  value2 = 4:6
+)
+df
+df %>% complete(group, nesting(item_id, item_name)) %>% dim
+expand(mtcars, vs, cyl)#相当于select功能
+mtcars %>% colnames()
+                                        # Only combinations of vs and cyl that appear in the data
+expand(mtcars,nesting(vs,cyl))
+```
+### 三维列联表 
+```{r}
+xtabs(~score1,data = data)
+ftable(xtabs(~score1,data = data))
+```
+### 卡方独立性检验
+chisq.test()函数可以对二维表的行变量和列变量进行卡方独立性检验。
+探讨的是样本的行变量与列变量是相互独立的概率。如果P值很小，那么就会拒绝原假设，原假设是两个样本之间相互独立。
+```{r}
+
+```
+### 二变量关系
+```{r}
+library(car)
+states=as.data.frame(state.x77[,c("Murder","Population","Illiteracy")])
+scatterplotMatrix(states,spread=FALSE,lty.smooth=2)
+```
+
+# 4字符型数据
+## 字符大小写
+```{r}
+x <- "Mixed cAsE 124"
+tolower(x) # 字符全部小写
+toupper(x) # 字符全部大写
+```
+## 字符串取子集
+```{r}
+substr("abcdef", 2, 4)
+substring("abcdef", 1:6)
+substring("abcdef", 1:6, 1:6)
+str_sub("abcdef", 2, 4) #和substr一样的效果
+str_sub("abcdef", -3, -1) #附属表示从后往前数
+x="Sbcdef"
+str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))#可以用str_sub()函数的赋值形式来修改字符串
+
+x <- c("123456789", "abcdefghijklmnopq")
+substr(x, c(2, 4), c(4, 5, 8))
+substring(x, c(2, 4), c(4, 5, 8))
+```
+### 返回字符数
+```{r}
+nchar("你好吗？")
+str_length("你好吗？") #这两个函数相同
+length("你好吗？") # 字符串的长度为1
+```
+### 正则表达式匹配
+比如：字符a是否包括在字符b中
+```{r}
+x <- c("apple", "banana", "pear")
+str_view(x, "an")
+grep("an",x,?an) # 返回false，true
+grep("[pe]",x) #只要有p/e字符都返回true
+a <- c("as", "abcd", "bcd", "1_bcd")
+b <- c("bcd")
+c <- c("ads")
+grepl(b, a) # 返回false，true
+grep(b, a) # 在x中搜索某种模式。若fixed=FALSE，则pattern为一个正则表达式，返回的是元素的位置
+grep(b, a, ?bcd) # 搜索以bcd结尾的字符串
+grep("A", c("b", "A", "c")) # 前一个参数是子集，后一个参数是全集
+```
+给出一个更为复杂的例子
+```{r}
+x <- c("a_X01", "b_X02", "c_X01")
+y <- c("a", "b")
+target <- gsub("_X[0-9]+", "", x) # 匹配x和y
+intersect(y, target) # 得出和y相匹配的字符
+```
+涉及到具体位置的匹配可以用regexpr、gregexpr和regexec三个函数进行匹配：
+```{r}
+text <- c("Hellow, Adam!", "Hi, Adam!", "How are you, Adam.")
+regexpr("Adam", text) #精确返回
+gregexpr("Adam", text)#和regexpr一样，它return的是list型
+regexec("Adam", text)
+```
+- 锚点
+
+锚点在正则匹配中的作用就是快速定位字母位置。使用方法是：
+
+^从字符串开头进行匹配；$从字符串末尾进行匹配。除此之外，还有其他模式的匹配选项，包括：
+
+\d可以匹配任意数字；\s可以匹配任意空白字符（如空格、制表符和换行符）；[abc]可以匹配a、b或c；[^abc]可以匹配除a、b、c外的任意字符。想创建包含\d或\s的正则表达式，需要在字符串中对\进行转义，因此需要输入"\\d"或"\\s".除此之外，字符选项可以创建多个可选的模式，例如，abc|d..f可以匹配abc或deaf.
+
+```{r}
+x <- c("apple", "banana", "pear")
+str_view(x, "^a")
+str_view(x,"r$")
+str_view(x,"a$")
+y <- c("summarize","summary","rowsum")
+str_view(y,"\bsum\b")
+y <- c("summarize","summary","dsums","rowsum")
+str_view(y,"\bsum\b")
+str_view(c("grey","gray"),"gr(e|a)y")
+```
+
+正则表达式还有一项功能能够重复匹配字符多次
+?：0次或1次；+：1次或多次；*：0次或多次；{n}：匹配n次；{n,}：匹配n次或更多次；{,m}：最多匹配m次；{n,m}：匹配n到m次。
+
+```{r}
+x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+str_view(x,"CC?")
+str_view(x,"CC+")
+str_view(x,"C[LX]+")
+str_view(x,"C{2}")
+str_view(x,"C{2,}")
+str_view(x,"C{2,3}")
+```
+默认的匹配方式是"贪婪的"：正则表达式会匹配尽量长的字符串，通过在正则表达式后面添加一个?，可以将匹配方式更改为“懒惰的”，即匹配尽量短的字符串。
+```{r}
+str_view(x,"C{2,3}?") #只匹配到2个CC
+str_view(x,"C[LX]+?") #只匹配到CL
+str_view(x,"^.*$")
+str_view(x,"\\{.+\\}")
+y <- "1888 is the longest year in R\\\\.w\\\\oman numerals: MDCCCLXXXVIII"
+str_view(y,"\\{.+\\}")
+str_view(y,"\\\\{2}")
+```
+***  分组与回溯引用
+括号还可以定义“分组”，可以通过回溯引用（如\1,\2）来引用这些分组。
+
+***  字符串替换
+sub:在x中搜索pattern，并以文本replacement将其替换。
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+txt <- c("The", "licenses", "for", "most", "software", "are",
+         "designed", "to", "take", "away", "your", "freedom",
+         "to", "share", "and", "change", "it.",
+         "", "By", "contrast,", "the", "GNU", "General", "Public", "License",
+         "is", "intended", "to", "guarantee", "your", "freedom", "to",
+         "share", "and", "change", "free", "software", "--",
+         "to", "make", "sure", "the", "software", "is",
+         "free", "for", "all", "its", "users")
+sub("\\s", ".", "Hello There") #将中间的空格替换成.
+(ot <- sub(pattern = "[b-e]",replacement = ".", txt)) #txt中
+sub(pattern = "b|e", replacement = ".", txt) #只做一次替换
+gsub(pattern = "b|e", replacement = ".", txt) #把满足条件的匹配全做替换
+#+END_SRC
+
+可以利用chartr替换特定的字符模式
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  x <- "Mixed cAsE 124"
+  chartr("iXs", "why", x) # 只要x中含有"iXs"，那么就更换为"why".
+  chartr("a-cX", "D-Fw", x)
+#+END_SRC
+
+### 字符串排序
+```{r}
+x <- c("apple", "eggplant", "banana")
+str_sort(x, locale = "en") # 按照英语字母的顺序排序
+```
+
+***  字符串拆分
+
+在split处分割字符向量x中的元素。
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  strsplit("abc", "") # 将字段分裂成"a" "b" "c"
+  strsplit("a_b","_") #可以将“a_b”分拆成 “a”和“b”
+#+END_SRC
+
+***  字符串连接
+
+主要有三种函数可以解决这个问题：paste、str_c、sprintf、glue四个函数。
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  paste("x", 1:3, sep = "")
+  paste("x-", 1:3,"-y", sep = "")
+  paste("x-", c(1,NA),"-y", sep = "")
+  name <- "Hadley"
+  time_of_day <- "morning"
+  birthday <- FALSE
+  paste("Good ", time_of_day, " ", name,if (birthday) " and HAPPY BIRTHDAY",".")
+  paste("Good ", time_of_day, " ", name,if (birthday) " and HAPPY BIRTHDAY",".",sep = "")
+  str_c("x",1:3)
+  str_c("x",1:3,sep = "")
+  str_c("x-", c(1,NA),"-y", sep = "") #return "x-1-y" NA,这点和paste结果不同
+  str_c("Good ", time_of_day, " ", name,if (birthday) " and HAPPY BIRTHDAY",".") #和paste相比，str_c函数默认sep=""
+  str_c(c("x", "y", "z"), sep = ", ") #return "x" "y" "z"
+  str_c("x", "y", "z", sep = ", ") #如果想用sep实现相同的结果，只需要把向量c()去掉
+  str_c(c("x", "y", "z"), collapse = ", ") #return "x, y, z",collapse可以将字符向量合并为字符串
+  typeof(sprintf("x%d", 1:16))
+  d <- 1:16
+  glue::glue("x{d}")
+#+END_SRC
+
+more example
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  library(glue)
+  name <- "Fred"
+  age <- 50
+  anniversary <- as.Date("1991-10-12")
+  glue(
+      "My name is {name},",
+      " my age next year is {age + 1},",
+      ' my anniversary is {format(anniversary, "%A, %B %d, %Y")}.'
+  )
+#+END_SRC
+
+glue_data() 可以和magrittr的管道函数一起用 %>% .
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+mtcars %>% head
+  head(mtcars) %>% glue_data("{rownames(.)} has {hp} hp")
+  ## Mazda RX4 has 110 hp
+  ## Mazda RX4 Wag has 110 hp
+  ## Datsun 710 has 93 hp
+  ## Hornet 4 Drive has 110 hp
+  ## Hornet Sportabout has 175 hp
+  ## Valiant has 105 hp
+#+END_SRC
+
+***  字符串重编码
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  x <- rep(1:3, 3)
+  recode(x, "c(1,2)='A'; 	else='B'")
+#+END_SRC
+
+***  字符串转为命令
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  x <- 1:10
+  a <- "print(x)"
+  class(a)
+  eval(parse(text = a))
+                                        # more example
+  traindata = final_onehot_train_samples %>% select(feat_model) %>%
+      bind_cols(train_test$train %>% select(label,cluster)) %>% mutate(cluster=as.factor(cluster))
+  formula = eval(parse(text = paste0("label ~ 1 +", paste(vars_cv_selected %>% head(-1),collapse = " + "),"+ (1|cluster) ")))
+  glmm_fit <- glmer(formula, data=traindata,nAGQ = 9,family = binomial)
+#+END_SRC
+
+***  如何向一个向量追加元素？
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  x <- 1:5
+  (foo <- c(x[1], 0, x[2:5]))
+  append(x, 0, after = 1) # 在第一个元素之后添加0
+  append(x, 0, after = 2)
+#+END_SRC
+
+***  返回两个数据框不相同的位置
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  a <- c(1, 2)
+  b <- c(1, 1)
+  which(a != b)
+  a <- data.frame(num = 1:3, lib = letters[1:3])
+  b <- data.frame(num = c(1, 2, 0), lib = letters[1:3])
+  which(a != b) # 只返回一个行值
+  which(a != b, arr.ind = TRUE) # 不仅返回行值，还返回列值，arr.ind参数是array indices之意，返回数据框的行列位置
+#+END_SRC
+
+***  删掉重复行
+```{r}
+x <- c(9:20, 1:5, 3:7, 0:8)
+x
+unique(x)
+(xu <- x[!duplicated(x)])
+```
+
+### 如何对数列（array）进行维度变换?
+```{r}
+x <- array(1:24, 2:4)
+x
+xt <- aperm(x, c(2, 1, 3))
+dim(x) # (2,3,4)
+dim(xt) # (3,2,4)
+```
+
+### 如何对矩阵按行（列）作计算？
+使用函数apply()进行计算。
+```{r}
+vec <- 1:20
+mat <- matrix(vec, ncol = 4)
+cumsum(vec)
+mat
+apply(mat, 2, cumsum)
+apply(mat, 1, cumsum)
+```
+
+### 注释大段的R脚本
+可以用这种形式注释掉大段的程序，第一次见到。
+```{r}
+if (FALSE) {
+  x <- 1
+}
+inser
+```
+
+### 如何对数据框（data.frame）的某列作数学变换？
+transform作用：为原数据框添加新的列，可以改变原变量列的值，也可以赋值NULL删除列变量
+用法：transform(‘data’, ...)，data就是要修改的数据，'...'代表要进行的修改，相当于dlyr包中的mutate函数。
+```{r}
+transform(airquality, Ozone = -Ozone)
+transform(airquality, new = -Ozone, Temp = (Temp - 32) / 1.8)
+```
+
+with函数的返回值是原语句的返回值。within跟with功能相同，但返回值不同，within会返回所有修改生效后的原始数据结构（列表、数据框等），但是需要注意书写方式哦。坑真多~
+```{r}
+mydata <- data.frame(x1 = c(2, 2, 6, 4), x2 = c(3, 4, 2, 8))
+(mydata <- with(mydata, {
+  sumx <- x1 + x2
+  meanx <- (x1 + x2) / 2
+}))
+(mydata <- with(mydata, {
+  list(sumx = x1 + x2, meanx = (x1 + x2) / 2)
+})) # 这样书写就可以输出所有变量值
+# 只返回meanx值，sumx值不返回
+(mydata <- within(mydata, sumx = x1 + x2, meanx = (x1 + x2) / 2))
+(mydata <- within(mydata, {
+  sumx <- x1 + x2
+  meanx <- (x1 + x2) / 2
+})) # 每个新修改的代码都需要换行
+(mydata <- within(mydata, {
+  sumx <- x1 + x2
+  meanx <- (x1 + x2) / 2
+}))
+```
+
+by(data, INDICES, FUN, ..., simplify = TRUE):把data这个data frame按照INDICES的factor拆分成若干块小的data frames，在每块小的data frame上运行函数FUN。
+
+```{r}
+by(warpbreaks[, 1:2], warpbreaks[, "tension"], summary)
+by(
+  warpbreaks, warpbreaks[, "tension"],
+  function(x) lm(breaks ~ wool, data = x)
+)
+```
+
+### 求解两组平行向量的极值？
+```{r}
+x <- 1:10
+y <- rev(x)
+pmax(x, y)
+pmin(x, y)
+```
+
+### 如何对不规则数组进行统计分析？
+可以用tapply(x,f,g)进行分析，x为向量，f为因子列，g为操作函数，相对数据框进行类似操作可以用by函数。
+example:
+| value | class | sum |
+|     1 |     1 | 1+4 |
+|     2 |     2 |  2  |
+|     3 |     3 |  3  |
+|     4 |     1 |  NA |
+
+```{r}
+n <- 4
+fac <- factor(rep(1:3, len = n), levels = 1:5)
+fac
+table(fac)
+tapply(1:n, fac, sum)
+tapply(1:n, fac, sum)
+tapply(1:n, fac, mean)
+a <- c(24, 25, 36, 37)
+b <- c("q", "w", "q", "w")
+tapply(a, b, mean)
+tapply(a, b, sum)
+attach(warpbreaks) # 这个attach函数的功能就是将数据集释放出来
+tapply(breaks, list(wool, tension), mean) # 还能做列联表
+aggregate(breaks, list(wool, tension), mean) # 相当于对tapply结果做了转置
+```
+
+### 判断数据框的列是否为数字
+```{r}
+x <- data.frame(x = c(1, 2, 3), y = c("a", "b", "c"))
+sapply(x, is.numeric) # 返回数据是否为数字
+## 返回内存中所有对象的占用大小
+sapply(ls(), function(x) round(object.size(get(x)) / 1024 / 1024))
+```
+
+### 如何将数据标准化？
+```{r}
+x <- c(rnorm(100), 2 * rnorm(30))
+m <- scale(x, scale = F) # 只centering
+n <- scale(x, center = F) # 只scaling
+l <- scale(x) ## 默认的是不仅做centering，还做了scaling
+```
+### 如何做交叉列联表？
+table，xtab，ftable
+```{r}
+xtabs(cbind(ncases, ncontrols) ~ ., data = esoph)
+ftable(xtabs(cbind(ncases, ncontrols) ~ ., data = esoph))
+```
+
+```{r}
+# 以后但凡有$，比较多的操作，都可以用with来写，很方便的
+x <- with(airquality, table(cut(Temp, quantile(Temp)), Month))
+with(airquality, table(cut(Temp, quantile(Temp))))
+with(airquality, cut(Temp, quantile(Temp)))
+head(airquality)
+head(x)
+prop.table(x, 1) # x是求解出了频数，prop.table求解出了概率
+```
+
+##4 list型数据
+列表（list）是R的数据类型中最为复杂的一种。一般来说，列表就是一些对象（或成分，component）的有序集合。列表允许你整合若干（可能无关的）对象到单个对象名下。
+#### do.call
+do.call(what, args, quote = FALSE, envir = parent.frame())
+what要不是操作函数，要不是function的string形式,args是list对象。
+```{r}
+# do.call
+do.call(rbind, list(data.frame(a = 1:2, b = 2:3), data.frame(b = 1:2, a = 2:3))) # rind无法直接对list类型进行rbind
+t1 <- do.call(kmeans, list(x = iris[, 1:4], centers = 3))
+rbindlist(list(data.frame(a = 1:2, b = 2:3), data.frame(b = 1:2, a = 2:3)))
+## 需要注意rbindlist函数不能自动识别变量名
+# more example
+tmp <- expand.grid(letters[1:2], 1:3, c("+", "-")) # list
+do.call(paste, c(tmp, sep = ""))
+do.call(paste, list(as.name("A"), as.name("B")), quote = TRUE)
+##
+A <- 2
+f <- function(x) print(x^2)
+env <- new.env()
+assign("A", 10, envir = env)
+assign("f", f, envir = env)
+f <- function(x) print(x)
+f(A) # 2
+do.call("f", list(A)) # 2
+do.call("f", list(A), envir = env) # 4
+do.call(f, list(A), envir = env) # 2
+do.call("f", list(quote(A)), envir = env) # 100
+do.call(f, list(quote(A)), envir = env) # 10
+do.call("f", list(as.name("A")), envir = env) # 100
+```
+##5 因子型数据
+函数factor()以一个整数向量的形式存储类别值，整数的取值范围是[1... k]（其中k是名义型变量中唯一值的个数）。
+```{r}
+status <- c("poor", "improved", "excellent", "poor")
+factor(status, ordered = TRUE) # 设定为有序因子
+factor(status) # 设定为名义变量
+data <- data.frame(x = c("male", "female", "male"))
+with(data, factor(x, levels = c(1, 2), labels = c("male", "female")))
+```
+##6 日期型数据
+计算日期间隔
+```{r}
+difftime()
+today <- Sys.Date()
+dob <- as.Date("1988-06-07")
+difftime(today, dob, units = "days")
+```
+
+## 7 TODO: BOOLEN数据
+### 布尔代数
+```{r }
+rep_len(F, 10)
+a <- c("1", "2", "4", "4", "6", "5")
+b <- c("2", "5")
+intersect(a, b)
+union(a, b) # 相当于将所有不重复元素连接起来
+setdiff(a, b) # 只显示不重复的元素
+setdiff(union(a, b), intersect(a, b))
+```
+### 比较两个对象是否相等
+
+```{r }
+x1=data.frame(x=c(1,2,3,4),y=c(1,2,4,3))
+x2=data.frame(x=c(1,2,3,4),y=c(1,2,3,4))
+all.equal(x1,x2)
+identical(x1,x2) #可以检查两个对象是否完全一致
+x3 <- data.frame(x=c(1,2,3,4),y=c(1,2,3,4))
+identical(x2,x3)
+```
+
+### 取偶数位置值
+```{r }
+x <- c("1","2","3","4")
+x[c(FALSE,TRUE)]
+# [1] "Component \"y\": Mean relative difference: 0.2857143"
+```
+
+## JSON数据
+
+```{r}
+### 从hive数据表的jason对象提取data--------------------------------
+hujin_parser <- hujin %>%
+  mutate(
+    xiaomi_id = get_json_object(response, "$.entity.xiaomiId"),
+    create_time = get_json_object(response, "$.entity.createTime"),
+    update_time = get_json_object(response, "$.entity.updateTime"),
+    data = get_json_object(response, "$.entity.data")
+  )
+```
+
+# 5模型
+## 求解没有常数项的线性回归模型
+```{r}
+result <- lm(y ~ 0 + x1, data = data)
+```
+
+### 如何使用正交多项式回归？
+考虑回归方程：
+
+\[
+y_{i}=\beta_{0}+\beta_{1} x_{i}+\beta_{2} x_{i}^{2}+\ldots+\beta_{k} x_{i}^{k}, i=1,2, \ldots, n
+\]
+
+当多项式的次数$k$比较大时，$x, x^{2}, \ldots, x^{k}$会出现线性相关问题。故需要使用正交多项式回归来克服这个缺点。在R中，使用poly()函数：
+
+```{r}
+(z <- poly(1:10, 2))
+str(z)
+library(ISLR)
+library(ggplot2)
+attach(Auto)
+library(tidyverse)
+library(magrittr)
+fm2raw <- lm(mpg ~ poly(horsepower, 2, raw = TRUE), Auto)
+fm2raw <- lm(mpg ~ poly(horsepower, 2), Auto)
+Auto %<>% mutate(pred = predict(fm2raw, newdata = Auto))
+ggplot(Auto, aes(x = horsepower, y = mpg)) + geom_line(aes(y = pred)) + geom_point() + geom_smooth()
+cor(poly(horsepower, 2)) # 加了raw=TRUE，这两列数据就是强相关
+```
+
+### 如何进行典型相关分析？
+典型相关分析是用于研究两组随机变量之间法相关性的一种统计方法。它的基本原理是：为了从总体上把握两组指标之间的相关关系，分别在两组变量中提取有代表性的两个综合变量U1和V1（分别为两个变量组中各变量的线性组合），利用这两个综合变量之间的相关关系来反映两组指标之间的整体相关性。
+
+```{r}
+pop <- LifeCycleSavings [, 2:3]
+oec <- LifeCycleSavings [, -(2:3)]
+cancor(pop, oec)
+```
+
+### 如何加速R的运行速度？
+```{r}
+library(parallel)
+doit <- function(x) x^2 + 2 * x
+system.time(res = lapply(1:5000000, doit))
+rm(res)
+gc()
+cl <- makeCluster(getOption("cl.cores", 3))
+system.time(res = parLapply(cl, 1:5000000, doit))
+stopCluster(cl)
+```
+
+### R的SPSS版本
+```{r}
+library(Rcmdr)
+```
+
+# 6 作图（ggplot2和lattice）
+### 散点图
+```{r}
+ggplot(starwars) +
+  geom_point(aes(height, mass))
+```
+
+### 直方图
+```{r}
+library(ggplot2)
+library(lattice)
+###ggplot2版本.--------------------------
+dat <- data.frame(
+  cond = factor(rep(c("A", "B"), each = 200)),
+  rating = c(rnorm(200), rnorm(200, mean = .8))
+)
+ggplot(dat, aes(x = rating)) + geom_histogram(binwidth = .5) # rating作为横轴
+
+ggplot(dat, aes(x = rating)) +
+  geom_histogram(
+    binwidth = .5,
+    colour = "black", # 边框颜色
+    fill = "white" # 填充颜色
+  )
+## 密度图
+ggplot(dat, aes(x = rating)) + geom_density() # 添加密度曲线
+## 密度图+直方图
+ggplot(dat, aes(x = rating)) +
+  geom_histogram(aes(y = ..density..), # 这一步很重要,使用density代替y轴
+    binwidth = .5,
+    colour = "black", fill = "white"
+  ) +
+  geom_density(alpha = .2, fill = "#FF6666") # 重叠部分采用透明设置
+## 添加一条均值线(红色部分)
+ggplot(dat, aes(x = rating)) +
+  geom_histogram(binwidth = .5, colour = "black", fill = "white") +
+  geom_vline(aes(xintercept = mean(rating, na.rm = T)), # Ignore NA values for mean
+    color = "red", linetype = "dashed", size = 1
+  )
+## 多组数据的直方图和密度图
+###.cond作为各组的分类,以颜色填充作为区别,position的处理很重要,决定数据存在重叠是的处理方式 "identity" 不做处理,但是设置了透明--------------------------
+ggplot(dat, aes(x = rating, fill = cond)) +
+  geom_histogram(binwidth = .5, alpha = .5, position = "identity")
+# Interleaved histograms
+ggplot(dat, aes(x = rating, fill = cond)) +
+  geom_histogram(binwidth = .5, position = "dodge") # dodge 表示重叠部分进行偏离
+# 密度图
+ggplot(dat, aes(x = rating, colour = cond)) + geom_density()
+# 半透明的填充
+ggplot(dat, aes(x = rating, fill = cond)) + geom_density(alpha = .3)
+
+#
+ggplot(dat, aes(x = rating)) + geom_histogram(binwidth = .5, colour = "black", fill = "white") +
+  facet_grid(cond ~ .) ## 分面
+
+
+# lattice版本
+histogram(~ height | voice.part,
+  data = singer, main = "Distribution of Heights by Voice Pitch",
+  xlab = "Height (inches)"
+)
+head(singer)
+```
+
+### 密度图
+```{r}
+attach(mtcars)
+# data("mtcars")
+gear <- factor(gear,
+  levels = c(3, 4, 5),
+  labels = c("3 gears", "4 gears", "5 gears")
+)
+cyl <- factor(cyl,
+  levels = c(4, 6, 8),
+  labels = c("4 cylinders", "6 cylinders", "8 cylinders")
+)
+
+# 开始画图
+
+densityplot(~mpg,
+  main = "Density Plot",
+  xlab = "Miles per Gallon"
+)
+
+head(mtcars)
+densityplot(~ mpg | cyl,
+  layout = c(1, 3), main = "Density Plot by Number of Cylinders",
+  xlab = "Miles per Gallon"
+)
+
+gear <- factor(gear,
+  levels = c(3, 4, 5),
+  labels = c("3 gears", "4 gears", "5 gears")
+)
+cyl <- factor(cyl,
+  levels = c(4, 6, 8),
+  labels = c("4 cylinders", "6 cylinders", "8 cylinders")
+)
+
+densityplot(~mpg,
+  main = "Density Plot",
+  xlab = "Miles per Gallon"
+)
+
+mtcars$cyl <- cyl.f
+
+densityplot(~ mpg | cyl,
+  main = "Density Plot by Number of Cylinders",
+  xlab = "Miles per Gallon"
+)
+
+bwplot(cyl ~ mpg | gear,
+  main = "Box Plots by Cylinders and Gears",
+  xlab = "Miles per Gallon", ylab = "Cylinders"
+)
+
+
+xyplot(decrease ~ treatment, OrchardSprays,
+  groups = rowpos,
+  type = "a",
+  auto.key =
+    list(space = "right", points = FALSE, lines = TRUE)
+)
+
+cloud(mpg ~ wt * qsec | cyl,
+  main = "3D Scatter Plots by Cylinders"
+)
+
+dotplot(cyl ~ mpg | gear,
+  main = "Dot Plots by Number of Gears and Cylinders",
+  xlab = "Miles Per Gallon"
+)
+
+splom(mtcars[c(1, 3, 4, 5, 6)],
+  main = "Scatter Plot Matrix for mtcars Data"
+)
+
+detach(mtcars)
+
+
+
+
+dotplot(cyl ~ mpg | gear,
+  main = "Dot Plots by Number of Gears and Cylinders",
+  xlab = "Miles Per Gallon"
+)
+
+
+library(lattice)
+panel.smoother <- function(x, y) {
+  panel.xyplot(x, y) # show points
+  panel.loess(x, y) # show smoothed line
+}
+attach(mtcars)
+hp <- cut(hp, 3) # divide horse power into three bands
+xyplot(mpg ~ wt | hp,
+  scales = list(cex = .8, col = "red"),
+  panel = panel.smoother,
+  xlab = "Weight", ylab = "Miles per Gallon",
+  main = "MGP vs Weight by Horse Power"
+)
+```
+
+
+### 线图
+```{r}
+unemp_lux_data %>%
+  ggplot(aes(x = year, y = unemployment_rate_in_percent, group = 1)) +
+  geom_line()
+```
+
+#### 拟合线图
+```{r}
+fm2raw <- lm(mpg ~ poly(horsepower, 2), Auto) # 先拟合
+Auto %<>% mutate(pred = predict(fm2raw, newdata = Auto)) # 将模型预测结果加入原始数据集中
+ggplot(Auto, aes(x = horsepower, y = mpg)) + geom_line(aes(y = pred)) + geom_point() + geom_smooth()
+```
+
+# 7 Packages
+## Base包
+常用函数：
+- cat：连接...中的对象，并将其输出到屏幕上或文件中（如果声明了一个的话）。
+cat()函数的优势在于可以用来捕捉函数功能的错误，除了cat()函数外，warning()可以生成一条错误提示信息，用message()生成一条诊断信息，或用stop()停止当前表达式的执行并提示错误。
+```{r}
+firstname <- c("Jane")
+cat("Hello", firstname, "\n")
+```
+
+## 7.1 dplyr
+这个包主要包括 5 个核心函数，分别是:
+### filter
+- filter:按值筛选观测（相当于 sql 中的 select），filter 选择行，而 select 选择列，也就是特征。
+
+> filter(data,var=所限定的条件)
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+filter(flights, month == 1, day == 1) # 将一月一号的航班挑出来
+filter(flights, month == 1 & day == 1) # &是“与”
+filter(flights, month == 11 | month == 12) #|是“或”
+filter(flights, month == 11 | 12) # 这里程序会先判断 11|12 的值为 TRUE，也就是 1，所以程序其实为 filter(flights, month == 1)
+filter(flights, month %in% c(11, 12)) # 这个结果等价于 filter(flights, month == 11 | month == 12)
+```
+###  arrange
+- arrange:对行进行重新排序
+arrange常和group_by()一起使用。
+arrange(data, var1, var2, ……) #优先按照 var1 升序排列，其次是 var2,接着....
+```{r}
+library(tidyverse)
+library(nycflights13)
+arrange(flights, year, month, day) # 按照 year,month,day 升序排列
+arrange(flights, desc(arr_delay)) # 将 arr_delay 字段按照降序排列
+flights %>% group_by(month) %>% summarise(arrtime = mean(dep_delay, na.rm = TRUE)) %>% arrange(desc(arrtime))
+```
+
+### select
+- select:按名称选取变量
+
+filter 选择行，select 选择列。
+
+> select(data,var1,var2,...) #从 data 中选择 var1 和 var2 等变量
+
+select还有一种变型，_select能够处理character strings.
+select命令结合其他子命令可以对数据进行多种选择，包括：
+
+- starts_with(): Starts with a prefix.
+
+- ends_with(): Ends with a suffix.
+
+- contains(): Contains a literal string.
+
+- matches(): Matches a regular expression.
+
+- num_range(): Matches a numerical range like x01, x02, x03.
+
+- one_of(): Matches variable names in a character vector.
+
+- everything(): Matches all variables.
+
+- last_col(): Select last variable, possibly with an offset.
+
+```{r}
+###some example--------------------------------------------
+iris %>% select(starts_with("Petal"))
+iris %>% select(ends_with("Width"))
+iris %>% select(contains("etal")) %>% head(2)
+iris %>% select(matches(".t.")) %>% head(2) #含有t
+iris %>% select(everything()) %>% head(2) #选择所有变量
+iris %>% select(last_col()) %>% head(2) #选择所有变量
+iris %>% select(last_col(offset = 1)) %>% head(2) #选择倒数第2列变量
+iris %>% select(one_of(c("Petal.Length", "Petal.Width"))) %>% head(2) #Matches variable names in a character vector.
+iris %>% mutate(X01=1,X02=2) %>% select(num_range("X0",1:2))
+
+###vars_select可以选择特定的字符串-----------------------
+nms <- names(iris)
+nms %>% vars_select(starts_with("Petal")) #可以用来选择字符型数据
+vars_select(nms, ends_with("Width"))
+vars_select(nms, contains("etal"))
+vars_select(nms, matches(".t."))
+vars_select(nms, Petal.Length, Petal.Width)
+vars_select(nms, everything())
+vars_select(nms, last_col())
+vars_select(nms, last_col(offset = 2))
+vars <- c("Petal.Length", "Petal.Width")
+vars_select(nms, one_of(vars))
+```
+
+- select_all(),select_at(),select_if()
+select_all(.tbl, .funs = list(), ...)
+select_at(.tbl, .vars, .funs = list(), ...)
+```{r}
+# Supply a renaming function:
+select_all(mtcars, "toupper")
+select_all(mtcars)
+mtcars %>% select_all(toupper) #对所有变量字母命名全部改为大写
+select_at(mtcars, vars(-everything())) #删除所有变量
+select_at(mtcars, vars(-contains("ar"), starts_with("c")), toupper) #选择删除的变量，然后作相应的处理
+# Selection drops unselected variables:
+is_whole <- function(x) all(floor(x) == x)
+select_if(mtcars, is_whole, toupper) #可以挑选满足条件的特征
+select_if(mtcars, is_whole) #只保留满足条件的变量
+```
+
+- rename_if(),rename_all()
+```{r}
+rename_if(mtcars, is_whole, toupper) #对满足条件的变量进行重命名
+rename_all(mtcars, toupper) #与select_all(mtcars, "toupper")类似
+```
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+a <- data.frame(x = c(1, 2, 1), y = c(1, 3, 2), z = c(1, 2, 2))
+a %>% distinct(x, z) # 只就包括了选择变量的目的
+
+select(flights, year, month, day) # 从 flights 数据集中选择出 year,month,day 三个变量
+select(flights, year:day) # 选择出“year”和“day”之间的所有列
+select(flights, -(year:day)) # 选择出不在“year”和"day"之间的所有列
+flights %>%
+  select(starts_with("day"))
+flights %>%
+  select(starts_with("dep"))
+flights %>%
+  select(-starts_with("arr"))
+
+flights %>%
+  select(ends_with("delay"))
+flights %>%
+  select(contains("dep"))
+flights %>%
+  select(matches("dep"))
+flights %>%
+  select(matches("^(dep|arr)_"))
+
+data2 <- flights
+colnames(data2) <- sprintf("x%d", 1:19) # 字符
+select(data2, num_range("x", 8:11))
+select(data2, num_range("x", c(9, 11)))
+
+data3 <- flights
+colnames(data3) <- sprintf("x%02d", 1:19)
+select(data3, num_range("x", 8:11, width = 2))
+
+col_vector <- c("year", "month", "day")
+select(flights, col_vector)
+select(flights, one_of(col_vector))
+
+flights %>%
+  select(year)
+flights %>%
+  select(matches("d.")) # 筛选出所有d字符开头的变量
+flights %>%
+  select(one_of(c("year", "month"))) # one_of(): Matches variable names in a character vector
+flights %>%
+  select(year, month)
+
+
+vars <- c("year", "month", "day")
+select(flights, !!vars)
+group_by_at(flights, vars(year:day)) # 在dplyr中，变体后缀_at()在他们的第二个参数中支持select语义。你只需要用vars（）包裹这个选择.
+```
+
+```{r}
+flights %>%
+  select_("year")
+select_(flights, "year:day")
+select_(flights, "year:day", "-month")
+select_(flights, "-(year:day)")
+select_(flights, 'starts_with("arr")')
+select_(flights, '-ends_with("time")')
+```
+
+### group_by
+```{r}
+daily <- flights %>% group_by(year, month, day)
+head(daily)
+data= data.frame(date=c("20190102","20190102","20190102","20190103","20190104","20190105"),value=c(1,2,1,2,3,4))
+data=data %>% mutate(date=as.character(date))
+data %>% group_by(date)
+
+typeof(data$date)
+```
+
+### ungroup
+```{r}
+dim(daily)
+dim(daily %>%
+  ungroup())
+
+daily %>%
+  ungroup() %>% # 不再按日期分组
+  summarize(flights = n()) # 所有航班
+```
+
+### rename
+
+对变量重新命名
+
+```{r}
+rename(flights, tail_num = tailnum) # 将变量 tailnum 命名为 tail_num
+```
+
+另一种用法是将 select() 函数和 everything() 辅助函数结合起来使用。当想要将几个变
+量移到数据框开头时，这种用法非常奏效：
+
+```{r}
+select(flights, time_hour, air_time, everything()) # 将 time_hour,air_time 两个变量提前
+```
+
+### mutate
+- mutate:使用现有变量的函数创建新变量,新变量总是放在最后
+
+```{r}
+flights_sml <- select(
+  flights,
+  year:day,
+  ends_with("delay"),
+  distance,
+  air_time
+)
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60
+)
+```
+
+- mutate_if()
+```{r}
+# mutate_if() is particularly useful for transforming variables from
+# one type to another
+iris_new=iris %>% mutate_if(is.factor, as.character)
+str(iris)
+str(iris_new) #可以发现原来Species变量为因子型，经过mutate_if后变成了char型
+# If you want to apply multiple transformations, pass a list of
+# functions. When there are multiple functions, they create new
+# variables instead of modifying the variables in place:
+iris %>% mutate_if(is.numeric, list(~log(.))) #对所有numeric型的变量取对数
+
+```
+
+- mutate_at()
+对特定的列作特定的函数映射。
+```{r}
+scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
+starwars %>% mutate_at(c("height", "mass"), scale2)
+starwars$
+```
+
+### transmute
+如果只想保留新变量，可以使用 transmute() 函数：
+
+```{r}
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+### add_column()
+这个函数和mutate一样，可以实现迅速添加列的目的
+```{r}
+# add_column ---------------------------------
+df <- tibble(x = 1:3, y = 3:1)
+add_column(df, z = -1:1, w = 0)
+```
+
+### add_row()
+```{r}
+df <- tibble(x = 1:3, y = 3:1)
+add_row(df, x = 4, y = 0)
+# You can specify where to add the new rows
+add_row(df, x = 4, y = 0, .before = 2)
+# You can supply vectors, to add multiple rows (this isn't
+# recommended because it's a bit hard to read)
+add_row(df, x = 4:5, y = 0:-1)
+# Absent variables get missing values
+add_row(df, x = 4)
+```
+
+###  summarize
+- summarize:将多个值总结为一个摘要统计量。
+
+n():目前每个分组观测值得数量
+
+n_distinct(x):x中不重复值的数量，与length(unique())作用相同。
+
+first(x),last(x),nth(x):作用与x[1],x[length(x)],x[n]相似。
+
+经常和group_by()一起使用
+
+```{r}
+summarize(flights, delay = mean(dep_delay, na.rm = TRUE)) # 将 delay 变量定义为 dep_delay 均值
+```
+
+```{r}
+by_day <- group_by(flights, year, month, day)
+summarize(by_day, delay = mean(dep_delay, na.rm = TRUE))
+
+flights %>%
+  group_by(dest) %>%
+  summarise(
+    planes = n_distinct(tailnum),
+    flights = n(),
+    f = sum(flights),
+    fistv = first(tailnum),
+    lastv = last(tailnum),
+    iqr = IQR(dep_time, na.rm = TRUE),
+    nthv = nth(tailnum, 12) # tailnum[12]
+  )
+
+summarise_each(y, mean) # 求解数据每一列的均值
+mtcars %>% tally() # tally()相当于summaries，count
+mtcars %>%
+  group_by(cyl) %>%
+  tally()
+mtcars %>% add_tally()
+```
+
+- summarise_all()
+```{r}
+# 平均值，字符平均值返回NA
+summarise_all(flights, mean) #返回所有变量的,其实这也是发现有缺失值的好方法
+summarise_all(flights, sd,na.rm = TRUE) #返回所有变量的
+```
+
+- 其他窗口函数
+cumall，cumany,cummean
+```{r}
+# `cummean()` returns a numeric/integer vector of the same length
+# as the input vector.
+x <- c(1, 3, 5, 2, 2)
+cummean(x)
+#> [1] 1.00 2.00 3.00 2.75 2.60
+cumsum(x) / seq_along(x)
+#> [1] 1.00 2.00 3.00 2.75 2.60
+
+# `cumall()` and `cumany()` return logicals
+cumall(x < 5)
+#> [1]  TRUE  TRUE FALSE FALSE FALSE
+cumany(x == 3)
+#> [1] FALSE  TRUE  TRUE  TRUE  TRUE
+
+# `cumall()` vs. `cumany()`
+df <- data.frame(
+  date = as.Date("2020-01-01") + 0:6,
+  balance = c(100, 50, 25, -25, -50, 30, 120)
+)
+# all rows after first overdraft
+df %>% filter(cumany(balance < 0))
+#>         date balance
+#> 1 2020-01-04     -25
+#> 2 2020-01-05     -50
+#> 3 2020-01-06      30
+#> 4 2020-01-07     120
+# all rows until first overdraft
+df %>% filter(cumall(!(balance < 0)))
+```
+
+### sample_n()
+使用sample()和sample_frac()获得一定数量的随机样本，使用sample_n()可以选择固定的行数，sample_frac()可选择占总行数固定比例的行数。
+
+使用replace=TRUE时为有放回的取样（即有可能重复取样）。如果需要，可以用weight参数来对取样的数据进行权重设置。
+
+```{r}
+sample_n(flights, 10)
+flights %>% sample_n(10) #随机抽样
+sample_frac(flights, 0.01) #按照一定的抽样比例来抽
+slice(flights, 10:15) # 筛选出固定行位置
+top_n(flights, 5, dep_time) # 按照dep_time升序排序
+flights %>% top_n(-2)
+flights %>% top_frac(.5)
+```
+
+### tally()
+```{r }
+# tally() is short-hand for summarise(n())
+mtcars %>% tally()
+```
+### add_tally()
+```{r }
+# add_tally() is short-hand for mutate(n())
+mtcars %>% add_tally()
+```
+
+### count()
+```{r }
+# count() is a short-hand for group_by() + tally()
+mtcars %>% count(cyl,sort = TRUE,name = "n_cyl") #甚至你可以重新命名
+```
+
+### distinct()
+找出数据表中不同的数据项
+```{r}
+distinct()
+```
+### n_distinct()
+```{r }
+df <- tibble(
+  g1 = c(1, 1, 2, 2, 2),
+  g2 = c(1, 2, 1, 2, 1),
+  a = sample(5),
+  b = sample(5)
+)
+###.--------------------------
+ins
+df %>% n_distinct()
+```
+### slice()
+slice可于选择数据的行，相对于select选择列数据。其实，slice函数等价于filter(mtcars, row_snumber() == 1L)。
+```{r}
+mtcars %>% slice(1:10)#选择前10行
+mtcars %>% slice(-1) #删除第一行
+mtcars %>% slice(-c(1:5)) #删除前5行
+###下面方法等价
+slice(mtcars, n())
+mtcars %>% tail(1)
+```
+
+#### 筛选
+- case_when()
+```{r}
+case_when(mtcars$carb <= 2 ~ "low",
+          mtcars$carb > 2 ~ "high") %>% table
+```
+- coalesce() #first non-NA values byelement across a set of vectors
+```{r}
+x <- sample(c(1:5, NA, NA, NA))
+x %>% coalesce()
+coalesce(x, 0L)
+
+y <- c(1, 2, NA, NA, 5)
+z <- c(NA, NA, 3, 4, 5)
+y %>% coalesce(z) # Or match together a complete vector from missing pieces
+
+# Supply lists by splicing them into dots:
+vecs <- list(
+  c(1, 2, NA, NA, 5),
+  c(NA, NA, 3, 4, 5)
+)
+coalesce(!!!vecs) 
+```
+
+- if_else()
+
+```{r}
+x <- c(-5:5, NA)
+if_else(x < 0, NA_integer_, x)
+if_else(x < 0, "negative", "positive", "missing") #和ifelse相比，if_else可以自动对缺失值进行填充
+ifelse(x < 0, "negative", "positive")
+# Unlike ifelse, if_else preserves types
+x <- factor(sample(letters[1:5], 10, replace = TRUE))
+ifelse(x %in% c("a", "b", "c"), x, factor(NA))
+if_else(x %in% c("a", "b", "c"), x, factor(NA))
+```
+
+- na_if()
+```{r}
+###na_if()将变量中的未知类型替换成NA--------------------------------------------
+na_if(1:5, 5:1)
+x <- c(1, -1, 0, 10)
+na_if(x, 0) #把x中的0值替换成NA
+100/x
+100 / na_if(x, 0)
+y <- c("abc", "def", "", "ghi")
+na_if(y, "") #把"“替换成NA
+
+test=starwars %>%
+  select(name, eye_color) %>%
+  mutate(eye_color = na_if(eye_color, "unknown")) #说白了就是把eye_color中"unknown"的那些人标记为NA
+test %>% summarise(sum(is.na(eye_color))) #有3个NA
+
+starwars %>%
+  mutate_if(is.character, list(~na_if(., "unknown")))#将所有char型变量中所有unknown的字段都替换为NA
+```
+
+- recode()
+
+```{r}
+#这个函数的命令是指将符合条件的字符进行替换，不符合条件的字符不变
+# For character values, recode values with named arguments only. Unmatched
+# values are unchanged.
+char_vec <- sample(c("a", "b", "c"), 10, replace = TRUE)
+dplyr::recode(char_vec, a = "Apple")
+dplyr::recode(char_vec, a = "Apple", b = "Banana")
+dplyr::recode(char_vec, a = "Apple", b = "Banana", .default = NA_character_)
+# Use a named character vector for unquote splicing with !!!
+level_key <- c(a = "apple", b = "banana", c = "carrot")
+dplyr::recode(char_vec, !!!level_key)
+# For numeric values, named arguments can also be used
+num_vec <- c(1:4, NA)
+dplyr::recode(num_vec, `2` = 20L, `4` = 40L)
+# Or if you don't name the arguments, recode() matches by position.
+# (Only works for numeric vector)
+dplyr::recode(num_vec, "a", "b", "c", "d")
+dplyr::recode(c(1,5,3), "a", "b", "c", "d", .default = "nothing")
+# Note that if the replacements are not compatible with .x,
+# unmatched values are replaced by NA and a warning is issued.
+dplyr::recode(num_vec, `2` = "b", `4` = "d")
+# use .missing to replace missing values in .x
+dplyr::recode(num_vec, "a", "b", "c", .default = "other", .missing = "missing")
+#> [1] "a"       "b"       "c"       "other"   "missing"
+```
+
+- recode_factor()
+```{r}
+# Use recode_factor() to create factors with levels ordered as they
+# appear in the recode call. The levels in .default and .missing
+# come last.
+recode_factor(num_vec, `1` = "z", `2` = "y", `3` = "x")
+#> Warning: Unreplaced values treated as NA as .x is not compatible. Please specify replacements exhaustively or supply .default
+#> [1] z    y    x    <NA> <NA>
+#> Levels: z y x
+recode_factor(num_vec, `1` = "z", `2` = "y", `3` = "x",
+              .default = "D")
+```
+
+- near()
+
+```{r}
+#Compare two numeric vectors
+sqrt(2) ^ 2 == 2
+#> [1] FALSE
+near(sqrt(2) ^ 2, 2,tol = .Machine$double.eps^0.5)
+```
+
+- all_equal()
+```{r}
+#可以比对两个顺序完全不一致的数据框，数据框的类型还可以不一致
+scramble <- function(x) x[sample(nrow(x)), sample(ncol(x))]
+# By default, ordering of rows and columns ignored
+all_equal(mtcars, scramble(mtcars))
+all_equal(mtcars, scramble(mtcars), ignore_col_order = FALSE)
+all_equal(mtcars, scramble(mtcars), ignore_row_order = FALSE)
+# By default all_equal is sensitive to variable differences
+df1 <- data.frame(x = "a")
+df2 <- data.frame(x = factor("a"))
+all_equal(df1, df2)
+# But you can request dplyr convert similar types
+all_equal(df1, df2, convert = TRUE)
+```
+
+### row names
+```{r}
+#将行名转移到column
+a=rownames_to_column(iris, var = "C") #新建一个列名C，用id填充
+column_to_rownames(a, var = "C") #用变量C填充行名
+```
+
+### do
+You can use do() to perform arbitrary computation, returning either a data frame or arbitrary objects which will be stored in a list.
+
+```{r}
+by_cyl <- group_by(mtcars, cyl)
+do(by_cyl, head(., 2))
+
+models <- by_cyl %>% do(mod = lm(mpg ~ disp, data = .))
+models
+
+
+
+```
+
+### tbl_df()
+
+```{r }
+set.seed(100)
+ds <- data.frame(group=c(rep("a",100), rep("b",100), rep("c",100)), 
+                 x=rnorm(n = 300, mean = 3, sd = 2), y=rnorm(n = 300, mean = 2, sd = 2))
+ds %>% tbl_df()
+
+ds %>% group_by(group) %>% do(.$x>3)
+
+```
+
+
+### 转化为sql语句
+```{r}
+library(DBI)
+library(dbplyr)
+test <- mtcars %>%
+  summarise_all(mean) %>%
+  show_query() # 注意在spark环境下可以用show_query()显示sql语句
+mtcars %>% summarise(mean) # return na
+sql_render(test) #可以比较dplyr语法与它产生的SQL：
+```
+
+### TODO:purrr
+这个函数主要应用于list型。
+####  pluck
+从这个函数名字可以知道，叫摘下。
+select an element by name or index,pluck(x,"b").这个函数类似于select。
+
+```{r}
+# list of data structures:
+obj1 <- list("a", list(1, elt = "foobar"))
+obj2 <- list("b", list(2, elt = "foobaz"))
+x <- list(obj1, obj2)
+# And now an accessor for these complex data structures:
+my_element <- function(x) x[[2]]$elt
+pluck(x, 1, my_element)
+pluck(x, 2, my_element)
+pluck(x, 2)
+x[[1]][[2]]$elt
+###pluck好用！
+test <- list(x=c(1,2),y=c(2,3))
+pluck(test,1)
+pluck(test,"x")[2]
+                                        #还可以取多维数据
+?pluck
+```
+
+####  keep
+
+keep() is similar to Filter(), but the argument order is more convenient. 
+```{r}
+?keep
+rep(10, 10) %>%
+  map(sample, 5) %>% #map like apply
+  keep(function(x) mean(x) > 6)
+
+x <- rerun(5, a = rbernoulli(1), b = sample(10))
+x
+x %>% keep("a") #filter(a==TRUE)
+x %>% discard("a") #filter(a==Flase)
+```
+
+####  head_while/tail_while
+
+Find head/tail that all satisfies a predicate.
+```{r }
+pos <- function(x) x>=0
+head_while(5:-5,pos)
+big <- function(x) x > 100
+head_while(0:10, big)
+tail_while(0:10, big)
+```
+
+####  compact
+
+compact可以忽视NULL值。compact
+
+```{r}
+x=list(a = "a", b = NULL, c = integer(0), d = NA, e = list()) %>%
+  compact()
+x
+
+x=c(1,NA)
+x=matrix(c(1,2,NA,3),2,2)
+x>3
+class(x)
+x==NA
+x[!is.na(x)]
+```
+#### set_names()
+
+```{r }
+set_names(1:4, c("a", "b", "c", "d"))
+```
+
+- split
+
+```{r }
+mtcars %>%
+  split(.$cyl) %>%
+  map(~lm(mpg~wt,data=.)) %>%
+  map(summary) %>%
+  map_dbl("r.squared") #return double vectors
+```
+
+- map
+
+这个函数对应于base包中的apply,是一个Map family，衍生的函数包括map_lgl(),map_int(),map_dbl(),map_chr()等，作用于不同的数据类型。map_dfr()和map_dfc()返回的是data.frame.
+
+The map(.x, .f) functions transforms each element of the vector .x with the function .f, returning a vector defined by the suffix (_lgl, _chr() etc).
+
+```{r }
+1:10 %>%
+  map(rnorm,n=10) %>%
+  map_dbl(mean)
+# or use an anonymous function
+1:10 %>%
+  map(function(x) rnorm(10,x))
+                                        # or a formula
+1:10 %>%
+  map(~ rnorm(10,.x))
+                                        # Extract by name or position
+                                        # .default specifies value for elements that are missing or NULL
+l1 <- list(list(a = 1L), list(a = NULL, b = 2L), list(b = 3L))
+l1
+
+set_names(c("foo", "bar")) %>% map_chr(paste0, ":suffix")
+
+                                        # Extract by name or position
+                                        # .default specifies value for elements that are missing or NULL
+l1 <- list(list(a = 1L), list(a = NULL, b = 2L), list(b = 3L))
+l1
+l1 %>% map("a", .default = "???") ##将缺失值或者NULL填充为???
+l1 %>% map_int("b",.default=NA)
+                                        # Supply multiple values to index deeply into a list
+l2 <- list(
+  list(num = 1:3,     letters[1:3]),
+  list(num = 101:103, letters[4:6]),
+  list()
+)
+l2 %>% head
+l2 %>% map(c(2, 2)) ##可以选择c(2,2)元素
+                                        # Use a list to build an extractor that mixes numeric indices and names,
+                                        # and .default to provide a default value if the element does not exist
+l2 %>% map(list("num", 3)) ##可以选择确定元素
+
+l2 %>% map_dbl(list("num", 3), .default = NA)
+```
+
+- map2
+
+Map over multiple inputs simultaneously
+
+```{r }
+x <- list(1, 10, 100)
+y <- list(1, 2, 3)
+z <- list(5, 50, 500)
+map2(x, y, ~ .x + .y) #list元素之间的相加
+#or
+map2(x,y,`+`) #这里的加号需要注意
+##model,predict
+                                        # Split into pieces, fit model to each piece, then predict
+by_cyl <- mtcars %>% split(.$cyl)
+mods <- by_cyl %>% map(~ lm(mpg ~ wt, data = .))
+map2(mods, by_cyl, predict)
+```
+
+- pmap
+```{r }
+x <- list(1, 10, 100)
+y <- list(1, 2, 3)
+z <- list(5, 50, 500)
+pmap(list(x, y, z), sum) #多个元素相加，需要pmap操作
+# Matching arguments by position
+pmap(list(x, y, z), function(a, b, c) a / (b + c))
+                                        # Matching arguments by name
+l <- list(a = x, b = y, c = z)
+pmap(l, function(c, b, a) a / (b + c))
+                                        # Vectorizing a function over multiple arguments
+df <- data.frame(
+  x = c("apple", "banana", "cherry"),
+  pattern = c("p", "n", "h"),
+  replacement = c("x", "f", "q"),
+  stringsAsFactors = FALSE
+)
+pmap(df, gsub)
+pmap_chr(df, gsub)
+
+                                        # Use `...` to absorb unused components of input list .l
+df <- data.frame(
+  x = 1:3 + 0.1,
+  y = 3:1 - 0.1,
+  z = letters[1:3]
+)
+plus <- function(x, y) x + y
+if (FALSE) {                                        # this won't work
+  pmap(df, plus)
+}
+                                        # but this will
+plus2 <- function(x, y, ...) x + y
+pmap_dbl(df, plus2)
+df
+
+                                        # If you want to bind the results of your function rowwise, use map2_dfr() or pmap_dfr()
+ex_fun <- function(arg1, arg2){
+  col <- arg1 + arg2
+  x <- as.data.frame(col)
+}
+arg1 <- seq(1, 10, by = 3)
+arg2 <- seq(2, 11, by = 3)
+arg1+arg2
+df <- map2_dfr(arg1, arg2, ex_fun)
+df
+                                        # If instead you want to bind by columns, use map2_dfc() or pmap_dfc()
+df2 <- map2_dfc(arg1, arg2, ex_fun)
+df2
+```
+
+#### imap_ 
+
+```{r }
+z=sample(10)
+z
+imap_chr(z, ~ paste0(.y, ": ", .x))
+iwalk(mtcars, ~ cat(.y, ": ", median(.x), "\n", sep = ""))
+```
+
+#### lmap
+
+```{r }
+# Let's write a function that returns a larger list or an empty list
+# depending on some condition. This function also uses the names
+# metadata available in the attributes of the list-element
+maybe_rep <- function(x) {
+  n <- rpois(1, 2)
+  out <- rep_len(x, n)
+  if (length(out) > 0) {
+    names(out) <- paste0(names(x), seq_len(n))
+  }
+  out
+}
+                                        # The output size varies each time we map f()
+x <- list(a = 1:4, b = letters[5:7], c = 8:9, d = letters[10])
+x %>% lmap(maybe_rep)
+                                        # We can apply f() on a selected subset of x
+x %>% lmap_at(c("a", "d"), maybe_rep)
+                                        # Or only where a condition is satisfied
+x %>% lmap_if(is.character, maybe_rep)
+```
+
+#### modify()
+
+```{r }
+# Convert factors to characters
+iris %>%
+  modify_if(is.factor, as.character) %>%
+  str()
+
+                                        # Specify which columns to map with a numeric vector of positions:
+mtcars %>% modify_at(c(1, 4, 5), as.character) %>% str()
+
+list(x = rbernoulli(100), y = 1:100) %>%
+  transpose() %>%
+  modify_if("x", ~ update_list(., y = ~ y * 100)) %>%
+  transpose() %>%
+  simplify_all()
+
+                                        # Use modify2() to map over two vectors and preserve the type of
+                                        # the first one:
+x <- c(foo = 1L, bar = 2L)
+y <- c(TRUE, FALSE)
+modify2(x, y, ~ if (.y) .x else 0L)
+                                        # Modify at specified depth ---------------------------
+l1 <- list(
+  obj1 = list(
+    prop1 = list(param1 = 1:2, param2 = 3:4),
+    prop2 = list(param1 = 5:6, param2 = 7:8)
+  ),
+  obj2 = list(
+    prop1 = list(param1 = 9:10, param2 = 11:12),
+    prop2 = list(param1 = 12:14, param2 = 15:17)
+  )
+)
+                                        # In the above list, "obj" is level 1, "prop" is level 2 and "param"
+                                        # is level 3. To apply sum() on all params, we map it at depth 3:
+l1 %>% modify_depth(3, sum)
+l1 %>% modify_depth(3, `+`, 100L)
+                                        # modify() lets us pluck the elements prop1/param2 in obj1 and obj2:
+l1 %>% modify(c("prop1", "param2")) %>% str()
+l1 %>% modify_depth(2, ~ pmap(., paste, sep = " / ")) %>% str()
+```
+- reduce()
+
+```{r }
+x <- list(c(0,1))
+x %>% reduce(c)
+x %>% reduce_right(c)
+```
+- detect()
+```{r }
+
+detect(x, "foo")
+```
+
+## TODO:magrittr
+
+### extract
+
+相当于base包中的x[,]的作用
+
+```{r }
+iris %>%
+  extract(, 1:4) %>%
+  head
+```
+
+
+
+
+### set_rownames()
+```{r }
+library(magrittr)
+data =data.frame(x=c(1,2,3,4),y=c(2,3,4,5))
+data
+data %>% set_rownames(c("a","b","c","d"))
+```
+
+### %T>% 向左操作
+%T>%向左操作符，其实功能和 %>% 基本是一样的，只不过它是把左边的值做为传递的值，而不是右边的值。
+
+```{r }
+
+```
+
+
+## 7.2 sparklyr
+### 复制多行数据
+```{r}
+df_tbl %>%
+  mutate(arr = explode(array(1, 1, 1))) %>%
+  select(-arr)
+```
+效果如下：
+| ROW1 | ROW2 |
+|    1 | A    |
+|    1 | A    |
+|    1 | A    |
+|    2 | B    |
+|    2 | B    |
+|    2 | B    |
+|    3 | C    |
+|    3 | C    |
+|    3 | C    |
+
+### 添加日期
+- 获取当前时区的UNIX时间戳：select unix_timestamp()
+- 将指定时间转为UNIX时间戳： select unix_timestamp('2012-03-03 11:45:31');
+- 将指定的实际转为贵UNIX时间戳：select unix_timestamp('2018-08-08 16:22:01','yyyy-MM-dd HH:mm:ss');
+```{r}
+date_add("2016-12-29", 10) # 添加10条日期数据
+
+                                        #日期处理
+#遇到整型日期数据20190101时，可以变成字符型2019-01-01，然后再用to_date处理
+mutate(date=                            to_date(paste(substr(date,1,4),substr(date,5,6),substr(date,7,8),sep="-"),'yyyy-MM-dd'))
+
+```
+
+## readr包
+这个包功能类似于data.table包中的fread/fwrite。
+```{r }
+read_csv
+parse_guess(c("FALSE", "TRUE", "F", "T"))
+parse_guess(c("1","2","3")) %>% typeof
+parse_guess(c("1.6","2.6","3.4")) %>% typeof
+# Numbers containing grouping mark
+guess_parser("1,234,566")
+parse_guess("1,234,566")
+# ISO 8601 date times
+guess_parser(c("2010-10-10"))
+parse_guess(c("2010-10-10"))
+```
+## TODO 7.3 rlang
+
+## 7.4 remedy包
+该包可用于在Rmarkdown中快速建立标题、字体改变等。
+```{r}
+remedy::remedy_opts$get("hotkeys") # 可以查看快捷键
+```
+
+## 专题
+### 缺失值处理
+1. 如何删掉缺失值？
+```{r}
+x <- NA
+x > 3
+class(x)
+is.na(x)
+x[!is.na(x)]
+## list
+x <- list(a = NA, b = 1)
+x[!is.na(x)]
+## matrix
+x <- matrix(c(1, 2, 3, NA), 2, 2)
+x[!is.na(x)]
+## data.frame
+x <- data.frame(a = c(1, 2, 3, NA), b = c(NA, 1, 2, 3))
+x[!is.na(x)] # 过滤掉NA的同时也把数据类型转换为double
+typeof(x[!is.na(x)])
+```
+
+### 向量化计算
+对应在purrr包中的map，map_*,map2等函数。 
+
+| func   | 描述 |
+| apply  |      |
+| sapply |      |
+| tapply |      |
+| mapply |      |
+| vapply |      |
+
+#### apply()
+```{r}
+mydata <- matrix(rnorm(30), nrow = 6)
+apply(mydata, 1, mean) # 对行求均值
+t <- data$loanbal %>% 
+    lapply(.,mifimodel::is_character) %>% 
+    unlist()
+```
+
+#### sapply()
+sapply函数是一个迭代器，它遍历一个向量中所有的元素，调用另外一个函数对向量中的每个元素进行处理，然后返回计算结果。
+```{r }
+a <- 1:7
+sapply(a,sqrt)
+```
+
+
+
+
+### TODO:并行化运算
+
+```{r }
+
+library (parallel)
+doit <- function(x)(x)^2+2*x
+system.time(res <- lapply (1:5000000, doit))
+rm(res)
+gc ()
+cl <- makeCluster(getOption("cl.cores",3))
+system.time(res <- parLapply (cl,1:5000000,doit))
+stopCluster(cl)
+```
+
+
+## 文件批量处理
+偶尔，我们可能想要以一种重复的、标准化的、无人值守的方式执行某个R程序，例如，你可能
+需要每个月生成一次相同的报告，这时就可以在R中编写程序，在批处理模式下执行它。
+
+> R CMD BATCH options infile outfile
+
+
+# 工作中建模常见问题
+## 1.内存问题
+
+> Error in mcfork() : 
+  unable to fork, possible reason: Cannot allocate memory
+
+将mc_cores值降低
+```{r}
+mc_cores <- 5
+```
+
+或者利用doMC包解决这个问题
+```{r}
+library(doMC)
+registerDoMC(5)
+```
+
+## 2.建表
+在数据工厂中进行建表，界面已经截图。
+需要注意几个地方，一是数据类型:
+xiaomi_id 设为 string型；credit_time 设为int32型；label 设为int16型；score设为double型。
+
+整个业务逻辑是这样的：
+
+1、首先将得到的四个指标形成本地csv文件，然后上传至hdfs；
+
+2、利用spark_read_csv函数读进spark中；
+
+3、进行数据类型转换，确保于建的表保持一致；
+
+4、将文件上传至建表路径
+
+5、检查数据是否上传成功
+
+
+```{r}
+data %>%
+  mutate(
+    xiaomi_id = as.character(xiaomi_id),
+    credit_time = as.integer(credit_time),
+    label = as.integer(label),
+    score = as.double(score)
+  )
+
+fwrite(data1, sprintf("%s/data1.csv", modelpath)) # 形成本地csv文件
+push_file_to_hdfs(sprintf("%s/data1.csv", modelpath), sprintf("%s/data1.csv", hdfs_report_path))
+sdf_data <- spark_read_csv(sc, "sdf_data",path = sprintf("%s/data1.csv", hdfs_report_path)) #表名应该要取
+
+sdf_data1 <- sdf_data %>%
+  select(xiaomi_id, credit_time, score, label) %>%
+  mutate(
+    xiaomi_id = as.character(xiaomi_id),
+    credit_time = as.integer(credit_time),
+    label = as.integer(label)
+  )
+
+sdf_data1 %>% sdf_schema() # 类似summary
+
+sdf_data3 <- sdf_repartition(sdf_data1, partitions = 1)
+
+spark_write_parquet(sdf_data3, path = "/user/h_data_platform/platform/mifi/mifimodel_antifraud_jxl_rule_replace_br/data", mode = "overwrite")
+
+sdf_data2 <- spark_read_parquet(sc, ,path = "/user/h_data_platform/platform/mifi/mifimodel_antifraud_jxl_rule_replace_br/data")
+sdf_data2 %>%
+  summarise(n(), mean(score), sum(label)) # 如果文件上传成功，可以成功显示
+# 连接impala，查看数据是否更新成功
+rimpala_zjy_init()
+rimpala.switch(5)
+rimpala.query("refresh table mifimodel_antifraud_jxl_rule_replace_br")
+# REFRESH TABLE tableName
+rimpala.query("select * from mifimodel_antifraud_jxl_rule_replace_br limit 10")
+```
+
+**  3.sql查询
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+rimpala_zjy_init()
+rimpala.switch(5)
+rimpala.query2save("select miid,date,max(ishit) as ishit,max(cast(porvalue as int)) as DT_Num
+                                       from anti_fraud_por_detail
+                                       where date between 20190901 and 20190924 and porid=44
+                                       and eventId=1018
+                                      group by 1,2",file=sprintf("%s/duotou.csv", modelpath))
+
+duotou=fread(sprintf("%s/duotou.csv", modelpath))
+#+END_SRC
+
+**  4.kill session
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  system("ps -aux | grep luyajun")
+  system("kill -9 ")
+#+END_SRC
+
+
+**  容易疏忽的问题
+
+| 问题描述                          | 解决方案                                                                                                                                                                                                         |
+| label要过滤掉NA，以及-999/-1      | label %in% c(0,1)                                                                                                                                                                                                |
+| 科学计数法引起的feat category问题 | options(scipen = 200)                                                                                                                                                                                            |
+| 需要查看特征的覆盖率              | inspectdf::inspect_na(data) %>% view() #变量层面data_hj %>% group_by(credit_time) %>% summarise(mean(is.na(generationcount))) %>% view() #4.30 25310 #日期层面 data <- data_hj %>% filter(credit_time!=20190430) |
+|                                   |                                                                                                                                                                                                                  |
+
+**  RStudio使用技巧
+
+| 功能               | 快捷键 |
+| 检索之前使用的命令 | CTRL-UP |
+
+
+
+
+
+

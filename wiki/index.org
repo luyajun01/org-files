@@ -1,0 +1,20 @@
+#+TITLE: index
+#+DESCRIPTION:
+#+KEYWORDS:
+#+STARTUP:  content
+
+- [[wiki:index][Index]]
+
+- Related: [[wiki:统计][统计理论]] [[wiki:统计名词wiki][统计名词]]
+
+* index
+
+** 统计
+- [[wiki:统计][wiki:统计理论]]
+- [[wiki:统计名词wiki][wiki:统计名词]]
+** 软件
+*** emacs
+- [[wiki:emacs-wiki][wiki:emacs-wiki]]
+*** R
+- [[wiki:R_WIKI][wiki:R_WIKI]]
+*** python
