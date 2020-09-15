@@ -3,6 +3,8 @@
     - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
   - [[#常用快捷键][常用快捷键]]
   - [[#emacs-mode][emacs mode]]
+  - [[#company][company]]
+    - [[#company-diag][company-diag]]
   - [[#markdown-mode][markdown mode]]
   - [[#ivy][ivy]]
   - [[#lpy][lpy]]
@@ -11,11 +13,13 @@
     - [[#counsel-rg][counsel-rg]]
     - [[#counsel-etags-grep][counsel-etags-grep]]
     - [[#counsel-descbind][counsel-descbind]]
-      - [[#counsel-swith-buffer][counsel-swith-buffer]]
+    - [[#counsel-mark-ring][counsel-mark-ring]]
+    - [[#counsel-swith-buffer][counsel-swith-buffer]]
     - [[#counsel-etags-grep-1][counsel-etags-grep]]
     - [[#counsel-packages][counsel-packages]]
     - [[#counsel-imenu][counsel-imenu]]
     - [[#counsel-google][counsel-google]]
+    - [[#counsel-bookmark][counsel-bookmark]]
   - [[#swiper][swiper]]
       - [[#swiper-all-thing-at-point][swiper-all-thing-at-point.]]
       - [[#swiper-isearch-thing-at-point][swiper-isearch-thing-at-point.]]
@@ -72,6 +76,9 @@
 | evil-insert-new-line                              | SPC i j                |
 | 括号之间的跳转                                    | % evil-matchit         |
 ** emacs mode
+** company
+*** company-diag
+这个函数可以看出当前 company mode 的配置.
 ** markdown mode
 | 快捷键                    | 功能               |
 | S-TAB (markdown-shifttab) | visibility cycling |
@@ -93,13 +100,15 @@
 首先开机使用的时候，应该执行 pyvenv-workon 命令选择虚拟环境，再执行 lpy-mode。
 ** avy
 这个函数可以实现快速跳转！
-| 命令          | 快捷键                         |
+| 命令          | 快捷键                            |
 | avy-move-line | 将目标行快速剪切到到你所在的行 |
-| avy-goto-line | 快速跳转到目标行               |
-| avy-word      | 实现单词跳转,很实用!           |
-|               |                                |
+| avy-goto-line | spc-j-l 快速跳转到目标行               |
+| avy-goto-word-1 | spc-w 实现单词跳转,很实用!           |
+|               |                                   |
 
 ** counsel
+项目地址:https://github.com/abo-abo/swiper
+
 | 命令              | 快捷键 |
 | counsel-mark-ring | spc-c-m |
 *** counsel-rg
@@ -107,10 +116,11 @@
 *** counsel-etags-grep
 功能类似于 counsel-rg, 也可以进行搜索词汇.
 *** counsel-descbind
-可以快速了解当前可以还绑定哪些快捷键.
-
-
-**** counsel-swith-buffer
+describe-function.可以快速了解当前可以还绑定哪些快捷键.
+*** counsel-mark-ring 
+添加标记,可以实现快速跳转!非常方便!
+如何删除 mark-ring?
+*** counsel-swith-buffer
 
 *** counsel-etags-grep
 功能类似于这个包可以跨文件搜索 char 关键词。很方便的
@@ -120,6 +130,8 @@
 可以充当文档目录,快捷键 spc-j-i 
 *** counsel-google 
 可以方便地 google.
+*** counsel-bookmark
+还没弄懂!
 
 ** swiper 
 **** swiper-all-thing-at-point.
