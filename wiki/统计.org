@@ -1,51 +1,790 @@
-#+TITLE: 统计理论wiki
-# #+SETUPFILE: /Users/luyajun/org-html-themes/setup/theme-bigblow.setup
-#+OPTIONS: TeX:t LaTeX:t TOC:nil
-#+latex_class: article
-#+latex_compiler: xelatex
-#+OPTIONS: author:nil email:nil creator:nil timestamp:nil html-postamble:nil TOC:t
-#+HTML_HEAD: <link href="/Users/luyajun/Documents/坚果云/我的坚果云/github/code/css/org-mode.css" rel="stylesheet" type="text/css">
+# -*- org-confirm-babel-evaluate: nil; -*-
+#+PROPERTY: header-args :eval never-export
+#+TITLE: 统计 wiki
 
-  #+BEGIN_SRC quote
+- [[wiki:index][Index]]
+
+- Related: [[wiki:R_WIKi][R]] 
+
+知识需要定期复习！
+
+ #+BEGIN_SRC quote
 如果你对数据绝对没有任何假设，那么你没有理由会更偏好于某个模型。  —— “没有免费午餐定理”
-    #+END_SRC
+有时，发现问题，比解决问题更困难。
+ #+END_SRC
 
-* 回归模型理论
+* 统计学                                                                :toc:
+- [[#0-问题][0 问题]]
+- [[#1-数学基础][1 数学基础]]
+  - [[#标量向量矩阵张量][标量\向量\矩阵\张量]]
+- [[#2-概率论][2 概率论]]
+  - [[#贝叶斯定理][贝叶斯定理]]
+  - [[#收敛理论][收敛理论]]
+- [[#3-统计理论][3 统计理论]]
+  - [[#t-分布][t 分布]]
+  - [[#3-有监督模型][3 有监督模型]]
+    - [[#回归模型理论][回归模型理论]]
+      - [[#标准化处理][标准化处理]]
+      - [[#maxabs-归一化][MaxAbs 归一化]]
+    - [[#正态分布分布化][正态分布分布化]]
+    - [[#一般线性回归][一般线性回归]]
+    - [[#相关系数][相关系数]]
+    - [[#复相关系数][复相关系数]]
+    - [[#典型相关分析][典型相关分析]]
+    - [[#点估计][点估计]]
+    - [[#mle][MLE]]
+    - [[#stepwise-regression][stepwise regression]]
+    - [[#lasso][lasso]]
+      - [[#coordinate-descent][coordinate descent]]
+    - [[#adaptive-lasso][adaptive lasso]]
+    - [[#elasticnet][elasticnet]]
+    - [[#scad][SCAD]]
+    - [[#mcp][MCP]]
+    - [[#group-lasso][group lasso]]
+    - [[#group-mcp][group mcp]]
+    - [[#group-scad][group scad]]
+    - [[#ridge][Ridge]]
+    - [[#logistic-回归模型][logistic 回归模型]]
+      - [[#模型形式][模型形式]]
+      - [[#模型推断][模型推断]]
+      - [[#logistic-回归求导][logistic 回归求导]]
+    - [[#lda线性判别分析][LDA(线性判别分析)]]
+    - [[#变量编码][变量编码]]
+      - [[#woe-编码][woe 编码]]
+      - [[#one-hot-编码][one-hot 编码]]
+      - [[#dummy-编码][dummy 编码]]
+      - [[#模型效果评估][模型效果评估]]
+      - [[#准确率][准确率]]
+      - [[#正确率][正确率]]
+      - [[#召回率][召回率]]
+      - [[#假阳性率][假阳性率]]
+      - [[#auc][auc]]
+      - [[#k-s][k-s]]
+      - [[#lift][lift]]
+    - [[#回归诊断][回归诊断]]
+    - [[#统计检验][统计检验]]
+      - [[#wald-检验][wald 检验]]
+      - [[#二项检验][二项检验]]
+      - [[#卡方检验][卡方检验]]
+    - [[#glm-lasso][glm-lasso]]
+    - [[#实际应用][实际应用]]
+      - [[#评分卡][评分卡]]
+      - [[#lift-1][lift]]
+      - [[#gains][gains]]
+      - [[#k-s-统计量][k-s 统计量]]
+    - [[#混杂因素][混杂因素]]
+    - [[#glm-应用评分卡模型][glm 应用（评分卡模型）]]
+      - [[#评分卡构建流程][评分卡构建流程]]
+      - [[#卡方分箱][卡方分箱]]
+      - [[#等频分箱][等频分箱]]
+      - [[#等距分箱][等距分箱]]
+  - [[#k-nearest-neighbors][K-Nearest Neighbors]]
+  - [[#naive-bayes][naive bayes]]
+  - [[#广义线性混合模型glmm][广义线性混合模型（glmm）]]
+      - [[#definitions][Definitions]]
+  - [[#生存分析模型][生存分析模型]]
+  - [[#待写][待写]]
+    - [[#模型校准][模型校准]]
+    - [[#样条方法][样条方法]]
+      - [[#光滑样条][光滑样条]]
+- [[#4-统计检验][4 统计检验]]
+  - [[#参数检验][参数检验]]
+    - [[#p-值][P 值]]
+    - [[#t-检验][T 检验]]
+    - [[#f-检验][F 检验]]
+      - [[#方差齐次性检验][方差齐次性检验]]
+      - [[#anova][ANOVA]]
+    - [[#pearsons-correlation-test][Pearson's correlation test]]
+    - [[#独立样本-t-检验][独立样本 T 检验]]
+    - [[#配对样本-t-检验][配对样本 T 检验]]
+    - [[#lilliefors-检验][lilliefors 检验]]
+  - [[#非参数检验][非参数检验]]
+    - [[#单样本-k-s-检验][单样本 K-S 检验]]
+    - [[#shapiro-wilk-检验][shapiro-wilk 检验]]
+    - [[#卡方检验-1][卡方检验]]
+    - [[#二项式检验][二项式检验]]
+    - [[#游程检验][游程检验]]
+    - [[#两独立样本检验][两独立样本检验]]
+      - [[#mann-whitney-u-检验][mann-whitney U 检验]]
+      - [[#k-s-检验kolmogorov-smirnov-检验][K-S 检验（Kolmogorov-Smirnov 检验）]]
+    - [[#k-个独立样本检验][K 个独立样本检验]]
+      - [[#kruskal-wallis-h-检验][Kruskal-Wallis H 检验]]
+      - [[#median中位数检验][Median(中位数)检验]]
+    - [[#k-个相关样本检验][K 个相关样本检验]]
+      - [[#friedman-检验][friedman 检验]]
+    - [[#两个相关样本检验][两个相关样本检验]]
+      - [[#wilcoxon-检验][Wilcoxon 检验]]
+      - [[#sign-检验][sign 检验]]
+      - [[#mcnemar-检验][McNemar 检验]]
+  - [[#置换检验][置换检验]]
+- [[#模型评估][模型评估]]
+  - [[#vif][VIF]]
+  - [[#过拟合][过拟合]]
+- [[#无监督模型][无监督模型]]
+  - [[#k-means][k-means]]
+    - [[#如何确定-k][如何确定 K?]]
+  - [[#gussian-mixture-model][Gussian mixture model]]
+  - [[#余弦距离][余弦距离]]
+- [[#半监督学习][半监督学习]]
+- [[#不平衡数据][不平衡数据]]
+  -  [[#smote-算法][SMOTE 算法]]
+- [[#机器学习][机器学习]]
+  - [[#神经网络][神经网络]]
+    - [[#模型估计][模型估计]]
+      - [[#softmax-算法][softmax 算法]]
+      - [[#batch-graient-descent][Batch graient descent]]
+      - [[#stochastic-gradient-descent][Stochastic Gradient Descent]]
+      - [[#mini-batch-gradient-descent][Mini-batch Gradient Descent]]
+      - [[#momentum-optimization][Momentum optimization]]
+      - [[#nesterov-accelerated-gradient-nag][Nesterov Accelerated Gradient (NAG)]]
+      - [[#adagrad][AdaGrad]]
+      - [[#rmsprop][RMSprop]]
+      - [[#adaptive-moment-estimation-adam][Adaptive moment estimation (Adam)]]
+  - [[#主成分分析-pca][主成分分析 (PCA)]]
+    - [[#基变换][基变换]]
+    - [[#特征值和特征向量][特征值和特征向量]]
+    - [[#svd-分解][SVD 分解]]
+  - [[#svm][svm]]
+  - [[#决策树][决策树]]
+    - [[#如何选择最优划分属性][如何选择最优划分属性]]
+  - [[#随机森林][随机森林]]
+  - [[#感知机][感知机]]
+  - [[#集成学习][集成学习]]
+    - [[#boosting][BOOSTING]]
+      - [[#adaboost][adaboost]]
+      - [[#xgboost][XGBoost]]
+      - [[#gbdt][GBDT]]
+    - [[#bagging][Bagging]]
+  - [[#cnnconvolutional-neural-network][CNN(convolutional neural network)]]
+    - [[#resnet][Resnet]]
+  - [[#迁移学习][迁移学习]]
+  - [[#不平衡数据分类算法][不平衡数据分类算法]]
+    - [[#smote][SMOTE]]
+- [[#主题学习][主题学习]]
+  - [[#变量选择][变量选择]]
+  - [[#算法][算法]]
+    - [[#em-算法][EM 算法]]
+      - [[#为何需要-em-算法][为何需要 EM 算法？]]
+      - [[#e-步和-m-步][E 步和 M 步]]
 
+* 0 问题
+
+| 模型                | 参数估计 | 优点 | 不足 | 分类/聚类/回归 |
+| logistic            |          |      |      |                |
+| stepwise regression |          |      |      |                |
+| naive bayes         |          |      |      |                |
+| gbdt                |          |      |      |                |
+| xgboost             |          |      |      |                |
+| lightgbm            |          |      |      |                |
+| CNN                 |          |      |      |                |
+| svm                 |          |      |      |                |
+| PCA                 |          |      |      |                |
+|                     |          |      |      |                |
+
+
+- stepwise regression
+
+是一种变量选择模型。标准的逐步回归做两件事，每一步中增加或移除自变量。向前选择从模型中最重要的自变量开始，然后每一步中增加变量。向后选择从模型所有的自变量开始，然后每一步中移除最小显著变量。
+
+- xgboost
+
+首先，xgboost 是梯度提升家族一员。如果是二分类问题的话，其背后的算法思想可以等价
+于 additive logistic model,这个问题 frediman 已经证明了，严格地说，xgboost 在做
+二分类问题时就相当于做 带有惩罚项的 additive logistic model。
+
+- PCA
+
+是一种降维方法，其思想就是利用一种变换将原始特征正交化，变换后的特征之间独立，其
+背后就是思想就是计算 X 的协方差矩阵，然后取其前 K 个特征向量组成新的特征矩阵，从
+而完成数据降维的目的。
+
+- naive bayes
+
+是基于贝叶斯定理与特征条件独立假设的分类方法。首先基于特征条件独立假设学习输入、
+输出的联合概率分布；然后基于此模型，对给定的输入 x, 利用贝叶斯定理求出后验概率最大的输出 y. 
+
+- svm
+
+是一种二分类模型，定义在特征空间上的间隔最大的线性分类器，核技巧使它成为实质上的非线性分类器。支持向量机的学习策略就是间隔最大化，等价于求解凸二次规划的问题。
+
+核方法的基本思想是通过一个非线性变换，把输入数据映射到高维的希尔伯特空间中，在这个高维空间里，那些在原始输入空间中线性不可分的问题变得更加容易解决，甚至线性可分。
+
+- knn
+
+和 K-means 不同，KNN 是有监督学习模型，算法大体思路是一个样本与特征空间中的 K 样
+本最相似，那么就和这 K 个样本中大多数类一样。
+
+- kmeans
+
+无监督学习，是聚类算法。选择 k 个样本确定初始聚类中心，针对每个样本计算到 k 个聚
+类中心的距离，并将这个样本分到距离最小的聚类中心对应的类中；重新计算它的聚类中心；
+重复上面操作；直到每个样本对应类结果不发生变化。
+
+* 1 数学基础
+** 标量\向量\矩阵\张量
+ 
+* 2 概率论
+** 贝叶斯定理
+
+贝叶斯公式的一般形式如：$P(A | B)=\frac{P(A \cap B)}{P(B)}$,更为一般的形式为$P\left(A_{i} | B\right)=\frac{P\left(B | A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B | A_{j}\right) P\left(A_{j}\right)}$.
+如何证明？
+
+不妨假设，在事件 B 发生的条件下事件 A 发生的概率是：
+
+$P(A | B)=\frac{P(A \cap B)}{P(B)}$.
+
+同样，在事件 A 发生的条件下事件 B 发生的概率$P(B | A)=\frac{P(A \cap B)}{P(A)}$.
+整合上述两式，可得：$P(A | B) P(B)=P(A \cap B)=P(B | A) P(A)$,容易得到贝叶斯定理。
+
+** 收敛理论
+依概率收敛：
+\begin{equation}
+ \lim _{n \rightarrow \infty} p\left(\left|x_{n}-x\right| \geqslant \varepsilon\right)=0 \quad x_{n} \stackrel{p}{\rightarrow} x 
+\end{equation}
+以概率 1 收敛：
+\begin{equation}
+ P\left(\lim_{n \rightarrow \infty} X_{n}=X\right)=1 \quad x_{n} \stackrel{\text { a.s. }}{\rightarrow} X 
+\end{equation}
+
+依分布收敛：
+\begin{equation}
+ \lim _{n \rightarrow \infty} p\left(x_{n} \leqslant x\right)=P(X \leqslant x) \quad X_{n} \stackrel{d}{\rightarrow} x 
+\end{equation}
+
+可以证明依概率收敛可以推出依分布收敛。
+
+* 3 统计理论
+** t 分布
+t 分布并不是仅仅用于小样本（虽然小样本中用的风生水起）中，大样本依旧可以使用。
+
+t 分布与正太分布相比多了 *自由度参数* ，在小样本中，能够更好的剔除异常值对于小样本的影响，从而能够准确的抓住数据的集中趋势和离散趋势。
+
+t 分布的性质：厚尾性。当 $n \rightarrow \infty$ 时，t 分布就变成正态分布。
+
+卡方检验在很多课本中被认为是非参数检验的一员，但从分布假设来说，他属于参数检验。
+卡方分布（x2）是 K 个服从正态分布的随机变量的平方和所服从分布。其参数只有自由度一个，当自由度很大时，X2 近似服从正太分布。
+
+F 分布是两个服从卡方分布的随机变量各自除以他们的自由度的商。
+
+** 3 有监督模型 
+知名的有监督模型包括：K-近邻算法、线性回归、逐步回归模型、逻辑回归、支持向量机、决策树和随机森林、神经网络等。
+*** 回归模型理论
 根据自变量因子的性质，可以将线性模型分为三类：
 
 1、凡自变量因子都是数量因子， **就称为这个模型是回归分析模型**;
-
 2、如果自变量因子均为属性变量， **则称为模型是方差分析模型**;
-
 3、倘若自变量因子中，既有属性因子，也有数量因子, **就称为协方差分析模型**.
-** 一般线性回归模型
 
-假定因变量 $Y$ 和自变量 $X$ 满足线性回归模型，其方程为：
+**** 标准化处理
+我们都知道在实际应用中，样本不同的特征的单位不同，会在求距离时造成很大的影响。比
+如：在两个样本中肿瘤大小分别为 1cm 和 5cm,发现时间分别为 100 天和 200 天，那么在求距离
+时，时间差为 100,大小差为 4,那么其结果会被时间所主导，因为肿瘤大小的差距太小了。
+但是如果我们把时间用年做单位，0.27 年与 0.55 年的差距又远小于肿瘤的大小的差距，
+结果又会被大小所主导。
+
+为了避免上述问题对结果造成影响，就需要对数据做无量纲化处理。常用的数据量纲处理方
+式有 2 种：一是标准化处理（Z-score）方法，二是数据归一化。
+
+Z-score 方法的缺点是该方法需要总体的平均平均值与方差，但是这一值在真实的分析与挖
+掘中很难得到，大多数情况下是用样本的均值与标准差替代。Z-score 对于数据的分布有一
+定的要求，正态分布是最有利于 Z-score 计算的。
+
+minmax 归一化方法：$x = \dfrac{x-min}{max - min}$.
+
+**** MaxAbs 归一化 
+$x = \dfrac{x}{\abs{MAX}}$
+
+这种方法的缺点是当有新的数据加入时，可能导致 max 和 min 的变化
+
+*** 正态分布分布化
+正则化的过程是将每个样本缩放到单位范数。normalization 主要思想是对每个样本计算其
+p-范数，然后对该样本中每个元素除以该范数。
+公式：$x = \dfrac{x}{\sqrt{\sum^{d}_{j}(x_{ij})^2}}$.
+
+在分类，聚类算法中，需要使用距离来度量相似相似性的时候，标准化表现更好。
+
+不涉及距离度量，协方差计算，数据不符不符合正态分布时，可以使用区间缩放的归一化方
+法或其他归一化方法。
+
+*** 一般线性回归
+线性回归模型假设有 3 个：
+
+- 自变量非随机； 
+
+- 残差期望等于 0, 协方差矩阵对角线等于固定值，非对角线等于 0 ;
+
+- 残差服从 $N(0, \sigma^2)$;
+
+ 假定因变量 $Y$ 和自变量 $X$ 满足线性回归模型，其方程为：
+
+ \[
+ Y=X\beta+\epsilon
+ \]
+
+ 式中，因变量 $Y$ 为 $n$ 维向量；自变量 $X$ 为 $n\times p$ 矩阵；误差项 $\epsilon$ 为 $n$ 维向量。需要注意的是在简单回归中，误差项 $\epsilon$ 的元素一般要求是独立同分布零均值的，而通常分布假定为正态的，在最小二乘回归的标准输出中，对系数的 $t$ 检验和方差分析的 F 检验，常常认为 p 值小就意味着“显著”，但需要注意误差是否偏离正态性，如果不考虑正态性或者渐近正态性不成立，那么 t 检验和 F 检验就没有任何意义。
+
+ 在模型比较过程中，需要注意的是对于不满足正态性假定的模型也可以进行互相比较，但所用方法不是这些基于正态性的检验，可以用 AIC 之类的准则或交叉验证来比较。
+
+ #+begin_src python
+ import numpy as np
+ from sklearn.linear_model import LinearRegression
+ X=np.array([[1,1],[1,2],[2,2],[2,3]])
+ y = np.dot(X, np.array([1, 2])) + 3
+ reg = LinearRegression().fit(X, y)
+ reg.score(X, y)
+ reg.coef_
+ reg.intercept_
+ reg.predict(np.array([[3, 5]]))
+ #+end_src
+
+ #+begin_src python
+ import numpy as np
+ import matplotlib.pyplot as plt
+ from matplotlib.collections import LineCollection
+ from sklearn.linear_model import LinearRegression
+ from sklearn.isotonic import IsotonicRegression
+ from sklearn.utils import check_random_state
+ n = 100
+ x = np.arange(n)
+ rs = check_random_state(0)
+ y = rs.randint(-50, 50, size=(n, )) + 50.*np.log1p(np.arange(n))
+
+ ################fit isotonic-regression
+ ir = IsotonicRegression()
+ y_ = ir.fit_transform(x, y)
+ lr = LinearRegression()
+ lr.fit(x[:, np.newaxis], y)
+
+ segments = [[[i, y[i]], [i, y_[i]]] for i in range(n)]
+ lc = LineCollection(segments, zorder=0)
+ lc.set_array(np.ones(len(y)))
+ lc.set_linewidths(np.full(n, 0.5))
+
+ fig = plt.figure()
+ plt.plot(x, y, "r.", markersize=12)
+ #+end_src
+
+ #+BEGIN_SRC Python
+ import numpy as np
+ import scipy as sp
+ from scipy.optimize import leastsq
+ import matplotlib.pyplot as plt
+ # 目标函数
+ def real_func(x):
+     return np.sin(2*np.pi*x)
+
+ # 多项式
+ def fit_func(p, x):
+     f=np.polyy1d(p)
+     return f(x)
+
+ # 残差
+ def residuals_func(p, x, y):
+     ret=fit_func(p, x) - y
+     return ret
+
+ # 构造10个点
+ x=np.linspace(0, 1, 10)
+ x_points=np.linspace(0, 1, 1000)
+
+ #+END_SRC 
+
+ #+BEGIN_SRC Python
+ from sklearn import line
+ from sklearn import linear_model
+ #+END_SRC
+
+*** 相关系数
+用来度量两个变量间的线性关系。定义是：
+
+$$
+r(X, Y)=\frac{\operatorname{Cov}(X, Y)}{\sqrt{\operatorname{Var}[X] \operatorname{Var}[Y]}}
+$$
+
+其中，cov(X, Y) 为 X 与 Y 的协方差， var(X) 是方差。
+
+\begin{equation}
+ r=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{\sum_{i=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}} 
+\end{equation}
+
+协方差如何计算？
+
+\(\sigma(x, y)=\frac{1}{n-1} \sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)\left(y_{i}-\bar{y}\right)\)
+
+方差： \(\sigma_{x}^{2}=\frac{1}{n-1} \sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)^{2}\)
+
+相关系数检验可以用 t 检验来检验 $r$ 是否显著。具体思路如下：
+
+https://upload-images.jianshu.io/upload_images/9689089-1a4ede556d459621.png?imageMogr2/auto-orient/strip|imageView2/2/format/webp
+
+https://upload-images.jianshu.io/upload_images/9689089-87402a9996265b0f.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp
+
+- 不相关与独立之间的关系
+
+两个变量独立则一定能说明两个变量不相关，反之，不相关不一定能推导出两个变量独立，
+只能说明两个变量不存在线性关系。
+
+*** 复相关系数
+复相关系数是测量一个变量与其他多个变量之间的线性相关程度指标。测定一个变量 $y$
+与其他多个变量 $x_{1},x_{2},\dots,x_{k}$ 之间的相关系数。不能直接测算
+$x_{1},x_{2},\dots,x_{k}$ 与 $y$ 的相关系数，只能计算 x 的线性组合与 $y$之间的简单
+相关系数。
+
+具体计算方法是：
+
+第一步，用 y 对 $x_{1},x_{2},\dots,x_{k}$ 作回归，得：\(\hat{y}=\hat{\beta}_{0}+\hat{\beta}_{1} X_{1}+\cdots+\hat{\beta}_{k} X_{k}\) 
+
+第二步，计算简单相关系数，即为 y 与 之间的复相关系数。计算公式是：\(R=\frac{\sum(y-\bar{y})(\hat{y}-\bar{y})}{\sqrt{\sum(y-\bar{y})^{2}(\hat{y}-\bar{y})^{2}}}\)  
+
+*** 典型相关分析
+https://blog.csdn.net/Mbx8X9u/article/details/78824216
+
+这个方法的思想和 svm,lda,pca 一样！
+
+CCA(canonical correlation analysis)利用综合变量对之间的相关关系来反映两组指标之间的整体相关性的多元统计分析方法。
+
+它的基本原理是：为了从总体上把握两组指标之间的相关关系，分别在两组变量中提取有代表性的两个综合变量 U1 和 V1（分别为两个变量组中各变量的线性组合），利用这两个综合变量之间的相关关系来反映两组指标之间的整体相关性。
+
+上面提到 CCA 是将高维的两组数据分别降维到 1 维，然后用相关系数分析相关性。但是有一个问题是，降维的标准是如何选择的呢？回想下主成分分析 PCA，降维的原则是投影方差最大；再回想下线性判别分析 LDA，降维的原则是同类的投影方差小，异类间的投影方差大。
+
+对于 CCA, 它选择的投影标准是降维到 1 维后，两组数据的相关系数最大。
+
+计算流程：
+
+输入：各为 $m$ 个样本 $X$ 和 $Y$, $X$ 和 $Y$ 的维度都大于 1。
+输出：$X,Y$ 的相关系数 $\rho,X,Y$ 的线性系数向量 $a$ 和 $b$ 。
+
+流程：
+
+1. 计算 X 的方差 SXX, Y 的方差 SYY, X 和 Y 的协方差 SXY.
+
+2. 计算矩阵 \(M=S_{X X}^{-1 / 2} S_{X Y} S_{Y Y}^{-1 / 2}\)
+
+3. 对矩阵 $M$ 进行奇异值分解，得到最大的奇异值 $\rho$,和最大奇异值对应的左右奇异向量。
+
+4. 计算 X 和 Y 的线性系数向量 a 和 b,
+
+\(a=S_{X X}^{-1 / 2} u, b=S_{Y Y}^{-1 / 2} v\).
+
+CCA 算法广泛的应用于数据相关度的分析，同时还是偏最小二乘法的基础。但是由于它依赖于数据的线性表示，当我们的数据无法线性表示时，CCA 就无法使用，此时我们可以利用核函数的思想，将数据映射到高维后，再利用 CCA 的思想降维到 1 维，求对应的相关系数和线性关系，这个算法一般称为 KCCA。
+
+*** 点估计 
+假设用 $\hat{\theta}(X)$ 估计 $\theta$, 评价该估计好坏的标准是 MSE 均方误差：
+$$ 
+MSE_{\theta}(\hat{\theta}) = E(\hat{\theta}(X)-\theta)^2 = var(\hat{\theta}) +
+(E(hat(\theta) - \theta)^2) 
+$$
+很遗憾，上面的 $\hat{\theta}$ 估计的在全局最小的均方误差是不存在的，只能限定一个
+条件，比如说，在无偏估计中寻找最小的 MSE 估计。
+其中，$(E(hat(\theta) - \theta)^2)$ 称为估计 $\hat{\theta}$ 的偏差，如果偏差等于
+0, 就是所谓的无偏估计。
+
+- 渐近无偏性
+
+\section{渐近无偏估计}
+
+设 $\hat{g}_{n}=\hat{g}_{n}\left(X_{1},\ldots,X_{n}\right)$ 是
+$g\left(\theta\right)$ 的估计量，若
+
+$$
+\text{\ensuremath{\lim_{n\rightarrow\infty}E_{\theta}\left(\hat{g}_{n}\right)=g\left(\theta\right),\forall\theta\in\Theta}}
+$$
+
+则称 $\hat{g}_{n}$ 为 $g\left(\theta\right)$ 的渐近无偏估计。
+
+- 相合性
+
+设 $\hat{\theta}_{n}=\hat{\theta}_{n}\left(X_{1},\cdots,X_{n}\right)$ 是
+$\theta$ 的估计，如果当 $n\rightarrow\infty$ 时，有
+
+$$
+\hat{\theta}_{n}\stackrel{P}{\longrightarrow}\theta
+$$
+
+则称 $\hat{\theta}_{n}$ 是 $\theta$ 的弱相合估计，进一步，如果
+
+$$
+\hat{\theta}_{n}\rightarrow\theta\text{, a.s.}
+$$
+
+则称 $\hat{\theta}_{n}$ 是 $\theta$ 的强相合估计。
+
+不妨有一个例子来说明相合性。设 $X_{1},\cdots,X_{n}$ 是来自
+$U\left(0,\theta\right)$ 的一个样本，最大次序统计量 $X_{\{n\}}$ 是 $\theta$ 的常用估计，所谓的次序统计量是指
+
+$$
+X_{\{1\}}\leq\cdots\leq X_{\{n\}}
+$$
+
+它们的观察值依次记为 $y_{1}\leq\cdots\leq y_{n}$.
+
+假设 $X_{\{n\}}$ 的密度函数 $g\left(y_{k}\right)$, 其中 $1\leq k\leq
+n$,$X_{\{n\}}$ 的观察值为 $y_{k}$, 以 $y_{k}$ 为基础把实数轴分为三个区间：
+
+$$
+\text{\ensuremath{\left(-\infty\text{，}y_{k}\right)},\ensuremath{\left[y_{k},y_{k}+dy_{k}\right)},\ensuremath{\left[y_{k}+dy_{k},\infty\right)}}
+$$
+
+其中第二个区间的长度 $dy_{k}$ 很小，使得样本观察值中只有一个落入该区间，而有两个
+或更多个观察值落入该区间的概率为零或为 $o\left(dy_{k}\right)$,这只要使 $dy_{k}$
+充分小总可办到，这样一来，要使 $X_{\{k\}}$ 的观察值落入
+$\left[y_{k},y_{k}+dy_{k}\right)$ 其内，就要样本的 $n$ 个观察值中有 $k-1$ 个落入
+$\left(-\infty\text{，}y_{k}\right)$ 内，有 $n-k$ 个落入
+$\left[y_{k}+dy_{k},\infty\right)$ 内，据多项式分布，可算得 $X_{\{k\}}$ 的概率为：
+
+$$
+g\left(y_{k}\right)dy_{k}=\frac{n!}{\left(k-1\right)!1!\left(n-k\right)!}\times\left[F\left(y_{k}\right)\right]^{k-1}p\left(y_{k}\right)dy_{k}\left[1-F\left(y_{k}+dy_{k}\right)\right]^{n-k}+o\left(dy_{k}\right)
+$$
+
+上面的计算公式真的是很像可测集上的函数计算，$g\left(y_{k}\right)dy_{k}$ 的含义是$g\left(y_{k}\right)$是概率，
+$dy_{k}$是区间长度。
+
+两边约去$dy_{k}$后，再让$dy_{k}\rightarrow0$，即得$X_{\{k\}}$的密度函数为
 
 \[
-Y=X\beta+\epsilon
+g\left(y_{k}\right)=\frac{n!}{\left(k-1\right)!\left(n-k\right)!}\times\left[F\left(y_{k}\right)\right]^{k-1}\left[1-F\left(y_{k}\right)\right]^{n-k}p\left(y_{k}\right)
+\]
+ 那么，$X_{\{1\}}$与$X_{\{n\}}$的密度函数分布为
+
+\[
+g\left(y_{1}\right)=n\left[1-F\left(y_{1}\right)\right]^{n-1}p\left(y_{1}\right)
+\]
+\[
+g\left(y_{n}\right)=n\left[F\left(y_{n}\right)\right]^{n-1}p\left(y_{n}\right)
 \]
 
-式中，因变量 $Y$ 为 $n$ 维向量；自变量 $X$ 为 $n\times p$ 矩阵；误差项 $\epsilon$ 为 $n$ 维向量。需要注意的是在简单回归中，误差项 $\epsilon$ 的元素一般要求是独立同分布零均值的，而通常分布假定为正态的，在最小二乘回归的标准输出中，对系数的 $t$ 检验和方差分析的F检验，常常认为p值小就意味着“显著”，但需要注意误差是否偏离正态性，如果不考虑正态性或者渐近正态性不成立，那么t检验和F检验就没有任何意义。
+所以，设$X_{1},\cdots,X_{n}$是来自$U\left(0,\theta\right)$的一个样本，最大次序统计量$X_{\{n\}}$是$\theta$的常用估计，所谓的次序统计量是指
 
-在模型比较过程中，需要注意的是对于不满足正态性假定的模型也可以进行互相比较，但所用方法不是这些基于正态性的检验，可以用AIC之类的准则或交叉验证来比较。
+\[
+X_{\{1\}}\leq\cdots\leq X_{\{n\}}
+\]
 
-** TODO 回归诊断
-** 方差分析（ANOVA）
-** logistic回归模型
-*** 模型形式
+它们的观察值依次记为为$y_{1}\leq\cdots\leq y_{n}$，容易知道$X_{\{n\}}$的密度函数为
+
+\[
+p\left(t;\theta\right)=nt^{n-1}\theta^{-n},0<t<\theta
+\]
+
+容易求出$E\left(X_{\text{\{n\}}}\right)=n\theta/(n+1)$,因此$X_{\{n\}}$不是$\text{\ensuremath{\theta}}$的无偏估计，但是它是$\text{\ensuremath{\theta}}$的渐近无偏估计，另外，由于对任意的$\varepsilon\text{>0,}$
+
+\[
+P_{\theta}\left(\left|X_{\{n\}}-\theta\right|\geqq\varepsilon\right)=P_{\theta}\left(X_{\{n\}}\leqq\theta-\varepsilon\right)=\intop_{0}^{\theta-\epsilon}\frac{nt^{n-1}}{\theta^{n}}dt=\left(\frac{\theta-\epsilon}{\theta}\right)^{n}\rightarrow0\left(n\rightarrow\infty\right)
+\]
+
+因此，$X_{\{n\}}$是$\text{\ensuremath{\theta}}$的相合估计。
+
+*** MLE 
+极大似然估计 MLE 有一个很好的性质：如果 $\theta$ 是 $\theta$ 的 MLE, $g(\dot)$
+是可测函数（什么是可测函数？），则 $g(\hat{\theta})$ 也是 $g(\theta)$ 的 MLE.该
+性质称为 MLE 的不变性。
+*** stepwise regression
+
+包括 2 个步骤：一是从回归模型中剔出经检验不显著的变量，二是引入新变量到回归模型中。
+
+1.先对所有 X,建立一元回归模型，计算回归系数的 F 检验统计量的值，取其中最大的值 F,
+如果给定显著水平 $\alpha$, 记相应的临界值为 $F2$, $F2 > F$, 将 $X_{i}$ 引入模型。
+
+2.建立因变量 $Y$ 与自变量 $X_{i}, X_{1}$ 的二元回归模型，计算 F 统计量，选最大的 F
+统计量对应的自变量入模。
+
+3.重复步骤 2 .
+
+*** lasso
+**** coordinate descent
+这个方法的优势在于简单。
+
+#+begin_quote
+Minimize over one parameter at a time, keeping all others fixed.
+#+end_quote
+
+每次只求解一个参数值，保证其他参数值不变。如果是求解单个特征，那么其实很简单，就是一个软阈值函数。
+
+\begin{equation}
+\operatorname{sign}(\hat{\beta})(|\hat{\beta}|-\gamma)_{+}
+\end{equation}
+
+那么，对于多元回归而言，相当于每次固定一个 X,求解它的 beta,这样相当于每次只求解一
+个特征，会变得很容易。
+
+\begin{equation}
+\tilde{\beta}_{j}(\lambda) \leftarrow S\left(\sum_{i=1}^{n} x_{i j}\left(y_{i}-\tilde{y}_{i}^{(j)}\right), \lambda\right)
+\end{equation}
+
+where \(S(t, \lambda)=\operatorname{sign}(t)(|t|-\lambda)_{+}, \tilde{y}_{i}^{(j)}=\sum_{k \neq j} x_{i k} \tilde{\beta}_{k}(\lambda)\)
+
+     #+begin_src R :results output graphics :file fig_1.png :exports both 
+       # LASSO WITH ALPHA = 1
+       cv1 <- cv.glmnet(mdlX, mdlY, family = "binomial", nfold = 10, type.measure = "deviance", paralle = TRUE, alpha = 1)
+       md1 <- glmnet(mdlX, mdlY, family = "binomial", lambda = cv1$lambda.1se, alpha = 1)
+       coef(md1)      
+     #+end_src
+*** adaptive lasso
+\(Q(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y}, \mathbf{w})=\frac{1}{2 n}\|\mathbf{y}-\mathbf{X} \boldsymbol{\beta}\|^{2}+\lambda \sum_{j} w_{j}\left|\beta_{j}\right|\)
+
+where \(w_{j}=\left|\widetilde{\beta}_{j}\right|^{-1}\)
+
+*** elasticnet 
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      # ELASTIC NET WITH 0 < ALPHA < 1
+      a <- seq(0.1, 0.9, 0.05)
+      search <- foreach(i = a, .combine = rbind) %dopar% {
+          cv <- cv.glmnet(mdlX, mdlY, family = "binomial", nfold = 10, type.measure = "deviance", paralle = TRUE, alpha = i)
+          data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+      }
+      cv3 <- search[search$cvm == min(search$cvm), ]
+      md3 <- glmnet(mdlX, mdlY, family = "binomial", lambda = cv3$lambda.1se, alpha = cv3$alpha)
+      coef(md3)      
+    #+end_src
+
+*** SCAD
+ \begin{equation}
+ Q(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y})=\frac{1}{2 n}\|\mathbf{y}-\mathbf{X} \boldsymbol{\beta}\|^{2}+\sum_{j=1}^{p} P\left(\beta_{j} \mid \lambda, \gamma\right) 
+\end{equation}   
+
+where \(P(\beta \mid \lambda, \gamma)\) is a folded concave penalty.
+
+SCAD penalty
+
+\begin{equation}
+ P(x \mid \lambda, \gamma)=\left\{\begin{array}{ll}\lambda|x| & \text { if }|x| \leq \lambda \\ \frac{2 \gamma \lambda|x|-x^{2}-\lambda^{2}}{2(\gamma-1)} & \text { if } \lambda<|x|<\gamma \lambda \\ \frac{\lambda^{2}(\gamma+1)}{2} & \text { if }|x| \geq \gamma \lambda\end{array}\right. 
+\end{equation}
+
+for $\gamma > 2$
+
+*** MCP
+ \begin{equation}
+ Q(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y})=\frac{1}{2 n}\|\mathbf{y}-\mathbf{X} \boldsymbol{\beta}\|^{2}+\sum_{j=1}^{p} P\left(\beta_{j} \mid \lambda, \gamma\right) 
+\end{equation}   
+
+where \(P(\beta \mid \lambda, \gamma)\) is a folded concave penalty.
+
+\begin{equation}
+ \begin{array}{l}\quad P_{\gamma}(x ; \lambda)=\left\{\begin{array}{ll}\lambda|x|-\frac{x^{2}}{2 \gamma}, & \text { if }|x| \leq \gamma \lambda \\ \frac{1}{2} \gamma \lambda^{2}, & \text { if }|x|>\gamma \lambda\end{array}\right. \\ \text { for } \gamma>1\end{array} 
+\end{equation}
+
+The primary way in which adaptive lasso, SCAD, and MCP differ from the lasso is
+that they allow the estimated coefficients to reach large values more quickly than the lasso.
+
+相比较 lasso, scad, mcp, adaptive lasso 可以很快速地让参数估计达到一个较大值，也
+就是说后面三个方法对于非零系数压缩的幅度比 lasso 小多了。
+
+The tuning parameter $\gamma$ for the SCAD and MCP estimates controls how fast
+the penalization rategoes to zero. $\gamma$ 的作用在于能够控制参数系数压缩到 0 的
+速度。反过来，这会影响估计的偏差以及估计的稳定性，因为随着惩罚变得越来越凹，存在多个局部最小值的机会更大。
+
+*** group lasso 
+In many regression problems, however, predictors are notdistinct but arise from
+common underlying factors. 现实生活中，许多变量均是成组出现的。
+
+- We denote \(\mathbf{X}\) as being composed of \(J\) groups
+\(\mathbf{X}_{1}, \mathbf{X}_{2}, \ldots, \mathbf{X}_{J},\) with \(K_{j}\) denoting the size of group \(j ;\) i.e.,
+\(\sum_{j} K_{j}=p\)
+
+- As usual, we are interested in estimating a vector of
+coefficients \(\boldsymbol{\beta}\) using a loss function \(L\) which quantifies the
+discrepancy between the observations \(\mathbf{y}\) and the linear
+predictors \(\boldsymbol{\eta}=\mathbf{X} \boldsymbol{\beta}=\sum_{j} \mathbf{X}_{j} \boldsymbol{\beta}_{j},\) where \(\boldsymbol{\beta}_{j}\) represents the
+coefficients belonging to the \(j\) th group
+
+- Covariates that do not belong to a group may be thought ofas a group of one
+
+形式是：
+
+\begin{equation}
+ \mathbf{Q}(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y})=\mathbf{L}(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y})+\sum_{j} \lambda_{j}\left\|\boldsymbol{\beta}_{j}\right\| 
+\end{equation}
+
+需要注意的是 $\left\|\boldsymbol{\beta}_{j}\right\|$ 反应的是一组 beta. 
+
+To ensure that the same degree of penalization is applied to
+large and small groups, \(\lambda_{j}=\lambda \sqrt{K_{j}}\)
+
+为了确保变量数量多的组和数量较少组的惩罚力度一样，一般将 \(\lambda_{j}=\lambda \sqrt{K_{j}}\)。
+
+估算参数的算法如下，名称是 blockwise coordinate descent, 成组坐标下降法：
+
+repeat
+
+for \(j=1,2, \ldots, J\)
+
+\(\quad \mathbf{z}_{j}=\mathbf{X}_{j}^{T} \mathbf{r}+\boldsymbol{\beta}_{j}\)
+
+\(\boldsymbol{\beta}_{j}^{\prime} \leftarrow S\left(\left\|\mathbf{z}_{j}\right\|, \lambda_{j}\right) \mathbf{z}_{j} /\left\|\mathbf{z}_{j}\right\|\)
+
+\(\mathbf{r}^{\prime} \leftarrow \mathbf{r}-\mathbf{X}_{j}\left(\boldsymbol{\beta}_{j}^{\prime}-\boldsymbol{\beta}_{j}\right)\)
+until convergence
+
+For MCP/SCAD, we would replace the soft thresholding step withthe appropriate thresholding operatorPatrick BrehenyHigh-Dimensional Data Analysis (BIOS 7600)15/26
+
+*** group mcp
+
+形式和 group lasso 类似，不同的是惩罚项函数，换成 \(P(\boldsymbol{\beta})=\sum_{j} \operatorname{MCP}\left(\left\|\boldsymbol{\beta}_{j}\right\| ; \lambda_{j}, \gamma\right)\)。
+
+*** group scad
+*** Ridge
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      cv2 <- cv.glmnet(mdlX, mdlY, family = "binomial", nfold = 10, type.measure = "deviance", paralle = TRUE, alpha = 0)
+      md2 <- glmnet(mdlX, mdlY, family = "binomial", lambda = cv2$lambda.1se, alpha = 0)
+      coef(md2)      
+    #+end_src
+
+*** logistic 回归模型
+   #+begin_quote
+   If I were to be treated by a cure created by stepwise regression, I would
+prefer voodoo.
+   -- Dieter Menne (in a thread about regressions with many variables)
+      R-help (October 2009)
+   #+end_quote
+
+这种方法有很多优点，例如它是直接对分类可能性进行建模，无需事先假设数据分布，这样就避免了假设分布不准确所带来的问题，它不仅预测出类别，而是可得到近似概率预测，这对许多需利用概率预测辅助决策的任务很有用；此外，对率函数是任意阶可导的凸函数，有很好的数学性质。
+
+
+当样本量大时，推荐将数据分成训练集和测试集，分别用于变量选择\模型调优和验证最终
+模型（以及变量集合）。对于小样本训练集，选择合适的重抽样方法非常关键。
+**** 模型形式
+Sppose the response variable $Y_{i}$ for $i=1,\cdots,n_{i}$ is binomially distributed $B(n_{i},p_{i})$ so that:
+\begin{equation}
+P\left(Y_{i}=y_{i}\right)=\left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right) p_{i}^{y_{i}}\left(1-p_{i}\right)^{n_{i}-y_{i}}
+\end{equation}
+
+we further assume that the $Y_{i}$ are independent.The individual trials that compose the response $Y_{i}$ are all subject to the same $q$ predictors $(x_{i1},\cdot,x_{iq})$.The group of trials is known as a /covariate class/. we need a model that describes the relationship of $x_{1},\cdot,x_{q}$ to $p$.Following the linear model approach, we construct a /linear predictor/:
+
+\begin{equation}
+\eta_{i}=\beta_{0}+\beta_{1} x_{i 1}+\ldots+\beta_{q} x_{i q}
+\end{equation}
+
+we have already seen above that setting $\eta_{i}=p_{i}$ is not appropriate because we require $0 \leq p_{i} \leq 1$.Instead we shall use a link function $g$ such that $\eta_{i}=g(p_{i})$.For this application,we shall need $g$ to be monotone and be such that $0\leq g^{-1}(\eta)\leq 1$ for any $\eta$.There are three common choices: 
+
+1.logit:$\eta=log(p/(1-p))$.
+2.probit:$\eta=\Phi^{-1}(p)$ where $\Phi^{-1}$ is the inverse normal cumulative distribution function.
+3.Complementary log-log:$\eta=\log(-log(1-p))$
+
+再作补充：
+
+\begin{equation}
+\begin{aligned} p(y=1 | \mathbf{x}) &=\sigma\left(\mathbf{w}^{\mathrm{T}} \mathbf{x}+b\right)=\frac{\exp \left(\mathbf{w}^{\mathrm{T}} \mathbf{x}+b\right)}{1+\exp \left(\mathbf{w}^{\mathrm{T}} \mathbf{x}+b\right)} \\ p(y=-1 | \mathbf{x}) &=1-\sigma\left(\mathbf{w}^{\mathrm{T}} \mathbf{x}+b\right)=\frac{1}{1+\exp \left(\mathbf{w}^{\mathrm{T}} \mathbf{x}+b\right)} \end{aligned}
+\end{equation}
+
+上式中，链接函数可以换成 probit 或者 log-log 等.
+
 \[
 \operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}
 \]
-
-or
 
 $$
 p_{i}=\frac{\exp \left(\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}\right)}{1+\exp \left(\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}\right)}
 $$
 
-观测 $y_{i}$ 服从于一个二项分布，均值是 $n_{i}p_{i}$，能够表示为 $y_{i}=n_{i}p_{i}+\epsilon_{i}$，残差部分 $\epsilon_{i}=y_{i}-n_{i}p_{i}$ 是零均值，但是不再服从的是二项分布，实际上， $\epsilon$ **服从的是位移二项分布**.
+观测 $y_{i}$ 服从于一个二项分布，均值是 $n_{i}p_{i}$,能够表示为 $y_{i}=n_{i}p_{i}+\epsilon_{i}$,残差部分 $\epsilon_{i}=y_{i}-n_{i}p_{i}$ 是零均值，但是不再服从的是二项分布，实际上， $\epsilon$ **服从的是位移二项分布**.
+
+需要补充的是：$E\left(\varepsilon_{i} | X_{i}\right)=0$,即给定 X 的前提下，$\varepsilon_{i}$ 的期望为 0. 
+
+\begin{equation}
+ \varepsilon_{j}=\left\{\begin{array}{ll}{1-X_{j}^{\prime} \beta} & {\left(Y_{i}=1\right)} \\ {-X_{i}^{\prime} \beta} & {\left(Y_{j}=0\right)}\end{array}\right. 
+\end{equation}
+
+上式为 logistic 回归模型的残差，可以看出是二元变量，而不是我们通常假定的正态分布。
 
 【问题？】
 什么是位移二项分布？
@@ -56,24 +795,36 @@ $$
 L(\boldsymbol{\beta})=\prod_{i=1}^{n}\left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right) p_{i}^{y_{i}}\left(1-p_{i}\right)^{n_{i}-y_{i}}
 $$
 
-
 \begin{aligned} \log L(\boldsymbol{\beta}) &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \log p_{i}+\left(n_{i}-y_{i}\right) \log \left(1-p_{i}\right)\right\} \\ &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{c}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \log \left(\frac{p_{i}}{1-p_{i}}\right)+n_{i} \log \left(1-p_{i}\right)\right\} \\ &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \eta_{i}-n_{i} \log \left(1+e^{\eta_{i}}\right)\right\} \end{aligned}
-
 
 $$
 \frac{\partial \log L(\boldsymbol{\beta})}{\partial \beta_{j}}=\sum_{i=1}^{n} y_{i} x_{j i}-\sum_{i=1}^{n} n_{i} x_{j i} e^{\eta_{i}}\left(1+e^{\eta_{i}}\right)^{-1}, \quad j=0,1, \ldots, k
 $$
 
-可知，上式是没有办法求解 $\beta$ 的精确解，只能求得数值解。一个广泛的求解方法就是Fisher ’s 得分法，此法相当于是一个重复加权最小二乘方法, $z_{i}=\eta_{i}+(y_{i}-n_{i}p_{i})/\{n_{i}p_{i}(1-p_{i})\}$,weight等于 $n_{i}p_{i}(1-p_{i})$.
+以下解释更为清晰！！
+
+另外一种解释是：
+\begin{equation}
+\begin{aligned} \ln L(\mathbf{w}) &=\sum_{i=1}^{N} \ln p\left(y_{i} | \mathbf{x}_{i}\right) \\ &=\sum_{i=1}^{N} y_{i} \ln \sigma\left(\mathbf{w}^{T} \mathbf{x}_{i}\right)+\left(1-y_{i}\right) \ln \left[1-\sigma\left(\mathbf{w}^{T} \mathbf{x}_{i}\right)\right] \\ &=\sum_{i=1}^{N} y_{i} \ln \frac{\sigma\left(\mathbf{w}^{T} \mathbf{x}_{i}\right)}{1-\sigma\left(\mathbf{w}^{T} \mathbf{x}_{i}\right)}+\ln \left[1-\sigma\left(\mathbf{w}^{T} \mathbf{x}_{i}\right)\right] \\ &=\sum_{i=1}^{N}\left(y_{i} \mathbf{w}^{T} \mathbf{x}_{i}-\ln \left[1+\exp \left(\mathbf{w}^{T} \mathbf{x}_{i}\right)\right]\right) \end{aligned}
+\end{equation}
+
+所以负对数似然 (log-likelihood),求导可知：
+
+\begin{equation}
+-\ln L(w)=\sum_{i=1}^{N} \ln \left(1+\exp \left(w^{T} x_{i}\right)\right)-y_{i} w^{T} x_{i}
+\end{equation}
+
+
+注意到这里 $p\left(y_{i} | \mathbf{x}_{i}\right)$ 是单个观测服从的是伯努利分布
+$p^{y}*(1-p)^{1-y}$,这里的 \(p(y=1 | \mathbf{x})=\sigma\left(\mathbf{w}^{\mathbf{T}} \mathbf{x}+b\right)\)。
+
+可知，上式是没有办法求解 $\beta$ 的精确解，只能求得数值解。一个广泛的求解方法就是 Fisher ’s 得分法，此法相当于是一个重复加权最小二乘方法, $z_{i}=\eta_{i}+(y_{i}-n_{i}p_{i})/\{n_{i}p_{i}(1-p_{i})\}$,weight 等于 $n_{i}p_{i}(1-p_{i})$.
 
 一些有用的结论：
 
-- 随着样本量 $n$ 的增加，二项分布近似于正态分布.随机变量 $Z=\frac{Y-n p}{\sqrt{\{} n p(1-p)\}}$ 接近正态分布。McCullagh等人证明当 $np(1-p)\ge2$,随机变量Y即可满足正态分布假设，特别是当 $p$ 接近于0.5的时候，所以当n等于10的时候，二项分布近似于正态分布。
+- 随着样本量 $n$ 的增加，二项分布近似于正态分布.随机变量 $Z=\frac{Y-n p}{\sqrt{\{} n p(1-p)\}}$ 接近正态分布。McCullagh 等人证明 *当 $np(1-p)\ge2$,随机变量 Y 即可满足正态分布假设* ，特别是当 $p$ 接近于 0.5 的时候，所以当 n 等于 10 的时候，二项分布近似于正态分布。
 
-
-在样本量足够大时，二项分布近似于正态分布。
-
-其实也可以利用线性模型拟合逾期率：
+在样本量足够大时，二项分布近似于正态分布。其实也可以利用线性模型拟合逾期率：
 
 $y_{i}=0$ 为失败，$y_{i}=1$ 为成功。$E(Y_{i})=n_{i}p_{i}$,$var(Y_{i})=n_{i}p_{i}(1-p_{i})$
 
@@ -81,36 +832,264 @@ $$
 \sum_{i=1}^{n}\left(\frac{y_{i}}{n_{i}}-p_{i}\right)^{2}=\sum_{i=1}^{n}\left(\tilde{p}_{i}-\beta_{0}-\beta_{1} x_{1 i}-\cdots-\beta_{k} x_{k i}\right)^{2}
 $$
 
-但是这种方法有很多的缺点：比如，异方差问题，$\operatorname{var}\left(\tilde{p}_{i}\right)=p_{i}(1-p_{i})/n_{i}$,当 $p_{i}$ 在0.25-0.75时, \(0.19 < p_{i}(1-p_{i}) < 0.25\) 也就是方差不会相差很大，但是p值很大或者很小的时候，那么方差变化就会很大！一种解决的方法就是加权回归模型 $\sum_{i=1}^{n} w_{i}\left(\tilde{p}_{i}-p_{i}\right)^{2}$.第二个问题就是正态分布，当n很大的时候，这个问题不存在。第三个问题就是，估计值可能是负数！而 $\hat{p}$ 不可能是负数！
+但是这种方法有很多的缺点：比如，异方差问题，$\operatorname{var}\left(\tilde{p}_{i}\right)=p_{i}(1-p_{i})/n_{i}$,当 $p_{i}$ 在 0.25-0.75 时, \(0.19 < p_{i}(1-p_{i}) < 0.25\) 也就是方差不会相差很大，但是 p 值很大或者很小的时候，那么方差变化就会很大！一种解决的方法就是加权回归模型 $\sum_{i=1}^{n} w_{i}\left(\tilde{p}_{i}-p_{i}\right)^{2}$.第二个问题就是正态分布，当 n 很大的时候，这个问题不存在。第三个问题就是，估计值可能是负数！而 $\hat{p}$ 不可能是负数！
 
-所以，需要对成功概率 $p$ 作logit变换 $log(p/(1-p))$,可以写作 $logit(p)$.logit变换后，值域就变成了 $(-\inf,\inf)$.
+所以，需要对成功概率 $p$ 作 logit 变换 $log(p/(1-p))$,可以写作 $logit(p)$.logit 变换后，值域就变成了 $(-\inf,\inf)$.
+
+simulation of glm
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  ##两个特征高度相关
+  library(MASS)
+  n=1000
+  #inv.logit 其实就是 P
+  inv.logit <- function(p){
+      return(exp(p)/(1+exp(p)))
+  }
+  Sigma <- matrix(c(1,0.9,0.9,1),2,2)
+  X=mvrnorm(n = 1000, rep(0, 2), Sigma)
+  beta1=c(0.5,1.5)
+  Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
+  data=data.frame(Y,X)
+  glm(Y~1+.,data = data,family = "binomial")
+  #####特征重复2份
+  library(MASS)
+  x1=rnorm(1000,mean = 0,sd=1)
+  X=matrix(rep(x1,2),nrow = 1000)
+  beta1=c(0.5,1.5)
+  Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
+  data=data.frame(Y,X)
+  glm(Y~1+.,data = data,family = "binomial")
+#+END_SRC
+
+**** 模型推断
+logistic 回归模型估计算法为 iteratively reweighted least squares(IRLS). 这个算法
+的思路也很简单就是：
+\(\mathbf{w}^{n e w}=\mathbf{w}^{o l d}-\mathbf{H}^{-1} \mathbf{g}\)
+这里的 $H$ 和 $g$ 分别是二阶导和一阶导。
+
+\begin{equation}
+\begin{aligned} \mathbf{H} &=\lambda \mathbf{I}+\mathbf{X} \mathbf{A} \mathbf{X}^{\mathrm{T}} \\ \mathbf{g} &=\lambda \mathbf{w}-\sum_{i=1}^{N} y_{i} \mathbf{x}_{i}\left[1-\sigma\left(y_{i} \mathbf{w}^{T} \mathbf{x}_{i}\right)\right] \\ &=\lambda \mathbf{w}-\mathbf{X} \mathbf{A} \mathbf{t} \end{aligned}
+\end{equation}
+
+作补充，
+
+\begin{equation}
+\begin{aligned} \mathbf{g} &=\frac{d}{d \mathbf{w}} f(\mathbf{w})=\sum_{i}\left(\mu_{i}-y_{i}\right) \mathbf{x}_{i}=\mathbf{X}^{T}(\boldsymbol{\mu}-\mathbf{y}) \\ \mathbf{H} &=\frac{d}{d \mathbf{w}} \mathbf{g}(\mathbf{w})^{T}=\sum_{i}\left(\nabla_{\mathbf{w}} \mu_{i}\right) \mathbf{x}_{i}^{T}=\sum_{i} \mu_{i}\left(1-\mu_{i}\right) \mathbf{x}_{i} \mathbf{x}_{i}^{T} \\ &=\mathbf{X}^{T} \mathbf{S} \mathbf{X} \end{aligned}
+\end{equation}
+
+这里的 $\mu_{i}=\frac{1}{1+\exp \left(-\mathbf{w_{i}}^{T} \mathbf{x_{i}}\right)}$.
+
+总之就有，
+\begin{equation}
+\begin{aligned} \mathbf{w}^{\text {new }} &=\mathbf{w}^{\text {old }}-\mathbf{H}^{-1} \mathbf{g} \\ &=\mathbf{w}^{\text {old }}-\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}}+\lambda \mathbf{I}\right)^{-1} \mathbf{g} \\ &=\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}}+\lambda \mathbf{I}\right)^{-1}\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}} \mathbf{w}^{\text {old }}+\lambda \mathbf{w}^{\text {old }}-\mathbf{g}\right) \\ &=\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}}+\lambda \mathbf{I}\right)^{-1}\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}} \mathbf{w}^{\text {old }}+\mathbf{X} \mathbf{A} \mathbf{t}\right) \\ &=\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}}+\lambda \mathbf{I}\right)^{-1} \mathbf{X} \mathbf{A}\left(\mathbf{X}^{T} \mathbf{w}^{\text {old }}+\mathbf{t}\right) \\ &=\left(\mathbf{X} \mathbf{A} \mathbf{X}^{\mathbf{T}}+\lambda \mathbf{I}\right)^{-1} \mathbf{X} \mathbf{A} \mathbf{z} \end{aligned}
+\end{equation}
+
+其中，\(\mathbf{z}=\mathbf{X}^{T} \mathbf{w}^{o l d}+\mathbf{t}\), 即
+\(z_{i}=\mathbf{x}_{i}^{T} \mathbf{w}^{o l d}+t_{i}=\mathbf{x}_{i}^{T}
+\mathbf{w}^{o l d}+\frac{y_{i}\left[1-\sigma\left(y_{i} \mathbf{w}^{T}
+\mathbf{x}_{i}\right)\right]}{A_{i i}}\), 向量 $\mathbf{t}$ 的第 $i$ 个元素为 \(t_{i}=\frac{y_{i}\left[1-\sigma\left(y_{i} \mathbf{w}^{T} \mathbf{x}_{i}\right)\right]}{A_{i i}}\).
+
+**** logistic 回归求导
+这个文档对目的是了解 logistic 回归的求解过程。首先是写清楚 logistic 回归的似然。
+
+$$
+l\left(b,y\right)=\sum_{i=1}^{n}y_{i}\log h\left(x_{i}^{T}b\right)+\left(1-y_{i}\right)\log\left(1-h\left(x_{i}^{T}b\right)\right)$$
+$$h\left(x_{i}^{T}b\right)=\frac{1}{1+e^{-x}}$$
+
+所以
+
+$$h^{'}\left(x_{i}^{T}b\right)=h\left(x_{i}^{T}b\right)\left(1-h\left(x_{i}^{T}b\right)\right)$$
+
+对其求导可知，
+
+$\frac{\partial l}{\partial b_{j}}=\sum_{i=1}^{n}\frac{y_{i}}{h\left(x_{i}^{T}b\right)}h^{'}\left(x_{i}^{T}b\right)x_{ij}-\frac{1-y_{i}}{1-h\left(x_{i}^{T}b\right)}h^{'}\left(x_{i}^{T}b\right)x_{ij}$
+
+$=\sum_{i=1}^{n}x_{ij}h^{'}\left(x_{i}^{T}b\right)\left(\frac{y_{i}}{h\left(x_{i}^{T}b\right)}-\frac{1-y_{i}}{1-h\left(x_{i}^{T}b\right)}\right)$
+
+$=\sum_{i=1}^{n}x_{ij}\frac{h^{'}\left(x_{i}^{T}b\right)}{h\left(x_{i}^{T}b\right)\left(1-h\left(x_{i}^{T}b\right)\right)}\left(y_{i}-h\left(x_{i}^{T}b\right)\right)$
+
+对于 logistic 回归而言，
+
+$$h^{'}\left(x_{i}^{T}b\right)=h\left(x_{i}^{T}b\right)\left(1-h\left(x_{i}^{T}b\right)\right)$$
+
+所以，
+
+$\frac{\partial l}{\partial b_{j}}=\sum_{i=1}^{n}x_{ij}\left(y_{i}-h\left(x_{i}^{T}b\right)\right)=X^{T}\left(y-\hat{y}\right)$
+
+进一步，$\frac{\partial^{2}l}{\partial b_{k}\partial b_{j}}=-\sum_{i}x_{ij}x_{ik}\frac{\partial}{\partial b_{k}}h\left(x_{i}^{T}b\right)=-\sum_{i}x_{ij}x_{ik}h\left(x_{i}^{T}b\right)\left(1-h\left(x_{i}^{T}b\right)\right)$,也就是说 $H=-X^{T}WX$.
+
+现设$z=W^{-1}\left(y-\hat{y}\right),\frac{\partial l}{\partial b_{j}}=X^{T}Wz$,有了一阶导和二阶导信息，那么就有
+
+$b^{\left(m+1\right)}=b^{\left(m\right)}+\left(X^{T}W_{(m)}X\right)^{-1}X^{T}(y-\hat{y})$
+
+*** LDA(线性判别分析)
+是一种经典的线性学习方法。LDA 的思想是：给定训练样例集，设法将样例投影到一条直线上，使得同类样例的投影点尽可能接近，异类样例的投影点尽可能远离。
+
+在对新样本进行分类时，将其投影到同样的这条直线上，再根据投影点的位置来确定新样本的类别。
+
+*** 变量编码
+**** woe 编码
+
+证据权重的优点是特征变量的数量不会增加（虚拟变量要生成其他变量），所以不同变量之间相关的可能性会变得更小，且在统计估计时稳健性也会更好。
+但缺点是只可以选择性地保留某个特征的全部属性或者一个也不保留。使用虚拟变量时，由于每个特征会生成多个变量，而很正常的是，某个评分卡只用到其中的一些属性变量，但这些属性却被其他评分卡剔除。
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+mifi_model_feature_woe_encoding_all(df, feat_cuts, category_feature_names = NULL,
+  label_identify, encoding_path, missing_val = -1, is_debug = F)
+#+END_SRC
+
+**** one-hot 编码
+
+**** dummy 编码
+**** 模型效果评估
+[https://pic4.zhimg.com/80/v2-9ca0c8f67e8566b7318175406ce19a21_1440w.jpg]
+
+从上面的概念可以看出，真与假均是按照实际结果而言，比如假阴性就是真实结果是阳性，预测结果是阴性，那么就称为假阴性。
+
+混淆矩阵：
+|      | 预测                   |                  |
+| 实际 | 1                      | 0                |
+|------+------------------------+------------------|
+|    1 | d，true positive       | c,false positive |
+|    0 | b,false negative       | a,true negative  |
+|      | b+d,predicted positive | a+c,predicted negative |
+**** 准确率
+\begin{equation}
+ A C C=\frac{T P+T N}{F P+F N+T P+T N} 
+\end{equation}
+
+分子是 TP 和 TN,也就是正确预测正确的个数，分母就是混淆矩阵所有元素之和，分子是 TP+TN,即原始是正例正确预测为正例，原始为负例正确预测为负例的样本。 准确率不仅关注正例，还有负例。
+**** 正确率 
+\begin{equation}
+ P R E=\frac{T P}{T P+F P} 
+\end{equation}
+
+正确率是以正例为标准，就是在预测为正例的样本中正确预测为正例的样本比例，分母就是实际为正例的数目。
+
+**** 召回率
+又称为真阳性率（true positive rate），又称为灵敏度（sensitivity）。和正确率不同的是分母是实际为正例的样本中正确预测为正例的比例。所以是有召回的概念在里面。
+
+\begin{equation}
+ T P R=\frac{T P}{T P+F N} 
+\end{equation}
+**** 假阳性率
+\begin{equation}
+ F P R=\frac{F P}{F P+T N} 
+\end{equation}
+
+实际为阴性的样本中错误预测为阳性的样本比例。
+**** auc
+https://pic1.zhimg.com/80/v2-6cdb7a9866c599d3f312b9dabf6c102a_1440w.jpg
+
+从上图可以看出，x轴是 false positive rate(假阳性率), y 轴是 true positive rate(真
+阳性率),也称为召回率 。
+**** k-s 
+K-S 曲线的数据来源以及本质和 ROC 曲线是一致的，只是 ROC 曲线是把真正率和假正率当
+作横纵轴，而 K-S 曲线是把真正率和假正率都当作是纵轴，横轴则由选定的阈值来充当。
+（一般是 score 进行分箱，比如分了 10 个 bin），计算每个 bin 中的 true positive
+rate 和 false positive rate.
+**** lift
+$$
+ Lift=\frac{\frac{T P}{T P+F P}}{\frac{T P+F N}{T P+F P+T N+F N}} = \frac{PRE}{实际正例
+ 占比} 
+$$
+
+根据以上公式可知，Lift 指标可以这样理解：在不使用模型的情况下，我们用先验概率估计正例的比例，即上式子分母部分，以此作为正例的命中率；利用模型后，我们不需要从整个样本中来挑选正例，只需要从我们预测为正例的那个样本的子集 [公式] 中挑选正例，这时正例的命中率为 [公式] ，后者除以前者即可得提升值 Lift。
+
+2020.7.8 再学习
+ 
+这里面有两个概念很容易混淆，召回率（recall）和精确率（precision）。
+
+ 这两个概念都是针对正例样本而言。
+
+ 精确率就是预测为正的样本中有多少是真正的正样本。那么预测为正就有两种可能了，一种就是把正类预测为正类(TP)，另一种就是把负类预测为正类(FP)，
+ 召回率就是针对原来的样本（而非预测样本），样例中的正例有多少被预测正确了。那也有两种可能，一种是把原来的正类预测成正类(TP)，另一种就是把原来的正类预测为负类(FN)。
+
+ 只需要记得，精确率看的是预测为正的样例，而召回率看的是原来样本中的正例。
+
+ P = TP/(TP+FP), R = TP/(TP+FN) 
+
+ - Sensitivity（覆盖率，True Positive Rate）= 正确预测到的正例数 / 实际正例总数 Recall (True Positive Rate，or Sensitivity) =true positive/total actual positive=d/c+d
+    
+ - PV+ (命中率，Precision, Positive Predicted Value) = 正确预测到的正例数 / 预测正例总数 Precision (Positive Predicted Value, PV+) =true positive/ total predicted positive=d/b+d
+
+ - Specificity (负例的覆盖率，True Negative Rate) = 正确预测到的负例个数 / 实际负例总数 Specificity (True Negative Rate) =true negative/total actual negative=a/a+b
+
+ Ptp=proportion of true positives=d/a+b+c+d=(c+d/a+b+c+d)*(d/c+d) =pi1* Sensitivity，正确预测到的正例个数占总观测值的比例
+
+ Pfp=proportion of false positives=b/a+b+c+d= (a+b/a+b+c+d)*(b/a+b) = (1-c+d/a+b+c+d)*(1-a/a+b) = (1-pi1)*(1- Specificity) ，把负例错误地预测成正例的个数占总数的比例
+
+ Depth=proportion allocated to class 1=b+d/a+b+c+d=Ptp+Pfp，预测成正例的比例
+
+ PV_plus=Precision (Positive Predicted Value, PV+) = d/b+d=Ptp/depth，正确预测到的正例数占预测正例总数的比例
+
+ Lift= (d/b+d)/(c+d/a+b+c+d)=PV_plus/pi1，提升值
+
+ #+begin_src R :results output graphics :file fig_1.png :exports both 
+   assess_index = function(.data, pred, true){
+       pred = ensym(pred)
+       true = ensym(true)
+       TP <- .data %>% filter(!!pred == 1 & !!true == 1) %>% tally() %>% pull()
+       FN <- .data %>% filter(!!pred == 0 & !!true == 1) %>% tally() %>% pull()
+       FP <- .data %>% filter(!!pred == 1 & !!true == 0) %>% tally() %>% pull()
+       TN <- .data %>% filter(!!pred == 0 & !!true == 0) %>% tally() %>% pull()
+       ##正确率
+       precision = TP/(TP+FP)
+       ##准确率
+       accuracy = (TP+TN)/(FP+FN+TP+TN)
+       ##召回率=真阳性率
+       recall = TP/(TP+FN)
+       ##真阴性率
+       TNR = TN/(FP+TN)
+       ##假阴性率
+       FNR = FN/(TP+FN)
+       ##假阳性率
+       FPR = FP/(FP+TN)
+       ##lift
+       lift = precision/((TP+FN)/(TP+FP+TN+FN))
+       return(data.frame(precision, accuracy, recall, TNR, FNR, FPR, lift))
+}  
+ #+end_src
 
 *** 回归诊断     
+总体来说，判断一个变量是否应该进入评分卡的其中一种方法是有无该变量的两个模型的数据拟合度变化情况。
 
-Suppose that a linear logistic model is ﬁtted to n binomial observations of the form $y_{i}/n_{i},i=1,2,\cdots,n$,对应的拟合值 $y_{i}$ 就是 $\hat{y}_{i}=n_{i}\hat{p}_{i}$.The ith raw residual is then the diﬀerence $y_{i}-\hat{y}_{i}$, and provides information about how well the model ﬁts each particular observation.
+Suppose that a linear logistic model is ﬁtted to n binomial observations of the form $y_{i}/n_{i},i=1,2,\cdots,n$,对应的拟合值 $y_{i}$ 就是 $\hat{y}_{i}=n_{i}\hat{p}_{i}$.The ith raw residual is then the difference $y_{i}-\hat{y}_{i}$, and provides information about how well the model ﬁts each particular observation.
 
-- *标准Pearson误差*
+- *标准 Pearson 误差*
+            
+The raw residuals can be made more comparable by dividing them by $se(y_{i})$, giving
 
-The raw residuals can be made more comparable by dividing them by $se(y_{i})$, giving 
-     
-     \[
+\[
 X_{i}=\frac{y_{i}-n_{i} \hat{p}_{i}}{\left.\sqrt{\{} n_{i} \hat{p}_{i}\left(1-\hat{p}_{i}\right)\right\}}
-     \]
-这个残差常被称为“Pearson residuals”,因为它们的平方和统计量 $X^{2}=\sum X_{i}^{2}$,被称为Pearson's 卡方统计量.
+\]
 
-更优的统计量是A better procedure is to divide the raw residuals by their standard error，\(\operatorname{se}\left(y_{i}-\hat{y}_{i}\right)\),
+这个残差常被称为“Pearson residuals”,因为它们的平方和统计量 $X^{2}=\sum X_{i}^{2}$,被称为 Pearson's 卡方统计量.
+
+更优的统计量是 A better procedure is to divide the raw residuals by their standard error，\(\operatorname{se}\left(y_{i}-\hat{y}_{i}\right)\),
+
 \[
 \left.\operatorname{se}\left(y_{i}-\hat{y}_{i}\right)=\sqrt{\{} \hat{v}_{i}\left(1-h_{i}\right)\right\}
-\],\(\hat{v}_{i}=n_{i} \hat{p}_{i}\left(1-\hat{p}_{i}\right)\), $h_{i}$ is the $ith$ diagonal element of the $n\times n$ matrix \(\boldsymbol{H}=\boldsymbol{W}^{1 / 2} \boldsymbol{X}\left(\boldsymbol{X}^{\prime} \boldsymbol{W} \boldsymbol{X}\right)^{-1} \boldsymbol{X}^{\prime} \boldsymbol{W}^{1 / 2}\).
+\]
+
+\(\hat{v}_{i}=n_{i} \hat{p}_{i}\left(1-\hat{p}_{i}\right)\), $h_{i}$ is the $ith$ diagonal element of the $n\times n$ matrix \(\boldsymbol{H}=\boldsymbol{W}^{1 / 2} \boldsymbol{X}\left(\boldsymbol{X}^{\prime} \boldsymbol{W} \boldsymbol{X}\right)^{-1} \boldsymbol{X}^{\prime} \boldsymbol{W}^{1 / 2}\).
 
 这样很容易得出标准的残差：
+
 $$
 r_{P i}=\frac{y_{i}-n_{i} \hat{p}_{i}}{\left.\sqrt{\{} \hat{v}_{i}\left(1-h_{i}\right)\right\}}
 $$
 
-- *标准deviance误差*
+- *deviance 误差*
 
-Another type of residual can be constructed from the deviance that is ob- tained after ﬁtting a linear logistic model to binomial data, given by
+比较好奇是如何推导的？
+
+如果说 mse 是衡量线性回归模型拟合优劣的标准，那么 deviance 就是衡量 logistic 回归好坏的准则。
+
+Deviance D measures how close the (smaller) model comes to perfection, is a measure of goodness of fit.
+
+Another type of residual can be constructed from the deviance that is obtained after ﬁtting a linear logistic model to binomial data, given by
 
 \begin{equation}
 D=2 \sum_{i}\left\{y_{i} \log \left(\frac{y_{i}}{\hat{y}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n_{i}-y_{i}}{n_{i}-\hat{y}_{i}}\right)\right\}
@@ -122,19 +1101,19 @@ The signed square root of the contribution of the ith observation to this overal
 d_{i}=\operatorname{sgn}\left(y_{i}-\hat{y}_{i}\right)\left\{2 y_{i} \log \left(\frac{y_{i}}{\hat{y}_{i}}\right)+2\left(n_{i}-y_{i}\right) \log \left(\frac{n_{i}-y_{i}}{n_{i}-\hat{y}_{i}}\right)\right\}^{1 / 2}
 \end{equation}
 
-$d_{i}$ 可以成为deviance误差，那么总体的误差可以称为 $D=\sum d^{2}_{i}$,那么标准deviance误差为
+$d_{i}$ 可以成为 deviance 误差，那么总体的误差可以称为 $D=\sum d^{2}_{i}$,那么标准 deviance 误差为
 
 \begin{equation}
 r_{D i}=\frac{d_{i}}{\sqrt{\left(1-h_{i}\right)}}
 \end{equation}
 
-- conclusion
+- 结论
 
-The numerical studies also indicate that all three of these residuals are reasonably well approximated by a standard normal distribution when the binomial denominators are not too small.  (为啥当N趋近于无穷时，二项分布逼近于正态分布？)
+The numerical studies also indicate that all three of these residuals are reasonably well approximated by a standard normal distribution when the binomial denominators are not too small.  (为啥当 N 趋近于无穷时，二项分布逼近于正态分布？)
 
-#+BEGIN_SRC R :results output
-  #样本量小的时候，可以看到二项分布和正态分布有很大差异，而
-  #样本量大，确实很相近
+Deviance 也被称作偏差，计算公式为“－2*ln（当前模型的似然值/饱和模型的似然值）”，这个统计量服从 $\chi^2$ 分布，服从自由度 1.
+#+BEGIN_SRC R :results graphics :file fig_1.png :exports both
+#样本量小的时候，可以看到二项分布和正态分布有很大差异，而样本量大，确实很相近
   n=10
   p=0.1
   q=1-p
@@ -149,40 +1128,608 @@ The numerical studies also indicate that all three of these residuals are reason
   plot(x,y,type="h",lwd=2,col="red")
 #+END_SRC
 
-*** 广义线性混合模型（glmm）
+*** 统计检验
+- 拟合优度
+这个词汇有异议，就是我们无法真正检验一个末模型被数据拟合的有多好，只能检验拟合的
+有多差！！
 
+- 重复检验
+
+这个问题比较模糊！
+
+如果设置置信水平 $\alpha=0.5$ 为显著 p 值的阈值，理论上每次单独检验的假阳性率是
+5%。然而，当同时进行大量统计检验时，总体假阳性率会呈指数增加（是的！），那么此时
+需要对 p 值进行调整从而控制假阳性率。Bonferroni 校正是其中一种方法。如果要做 M 次
+统计检验，定义统计显著性 p 值的截断值为 $\alpha$ ，那么将截断值调整为 $\alpha/M$ 能
+提高检验的可信度，并控制假阳性率。
+
+**** wald 检验
+If the hypothesis involves only a single parameter restriction, then the Wald statistic takes the following form: 
+
+\(W=\frac{\left(\hat{\theta}-\theta_{0}\right)^{2}}{\operatorname{var}(\hat{\theta})}\)
+
+which under the null hypothesis follows an asymptotic $\chi^2$-distribution with one degree of freedom. 
+
+https://en.wikipedia.org/wiki/Wald_test
+
+**** 二项检验
+二项检验可以检测特定分数组的 pd 估计。
+
+原假设 $H_{0}$:分数组合 i 的 $PD_{i}$ 是准确的；
+备择假设$H_{1}$: 分数组合 i 的$pd_{i}$
+
+**** 卡方检验
+
+这是一种评估数据拟合特定统计模型程度的普遍方法，计算真实和预测结果误差的平方和，然后以方差来标准化。
+举例来说，卡方统计量就是好人、坏人预测数量（label=0）与观测数量之差的平方和，再除以理论方差。
+
+*** glm-lasso
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      library(glmnet)
+      library(foreach)
+      set.seed(1)
+      p <- 5
+      n <- 500
+      x <- matrix(rnorm(n * p), n, p)
+                                        #runif(p, -2, 2)
+      betas <- c(0.1,0,0.1,0.2,0.3)
+      inv_log <- function(x) 1 /(1 + exp(-x)) # inverse canonical link
+      p.true <- inv_log(x %*% betas)
+      y <- rbinom(n, 1, p.true)
+#soft-thresholding
+soft_thres <- function(z,gamma){
+  ifelse(z>0 & gamma<abs(z),z-gamma,
+         ifelse(z<0 & gamma<abs(z),z+gamma,0))
+}
+
+log_fit <- function(x, y, lambda, tol = 5e-4) {
+  change <- Inf
+  iter <- 1
+  b.old <- glm(y ~ x - 1, family = "binomial")$coef
+  inv_log <- function(x) 1 / (1 + exp(-x))
+  while (change > tol | iter < 50) {
+    eta <- x %*% b.old # linear predictor
+    y.hat <- inv_log(eta)
+    h.prime_eta <- y.hat * (1 - y.hat)
+    z <- x %*% b.old + (y - y.hat) / h.prime_eta
+    a <- matrix(NA, ncol = p, nrow = n)
+    for (i in 1:n) {
+      for (j in 1:p) {
+        a[i, j] <- h.prime_eta[i] * x[i, j]^2
+      }
+    }
+    residual <- resid(lm(z ~ x - 1, weights = h.prime_eta))
+    diff <- foreach(j = 1:p, .combine = "cbind") %dopar% (sum(h.prime_eta * x[, j] * residual) + sum(h.prime_eta * b.old[j] * x[, j]^2))
+    b.new <- as.vector(soft_thres(diff, lambda) / colSums(a))
+    change <- sqrt(sum((b.new - b.old)^2))
+    b.old <- b.new
+    iter <- iter + 1
+    print(list(beta = b.new, change = change))
+  }
+  # return(list(beta = b.new,change = change))
+}
+
+log_fit(x,y,lambda=0.04416) 
+    #+end_src
+
+*** 实际应用
+**** 评分卡
+至少有三种方式可以去评估一个评分系统的有效性：
+
+1. 评分卡的判别能力。测量评分卡区分好人与坏人的能力。
+
+2. 评分卡概率预测的校准精度。它要求将评分分数转换为事件的发生概率的函数。
+
+3. 评分卡分类的划分的准确程度
+
+**** lift 
+Lift（提升指数）是 *评估一个预测模型是否有效的一个度量* ；这个比值由运用和不运用这个模型所得来的结果计算而来。提升指数越大，模型的运行效果越好。
+
+建立步骤：
+
+I) 利用已经建立的评分模型，对我们要验证的样本进行评分。样本下的每一个个体都将得到一个分数，或者是违约概率，或者是一个分值；
+
+II) 对样本按照上面计算好的分数进行降序排序；
+
+III) 把已经排好序的样本依次分成 10 个数量相同的群体，我们就建立了一个叫 decile 的变量，它依次取 10 个值，1、2、3、4、5、6、7、8、9、10，diclie1 包括违约概率值最高的 10%的个体，diclie2 包括下一个 10%的群体，以此类推；
+
+IV) 帐户总数是每个 decile 下的样本数，它是整个样本数的 10%；
+
+V) 边际坏账数是每个 decile 内违约的人数，就是说，利用我们的评分模型，在 decile1，有 25 个人违约，以此类推，从定义来看这个边际坏账数应该是单调递降的；
+
+VI) 累计坏账数，45 表明前两个 decile 内共有 45 个人违约，以此类推；
+
+VII) 边际坏账率是每个 decile 内坏账的比率。对 decile1，边际坏账率由 25/100 得来；
+
+VIII) 对每一个加总的 decile，都计算一个累计坏账率，比如说，对前两个 decile，也就是整个样本的 20%，累计坏账率等于（25+20）/（100+100）；
+
+IX) 在每个 decile 里，提升指数（Lift）就是 *相应的累计坏账率与平均坏账率的偏离程度，* 计算公式是（累计坏账率-平均坏账率）/平均坏账率，习惯上还会乘上一个 100。
+
+X) 注：在一些处理中，提升指数直接由每个 decile 的累计坏账率除以平均坏账率得来，它们之间就相差 1，一个是相对偏离，一个是绝对偏离。
+
+XI) 就我们考察的信用评分模型，它的目的就是尽可能把人群区别来开来，比如说“好”的顾客、 “坏”的顾客。提升指数越大，表明模型运作效果越好。
+
+理想的提升图应该在很高的提升值上保持一段，或缓慢下降一段，然后迅速下降到 1。
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  require(ROCR)
+  data(ROCR.simple)
+  data <- as.data.frame(ROCR.simple)[1:10, ]
+  data <- data[order(data[, 1], decreasing = TRUE), ]
+data$rpp <- row(data[, 1, drop = FALSE])/nrow(data)
+data$target_cum <- cumsum(data[, "labels"])
+data$tpr <- data$target_cum/sum(data[, "labels"])
+data$lift <- data$tpr/data$rpp
+data
+#+END_SRC
+
+Lift = (d/b+d)/(c+d/a+b+c+d).它衡量的是，与不利用模型相比，模型的预测能力 “变好” 了多少。不利用模型，我们只能利用 “正例的比例是 c+d/a+b+c+d” 这个样本信息来估计正例的比例（baseline model），而利用模型之后，我们不需要从整个样本中来挑选正例，只需要从我们预测为正例的那个样本的子集（b+d）中挑选正例，这时预测的准确率为 d/b+d。
+
+2020.7.7 再学习
+
+lift 的分子是 pv+,也就是正确预测到是正例数占预测正例总数的比例。分母是正例的比例。
+lift 指标衡量的是，与不利用模型相比，模型的预测能力变好多少。
+
+**** gains
+Gains (增益) 与 Lift （提升）相当类似：Lift chart 是不同阈值下 Lift 和 Depth 的轨迹，Gains chart 是不同阈值下 PV + 和 Depth 的轨迹，而 PV+=lift * pi1= d/b+d（见上），所以它们显而易见的区别就在于纵轴刻度的不同.
+
+所谓的 depth 就是预测成正例的比例，b+d/a+b+c+d.
+
+**** k-s 统计量
+KS 的计算步骤如下：
+
+- 计算每个评分区间的好坏账户数（计算的是特征的 KS 的话，是每个特征对应的好坏账户数）。
+ 
+- 计算每个评分区间的累计好账户数占总好账户数比率(good%)和累计坏账户数占总坏账户数比率(bad%)。 
+
+- 计算每个评分区间累计坏账户占比与累计好账户占比差的绝对值（累计 good%-累计 bad%），然后对这些绝对值取最大值即得此评分卡的 KS 值。
+
+*** 混杂因素
+啥叫混杂因素？其实就是干扰因素，对模型的最终结果会产生干扰。
+要判断一个因素是否为混杂因素，可以从 2 方面考虑：
+
+第 1, 分析该因素是否对结局有较大影响，通常可采用 $chi-square$ 检验或单因素
+logistic 回归来实现。
+第 2, 分析该因素在主要研究因素中的分布情况，通常采用$chi-square$ 检验来实现。
+
+比如：在分析性别与幽门螺杆菌（Hp）的关系，通常发现性别与幽门螺杆菌有显著关系，但
+是这种关系的背后其实是是否吸烟引起的，也就是说吸烟是影响二者关系的混杂因素。
+
+*** glm 应用（评分卡模型）
+**** 评分卡构建流程
+- 确定研究问题和对象
+- 确定模型的 Y 和 X 是什么？Y是啥违约？特征包括哪些？现行的做法是 90 天以内只要违约，就算违约，无论是违约一次还是 2 次，3次。特征主要来源 3 块，个人基本情况、还款历史、负债情况等。
+- 确定数据收集范围和来源
+
+1、数据预处理
+
+- 数据的描述统计分析，包括相关性分析，指标的正态性检验等
+- 数据预处理，包括时间格式、缺失值、极值
+- 缺失值怎么处理？如果缺失比例太高，比如高于 30%，那么就剔除这个变量，缺失比在 10%以下，那么可以采用一定的插补方法进行填充，如果缺失比例在 10%~30%，那么？极值的话有两方面的问题,①怎么发现极值？单变量可以通过画直方图的形式展现，双变量（Y~X）可以通过画散点图的形式探查极值。②怎么处理极值?主要看是否符合常识，如果觉得不符合，直接删掉。 
+
+2、数据分箱
+
+为啥一定要分箱？不能用连续型数据建模么？
+
+优势在于：
+
+- 离散化后的特征对异常数据有很强的鲁棒性。比如一个特征是年龄>30 是 1，否则 0。如果特征没有离散化，一个异常数据“年龄 300 岁”会给模型造成很大的干扰。可以将缺失作为独立的一类带入模型。
+
+- 离散化后可以进行特征交叉，由 M+N 个变量变为 M*N 个变量，进一步引入非线性，提升表达能力。
+
+- 离散特征的增加和减少都很容易，易于模型的快速迭代。
+
+- 稀疏向量内积乘法运算速度快，计算结果方便存储，容易扩展。
+
+- 对于线性模型，表达能力受限。单变量离散化为 N 个后,每个变量有单独的权重,相当于模型引入了非线性,能够提升模型表达能力，加大拟合。
+
+- 将所有变量变换到相似的尺度上，相当于对数据做了标准化操作。
+
+
+ 
+包括数据分箱，woe 转换等。
+
+- 为啥要做数据分箱？将连续变量划分为离散变量。
+
+   1、在分析有离群值样本时能够得到更加稳健的估计结果；
+   2、可以更好地处理缺失数据，将缺失作为独立的一类带入模型
+
+- 怎么分箱？
+
+1、无监督方法。根据常识来分。
+2、有监督方法。卡方分箱。如何进行卡方分箱？先给定阈值；将数据按升序排序，并划定初始区间；计算任意两个邻近区间的卡方值，然后合并最小的卡方值的区间，直至超过阈值不在划分。
+
+**** 卡方分箱
+
+对于精确的离散化，相对类频率在一个区间内应当完全一致。因此，如果两个相邻的区间具有非常类似的类分布，则这两个区间可以合并；否则，它们应当保持分开。而低卡方值表明它们具有相似的类分布。
+
+ChiMerger 分箱步骤： 
+
+①先给定一个卡方阈值，将数据进行升序排序；
+
+为何要给定一个阈值？类别和属性独立时,有 90%的可能性,计算得到的卡方值会小于 4.6。大于阈值 4.6 的卡方值就说明属性和类不是相互独立的，不能合并。如果阈值选的大,区间合并就会进行很多次,离散后的区间数量少、区间大。
+
+②将每个值划分成若干初始区间；
+
+③计算任意两个邻近区间的卡方值 X2；
+
+$$
+\mathrm{x}^{2}=\sum_{i=1}^{2} \sum_{j=1}^{2} \frac{\left(A_{i j}-E_{i j}\right)}{E_{i j}}
+$$
+Aij：第 i 区间第 j 类的实例的数量。 Eij：Aij 的期望频率（=(Ni*Cj)/N），N是总样本数，Ni 是第 i 组的样本数，Cj 是第 j 类样本在全体中的比例
+④发现最小的 X2，将最小的 2 个区间的 X2 结合在一起；
+
+⑤重复③-④步直至卡方值 X2 大于阈值.
+
+- 为啥要做 Woe 转换？
+   - 做完 woe 转换后，变量与 log(odds)之间的关系更接近线性关系
+   - 做完 woe 转换后，当有极值时，得到的估计结果更加稳健
+   - 做完 woe 转换后，更容易发现模型是否具有多重共线性
+   - 做完 woe 转换后，能够得到变量的信息值，可以用来筛选重要变量
+
+- 特征筛选
+
+- 特征处理与筛选，挑选的要求 iv>0.02；woe 编码后，两两线性相关性低于 0.7；woe 编码后，共线性 vif<10
+
+ 模型的参数估计：利用 logistic、xgboost、gbdt、lightgbm 进行编程实现。
+     	 
+ 模型的评价
+
+ - 如何评价？
+
+   模型效果的评价指标：K-S 曲线、roc 曲线等
+     
+   roc 曲线，横轴是 false positive，实际是负类被错误预测成正类的比率，纵轴是 true positive，实际是正类正确预测成正类的比率。
+
+ K-S 曲线，横轴是每个评分区间的好坏账户数，纵轴是每个评分区间的累计好账户数占总好账户数比率(good%)和累计坏账户数占总坏账户数比率(bad%)。通常来说，值越大，表明正负样本区分的程度越好。一般，KS 值>0.2 就可认为模型有比较好的预测准确性。
+	 
+    模型的稳定指标：psi 
+     举个栗子，假设在训练一个评分模型时，我们将样本评分按从小到大排序分成 10 组，那么每组会有不同的样本数量占比 P1；评分模型制作出来之后，我们试用这个模型去预测新的一组数据样本，按上面的方法同样按评分分成 10 组，每组也会有一定的样本数量占比 P2。PSI 可以帮助我们量化 P1 和 P2，即预期占比与实际占比的差距。
+
+ 评价标准：小于 10%：无需更新模型；10%-25%：检查一下其他度量方法；大于 25%：需要更新模型。
+
+ 数字解读
+
+ 目标：将好客户和坏客户通过评分的方式进行区分。
+
+ 评分满分 1000 分，一般 850 分以上属于信用较好客户，600 分以下属于信用较差客户，根据 还款历史、当前负债、信贷申请、信贷组合、信用历史组合而成。
+
+ 对应的分值情况是：信贷组合 8%、信贷申请 12%、信用历史 8%、当前负债 29%、还款历史 43%。
+
+ - 还款历史（43%）：
+
+ 占比最高，良好的还款记录是“好”征信的基本保证，逾期对征信的影响几乎是毁灭性的，短期内发生的逾期，会让你直接归类到“坏用户”里。
+
+ 如果逾期距离现在 25+个月后，对征信的负面影响已经很小了。所以，逾期了不要放弃自己，两年后又是一条好汉！
+
+ - 当前负债（29%）：
+
+ 占比次高，也很重要。在有负债的情况下，负债率越低越好。但是完全没有负债，得分是非常低的。想办好卡，记得先偿还大部分信用卡账单。
+
+ 信用历史（8%）：
+ 这里考察的是最早信用记录出现的时间，所以，第一张信用卡要早办。
+
+ - 信贷申请（12%）：
+
+ 有公众号说征信查询是中性信息，错！事实上最近 6 个月内查询次数越多，得分越低。而且这部分占比不低，扣分过多足以让你从优质客户，降为好客户。
+
+ 所以，皆可极度讨厌银行的贷后管理行为，这里列个黑名单：交行、浦发、农行、招行。
+
+ - 信贷组合（8%）：
+
+ 有公众号说账户数是中性信息，错！事实上账户数 4-5 个分数是最高的，6+也是个次高的分数。
+
+ 另外要强调的一点：“数字解读“未采用个人基本信息（如年龄、性别、学历）和资产信息（如收入），这意味着人行对个人的信用评价，开始趋向于个人的历史信用记录而非资质情况，中国在向美国的征信模式靠近。
+
+**** 等频分箱
+属于无监督分箱。将数据分成几等份，每等份数据里面的数据个数是相同的。区间的边界值要经过选择,使得每个区间包含大致相等的实例数量。比如说 N=10 ,每个区间应该包含大约 10%的实例。
+
+#+begin_src python
+import pandas as pd
+df = pd.DataFrame([[22,1],[13,1],[33,1],
+[52,0],[16,0],[42,1],[53,1],[39,1],[26,0],[66,0]],
+columns=['age','Y'])
+df['age_bin'] = pd.qcut(df['age'],3)
+df.age_bin.value_counts()
+#+end_src
+
+**** 等距分箱
+按照相同宽度将数据分成几等份。从最小值到最大值之间,均分为 N 等份, 这样, 如果 A,B 为最小最大值, 则每个区间的长度为 W=(B−A)/N , 则区间边界值为 A+W,A+2W,….A+(N−1)W 。这里只考虑边界，每个等份里面的实例数量可能不等。
+缺点：受异常值的影响比较大。可以从以下事例可以看出异常值的影响。
+
+#+begin_src python
+ import pandas as pd
+df = pd.DataFrame([[22,1],[13,1],[33,1],
+[52,0],[16,0],[42,1],[153,1],[39,1],[26,0],[66,0]],
+columns=['age','Y'])
+df['age_bin'] = pd.cut(df['age'],3)
+df.age_bin.value_counts()
+#+end_src
+
+** K-Nearest Neighbors
+
+Knn 算法只有 2 个参数，K 值和距离函数(euclidean,manhattan 距离测算函数)。
+
+K 近邻三要素： *K 值的选择\距离度量及分类决策规则。*
+
+knn,也称为 k-近邻，是一种回归与分类的思想。思路是：如果一个样本在特征空间中的 $k$  个最相似（即特征空间中最邻近）的样本中的大多数属于某一个类别，则该样本也属于这个类别，
+其中 K 通常是不大于 20 的整数。
+
+计算步骤：
+
+1.计算距离。计算测试数据与各个训练数据之间的距离。一般就是欧式距离， $d(x,y) =
+\sqrt(\sum^n_{k=1}(x_{k}-y_{k})^2)$. 所以一般首先需要标准化数据。
+
+2.升序排列。按照距离的递增关系进行排序。
+
+3.取前 k 个分类。选取距离最小的 K 个点。
+
+4.加权平均。确定前 K 个点所在类别的出现频率，返回前 K 个点中出现频率最高的类别作为
+测试数据的预测分类。
+
+Knn 方法的缺陷在于，不好确定 K 的大小，如果 K 过小，那么算法很容易过拟合。如果 k
+很大，那么就相当于模型很简单，相当于压根没有训练模型，只利用了大盘的信息。那么如
+何选择 k 值？ *一般选择一个较小的数值，通常采取交叉验证法取最优的 K 值。*
+
+在做 KNN 时，特征一定要做标准化操作。在进行距离度量时，很容易偏向于量纲较大的特
+征。
+
+一个简单易懂的例子是https://www.jianshu.com/p/356dda3333bb.
+
+1.计算测试集中的点和训练集合中的点所有点之间的距离。
+
+2.将计算出的距离集合进行升序排序（即距离最短的排列在前面）。
+
+3.获得距离集合降序排序的前 k 个距离。
+
+4.统计出在前 k 个距离中，出现频次最多的类别。
+
+优点：
+
+1.对数据分布要求没那么严格，所以该算法很容易运行。
+
+2.只有 2 个参数，K 值和距离函数。
+
+3.因为在新数据加入后无需做预测，因此可以实时添加新的数据。 
+
+缺点：
+
+1.无法有效处理高维数据，因为无法有效测量高维数据。
+2.对于数据量很大的数据集，该算法预测损失会很大，也就是无法有效预测。
+3.KNN 算法也无法很好处理离散变量，因为无法有效测量离散变量距离。
+
+#+begin_src python
+ from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors=5)
+classifier.fit(X_train, y_train)
+y_pred = classifier.predict(X_test)
+from sklearn.metrics import classification_report, confusion_matrix
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+
+##choose k
+error = []
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+    knn.fit(X_train, y_train)
+    pred_i = knn.predict(X_test)
+    error.append(np.mean(pred_i != y_test))
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12, 6))
+plt.plot(range(1, 40),error,color="red",linestyle = "dashed",marker = "o")
+plt.title('Error Rate K Value')
+plt.xlabel('K value')
+plt.ylabel('Mean Error')
+#+end_src
+
+** naive bayes
+
+概述：是基于贝叶斯定理与特征条件独立假设的分类方法。首先基于特征条件独立假设学习
+输入、输出的联合概率分布；然后基于此模型，对给定的输入 $x$,利用贝叶斯定理求出后
+验概率最大的输出 y.
+
+贝叶斯定理回顾：
+
+$P(A | B)=\frac{P(A \cap B)}{P(B)}$,更为一般的形式为 $P\left(A_{i} | B\right)=\frac{P\left(B | A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B | A_{j}\right) P\left(A_{j}\right)}$.
+
+在实际生活中，naive bayes 问题求解如下：
+
+给定 X 的前提下，求解 $P\left(Y=c_{k} \mid X=x\right)$.
+
+$$
+P\left(Y=c_{k} \mid X=x\right)=\frac{P\left(X=x \mid Y=c_{k}\right) P\left(Y=c_{k}\right)}{\sum_{k} P\left(X=x \mid Y=c_{k}\right) P\left(Y=c_{k}\right)}
+$$
+
+进一步可得：
+
+$$
+P\left(Y=c_{k} \mid X=x\right)=\frac{P\left(Y=c_{k}\right) \prod_{j} P\left(X^{(j)}=x^{(j)} \mid Y=c_{k}\right)}{\sum_{k} P\left(Y=c_{k}\right) \prod_{j} P\left(X^{(j)}=x^{(j)} \mid Y=c_{k}\right)}, \quad k=1,2, \cdots, K
+$$
+
+于是 naive bayes 估计求解方式如下：
+
+$$
+y=f(x)=\arg \max _{c_{k}} \frac{P\left(Y=c_{k}\right) \prod_{j} P\left(X^{(j)}=x^{(j)} \mid Y=c_{k}\right)}{\sum_{k} P\left(Y=c_{k}\right) \prod_{j} P\left(X^{(j)}=x^{(j)} \mid Y=c_{k}\right)}
+$$
+
+具体求解思路是极大似然估计。
+
+#+begin_src python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
+gnb = GaussianNB()
+y_pred = gnb.fit(X_train, y_train).predict(X_test)
+print("Number of mislabeled points out of a total %d points: %d"
+      % (X_test.shape[0], (y_test != y_pred).sum()))
+
+#+end_src
+
+我发现面试题目里有这样一道题：
+
+为什么朴素贝叶斯差？你如何使用朴素贝叶斯来改进爬虫检验算法？
+
+1.分布较为严格。2.要求变量之间服从条件独立性。
+
+bayes 算法的缺点是:
+
+- 在属性个数比较多或属性之间存在较大相关性时，该算法的效果不是很好（因此一个改进是半朴素贝叶斯）；
+
+- 需要知道先验概率，而先验概率很多时候取决于假设，可能会由于假设的原因导致预测的结果不佳（即存在主观性）；
+
+https://pic3.zhimg.com/80/v2-8db894b5233c3706cb42d1f861f7b702_1440w.jpg
+
+#+begin_src python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
+gnb = GaussianNB()
+y_pred = gnb.fit(X_train, y_train).predict(X_test)
+print("Number of mislabeled points out of a total %d points : %d"      
+      % (X_test.shape[0], (y_test != y_pred).sum()))
+ 
+#+end_src
+
+** 广义线性混合模型（glmm）
 成组的数据通常存在在任何的领域，特别对于纵向或者空间数据。对于分析成组的数据的时候，由于组内数据具有更为相似的相关性，所以再假定样本间的独立性便不再合适，所以需要引入随机效应的概念。
 
-给定一个随机效应 $\alpha$,观测值 $y_{1},\cdots,y_{n}$ 是条件独立的，以至于
-$y_{i} \sim N(x^{'}_{i}\beta+z^{'}_{i}\alpha,\tau^2)$, $x_{i},z_{i}$是已知的向量，
-$\tau^2$ 是未知的方差参数。
+给定一个随机效应 $\alpha$,观测值 $y_{1},\cdots,y_{n}$ 是条件独立的，以至于 $y_{i} \sim N(x^{'}_{i}\beta+z^{'}_{i}\alpha,\tau^2)$,$x_{i},z_{i}$ 是已知的向量，$\tau^2$ 是未知的方差参数。
 
-glmm中，两个重要的特性是条件独立性，给定随机效应时，服从一个条件分布；第二个是随
-机效应的分布。
+glmm 中，两个重要的特性是条件独立性，给定随机效应时，服从一个条件分布；第二个是随机效应的分布。
+#+BEGIN_QUOTE
+In mixed-effects models at least one of the covariates is a categorical covariate representing experimental or observational “units” in the data set.cite:Bates
+#+END_QUOTE
 
-****  加权回归模型
+这说明在混合模型中，必须要有一个分类变量，如果特征是一个随机样本，那么这个模型就是随机效应模型。固定效应和随机效应的区别在于是否是分类变量。随机效应不是一个参数而是一个未观测随机变量。
+**** Definitions 
 
-****  分类效果度量
+A mixed model incorporates two random variables:\(\mathscr{B}\),the $q$ -dimensional vector of random effects, and \(\mathscr{Y}\),the $n$ -dimensional response vector.In a linear mixed model the unconditional distribution of $\mathscr{B}$ and the conditions distribution,\((\mathscr{Y} | \mathscr{B}=\mathbf{b})\), are both mulvariate Gaussian (or "normal") distribution,
 
-*** 校准（calibration） 
+\begin{aligned}
+(\mathscr{Y} | \mathscr{B}=&\mathbf{b}) \sim \mathscr{N}\left(\mathbf{X} \beta+\mathbf{Z} \mathbf{b}, \sigma^{2} \mathbf{I}\right) \\ \mathscr{B} & \sim \mathscr{N}\left(\mathbf{0}, \Sigma_{\theta}\right) 
+\end{aligned}
 
-目的:一个分类模型能否用于预测垃圾邮件、一个分子的毒性状态或者作为保险欺诈和客户终身价值计算的输入，我们期望估计的类概率更能代表样本真实潜在的概率，也就是说,预测的类概率必须是良好校准的。为了达到良好校准，概率必须有效反映出感兴趣事件的真实似然。以垃圾邮件过滤为例，如果模型预测一封邮件为垃圾邮件的概率（或概率类似值）为20%，若平均每5个样本中真正有1个类似类型的邮件，**那么这个概率是良好校准的**。
+The conditional mean of $\mathscr{Y}$,given $\mathscr{B}=\mathbf{b}$, is the linear predictor, $\mathbf{X} \beta+\mathbf{Z} \mathbf{b}$,which depends on the $p$-dimensional fixed-effects parameter, $\beta$ ,and on $\mathbf{b}$.The model matrices, $\mathbf{X}$ and $\mathbf{Z}$,of dimension $n\times p$ and $n\times q$,respectively,are determined from the formula for the model and the values of covariates. *Although the matrix $\mathbf{Z}$ can be large (i.e. both $n$ and $q$ can be large), it is sparse (i.e. most of the elements in the matrix are zero).*
 
-**一种评估类概率的方法是校准图**（calibration plot），对于给定的数据集，校准图展示事件的观测概率与预测的类概率之间的对比度量。创建校准图的一种方法是分类模型对收集的已知结果（测试集效果更佳）样本进行打分，接下来基于样本的类概率对数据封箱成不同的组。例如，封箱集合可能是[0,10%],(10%,20%],...,(90%,100%].对于每一箱，确定观测事件发生率，假定有50个样本落入[0,10%]箱子且仅有一个事件发生，则箱的中点是5%，观测事件的发生率为2%。校准图以箱的中点为x轴，观测事件发生率为y轴绘图。如果点落在沿45%的对角线上，模型就具备良好的校准率。
+** 生存分析模型
+与一般线性回归不同，生存分析模型的样本特征均有观测时间，从这点上看，该模型更接近
+于时间序列模型。主要处理的是删失数据，比如说观察一个人饮食情况，计划观察他到
+80 岁，
+但是他在 79 岁时患病去世了，那么 79-80 岁这段时间是没有他的饮食数据的，那么这类数据
+就是删失数据。具体的似然形式如下。
+
+\begin{equation}
+h_{i}(t)=h_{0}(t) \exp \left(\mathbf{x}_{i}^{T} \boldsymbol{\beta}\right)
+\end{equation}
+
+\begin{equation}
+l(\boldsymbol{\beta})=\sum_{i=1}^{n} \delta_{i} \mathbf{x}_{i}^{T} \boldsymbol{\beta}-\log \left(\sum_{j c R_{i}} \exp \left(\mathbf{x}_{i}^{T} \boldsymbol{\beta}\right)\right)
+\end{equation}
+
+
+如果认定借款人行为是动态变化的，那么就应该考虑信用状态的变化时间。之前的问题都是确定申请者在未来一个固定时间段的违约概率，现在还想知道他在什么时候违约？后者的显然更难，因为需要估计违约概率在时间上的分布而不仅是固定时间上的违约概率。
+
+这里生存分析的目的在于分析违约发生的时间，定义 $T$ 为消费者直到违约时某个贷款已经持续的时间。
+** 待写
+the relative covariance factor, $
+
+#+BEGIN_SRC R :results output graphics :file fig_2.png :exports both
+    library(lme4)
+    library(ggplot2)
+    library(tidyverse)
+    str(Dyestuff)
+    head(Dyestuff)
+    summary(Dyestuff)
+    ## Batch     Yield     
+    ## A:5   Min.   :1440  
+    ## B:5   1st Qu.:1469  
+    ## C:5   Median :1530  
+    ## D:5   Mean   :1528  
+    ## E:5   3rd Qu.:1575  
+    ## F:5   Max.   :1635
+    ###从Batch 的数据结构可以看出是平衡的
+    p <- ggplot(Dyestuff, aes(x=Batch, y=Yield)) + geom_boxplot()
+    p #可以看出不同组数据的均值不同
+  #+END_SRC
+
+  #+RESULTS:
+  [[file:fig_2.png]]
+
+  An example of linear mixed model in r 
+
+  #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  library(lme4)
+  fm01 <- lmer(Yield~ 1|Batch,Dyestuff,REML = FALSE,verbose = 1)
+  summary(fm01)
+  fm01@pp
+  #+END_SRC
+
+*** 模型校准
+
+一个分类模型能否用于预测垃圾邮件、一个分子的毒性状态， *我们期望估计的类概率更能代表样本真实潜在的概率。*   在 lyn.thomas 的消费信用模型一书中，将模型校准定义为检测违约概率($pd=p(B|s)$)的预测精度。认为分数 score 可以用来预测借款人是好人的概率。《巴塞尔协议》规定，贷款组合要被分成不同的分数组，然后预测每组借款人的违约概率。
+ (在小米小贷的应用场景中，由于样本自身的偏倚性，意思就是没有拒绝样本的表现，所以样本真实的拒绝概率势必需要校准。)为了达到良好校准，概率必须有效反映出感兴趣事件的真实似然。以垃圾邮件过滤为例，如果模型预测一封邮件为垃圾邮件的概率（或概率类似值）为 20%，若平均每 5 个样本中真正有 1 个类似类型的邮件， *那么这个概率是良好校准的* 。
+
+ *一种评估类概率的方法* 是 *校准图* （calibration plot），对于给定的数据集，校准图展示 *事件的观测概率与预测的类概率之间的对比度量* 。创建校准图的一种方法是用 分类模型对收集的已知结果（测试集效果更佳）样本进行打分，接下来基于样本的类概率对数据封箱成不同的组。例如，封箱集合可能是[0,10%],(10%,20%],...,(90%,100%].
+
+对于每一箱，确定观测事件发生率，假定有 50 个样本落入[0,10%]箱子且仅有一个事件发生，则箱的中点是 5%，观测事件的发生率为 2%。校准图以箱的中点为 x 轴，观测事件发生率为 y 轴绘图。如果点落在沿 45%的对角线上，模型就具备良好的校准率。
+
+ *总结：这个校准图方法可以作为不同模型估计效果的比较来看。*
+
+如果发现模型低估了事件的概率，那么怎么办？我们可以创建另外一个模型对该模式进行调整。我们可以通过以下公式，基于训练集的类预测和真实结果对估计的概率进行后续处理：
+
+\begin{equation}
+\hat{p}^{*}=\frac{1}{1+\exp \left(-\beta_{0}-\beta_{1} \hat{p}\right)}
+\end{equation}
+
+其中，通过非校准类概率（$\hat{p}$）的函数预测真实类来估计参数。
+
+instead of predicting the label, many applications require a posterior class probability \(P(y=1|x)\).Platt(2000) proposes approximating the posterior by a sigmoid Function
+\begin{equation}
+\operatorname{Pr}(y=1 | x) \approx P_{A, B}(f) \equiv \frac{1}{1+\exp (A f+B)}, \text { where } f=\mathrm{f}(x)
+\end{equation}
+
+let each $f_{i}$ be an estimate of $f(x_{i})$.The best parameter setting $z^{**}=(A^{***},B^{*})$ is determined by solving the following regularized maximum likelihood problem (with $N_{+}$ of the $y_{i}$'s positive,and $N_{-}$ negative):
+
+$$
+\begin{aligned} \min_{z=(A, B)} & F(z)=-\sum_{i=1}^{l}\left(t_{i} \log \left(p_{i}\right)+\left(1-t_{i}\right) \log \left(1-p_{i}\right)\right) \\ \text { for } & p_{i}=P_{A, B}\left(f_{i}\right), \text { and } t_{i}=\left\{\begin{array}{ll}{\frac{N_{+}+1}{N_{-}+2}} & {\text { if } y_{i}=+1} \\ {\frac{1}{N_{-}+2}} & {\text { if } y_{i}=-1}\end{array}, i=1, \ldots, l\right.\end{aligned}
+$$
+
+ *在 platt 的文章中，他认为 we train an svm, then train the parameters of an additional sigmoid function to map the svm outputs into probabilites, posterior probabilites are also required when a classifier is making a small part of an overall decision.这段话表明，当样本有偏时就必须校准。需要计算后验概率的方式求得对原估计进行校准。*
+
+这篇文章的背景在于作者想对 SVM 的模型的分类输出转成概率输出。
+
+one method of producing probabilistic outputs from a kernel machine was proposed by wahba.wahba used a logistic link function,
+\[
+P(\text { class } | \text { input })=P(y=1 | \mathbf{x})=p(\mathbf{x})=\frac{1}{1+\exp (-f(\mathbf{x}))}
+\]
+
+这里的 $f(x)$ 是原始模型的输出。
 
 *** 样条方法
-
-在真实的生活中，函数 \(f(x)\) 是 $X$ 的线性函数的情况很少见。对于回归问题，通常 $f(X)=E(Y|X)$ 在 $X$ 上是非线性和非可加的。对于线性模型，你可以将其理解为 $f(x)$ 的一阶泰勒展开。
+在真实的生活中，函数 \(f(x)\) 是 $X$ 的线性函数的情况很少见。对于回归问题，通常 $f(X)=E(Y|X)$ 在 $X$ 上是非线性和非可加的。对于线性模型，你可以将其理解为 $f(x)$ 的一阶泰勒展开.
 
 在非线性回归模型中，基展开（basis expansion）是运用较多的方法。假设 $h _ { m } ( X ) : \mathbb { R } ^ { p } \mapsto \mathbb { R }$ 为 $X$ 的第 $m$ 个转化变量， $m=1,\cdots,M$.则模型可表述为：
 
 \[
-f ( X ) = \sum _ { m = 1 } ^ { M } \beta _ { m } h _ { m } ( X )
+f ( X ) = \sum_{ m = 1 } ^ { M } \beta _ { m } h _ { m } ( X )
 \]
 
-其为 $X$ 的线性基展开。不难看出在确定 $h_{m}$ 后，模型对拓展后的输入变量为线性，可以用之前介绍的方法拟合。
-
-一组典型的样条基函数，形式如下：
+其为 $X$ 的线性基展开。不难看出在确定 $h_{m}$ 后，模型对拓展后的输入变量为线性，可以用之前介绍的方法拟合。一组典型的样条基函数，形式如下：
 
 \begin{aligned} h _ { 1 } ( X ) & = 1 , h _ { 3 } ( X ) = X ^ { 2 } , h _ { 5 } ( X ) = \left( X - \xi _ { 1 } \right) _ { + } ^ { 3 } \\ h _ { 2 } ( X ) & = X , h _ { 4 } ( X ) = X ^ { 3 } , h _ { 6 } ( X ) = \left( X - \xi _ { 2 } \right) _ { + } ^ { 3 } \end{aligned}
 
@@ -200,42 +1747,776 @@ f ( X ) = \sum _ { m = 1 } ^ { M } \beta _ { m } h _ { m } ( X )
 \operatorname { RSS } ( f , \lambda ) = \sum _ { i = 1 } ^ { N } \left\{ y _ { i } - f \left( x _ { i } \right) \right\} ^ { 2 } + \lambda \int \left\{ f ^ { \prime \prime } ( t ) \right\} ^ { 2 } d t
 \]
 
-# 统计检验
-> 任何检验都是为了否定（而不是为了肯定什么）而设立
+为了介绍样条函数，先从多项式函数开始介绍：
 
-## 方差齐次性
+\begin{equation}
+E(y)=\beta_{0}+\beta_{1} x+\beta_{2} x^{2}+\Lambda+\beta_{d} x^{d}
+\end{equation}
 
-为啥要做方差齐次性检验？
+多项式函数的形式可以认为是由多个单项式构成{$\beta_{1}x,\beta_{2}x^2,x^{3}$}。现
+在，我们可以把每一项都换成一个关于自变量 $x$ 的函数 $b_{j}(x)$:
 
-关于方差分析的基本假定有三个:
+那么样条函数就是
 
-*** 可加性
+$$
+E(y)=\beta_{0}+\sum_{j=1}^{d} b_{j}(x)
+$$
+
+其中， $\left.b_{(} x\right)=\beta_{0 j}+\beta_{1 j} x+\beta_{2 j} x^{2}+\Lambda+\beta_{q j} x^{q}$.
+
+$d$ 为节点的个数， $q$ 表示多项式的最高次数。
+
+样条方法的初衷，不就是将线性模型拓展到超线性吗，而这种超线性的体现在于可加的分量
+是 $h(X)$, 是原始变量 $X$ 的某个变换，比如样条基.
+
+简单的样条函数真的很好理解，就是分段函数，但是样条，特别是光滑样条的特点在于分段
+函数是连续的，而且可以是光滑样条，就是可以二阶导。
+
+**** 光滑样条 
+https://esl.hohoweiya.xyz/05-Basis-Expansions-and-Regularization/5.4-Smoothing-Splines/index.html
+样条问题 1: 节点如何选择?
+
+为了降低估计的方差,可以考虑光滑样条. 在所有二阶连续微分的函数 $f(x)$ 中,可以找到
+一个使得下面的惩罚残差平方和最小的函数
+
+\begin{equation}
+\operatorname{RSS}(f, \lambda)=\sum_{i=1}^{N}\left\{y_{i}-f\left(x_{i}\right)\right\}^{2}+\lambda \int\left\{f^{\prime \prime}(t)\right\}^{2} d t
+\end{equation}
+
+其中, $\lambda$ 是固定的光滑参数. 第一项衡量与数据的近似程度，第二项对函数的曲率
+进行惩罚，且 $\lambda$ 建立了两者之间的一个平衡。
+
+$\lambda = 0$: $f$ :可以是对数据插值的任意函数，意思是非常粗糙。
+
+$\lambda = \inf$: 简单的最小二乘拟合，因为不容忍任何的二次微分．因为解为自然样条，
+所以我们可以写成
+
+\begin{equation}f(x)=\sum_{j=1}^{N} N_{j}(x) \theta_{j}\end{equation}
+
+其中， $N_{j}(x)$ 是表示自然样条族的 $N$ 维基函数集。准则因此退化成
+
+\begin{equation}\operatorname{RSS}(\theta, \lambda)=(\mathbf{y}-\mathbf{N} \theta)^{T}(\mathbf{y}-\mathbf{N} \theta)+\lambda \theta^{T} \Omega_{N} \theta\end{equation}
+
+其中 $\{\mathbf{N}\}_{i j}=N_{j}\left(x_{i}\right)$ 以及 $\left\{\Omega_{N}\right\}_{j k}=\int N_{j}^{\prime \prime}(t) N_{k}^{\prime \prime}(t) dt .$ 可以看到解为
+$$
+\hat{\theta}=\left(\mathbf{N}^{T} \mathbf{N}+\lambda \Omega_{N}\right)^{-1} \mathbf{N}^{T} \mathbf{y}
+$$
+
+是 *广义岭回归*. 拟合后的光滑样条由下式给出
+
+\hat{f}(x)=\sum_{j=1}^{N} N_{j}(x) \hat{\theta}_{j}
+
+* 4 统计检验
+** 参数检验 
+假设检验大致可以分为 3 类： *分布检验，位置检验，散度检验* 。
+
+分布检验，可以检验样本数据是否来自具体特定分布的总体，比方说，klmogorov-smirnov 检验；
+位置检验可以检验样本数据是否来自具有特定均值或中位数的总体，比方说单样本 t 检验。
+散度检验可以检验样本数据是否来自具有特定方差的总体，如卡方方差检验。
+通过交叉表分析和随机性游程检验确定样本数据的其他特征，并确定假设检验的样本大小和幂。
+*** P 值 
+其实就是发生小概率事件的概率。以多元线性回归为例，就是 $P(\hat{\beta}) <= 0.05$。
+
+*** T 检验
+多元线性回归模型中的参数检验就是 T 检验。
+
+t 检验原假设是：
+
+\begin{equation}
+\left\{\begin{array}{l}H_{0}: \beta_{j}=0, j=1,2, \cdots, p \\ H_{1}: \beta_{j} \neq 0\end{array}\right.
+\end{equation}
+
+构造统计量：
+
+\begin{equation}
+t=\frac{\hat{\beta}_{j}-\beta_{j}}{\operatorname{se}\left(\hat{\beta}_{j}\right)} \sim t(n-p-1)
+\end{equation}
+
+https://www.zhihu.com/question/30753175
+
+这篇文章可以说清楚了 t 分布的历史。
+*** F 检验
+
+T 检验用来检测数据的准确度(系统误差，注：其实也就是 beta == 0?)，F检验用来检测数据的精密度(偶然误差，注：用于检验方差 $\sigma^2$ == 0)。在定量分析过程中，常遇到两种情况：一种是样本测量的平均值与真值不一致；另一种是两组测量的平均值不一致。
+
+上述不一致是由于定量分析中的系统误差和偶然误差引起的，因此必须对两组分析结果的准确度或精密度是否存在显著性差异做出判断，两组数据的显著性检验顺序是先 F 检验后 T 检验。
+
+T 检验是检查两组均值的差异，而 F 检验是检查多组均值之间的差异（ANOVA）。对于多元线性回归模型，t检验是对于单个变量进行显著性，检验该变量独自对被解释变量的影响。f检验是检验回归模型的显著意义，即所有解释变量联合起来对被解释变量的影响。
+
+F 检验法(F-test)，初期叫方差比率检验(Variance Ratio)，又叫联合假设检验(Joint Hypotheses Test)，是英国统计学家 Fisher 提出的，主要通过比较两组数据的方差，以确定他们的密度是否有显著性差异。至于两组数据之间是否存在系统误差，则在进行 F 检验并确定它们的密度没有显著性差异之后，再进行 T 检验。
+
+F 检验是一种零假设（H0）之下，统计值服从 F-分布的检验。样本标准偏差的平方公式：
+
+$$
+s^{2}=\frac{1}{n-1} \sum(X-\bar{X})^{2}
+$$
+
+F 统计量计算公式：
+
+$$
+\mathrm{F}=\mathrm{S}_{1}^{2} / \mathrm{S}_{2}^{2}
+$$
+
+公式解释
+
+F:统计量，根据自由度查表，当 F 值小于查表值时没有显著差异，当 F 值大于等于查表值
+时有显著差异；
+S1:样本 1 的标准差；
+S2:样本 2 的标准差；
+分子自由度: df=分子的数量-1;
+分母自由度: df=分母的数量-1.
+
+F 检验对于数据的正态性非常敏感，需要对数据集先进行正态分布检验，使用
+shaprio-wilk 作为正态分布检验的方法。原假设 H0：样本符合正态分布。
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  # 按不同的处理方法，进行分组
+ len_VC<-ToothGrowth$len[which(ToothGrowth$supp=='VC')]
+ len_OJ<-ToothGrowth$len[which(ToothGrowth$supp=='OJ')]
+# 正态分布检验
+  shapiro.test(len_VC)
+  ## Shapiro-Wilk normality test
+  ## data:  len_VC
+  ## W = 0.96567, p-value = 0.4284
+ # 正态分布检验
+  shapiro.test(len_OJ)
+  ## Shapiro-Wilk normality test
+  ## data:  len_OJ
+  ## W = 0.91784, p-value = 0.02359 
+#+end_src
+
+两个样本的 W 统计量都接近 1，且 p-value 都大于 0.05，不能拒绝原假设，两组样本数据为正态分布。
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  # 生成随机数
+  set.seed(1)
+  x <- rnorm(50, mean = 0, sd = 2)
+  y <- rnorm(30, mean = 1, sd = 1)
+                                        # 进行F检验
+  var.test(x, y) 
+                                        # 进行F检验
+  ## F test to compare two variances
+  ## data:  x and y
+  ## F = 2.6522, num df = 49, denom df = 29, p-value
+  ## = 0.006232
+  ## alternative hypothesis: true ratio of variances is not equal to 1
+  ## 95 percent confidence interval:
+  ##                           1.332510 4.989832
+  ## sample estimates:
+  ##            ratio of variances 
+  ## 2.652168 
+#+end_src
+
+指标解释：
+H0:原假设 2 组样本的方差，无显著差异
+F 统计量：2.6522
+num df，分子自由度，50-1=49
+denom df，分每自由度，30-1=29
+p-value 值：0.006232
+95 percent confidence interval：95%的置信区间
+ratio of variances：方差比率 2.652168
+结果解读，以 0.05 为显著性水平，F = 2.6522 大于临界值 1.81(查表)，F值显著，拒绝原假设。以 0.05 为显著性水平，p-value=0.006232 小于 0.05，拒绝原假设，两样本方差有显著性差异。这个结果与我们构造的数据是一致的，样本的方差就是不同的。
+
+**** 方差齐次性检验
+在 F 检验框架下，还可以做方差齐次性检验。
+
+方差齐性双侧检验的原假设和备择假设：
+
+\begin{equation}
+\begin{array}{l}H_{0}: \sigma_{1}^{2}=\sigma_{2}^{2}, \text { 即两总体方差相等 } \\ H_{1}: \sigma_{1}^{2} \neq \sigma_{2}^{2}, \text { 即两总体方差不等 }\end{array}
+\end{equation}
+
+由 F 分布的构造定义：
+
+\begin{equation}
+\frac{s_{1}^{2} / \sigma_{1}^{2}}{s_{2}^{2} / \sigma_{2}^{2}} \sim F\left(n_{1}-1, n_{2}-1\right)
+\end{equation}
+
+在 \(H_{0}\) 成立的条件下, 即 \(\sigma_{1}^{2}=\sigma_{2}^{2}\) 成立的条件下:
+
+$$
+\frac{s_{1}^{2}}{s_{2}^{2}} \sim F\left(n_{1}-1, n_{2}-1\right)
+$$
+
+给定显著性水平 \(\alpha,\) 利用样本数据计算统计量
+\(F_{1}=\frac{s_{1}^{2}}{s_{2}^{2}}\), 若 \(F_{1}>F_{\alpha / 2,\left(n_{1}-1,
+n_{2}-1\right)}\) 拒绝原假设，认为方差不齐，否则就不拒绝原假设。 
+
+为啥要做方差齐次性检验？关于方差分析的基本假定有三个:
+
+- 可加性
 
 方差分析的每一次观察值都包含了总体平均数、各因素主效应、各因素间的交互效应、随机误差等许多部分，这些组成部分必须以叠加的方式综合起来，即每一个观察值都可视为这些组成部分的累加和。
 
-*** 正态性
- 即随机误差$\epsilon$必须为相互独立的正态随机变量。这也是很重要的条件，如果它不能满足，则均方期望的推导就不能成立，采用 
+- 正态性
 
-*** 方差齐性
+即随机误差 $\epsilon$ 必须为相互独立的正态随机变量。这也是很重要的条件，如果它不能满足，则均方期望的推导就不能成立。
 
-所谓方差齐性，也就是方差相等，在t检验和方差分析中，都需要满足这一前提条件。在两组和多组比较中，方差齐性的意思很容易理解，无非就是比较各组的方差大小，看看各组的方差是不是差不多大小，如果差别太大，就认为是方差不齐，或方差不等。如果差别不大，就认为方差齐性或方差相等。当然，这种所谓的差别大或小，需要统计学的检验，所以就有了方差齐性检验。
+- 方差齐性
 
+所谓方差齐性，也就是方差相等，在 t 检验和方差分析中，都需要满足这一前提条件。在两组和多组比较中，方差齐性的意思很容易理解，无非就是比较各组的方差大小，看看各组的方差是不是差不多大小，如果差别太大，就认为是方差不齐，或方差不等。如果差别不大，就认为方差齐性或方差相等。当然，这种所谓的差别大或小，需要统计学的检验，所以就有了方差齐性检验。
 
-然而在线性回归中，理论上\(X\)是有方差的。然而这种理论上的方差，除非你知道总体中每个\(X\)取值上的所有对应\(Y\)的值，否则你是没有办法真正去计算方差的。但这种情况几乎是不可能发生的，因此在线性回归中的方差齐性检验，很多情况下只是一种探测而已。既然线性回归无法做到对每一个\(X\)取值上的\(Y\)值计算方差，那我们可以放宽一下，可以简单地看某一\(X\)取值范围内的\(Y\)值的方差，这是可以做到的。所以实际中我们经常通过线性回归的残差图来判断方差齐性，即以因变量残差作为纵坐标，以某自变量作为横坐标，绘制散点图。如果残差总的来说时随机分布的，没有随着自变量的增加而有其它趋势，基本就可以认为方差齐性。
+然而在线性回归中，理论上 \(X\) 是有方差的。然而这种理论上的方差，除非你知道总体
+中每个 \(X\) 取值上的所有对应 \(Y\) 的值，否则你是没有办法真正去计算方差的。但这
+种情况几乎是不可能发生的，因此在线性回归中的方差齐性检验，很多情况下只是一种探测
+而已。既然线性回归无法做到对每一个 \(X\) 取值上的 \(Y\) 值计算方差，那我们可以放
+宽一下，可以简单地看某一 \(X\) 取值范围内的 \(Y\) 值的方差，这是可以做到的。所以
+实际中我们经常通过线性回归的 *残差图* 来判断方差齐性，即以因变量残差作为纵坐标，以某自变量作为横坐标，绘制散点图。如果残差总的来说时随机分布的，没有随着自变量的增加而有其它趋势，基本就可以认为方差齐性。
 
 方差齐性检验方法：
 绘制散点图：一般情况因变量是纵轴，但是，在方差齐性检验中，因变量被设置为横轴，纵轴是学生化残差。原因就是，要弄清究竟因变量和残差之间有没有关系。结果说明：如果残差随机分布在一条穿过零点的水平直线的两侧，就说明残差独立，也就是证明因变量方差齐性。
 
-- 离群点检测
+残差杠杆图可以告诉我们哪个观测值（如果有）会对模型造成过度影响，换句话说，是否存在我们应该关注的异常值。鉴别强影响点的统计量是 *库克距离* ，一般认为，如果这个统计量的值大于 1，就需要进行更深入的检查。
 
-残差杠杆图可以告诉我们哪个观测值（如果有）会对模型造成过度影响，换句话说，是否存在我们应该关注的异常值。鉴别强影响点的统计量是 *库克距离* ，一般认为，如果这个统计量的值大于1，就需要进行更深入的检查。
+**** ANOVA
+如果说回归模型是量化的预测变量来预测量化的响应变量的回归模型。当包含的因子是解释
+变量时，我们关注的重点通常会从预测转向组别差异的分析，这种分析法称作方差分析（anova）。
+
+方差分析主要通过 F 检验进行效果检测。
+
+比如说，一种治疗方法在两个水平（5周，6个月），每个患者在所有水平都测量，这种设计
+称为“单因素组内方差分析”。
+
+当疗法（therapy） 和时间（time） 都作为因子时，既可以分析疗法的影响（时间跨度上
+的平均）和时间的影响（疗法类型跨度上的平均），又可以分析疗法和时间的交互影响，前
+两个称作主效应，交互部分称作交互效应。当设计包含两个甚至更多的因子时，便是因素方
+差分析设计，比如两因子时称作双因子方差分析。
+
+
+解决的问题等价于检验
+\begin{equation}
+H_{0}: \beta_{1}=\beta_{2}=\ldots=\beta_{p-1}=0
+\end{equation}
+
+关键词：组间偏差平方和\ 组内偏差平方和。方差分析表如下：
+
+\begin{equation}
+\begin{array}{c|c|c|c|c|c}\text { 变异来源 } & \text { 偏差平方和 } & \text { 自由度 } & \text { 均方 } & F & p \text { 值 } \\ \hline \text { 组间 } & S S A & r-1 & M S A=\frac{S S A}{r-1} & \frac{M S A}{M S E} & P\left(F_{\alpha,(r-1, n-r)}\right)>F \\ \text { 组内 } & S S E & n-r & M S E=\frac{s S E}{n-r} & - & - \\ \text { 总变异 } & S S T & n-1 & - & - & -\end{array}
+\end{equation}
+
+*** Pearson's correlation test
+
+*** 独立样本 T 检验
+这其实是两个独立样本 T 检验的目的是利用来自两个总体的独立样本，推断两个总体的均
+值是否存在显著差异。这个检验的前提要求是：
+(1) 独立，两组数据相互独立，互不相关；
+(2) 正态，即两组样本来自的总体符合正态分布；
+(3) 方差齐性，即两组方差相等。
+
+测试的假设或零假设是两个群体的平均值相等。
+H0:样本分布均值相等
+H1:样本分布均值不相等
+ 
+#+begin_src python
+  import numpy
+  from numpy.random import randn
+  from numpy.random import seed
+  from scipy.stats import ttest_ind
+  seed(1)
+  data1 = 5 * randn(100) + 50
+  data2 = 5 * randn(100) + 51
+  stat, p = ttest_ind(data1, data2)
+  print('Statistics=%.3f, p=%.3f' % (stat, p))
+  # interpret
+alpha = 0.05
+if p > alpha:
+	print('Same distributions (fail to reject H0)')
+else:
+	print('Different distributions (reject H0)')  
+#+end_src
+*** 配对样本 T 检验
+两配对样本 T 检验的目的是利用来自两个不同总体的配对样本，推断两个总体的均值是否存
+在显著差异。什么是配对样本？比如说：一种药，干预前和干预后的体内某种指标的水平
+（血红蛋白的水平）。
+
+在配对设计得到得到债样本数据中，每对数据之间都有一定的相关，如果忽略
+这种关系就会浪费大量的统计信息，因此配对样本 T 检验的前提要求：
+
+(1) 两样本必须是配对，配对可以从 2 个因素考虑，首先，两样本的观察值数目相等；其次，
+两样本的观察值的顺序不能随意更改。
+
+(2)样本来自的两个总体应服从正态分布。
+
+#+begin_src python
+  import numpy
+  from numpy.random import randn
+  from numpy.random import seed
+  from scipy.stats import ttest_rel #配对样本t检验
+  seed(1)
+  data1 = 5 * randn(100) + 50
+  data2 = 5 * randn(100) + 51
+  stat, p = ttest_rel(data1, data2)
+  print('Statistics=%.3f, p=%.3f' % (stat, p))
+  # interpret
+alpha = 0.05
+if p > alpha:
+	print('Same distributions (fail to reject H0)')
+else:
+	print('Different distributions (reject H0)')  
+#+end_src
+*** lilliefors 检验
+这个检验是在 matlab 里看到的，用于检验数据是否满足正态分布。原假设就是数据来自于正态分布族。
+
+h = lillietest(x) returns a test decision for the null hypothesis that the data in vector x comes from a distribution in the normal family, against the alternative that it does not come from such a distribution, using a Lilliefors test. The result h is 1 if the test rejects the null hypothesis at the 5% significance level, and 0 otherwise.
+
+** 非参数检验
+以上的 T 检验早就说明数据的分布必须要满足正态分布。那么如果样本的数据量很大的话，
+没有问题，如果样本量较小，数据不满足正态分布怎么办？
+
+*非参数检验的优点：*
+
+1.对数据要求不严格，对资料的分布类型要求比较宽松；2.检验方法灵活；3.非参数检验的
+计算相对简单。
+
+首先，得回答一个问题，什么检验能够检验数据的分布是否满足正态分布？
+*** 单样本 K-S 检验
+原理：是一种拟合优度检验，适用于探索连续型随机变量的分布。
+
+原假设 $H_{0}:$ 样本来自的总体与指定的理论分布无显著差异。
+它的检验基本思路是：先将顺序分类资料数据的理论累积频数分布，同观测的经验累计频数
+分布加以比较，求出它们最大的偏离值，然后在给定的显著性水平上检验这种偏离值的出现
+是否是偶然。
+
+设随机样本观测值的累计概率分布函数为$S\left(x\right)$,样本量为$n$,在原假设成立的
+前提下，我们通过查表得到的相应理论累计概率分布函数为 $F\left(x\right)$. 定义：
+
+\[
+D=|S_{n}\left(x\right)-F_{O}\left(x\right)|
+\]
+
+K-S 检验主要考察的就是上式那个最大的偏差。如果样本总体的分布与理论分布差异不明显，
+则$D$ 不应该太大，否则样本的总体分布与理论分布差异就较大了。
+
+#+begin_src python
+  from scipy.stats import kstest
+  from scipy import stats
+  np.random.seed(987654321)
+  stats.kstest(stats.norm.rvs(size=100), 'norm')  
+#+end_src
+
+方法：scipy.stats.kstest (rvs, cdf, args = ( ), N = 20, alternative ='two-sided', mode ='approx')
+
+参数：rvs - 待检验数据，可以是字符串、数组；
+cdf - 需要设置的检验，这里设置为 norm，也就是正态性检验；
+alternative - 设置单双尾检验，默认为 two-sided
+返回：W - 统计数；p-value - p 值
+
+*** shapiro-wilk 检验
+用于检查数据是否正态分布。
+shapiro-wilk 检验的原假设是数据来自于正态分布。
+
+#+begin_src python
+  from scipy import stats
+  x = stats.norm.rvs(loc=5, scale = 3, size = 100)
+  stats.shapiro(x)  
+#+end_src
+*** 卡方检验
+卡方检验，主要用来检验观察频数与期望频数是否吻合。卡方检验的零假设$H_{0}:$ 样本
+来源总体的分布与指定的理论分布无显著差异。（看起来与 K-S 检验一样?）
+
+卡方统计量 $\chi^{2}$ ：为检验实际分布与理论分布是否一致，我们常用卡方统计量，$\chi^{2}$统计量：
+
+所以，按照不同组样本，可以分为：
+拟合优度检验：单组样本，
+交叉表卡方：两组独立样本，
+配对卡方：用于配对样本。
+
+\[
+\chi^{2}=\sum_{i=1}^{k}\frac{\left(A_{i}-T_{i}\right)^{2}}{T_{i}}
+\]
+
+式中，$k$为子集个数，$A_{i}$为第$i$个子集的频数，$T_{i}$为第$i$个子集的理论频数。根据 pearson 定理，当$n$足够大时，$\chi^{2}$统计量的值近似服从$\chi^{2}\left(k-1\right)$的分布。
+
+当观察频数与理论频数越接近，$\chi^{2}$值越小，不能拒绝零假设；观察频数与理论频数相差越大，$\chi^{2}$值越大，越没有证据支持零假设。
+
+下面给出一个样例，以掷骰子为例，有一天小王同学闲来无事，发现桌上刚好有一枚骰子，身为数据分析师的他，好奇骰子是不是均匀的，于是他连着投掷了 120 次，并统计了各点出现的次数。由于原假设骰子是均衡的，所以每点数期望值都为 20。
+
+#+begin_src python
+  import numpy as np
+  import pandas as pd
+  from scipy import stats
+  #创建上述表
+observed_pd = pd.DataFrame(['1点']*23+['2点']*20+['3点']*18+['4点']*19+['5点']*24+['6点']*16)
+expected_pd = pd.DataFrame(['1点']*20+['2点']*20+['3点']*20+['4点']*20+['5点']*20+['6点']*20)
+observed_table = pd.crosstab(index=observed_pd[0], columns='count')
+expected_table = pd.crosstab(index=expected_pd[0], columns='count')
+print(observed_table)
+print('——————')
+print(expected_table)
+observed = observed_table
+expected = expected_table
+chi_squared_stat = ((observed-expected)**2/expected).sum()
+print('chi_squared_stat')
+  print(chi_squared_stat)
+
+stats.chisquare(f_obs=observed, #Array of obversed counts
+                f_exp=expected) #Array of expected counts   
+#+end_src
+
+列联表样例。
+
+在日常的数据分析工作中，卡方检验主要用于留存率，渗透率等漏斗指标，下面我们就以留存率为例，假设平台从微博、微信、知乎渠道引流，现在我们要确定留存率是否与渠道有关。
+第一步我们先设立原假设：留存率与渠道无关；第二步设置显著性水平α=0.05，在确立使用卡方检验之后接下来用 python 实现。
+#+begin_src python
+  df = pd.DataFrame(columns = ['register','stay'],index = ['weibo','zhihu','weixin'],
+                    data=[[11570,3173],[15113,3901],[18244,4899]])
+  df['lost'] = df['register']- df['stay']
+  df
+  observed = df[['stay','lost']]
+  observed
+  stats.chi2_contingency(observed=observed) 
+#+end_src
+
+可以看出 P 值要小于我们原先定的显著性水平α，所以我们有理由拒绝原假设，即用户渠道的确影响了留存情况，两者并不是相互独立的。
+*** 二项式检验
+既然有正态分布检验，那么也会有离散数据分布检验的，比如说二项式分布检验。
+如果进行 $n$ 次相同的试验，则出现两类（0或 1）的次数可以用离散型随机变量 $X$ 来
+描述.如果随机变量 $X$ 值为 1 的概率为 $P$,则 $X$ 为 0 的概率$Q=1-P$，这样的分布为二项分布。
+
+二项分布检验就是检验样本是否来自指定概率为$P$的二项分布，其原假设为：样本总体与指定的二项分布无显著差异。
+
+二项分布检验是通过对二分类变量的单个取值做假设检验，当样本$\leq30$时，可以按计算概率值：
+
+\[
+P\left\{ X\leq x\right\} =\sum_{i=1}^{x}C_{n}^{i}p^{i}q^{n-i}
+\]
+
+表示$n$次试验中某类变量出现的次数$\leq x$的概率。
+
+#+begin_src python
+  p = stats.binom_test(3, n=15, p=0.1, alternative='greater')
+  p  
+#+end_src
+*** 游程检验
+变量的随机性检验，主要用于检验一个变量两个值的分布是否是随机分布的，即检验前一个
+样本是否会影响后一个样本的值，如不影响，则这组样本是随机的。
+
+游程是指分类变量有相同取值的几个连续记录，一个游程就是指某序列中同类元素的一个持
+续最大的集合。其假设检验为原假设 $H_{0}$:变量值的分布是随机的。
+
+假设投硬币，得到的结果：110001101111,1 是正面，0是反面，11 是游程长度为 2,随后为 3
+个 0 为第二个游程，长度为 3,以此类推，该序列共包含 5 个游程。
+
+#+begin_src python
+  import numpy as np
+  import pandas as pd
+  import scipy.stats as stats
+  from scipy.special import comb
+def run_test(list_2e):
+    arr=pd.factorize(list_2e)[0]
+    if (2 in arr) or (1 not in arr):
+        return '输入的列表不是二分类数据'
+    count={}
+    for i in arr:
+        count[i]=count.get(i,0)+1
+        n,n0,n1=len(arr),count[0],count[1]
+        r=1
+    for i in range(len(arr)-1):
+        if arr[i+1]!=arr[i]:
+            r+=1
+    if r%2==0:
+        p=2*comb(n1-1,r/2-1)*comb(n0-1,r/2-1)/comb(n,n1)
+    else:
+        p=(comb(n1-1,(r-1)/2-1)*comb(n0-1,(r-1)/2)+comb(n1-1,(r-1)/2)*comb(n0-1,(r-1)/2-1))/comb(n,n1)
+    return {'游程数':r,'p值':p}
+  run_test(['+','+','-','+','-','-','-','-','+','+','+','+'])  
+#+end_src
+*** 两独立样本检验
+有时样本所属总体分类类型是未知的，但是想知道在这种情况下两个独立样本是否来自相同
+的分布的总体。
+**** mann-whitney U 检验
+该假设的 $H_{0}:$ 两个独立样本来自相同的分布总体。
+
+基本思路：首先将两组样本混合并按升序排序，这时我们就得到了每个数据在整个数据中的
+位置，我们称之为等级或秩。如果数据在总体数据上的位置相同，我们称为结。在计算这样
+的数据在总体数据中的位置时我们计算它们的平均秩。其次计算第一组样本每个观测值的秩
+大于第二组样本每个观察值的秩的次数，再计算第二组样本每个观察值的秩大于第一组样本
+观察值的秩的次数，分别记为$U_{1}$,$U_{2}$, 如果$U_{1}$,$U_{2}$ 比较接近，则说两
+个样本来自于相同的分布总体，反之不是。
+
+#+begin_src python
+  data1 = 5 * randn(100) + 50
+  data2 = 5 * randn(100) + 51
+  stat,p = stats.mannwhitneyu(data1, data2)  
+#+end_src
+**** K-S 检验（Kolmogorov-Smirnov 检验）
+也是一个拟合优度检验，适用于探索连续型随机变量的分布，单样本 K-S 检验可以将一个
+变量的实际频数分布与正态分布，均匀分布，伯松分布和指数分布进行比较。
+
+基本思路：首先计算两组样本的秩分累计频数和每个点上的累计频数，然后将两组的累计频
+数相减，得到一组差值序列，通过检验该差值序列总和的大小来检验两独立样本总体分布是
+否有差异。
+
+#+begin_src python
+  np.random.seed(1234)
+  n1 = 200
+  n2 = 300
+  rvs1 = stats.norm.rvs(size = n1, loc = 0, scale = 1)
+  rvs2 = stats.norm.rvs(size = n2, loc = 0.5, scale = 1.5)
+  stats.ks_2samp(rvs1, rvs2)  
+#+end_src
+*** K 个独立样本检验
+多样本问题主要涉及如何检验几种不同的方法、决策或处理所产生的结果是否一样。比如在
+生活中不同消费者对不同产品对偏好是否有差异等。
+
+多个独立样本检验是通过分析样本数据，推断样本来自的多个独立总体的分布是否存在显著
+差异，其基本原理与两独立样本检验相同，两独立样本是多个独立样本检验中最基本的形式。
+**** Kruskal-Wallis H 检验
+
+     #+begin_src python
+       from scipy import stats
+       x = [1, 3, 5, 7, 9]
+       y = [2, 4, 6, 8, 10]
+       z = [23,12,2,34,2,12]
+       stats.kruskal(x, y, z)       
+     #+end_src
+**** Median(中位数)检验
+
+     #+begin_src python
+       g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
+       g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
+       g3 = [0, 3, 9, 22, 23, 25, 25, 33, 34, 34, 40, 45, 46, 48, 62, 67, 84]
+       from scipy.stats import median_test
+       stat, p, med, tbl = median_test(g1, g2, g3)       
+     #+end_src
+*** K 个相关样本检验
+问题：多个相关样本（如配对\配伍组资料）是否来自同一个总体的问题，需要借助多个相
+关样本检验。
+**** friedman 检验
+该检验方法是将各样本按降序从大到小排序，得到 $k$ 个样本的 $k$ 列数据，然后对每行
+的 $k$ 个观测值求秩，通过各样本的总秩次和与平均秩次来判断各样本的分布是否存在显
+著性差异。
+
+#+begin_src python
+  import numpy as np
+  g3 = np.random.randn(15)
+  friedmanchisquare(g1, g2, g3)  
+#+end_src
+
+*** 两个相关样本检验
+相关样本的非参数检验是在对总体不了解的情况下，对样本所在的相关配对总体的分布是否
+存在显著性差异进行检验。该检验一般应用于对同一研究对象（或配对对象）分别给予$K$
+种不同处理或处理前后的效果进行比较，前者推断 $K$ 种效果有无差异，后者推断某种处
+理是否有效。
+**** Wilcoxon 检验 
+主要检验两个相关样本是否来自相同的总体，但对总体分布形式没有限制。该检验方法要求
+变量为两个连续变量，首先将一个样本观测值减去另一个样本相应的观测值，记下差值的符
+号和绝对值，然后将绝对值差值数据按升序排序后，求出相应的秩；最后分别计算正值的秩
+的平均平均秩及总和，负值的秩的平均秩及总和。
+
+     #+begin_src python 
+       g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
+       g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
+       stats.ranksums(g1, g2)      
+     #+end_src
+**** sign 检验
+符号检验，该检验适用于相关样本资料和定性变量。零假设：样本来自的两配对样本对总体
+分布无显著差异。
+
+基本思路：将两组样本中对应的观测值相减，分别得到正差值和负差值，计算正差值和负差
+值的个数，再比较正负差值个数的差异性。
+
+#+begin_src python
+  g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48]
+  g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
+  from scipy.stats import wilcoxon
+  wilcoxon(g1, g2)
+#+end_src
+**** McNemar 检验
+** 置换检验
+显著性检验通常可以告诉我们一个观测值是否是有效的，例如检测两组样本均值差异的假设检验可以告诉我们这两组样本的均值是否相等（或者那个均值更大）。我们在实验中经常会因为各种问题（时间、经费、人力、物力）得到一些小样本结果，如果我们想知道这些小样本结果的总体是什么样子的，就需要用到置换检验。
+
+Permutation test 置换检验是 Fisher 于 20 世纪 30 年代提出的一种基于大量计算（computationally intensive），利用样本数据的全（或随机）排列，进行统计推断的方法，因其对总体分布自由，应用较为广泛，特别适用于总体分布未知的小样本资料，以及某些难以用常规方法分析资料的假设检验问题。在具体使用上它和 Bootstrap Methods 类似，通过对样本进行顺序上的置换，重新计算统计检验量，构造经验分布，然后在此基础上求出 P-value 进行推断。
+
+可以通过 modelr 包中的 permute 函数实现置换数据集。
+
+library(modelr)
+library(purrr)
+perms <- permute(mtcars,  1000, mpg)
+perms %>% unlist()
+
+perms <- permute(mtcars,  1000, mpg)
+
+models <- map(perms$perm, ~ lm(mpg ~ wt, data = .))
+glanced <- map_df(models, broom::glance, .id = "id")
+
+hist(glanced$statistic)
+
+* 模型评估
+** VIF
+如何计算多重共线性？
+
+$$
+VIF=\frac{1}{1-R_{i}^{2}}
+$$
+
+其中, $R_{i}$ 为自变量对其余自变量作回归分析的复相关系数。
+
+** 过拟合
+
+当样本量不大时，应该避免划分测试测试集，因为建模可能需要用到每个样本。此外，测试
+测试集的样本量或许不足以提供一个合理论断所需要的信息量和精度。Hawkins(2003) 指出
+预留适当数量的数据评估模型并不比单纯使用交叉验证的方法更可靠，因此没有理由使用这
+样的方法。我们能够在训练训练集上使用交叉验证一类的重抽样方法得到恰当的模型评估。
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  set.seed(1056)
+  data("GermanCredit")
+  inTrain <- createDataPartition(GermanCredit$Class, p = .8)[[1]]
+  GermanCreditTrain <- GermanCredit[ inTrain, ]
+  GermanCreditTest  <- GermanCredit[-inTrain, ]
+  tox_ctrl <- trainControl(method = "cv", summaryFunction = model_stats)
+  logisticReg <- 
+      train(
+          Class ~ .,
+          data = GermanCreditTrain,
+          method="glm",
+          family = "binomial",
+          trControl=trainControl(
+              method = "repeatedcv",
+              repeats = 5,
+              number = 10
+          )
+      )
+  
+#+end_src
+
+一些参考资料：
+
+https://daviddalpiaz.github.io/r4sl/the-caret-package.html
+
+https://juliasilge.com/blog/intro-tidymodels/
+
+* 无监督模型
+知名的无监督模型包括：一系列的聚类算法，包括 k-平均算法、分层聚类分析、最大期望算法以及可视化和降维算法，包括，主成分分析（PCA）、核主成分分析（kernel PCA）、局部线性嵌入（LLE）、t- 分布随机近邻嵌入（t- SNE）以及关联规则学习，比如，apriori/eclat 等。 
+** k-means
+![k-means 算法](https://cdn.mathpix.com/snip/images/TGWnw2YiFVePwUyxk_lvOslHhm4tvsMDZ0cFVeE_PNQ.original.fullsize.png)
+
+- 容易理解，聚类效果不错，虽然是局部最优，但往往局部最优就够了；
+
+- 处理大数据集的时候，该算法可以保证较好的伸缩性；
+
+- 当簇近似高斯分布的时候，效果非常不错；
+
+- 算法复杂度低。
+
+2.2 缺点
+
+    K 值需要人为设定，不同 K 值得到的结果不一样；对初始的簇中心敏感，不同选取方
+    式会得到不同结果；对异常值敏感；样本只能归为一类，不适合多分类任务；不适合太
+    离散的分类、样本类别不平衡的分类、非凸形状的分类。
+
+*** 如何确定 K?
+
+手肘法本质上也是一种间接的观察法。这里需要一点 K-Means 的背景知识。当 K-Means 算法完成后，我们将得到 K 个聚类的中心点 Mi, i=1,2,⋯,K。以及每个原始点所对应的聚类 Ci,i=1,2,⋯,K。我们通常采用所有样本点到它所在的聚类的中心点的距离的和作为模型的度量，记为 DK。
+
+$$
+D_{K}=\sum_{i=1}^{K} \sum_{X \in C_{i}}\left\|X-M_{i}\right\|
+$$
+这里距离可以采用欧式距离。对于不同的 K，最后我们会得到不同的中心点和聚类，所有会有不同的度量。
+
+我们把上面的例子用不同的 K 去计算，会得到不同的结果。把 K 作为横坐标，DK 作为纵坐标，我们可以得到下面的折线。
+
+     #+begin_src python
+from sklearn.cluster import KMeans
+import numpy as np
+X = np.array([[1, 2], [1, 4], [1, 0],
+               [10, 2], [10, 4], [10, 0]])
+kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+kmeans.labels_
+kmeans.predict([[0, 0], [12, 3]])
+kmeans.cluster_centers_
+
+  import pandas as pd
+ from sklearn.datasets import load_iris
+ from sklearn.cluster import KMeans
+ import matplotlib.pyplot as plt
+
+ iris = load_iris()
+ X = pd.DataFrame(iris.data, columns=iris['feature_names'])
+ #print(X)
+ data = X[['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)']]
+
+ sse = {}
+ for k in range(1, 10):
+     kmeans = KMeans(n_clusters=k, max_iter=1000).fit(data)
+     data["clusters"] = kmeans.labels_
+     #print(data["clusters"])
+     sse[k] = kmeans.inertia_ # Inertia: Sum of distances of samples to their closest cluster center
+ plt.figure()
+ plt.plot(list(sse.keys()), list(sse.values()))
+ plt.xlabel("Number of cluster")
+ plt.ylabel("SSE")
+ plt.show()
+     #+end_src
+
+ #+begin_src python
+  from sklearn.cluster import KMeans
+ import numpy as np
+ X = np.array([[1, 2], [1, 4], [1, 0],
+                [10, 2], [10, 4], [10, 0]])
+ kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+ kmeans.labels_
+ kmeans.predict([[0, 0], [12, 3]])
+ kmeans.cluster_centers_ 
+ #+end_src
+
+** Gussian mixture model
+
+\begin{array}{l}{Y_{i} | X_{i} \text { independent for } i=1, \ldots, n} \\ {Y_{i}\left|X_{i}=x \sim f_{\xi}(y | x) d y \text { for } i=1, \ldots, n\right.} \\ {f_{\xi}(y | x)=\sum_{r=1}^{k} \pi_{r} \frac{1}{\sqrt{2 \pi} \sigma_{r}} \exp \left(-\frac{\left(y-x^{T} \beta_{r}\right)^{2}}{2 \sigma_{r}^{2}}\right)^{2}} \\ {\xi=\left(\beta_{1}, \ldots, \beta_{k}, \sigma_{1}, \ldots, \sigma_{k}, \pi_{1}, \ldots, \pi_{k-1}\right) \in \mathbb{R}^{k p} \times \mathbb{R}_{>0}^{k} \times \Pi} \\ {\Pi=\left\{\pi ; \pi_{r}>0 \text { for } r=1, \ldots, k-1 \text { and } \sum_{r=1}^{k-1} \pi_{r}<1\right\}}\end{array}
+
+这里需要注意分布密度权重等于 1.上述的说明每个成分有着不同的方差和均值。
+
+Thereby, \(X_{i} \in \mathbb{R}^{p}\) are fixed or random covariates, \(Y_{i} \in \mathbb{R}\) is a univariate response variable and
+\(\xi=\left(\beta_{1}, \ldots, \beta_{k}, \sigma_{1}, \ldots, \sigma_{k}, \pi_{1}, \ldots, \pi_{k-1}\right)\) denotes the \((p+2) \cdot k-1\) free parameters and \(\pi_{k}\) is given by
+\(\pi_{k}=1-\sum_{r=1}^{k-1} \pi_{r} .\) The model in ( 2.1) is a mixture of Gaussian regressions, where every component
+\(r\) has its individual vector of regressions coefficients \(\beta_{r}\) and error variances \(\sigma_{r}^{2} .\) We are particularly
+interested in the case \(p \gg n\).
+
+模型似然可以写作：
+\begin{equation}
+ \ell(\theta ; Y)=\sum_{i=1}^{n} \log \left(\sum_{r=1}^{k} \pi_{r} \frac{\rho_{r}}{\sqrt{2 \pi}} \exp \left(-\frac{1}{2}\left(\rho_{r} Y_{i}-X_{i}^{T} \phi_{r}\right)^{2}\right)\right) 
+\end{equation}
+
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  library(ggplot2)
+  library(dplyr)
+  p <- ggplot(faithful,aes(x = waiting)
+             )+geom_density()
+  p
+  library(mixtools)
+  set.seed(1)
+  wait <- faithful$waiting
+  mixmdl <- normalmixEM(wait, k = 2)
+  mixmdl
+#+END_SRC
+** 余弦距离
+欧几里得点积公式求出：
+
+$$
+\mathbf{a} \cdot \mathbf{b}=\|\mathbf{a}\|\|\mathbf{b}\| \cos \theta
+$$
+
+进一步可以推断出：
+
+\begin{equation}
+\text { similarity }=\cos (\theta)=\frac{A \cdot B}{\|A\|\|B\|}=\frac{\sum_{i=1}^{n} A_{i} \times B_{i}}{\sqrt{\sum_{i=1}^{n}\left(A_{i}\right)^{2} \times \sqrt{\sum_{i=1}^{n}\left(B_{i}\right)^{2}}}}
+\end{equation}
+
+* 半监督学习
+有些算法可以处理部分标记的训练数据——通常是大量未标记数据和少量的标记数据。
 
 * 不平衡数据
-**  SMOTE算法
+**  SMOTE 算法
+合成少数类过采样技术，是基于随机过采样的一种改进方按，由于随机过采样采取简单复制
+样本的策略来增加少数类样本，这样容易产生模型过拟合的问题。SMOTE 算法的基本思想是
+对少数类样本进行分析并根据少数类样本人工合成新样本添加到数据集中。
 
-- 对于少数类 $(X)$ 中每一个样本 $x_{i}$, 计算它到少数类样本集 $(X)$ 中所有样本的距离，得到其 $K$ 个近邻
+- 对于少数类 $(X)$ 中每一个样本 $x_{i}$, 计算它到少数类样本集 $(X)$ 中所有样本的
+  距离，得到其 $K$ 个近邻。注意是对少数类中的所有样本求 knn.
 
-- 根据样本不平衡比例设置一个采样比例以确定采样倍率sampling_rate, 对于每一个少数类样本 $x_{i}$, 从其 $k$ 近邻中随机选择sampling_rate 个近邻为 $x^{1},x^{2},\cdots,x^{sampling_{rate}}$   
+- 根据样本不平衡比例设置一个采样比例以确定采样倍率 sampling_rate, (所谓的
+  sampling_rate,就是希望得到多少的少数类样本)对于每一个少数类样本 $x_{i}$, 从其 $k$ 近邻中随机选择 sampling_rate 个近邻为 $x^{1},x^{2},\cdots,x^{sampling_{rate}}$   
 
 - 对于每一个随机选出的近邻 $x^{i},(i=1,2,\cdots,sampling_rate)$ ,分别与原样本按照如下的公式构建新的样本
 
@@ -247,10 +2528,1314 @@ New=x+rand(0,1) \times (x_{i}-x),i=1,2,\cdots,N
 
 - 将新样本与原始数据合成，产生新的训练集
 
-* 集成学习
+[https://www.cnblogs.com/Determined22/p/5772538.html] 更多的信息可以从这里看到！
 
-stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用LR进行回归组合），从而得到完整的stacking模型。
+* 机器学习 
+** 神经网络
+下面这个连接可以清晰地展现神经网络知识。
+
+https://zhuanlan.zhihu.com/p/58964140
+
+
+共有 3 层 layer,input layer, hidden layer, softmax layer(为了将上一层输出映射成
+（0,1）)。
+
+[https://pic1.zhimg.com/v2-6fac69d2abab24639943ebaab0b70bde_b.jpg]
+
+上面还有点复杂，来点简单的。
+[https://pic1.zhimg.com/v2-7ee8cabcbd707dd4deab7155af2ba4cd_b.jpg]
+
+1.1.输入层
+
+在我们的例子中，输入层是坐标值，例如（1,1），这是一个包含两个元素的数组，也可以看作是一个 1*2 的矩阵。输入层的元素维度与输入量的特征息息相关，如果输入的是一张 32*32 像素的灰度图像，那么输入层的维度就是 32*32。
+
+1.2.从输入层到隐藏层
+
+连接输入层和隐藏层的是 W1 和 b1。由 X 计算得到 H 十分简单，就是矩阵运算：
+
+\(\mathrm{H}=\mathrm{X}^{*} \mathrm{W} 1+\mathrm{b} 1\)
+
+1.3.从隐藏层到输出层
+
+连接隐藏层和输出层的是 W2 和 b2。同样是通过矩阵运算进行的：
+
+$$
+ \mathrm{Y}=\mathrm{H}^{*} \mathrm{W} 2+\mathrm{b} 2 
+$$
+
+1.4.分析
+
+通过上述两个线性方程的计算，我们就能得到最终的输出 Y 了，但是如果你还对线性代数
+的计算有印象的话，应该会知道：一系列线性方程的运算最终都可以用一个线性方程表示。
+也就是说，上述两个式子联立后可以用一个线性方程表达。对于两次神经网络是这样，就算
+网络深度加到 100 层，也依然是这样。这样的话神经网络就失去了意义。
+
+所以这里要对网络注入灵魂：激活层。
+
+2.激活层
+
+简而言之，激活层是为矩阵运算的结果添加非线性的。常用的激活函数有三种，分别是阶跃函数、Sigmoid 和 ReLU。不要被奇怪的函数名吓到，其实它们的形式都很简单，如下图（更正：sigmoid 在负无穷是应趋近于 0）：
+
+[https://pic4.zhimg.com/v2-3c50daffa0cf4238bd96aaad69ffaec7_b.jpg]
+
+激活函数具体是怎么计算的呢？
+
+假如经过公式 H=X*W1+b1 计算得到的 H 值为：(1,-2,3,-4,7...)，那么经过阶跃函数激活层后就会变为(1,0,1,0,1...)，经过 ReLU 激活层之后会变为(1,0,3,0,7...)。
+
+3.输出的正则化
+
+在图 4 中，输出 Y 的值可能会是(3,1,0.1,0.5)这样的矩阵，诚然我们可以找到里边的最
+大值“3”，从而找到对应的分类为 I，但是这并不直观。我们想让最终的输出为概率，也就
+是说可以生成像(90%,5%,2%,3%)这样的结果，这样做不仅可以找到最大概率的分类，而且可
+以知道各个分类计算的概率值。
+
+其实就是 softmax 过程，输出概率，确保概率值在[0,1] 之间。
+
+4.如何衡量输出的好坏
+
+交叉熵损失（Cross Entropy Error）： $－log(p)$, Softmax 输出的结果是(90%,5%,3%,2%)，真实的结果是(100%,0,0,0)。虽然输出的结果可以正确分类，但是与真实结果之间是有差距的，一个优秀的网络对结果的预测要无限接近于 100%，为此，我们需要将 Softmax 输出结果的好坏程度做一个“量化”。
+
+该计算结果值越接近于 0，说明结果越准确。
+
+神经网络求解方法：
+
+先前向传播：
+
+\begin{equation}
+ \begin{array}{l}z^{(l+1)}=W^{(l)} a^{(l)}+b^{(l)} \quad(\text { 公式1) } \\ a^{(l+1)}=f\left(z^{(l+1)}\right) \quad \text { (公式2) }\end{array} 
+\end{equation}
+
+\(z^{(l)}\) 为第 \(l\) 层的中间结果, \(\quad a^{(l)}\) 为第 \(l\) 层的激活值，其中第 \(l+1\) 层包含元素：输入 \(a^{(l)},\) 参数
+\(W^{(l)}, b^{(l)},\) 激活函数 \(f(),\) 中间结果 \(z^{(l+1)},\) 输出 \(a^{(l+1)} \circ\)
+
+设神经网络的损失函数为 \(J(W, b) \in R^{1} \quad\) (这里不给出具体公式，可以是交叉嫡、MSE 等) ，根据
+链式法则有：
+
+\begin{aligned} \nabla_{W^{(l)}} J(W, b) &=\frac{\partial J(W, b)}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial W^{(l)}}=\delta^{(l+1)}\left(a^{(l)}\right)^{T} \\ \nabla_{b^{(l)}} J(W, b) &=\frac{\partial J(W, b)}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial b^{(l)}}=\delta^{(l+1)} \end{aligned}
+
+这里记 \(\frac{\partial J(W, b)}{\partial z^{(l+1)}}=\delta^{(l+1)},\) 其中 \(\frac{\partial z^{(l+1)}}{\partial W^{(l)}}=a^{(l)}, \frac{\partial z^{(l+1)}}{\partial b^{(l)}}=1\) 可由 公式 1 得出, \(a^{(l)}\) 加
+转置符号 \(\left(a^{(l)}\right)^{T}\) 是根据维数相容原则作出的调整。
+
+如何求 \(\delta^{(l)}=\frac{\partial J(W, b)}{\partial z^{(l)}} ?\) 可使用如下递推（需根据维数相容原则作出调整）：
+
+\begin{equation}
+ \begin{array}{l}\delta^{(l)}=\frac{\partial J}{\partial z^{(l)}}=\frac{\partial J}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial a^{(l)}} \frac{\partial a^{(l)}}{\partial z^{(l)}}=\left(\left(W^{(l)}\right)^{T} \delta^{(l+1)}\right) \cdot f^{\prime}\left(z^{(l)}\right) \\ \text { 其中 } \frac{\partial J}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial a^{(l)}}=\left(W^{(l)}\right)^{T} \delta^{(l+1)}, \frac{\partial a^{(l)}}{\partial z^{(l)}}=f^{\prime}\left(z^{(l)}\right) \circ\end{array} 
+\end{equation}
+
+那么我们可以从最顶层逐层往下，便可以递推求得每一层的 \(\delta^{(l)}=\frac{\partial J(W, b)}{\partial z^{(l)}}\)
+注意： \(\frac{\partial a^{(l)}}{\partial z^{(l)}}=f^{\prime}\left(z^{(l)}\right)\) 是逐维求导，在公式中是点乘的形式。
+
+总结：
+
+反向传播算法流程：
+
+1) 进行前向传播计算，利用前向传播公式，得到隐藏层和输出层的激活值。
+2) 对输出层(第 $l$ 层)，计算残差：
+
+\(\delta^{(l)}=\frac{\partial J(W, b)}{\partial z^{(l)}} \quad\) (不同损失函数，结果不同，这里不给出具体形式)
+
+3) 对于 \(l-1, l-2, \ldots, 2\) 的隐藏层，计算:
+\(\delta^{(l)}=\frac{\partial J}{\partial z^{(l)}}=\frac{\partial J}{\partial
+z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial a^{(l)}} \frac{\partial
+a^{(l)}}{\partial z^{(l)}}=\left(\left(W^{(l)}\right)^{T} \delta^{(l+1)}\right)
+\cdot f^{\prime}\left(z^{(l)}\right)\)
+
+4) it 算各层参数 \(W^{(l)}, b^{(l)}\) 偏导数:
+\(\nabla_{W^{(l)}} J(W, b)=\frac{\partial J(W, b)}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial W^{(l)}}=\delta^{(l+1)}\left(a^{(l)}\right)^{T}\)
+\(\nabla_{b^{(l)}} J(W, b)=\frac{\partial J(W, b)}{\partial z^{(l+1)}} \frac{\partial z^{(l+1)}}{\partial b^{(l)}}=\delta^{(l+1)}\)
+
+上面这个算法有点复杂。
+
+我再来总结下：
+
+一切的目的在于估计 $\beta$, 那么，用到的算法就是梯度下降法.具体的梯度下降法思想
+是：
+
+\begin{equation}
+ \begin{aligned} L\left(\theta^{t}\right) &=L\left(\theta^{t-1}+\Delta \theta\right) \\ & \approx L\left(\theta^{t-1}\right)+L^{\prime}\left(\theta^{t-1}\right) \Delta \theta \end{aligned} 
+\end{equation}
+
+要使得 \(L\left(\theta^{t}\right)<L\left(\theta^{t-1}\right), \quad\) 可取:
+\(\quad \Delta \theta=-\alpha L^{\prime}\left(\theta^{t-1}\right),\) 则: 
+
+$$
+\theta^{t}=\theta^{t-1}-\alpha L^{\prime}\left(\theta^{t-1}\right)
+$$
+
+这里的 $\alpha$ 是步长，可以通过 line search 确定，但是一般直接赋一个小的数。
+
+*学习速率选择是一个重要问题。如果学习速率设置得非常大，那么训练可能不会收敛，就直接发散了；如果设置的比较小，虽然可以收敛，但是训练时间可能无法接受；如果设置的稍微高一些，训练速度会很快，但是当接近最优点会发生震荡，甚至无法稳定。不同学习速率的选择影响可能非常大。*
+
+理想的学习速率是：刚开始设置较大，有很快的收敛速度，然后慢慢衰减，保证稳定到达最优点。所以，前面的很多算法都是学习速率自适应的。除此之外，还可以手动实现这样一个自适应过程，如实现学习速率指数式衰减：
+
+$$
+\eta(t)=\eta_{0} \cdot 10^{-\frac{t}{r}} 
+$$
+
+从这函数可以看出，学习速率呈指数式衰减。
+
+所以，在神经网络中，beta 参数的更新也是这个思想，这里的步长可以直接给定，但是似
+然求导，就需要链式法则了，比如说 \(\frac{\partial L}{\partial w_{1}}=\frac{\partial L}{\partial y_{p r e d}} \frac{\partial y_{p r e d}}{\partial h_{1}} \frac{\partial h_{1}}{\partial w_{1}}\)。
+
+#+begin_src python
+ import numpy as np
+
+def sigmoid(x):
+  # Sigmoid activation function: f(x) = 1 / (1 + e^(-x))
+  return 1 / (1 + np.exp(-x))
+
+def deriv_sigmoid(x):
+  # Derivative of sigmoid: f'(x) = f(x) * (1 - f(x))
+  fx = sigmoid(x)
+  return fx * (1 - fx)
+
+def mse_loss(y_true, y_pred):
+  # y_true and y_pred are numpy arrays of the same length.
+  return ((y_true - y_pred) ** 2).mean()
+
+class OurNeuralNetwork:
+  '''
+  A neural network with:
+    - 2 inputs
+    - a hidden layer with 2 neurons (h1, h2)
+    - an output layer with 1 neuron (o1)
+
+  *** DISCLAIMER ***:
+  The code below is intended to be simple and educational, NOT optimal.
+  Real neural net code looks nothing like this. DO NOT use this code.
+  Instead, read/run it to understand how this specific network works.
+  '''
+  def __init__(self):
+    # 权重，Weights
+    self.w1 = np.random.normal()
+    self.w2 = np.random.normal()
+    self.w3 = np.random.normal()
+    self.w4 = np.random.normal()
+    self.w5 = np.random.normal()
+    self.w6 = np.random.normal()
+
+    # 截距项，Biases
+    self.b1 = np.random.normal()
+    self.b2 = np.random.normal()
+    self.b3 = np.random.normal()
+
+  def feedforward(self, x):
+    # x is a numpy array with 2 elements.
+    h1 = sigmoid(self.w1 * x[0] + self.w2 * x[1] + self.b1)
+    h2 = sigmoid(self.w3 * x[0] + self.w4 * x[1] + self.b2)
+    o1 = sigmoid(self.w5 * h1 + self.w6 * h2 + self.b3)
+    return o1
+
+  def train(self, data, all_y_trues):
+    '''
+    - data is a (n x 2) numpy array, n = # of samples in the dataset.
+    - all_y_trues is a numpy array with n elements.
+      Elements in all_y_trues correspond to those in data.
+    '''
+    learn_rate = 0.1
+    epochs = 1000 # number of times to loop through the entire dataset
+
+    for epoch in range(epochs):
+      for x, y_true in zip(data, all_y_trues):
+        # --- Do a feedforward (we'll need these values later)
+        sum_h1 = self.w1 * x[0] + self.w2 * x[1] + self.b1
+        h1 = sigmoid(sum_h1)
+
+        sum_h2 = self.w3 * x[0] + self.w4 * x[1] + self.b2
+        h2 = sigmoid(sum_h2)
+
+        sum_o1 = self.w5 * h1 + self.w6 * h2 + self.b3
+        o1 = sigmoid(sum_o1)
+        y_pred = o1
+
+        # --- Calculate partial derivatives.
+        # --- Naming: d_L_d_w1 represents "partial L / partial w1"
+        d_L_d_ypred = -2 * (y_true - y_pred)
+
+        # Neuron o1
+        d_ypred_d_w5 = h1 * deriv_sigmoid(sum_o1)
+        d_ypred_d_w6 = h2 * deriv_sigmoid(sum_o1)
+        d_ypred_d_b3 = deriv_sigmoid(sum_o1)
+
+        d_ypred_d_h1 = self.w5 * deriv_sigmoid(sum_o1)
+        d_ypred_d_h2 = self.w6 * deriv_sigmoid(sum_o1)
+
+        # Neuron h1
+        d_h1_d_w1 = x[0] * deriv_sigmoid(sum_h1)
+        d_h1_d_w2 = x[1] * deriv_sigmoid(sum_h1)
+        d_h1_d_b1 = deriv_sigmoid(sum_h1)
+
+        # Neuron h2
+        d_h2_d_w3 = x[0] * deriv_sigmoid(sum_h2)
+        d_h2_d_w4 = x[1] * deriv_sigmoid(sum_h2)
+        d_h2_d_b2 = deriv_sigmoid(sum_h2)
+
+        # --- Update weights and biases
+        # Neuron h1
+        self.w1 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_w1
+        self.w2 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_w2
+        self.b1 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_b1
+
+        # Neuron h2
+        self.w3 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_w3
+        self.w4 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_w4
+        self.b2 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_b2
+
+        # Neuron o1
+        self.w5 -= learn_rate * d_L_d_ypred * d_ypred_d_w5
+        self.w6 -= learn_rate * d_L_d_ypred * d_ypred_d_w6
+        self.b3 -= learn_rate * d_L_d_ypred * d_ypred_d_b3
+
+      # --- Calculate total loss at the end of each epoch
+      if epoch % 10 == 0:
+        y_preds = np.apply_along_axis(self.feedforward, 1, data)
+        loss = mse_loss(all_y_trues, y_preds)
+        print("Epoch %d loss: %.3f" % (epoch, loss))
+
+# Define dataset
+data = np.array([
+  [-2, -1],  # Alice
+  [25, 6],   # Bob
+  [17, 4],   # Charlie
+  [-15, -6], # Diana
+])
+all_y_trues = np.array([
+  1, # Alice
+  0, # Bob
+  0, # Charlie
+  1, # Diana
+])
+
+# Train our neural network!
+network = OurNeuralNetwork()
+network.train(data, all_y_trues) 
+# Make some predictions
+emily = np.array([-7, -3]) # 128 pounds, 63 inches
+frank = np.array([20, 2])  # 155 pounds, 68 inches
+print("Emily: %.3f" % network.feedforward(emily)) # 0.951 - F
+print("Frank: %.3f" % network.feedforward(frank)) # 0.039 - M
+#+end_src
+
+*** 模型估计
+ 以下估计方法均是估计 NN 的算法。 
+**** softmax 算法
+softmax 函数用于多分类过程中，它将多个神经元的输出，映射到（0,1）区间内，可以看
+成概率来理解，从而来进行多分类。
+
+假设有一个数组，V，Vi 表示 V 中的第 i 个元素，那么这个元素的 softmax 值就是
+
+$$
+S_{i}=\frac{e^{i}}{\sum_{j} e^{j}}
+$$
+
+更形象的例子请见https://www.zhihu.com/question/23765351.
+**** Batch graient descent
+此算法又称批量梯度下降算法。对于批量梯度下降算法，其 $J(\theta)$ 是在整个训练集上计算的，如果数据集比较大，可能会面临内存不足问题，而且其收敛速度一般比较慢。
+
+这个算法是遍历全部数据集算一次损失函数。
+
+当数据量不大的时候可以选择批量梯度下降法，当数据量很大的时候选择小批量梯度下降法。
+
+**** Stochastic Gradient Descent
+随机梯度下降算法。随机梯度下降算法是另外一个极端， $J(\theta)$
+是针对训练集中的一个训练样本计算的，又称为在线学习，即得到了一个样本，就可以执行
+一次参数更新。
+所以其收敛速度会快一些，但是有可能出现目标函数值震荡现象，因为高频率的参数更新导致了高方差。
+**** Mini-batch Gradient Descent
+小批量梯度下降算法。小批量梯度下降算法是折中方案，选取训练集中一个小批量样本（一般是 2 的倍数，如 32，64,128 等）计算，这样可以保证训练过程更稳定，而且采用批量训练方法也可以利用矩阵计算的优势。这是目前最常用的梯度下降算法。
+**** Momentum optimization
+冲量梯度下降算法。理想的梯度下降算法要满足两点：收敛速度要快；而且能全局收敛。
+
+\begin{equation}
+ \begin{array}{l}m \leftarrow \beta \cdot m+(1-\beta) \cdot \nabla J(\theta) \\ \theta \leftarrow \theta-\eta \cdot m\end{array} 
+\end{equation}
+
+上面的公式可以清晰看出，所谓的冲量项其实只是梯度的指数加权移动平均值。上面的式子
+利用的是指数平均的思想。
+
+\begin{equation}
+ v(t) \leftarrow \beta \cdot v(t-1)+(1-\beta) \cdot x(t) 
+\end{equation}
+
+其中 \(v(t-1)\) 是上一时刻的移动平均值，其实也可以看成历史积累量,
+一般 \(v(0)=0,\) 而 \(\beta\) 是一个系数，其在 0 1 之间, 可以看到移动平均值
+是按比例合并历史量与当前观测量。
+**** Nesterov Accelerated Gradient (NAG)
+NAG 算法是 Yurii Nesterov 在 1983 年提出的对冲量梯度下降算法的改进版本，其速度更快。其变化之处在于计算“超前梯度”更新冲量项，具体公式如下：
+
+\begin{equation}
+ \begin{array}{l}m \leftarrow \gamma \cdot m+\eta \cdot \nabla J(\theta-\gamma \cdot m) \\ \theta \leftarrow \theta-m\end{array} 
+\end{equation}
+
+既然参数要沿着 \(\gamma \cdot m\) 更新，不妨计算未来位置 \(\theta-\gamma \cdot m\) 的梯度，然后
+合并两项作为最终的更新项，可以看到一定的加速效果。
+**** AdaGrad
+
+AdaGrad 是 Duchi 在 2011 年提出的一种学习速率自适应的梯度下降算法。在训练迭代过程，其学习速率是逐渐衰减的，经常更新的参数其学习速率衰减更快，这是一种自适应算法。
+
+\begin{equation}
+ \begin{array}{l}s \leftarrow s+\nabla J(\theta) \odot \nabla J(\theta) \\ \theta \leftarrow \theta-\frac{\eta}{\sqrt{s+\varepsilon}} \odot \nabla J(\theta)\end{array} 
+\end{equation}
+
+其中是梯度平方的积累量 \(s\) ，在进行参数更新时，学习速率要除以这个积累量的平方
+根，其中加上一个很小值 \(\varepsilon\) 是为了防止除 0 的出现。由于 \(s\) 是逐渐增加的，那么学习速率是衰减的。
+**** RMSprop
+
+RMSprop 是 Hinton 在他的课程上讲到的，其算是对 Adagrad 算法的改进，主要是解决学习速率过快衰减的问题。其实思路很简单，类似 Momentum 思想，引入一个超参数，在积累梯度平方项进行衰减：
+
+\begin{equation}
+ \begin{array}{l}s \leftarrow \gamma \cdot s+(1-\gamma) \cdot \nabla J(\theta) \odot \nabla J(\theta) \\ \theta \leftarrow \theta-\frac{\eta}{\sqrt{s+\varepsilon}} \odot \nabla J(\theta)\end{array} 
+\end{equation}
+**** Adaptive moment estimation (Adam) 
+Adam 是 Kingma 等在 2015 年提出的一种新的优化算法，其结合了 Momentum 和 RMSprop 算法的思想。相比 Momentum 算法，其学习速率是自适应的，而相比 RMSprop，其增加了冲量项。所以，Adam 是两者的结合体：
+
+\begin{equation}
+ \begin{array}{l}m \leftarrow \beta_{1} \cdot m+\left(1-\beta_{1}\right) \cdot \nabla J(\theta) \\ s \leftarrow \beta_{2} \cdot s+\left(1-\beta_{2}\right) \cdot \nabla J(\theta) \odot \nabla J(\theta) \\ m \leftarrow \frac{m}{1-\beta_{1}^{t}} \\ s \leftarrow \frac{s}{1-\beta_{2}^{t}} \\ \theta \leftarrow \theta-\frac{\eta}{\sqrt{s+\varepsilon}} \odot m\end{array} 
+\end{equation}
+
+可以看到前两项和 Momentum 和 RMSprop 是非常一致的， 由于和的初始值一般设置为 0，
+在训练初期其可能较小，第三和第四项主要是为了放大它们。最后一项是参数更新。其中超
+参数的建议值是: \(\beta_{1}=0.9, \beta_{2}=0.999, \varepsilon=1 e-8\).
+
+** 主成分分析 (PCA)
+PCA 最大可分思想就是通过对原始样本进行一定的线性变换（主要是基变换），如果基维度小于数据的维度可以起到降维的效果，降维后损失最小，可以理解为投影后的数据尽可能的分开，那么这种分散程度可以用数学上的方差来表示方差越大数据越分散。
+
+原因很简单，假设是已经中心化过（PCA 要求数据中心化）的数据矩阵，每列都是一个样本，那么协方差矩阵是，而 PCA 的目标函数是
+
+就是要求的投影矩阵，一般可以通过求的特征向量求解。令（SVD 分解），则有（可以看出就是特征向量），因此可以知道，用求得的这个投影矩阵对做投影得到低维的矩阵 ，也就是常用的 PCA 降维过程。
+易知，又有 ，所以，我们可以对这个内积矩阵求特征向量和特征值 就可以得到。
+
+所以，分解协方差矩阵或内积矩阵都可以求解 PCA。
+
+PCA 算法步骤：
+
+设有 $m$ 条 $n$ 维数据
+
+1、将原始数据按列组成 n 行 m 列矩阵 X
+
+2、将 X 的每一行（代表一个属性字段）进行零均值化，即减去这一行的均值
+
+3、求出协方差矩阵 $C=\dfrac{1}{m}XX^{T}$
+
+4、求出协方差矩阵的特征值及对应的特征向量
+
+5、将特征向量按对应特征值大小从上到下按行排列成矩阵，取前 k 行组成矩阵 P
+
+6、$Y=PX$ 即为降维到 k 维后的数据
+
+*** 基变换
+一般来说，想获得原始数据新的表示空间，最简单的是对原始数据进行线性变换（基变换）。
+$Y = PX$, 其中 $Y$ 是样本在新空间的表达， $P$ 是基向量， $X$ 是原始样本. 当基的数量少于原始样本本身的维数时则可达到降维的效果。因此矩阵相乘的表示也可以表示降维变换。
+
+https://picb.zhimg.com/80/v2-a0247d797bf9a62b2b57bc6c169bb3a9_1440w.jpg
+
+*** 特征值和特征向量
+几乎所有的向量在乘以矩阵 A 后都会改变方向，某些特殊的向量 x 和 AX 位于同一个方向，它们称之为特征向量。这个点真的很迷人的。
+
+如何求解特征值？
+
+\(A x=\lambda x \rightarrow(A-\lambda I) x=\mathbf{0}\)
+
+如果上式子有非零解，那么 $A-\lambda I$ 是奇异的，也就是行列式为零。因此，可以利用下式子求出特征值。
+
+$det(A-\lambda I) = 0$
+
+然后，针对每个特征值，再通过求解 $(A-\lambda I)x = 0$ 来找到特征向量。
+
+#+begin_src python
+import numpy as np
+from numpy import linalg as LA
+x = np.diag((1, 2, 3))
+a, b =  LA.eig(x)
+a #特征值
+b #特征向量
+#+end_src
+
+*** SVD 分解
+其实，在 PCA 分解过程中，有一个概念就是将协方差矩阵 A 转化为一个特征向量组成的 P 矩阵和一个由特征值组成的对角线矩阵，其中, 特征向量组成的 P 矩阵是一个 *酉矩阵*, 即满足 $P^{T}P = I$. 所以，A是一个方阵，即行与列的数目相等，如果行与列不等，还可以对矩阵进行分解么？这时就需要利用 SVD 分解了。 
+
+进行矩阵 $A$ 分解成 \(A=U \Sigma V^{T}\), 其中 U/V 是一个方阵，且均是 *酉矩阵*, $\Sigma$ 不是方阵，除主对角线以外的元素均为 0。 
+
+可以证明的是 U,V 分别是 $AA^{T}$ 对应的特征向量，而 $A^{T}A$ 对应的特征向量。
+
+证明很容易。
+
+\(A=U \Sigma V^{T} \Rightarrow A^{T}=V \Sigma^{T} U^{T} \Rightarrow A^{T} A=V \Sigma^{T} U^{T} U \Sigma V^{T}=V \Sigma^{2} V^{T}\)
+
+所以就有 $AV = \Sigma^2 V$, 同理可证 U. 特征值矩阵 $\Sigma^2$ 求解更容易，直接求 $A^TA$ 特征值开方即可。 
+
+- SVD 性质
+
+在 svd 中奇异值减少特别快，在很多情况下，前 10% 甚至 1% 的奇异值的和就占了全部奇异值之和的 99% 以上比例。也就是说可以用最大的 k 个的奇异值和对应的左右奇异向量来近似描述矩阵。
+
+也就是说：
+
+$$
+A_{m \times n}=U_{m \times m} \Sigma_{m \times n} V_{n \times n}^{T} \approx U_{m \times k} \Sigma_{k \times k} V_{k \times n}^{T}
+$$
+
+其中, $k$ 要比 $n$ 小很多，也就是一个大的矩阵 $A$ 可以用三个小的矩阵 \(U_{m \times k}, \sum_{k \times k}, V_{k \times n}^{T}\)
+来表示。有了这个性质，svd 可以用于 PCA 降维。
+
+https://pic2.zhimg.com/80/v2-4437f7678e8479bbc37fd965839259d2_720w.jpg
+
+https://zhuanlan.zhihu.com/p/31386807
+
+PCA 需要计算 $X^{T}X$ 矩阵特征值，如果矩阵维度很大的时候，那么计算特征值就会变得很难，这时就需要 SVD 算法，可以一边对行数进行压缩，一边对列进行压缩。
+
+#+begin_src python
+import numpy as np
+from numpy import linalg as LA
+x = np.array([[0, 3], [1, 1], [1, 0]])
+a, b, c =  LA.svd(x, full_matrices = True)
+a #特征值
+b #特征向量
+c
+#+end_src
+
+** svm
+概述：svm 是一种二分类模型，定义在特征空间上的间隔最大的线性分类器，核技巧使它成
+为实质上的非线性分类器。支持向量机的学习策略就是间隔最大化，等价于求解凸二次规划
+的问题。
+
+核方法的基本思想是通过一个非线性变换，把输入数据映射到高维的希尔伯特空间中，在这
+个高维空间里，那些在原始输入空间中线性不可分的问题变得更加容易解决，甚至线性可分。
+支持向量机（Support Vector Machine，SVM）[10] 是一类最典型的核方法，下面将以支持向量机为例，对核方法进行简单的介绍。
+
+支持向量机的基本思想是通过核函数将原始输入空间变换成一个高维（甚至是无穷维）的空间，在这个空间里寻找一个超平面，它可以把训练集里的正例和负例尽最大可能地分开（用更加学术的语言描述，就是正负例之间的间隔最大化）。那么如何才能通过核函数实现空间的非线性映射呢？让我们从头谈起。
+
+数学上的解答是：为了求解上述有约束的优化问题，一种常用的技巧是使用拉格朗日乘数法将其转换成对偶问题进行求解。
+
+给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的
+分离超平面为
+
+$$
+w^{*} \cdot x+b^{*}=0
+$$
+
+以及相应的分类决策函数
+
+$$
+f(x)=\operatorname{sign}\left(w^{*} \cdot x+b^{*}\right)
+$$
+
+称为线性可分支持向量机。
+
+SVM 方法缺点：
+
+1.如果特征维度较高，那么 SVM 表现一般，不适用于高维问题。
+2.SVM 样本量大时，核函数映射维度非常高时，计算量过大，不适用。
+3.遇到非线性问题时不容易找到合适的核函数。
+
+** 决策树
+决策树的生成主要由 3 步组成：特征选择\决策树的生成\决策树的修剪。
+
+决策树由结点（node）和有向边组成。结点表示一个特征或属性，叶结点表示一个类。从统计学上说，决策树表示给定特征条件下类的条件概率分布。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率组成。条件概率分布定义在特征空间的一个划分，将特征空间划分为互不相交。
+
+与训练集不相矛盾的决策树（即能对训练数据进行正确分类的决策树）可能有多个，也可能一个也没有，我们需要的是一个与训练数据矛盾较小的决策树（如何衡量这个矛盾？主要利用的是损失函数），同时具有很好的泛化能力。
+
+决策树学习过程如下：
+开始，构建根节点，将所有训练数据都放在根结点。选择一个最优特征（如何确认是最优
+的？），按照这一特征将训练数据集分割成子集，使得各个子集有一个在当前条件下最好的
+分类。如果这些子集已经能够被基本正确分类，那么构建叶结点，并将这些子集分到所对应
+的叶结点中去；如果还有子集不能被基本正确分类，那么就对这些子集选择新的最优特征，
+继续对其进行分割，构建相应的结点，如此递归地进行下去，直至所有训练数据子集被基本
+正确分类，或者没有合适的特征为止。
+
+总结下：第一，选择最优特征（特征选择，利用信息增益或信息增益比），第二，构建叶结点（决策树生成）。第三，剪枝（相当于做变量选择），去掉过于细分的叶结点，使其回退到父结点，甚至更高的结点，然后将父结点或更高的结点改为新的叶结点。
+
+如果特征数量很多，也可以在决策树学习开始的时候，对特征进行选择，只留下对训练数据有足够分类能力的特征。
+
+综上所述，决策树学习算法包含特征选择\决策树生成\决策树的剪枝。
+
+决策树的优缺点：
+
+- 树的优点：
+  - 可解释性强
+  - 可处理混合类型特征
+  - 具有伸缩不变性（不用归一化特征）
+  - 有特征组合的作用
+  - 可自然地处理缺失值（将缺失值作为一类？）
+  - 对异常点鲁棒
+  - 有特征选择作用
+  - 可扩展性强，容易并行
+
+- 树的缺点
+  - 缺乏平滑性（回归预测时输出值只能输出有限的若干种数值）
+  - 不适合处理高维稀疏数据
+
+- 衡量树的复杂度的指标
+  树的深度、内部节点个数，叶子节点个数（T），叶子节点分数（w）
+  XGBOOST 采用的：
+
+$$\Omega ( f ) = \gamma T + \frac { 1 } { 2 } \lambda \| w \| ^ { 2 }.$$
+
+一些重要概念：ID3 算法、C4.5 算法、信息熵、信息增益、Gini 指数、CART 决策树、决策树桩
+
+决策树桩：一棵树仅有一层划分的决策树。 *回归树是将属性映射到分数的函数。*
+
+- 结点的概念
+
+一棵决策树包含一个根结点、若干个内部结点和若干个叶子结点。 *叶子结点对应于决策结果* ，其他内部结点对应于一个属性测试，根结点包含样本全集。
+
+决策树学习的目的是为了产生一颗泛化能力强，即处理未见示例能力强的决策树。
+
+决策树的生成是一个递归过程.在决策树基本算法中,有三种情形会导致递归返回:
+
+(1)当前结点包含的样本全属于同一类别，无需划分;
+
+(2)当前属性集为空,或是所有样本在所有属性上取值相同，无法划分;
+
+(3)当前结点包含的样本集合为空,不能划分。
+
+*** 如何选择最优划分属性
+
+指标：信息增益、信息增益率、Gini 指数。
+
+- 信息增益
+
+“信息熵”(information entropy)是度量样本集合纯度最常用的一种指标。假定当前样本集合 $D$ 中第 $k$ 类样本所占的比例为 $p _ { k } ( k = 1,2 , \ldots , | \mathcal { Y } | )$, 则 D 的信息熵定义为
+
+$$\operatorname { Ent } ( D ) = - \sum _ { k = 1 } ^ { | \mathcal { Y | } } p _
+{ k } \log _ { 2 } p _ { k }$$
+
+Ent(D) 的值越小,则 D 的纯度越高. 可以从下面的例子可以看出。
+
+信息熵的函数例子：
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  inf_entropy <- function(x, df){
+      x = enquo(x)
+      df %>% 
+          pull(!!x) %>% 
+          janitor::tabyl() %>% 
+          mutate(log_percent = log2(percent)) %>% 
+          summarise(ent = -sum(percent*log_percent))  
+  }
+
+  df <- data.frame(x1 = c(1,2,3),
+                   x2 = c(2,2,4))
+
+  bind_cols(
+      df %>% colnames(),
+      df %>% colnames() %>% 
+      map_df(~inf_entropy(.x,df))
+  )
+                                        #> New names:
+                                        #> * NA -> ...1
+                                        #>   ...1    ent
+                                        #> 1   x1 1.5850
+                                        #> 2   x2 0.9183 
+#+end_src
+
+
+假定离散属性 a 有 V 个可能的取值 $\left\{ a ^ { 1 } , a ^ { 2 } , \ldots , a ^ {
+V } \right\}$, 若使用 a 来对样本集 D 进行划分,则会产生 V 个分支结点,其中第 v 个
+分支结点包含了 D 中所有在属性 a 上取值为 $a ^ { v }$ 的样本,记为 $D^{v}$.我们可
+根据式(41)计算出 D 的信息熵,再考虑到不同的分支结点所包含的样本数不同,给分支结点
+赋予权重 $\left| D ^ { v } \right| / | D |$, 即样本数越多的分支结点的影响越大,于是可计算出用属性 a 对样本集 D 进行划分所获得的“信息增益”( information gain)
+
+$$
+\operatorname { Gain } ( D , a ) = \operatorname { Ent } ( D ) - \sum _ { v = 1 } ^ { V } \frac { \left| D ^ { v } \right| } { | D | } \operatorname { Ent } \left( D ^ { v } \right)
+$$
+
+一般而言, *信息增益越大,则意味着使用属性 a 来进行划分所获得的“纯度提升”越大*.因此,
+我们可用信息增益来进行决策树的划分属性选择,即利用 $a _ { * } = \underset { a \in
+A } { \arg \max } \operatorname { Gain } ( D , a )$ 选择属性.
+这就是 ID3 决策树学习算法，它就是以信息增益为准则来选择划分属性. 常见的划分属性
+的准则除了信息增益率，还有 gini 指数。
+
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  inf_entropy <- function(x, df){
+      x = enquo(x)
+      ent1 <- df %>% 
+          pull(!!x) %>% 
+          janitor::tabyl() %>% 
+          mutate(log_percent = log2(percent)) %>% 
+          summarise(ent = -sum(percent*log_percent))
+      
+      ent2 <- df %>% 
+          pull(!!x) %>% 
+          janitor::tabyl() %>%
+          mutate(log_percent = log2(percent)) %>% 
+          mutate(ent = -percent*log_percent) %>%  
+          set_names(c("value", "n", "percent", "log_percent", "ent")) %>% 
+          add_column(n_rows = nrow(df)) %>% 
+          mutate(ratio = n/n_rows) %>% 
+          summarise(sum(ratio*ent))
+      ent1 - ent2
+  }
+
+  df <- data.frame(x1 = c(1,2,3),
+                   x2 = c(2,2,4),
+                   x3 = c(2,2,2))
+
+  bind_cols(
+      df %>% colnames(),
+      df %>% colnames() %>% 
+      map_df(~inf_entropy(.x,df))
+  )
+                                        #> New names:
+                                        #> * NA -> ...1
+                                        #>   ...1    ent
+                                        #> 1   x1 1.0566
+                                        #> 2   x2 0.4822
+                                        #> 3   x3 0.0000 
+#+end_src
+
+从以上可以看出，相比较信息熵，信息增益更能提取出纯度提升的特征。
+
+- 信息增益率
+
+信息增益准则的缺点是对可取值数目较多的属性有所偏好，为减少这种偏好可能带来的不利影响,著名的 C4.5 决策树算法，不直接使用信息增益，而是使用“增益率”( gain ratio)来选择最优划分属性.增益率定义为
+
+$$\text { Gain ratio } ( D , a ) = \frac { \operatorname { Gain } ( D , a ) } { \operatorname { IV } ( a ) }$$
+
+其中
+
+$$
+\mathrm { IV } ( a ) = - \sum _ { v = 1 } ^ { V } \frac { \left| D ^ { v } \right| } { | D | } \log _ { 2 } \frac { \left| D ^ { v } \right| } { | D | }$$
+
+属性 a 的取值数目越多（即 V 越大），则 IV(a)的值通常会越大。
+
+信息增益率：
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+ inf_entropy <- function(x, df){
+  x = enquo(x)
+  ent1 <- df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>% 
+    mutate(log_percent = log2(percent)) %>% 
+    summarise(ent1 = -sum(percent*log_percent))
+  
+  ent2 <- df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>%
+    mutate(log_percent = log2(percent)) %>% 
+    mutate(ent = -percent*log_percent) %>%  
+    set_names(c("value", "n", "percent", "log_percent", "ent")) %>% 
+    add_column(n_rows = nrow(df)) %>% 
+    mutate(ratio = n/n_rows) %>% 
+    summarise(ent2 = sum(ratio*ent)) 
+  
+  iv = df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>%
+    mutate(log_percent = log2(percent)) %>% 
+    mutate(ent = -percent*log_percent) %>%  
+    set_names(c("value", "n", "percent", "log_percent", "ent")) %>% 
+    add_column(n_rows = nrow(df)) %>% 
+    mutate(ratio = n/n_rows,
+           log_ratio = log2(ratio)) %>% 
+    summarise(iv = -sum(ratio*log_ratio))
+
+  return(data.frame(ent1, ent2, iv) %>%
+transmute(
+  ent = ent1,
+  gain = (ent1 - ent2),
+  gain_ratio = gain / iv
+))
+}
+df <- data.frame(x1 = c(1,2,3),
+                 x2 = c(2,2,4),
+                 x3 = c(2,2,2))
+
+bind_cols(
+  df %>% colnames(),
+  df %>% colnames() %>% map_df(~inf_entropy(.x,df))
+)
+#> New names:
+#> * NA -> ...1
+#>   ...1    ent   gain gain_ratio
+#> 1   x1 1.5850 1.0566     0.6667
+#> 2   x2 0.9183 0.4822     0.5251
+#> 3   x3 0.0000 0.0000        NaN 
+#+end_src
+
+- Gini 指数
+
+CART 决策树使用“基尼指数”( Gini index)来选择划分属性.数据集 D 的纯度可用基尼值来
+度量:
+
+   \begin{aligned} \operatorname { Gini } ( D ) & = \sum _ { k = 1 } ^ { | \mathcal { Y } | } \sum _ { k ^ { \prime } \neq k } p _ { k } p _ { k ^ { \prime } } \\ & = 1 - \sum _ { k = 1 } ^ { | \mathcal { Y } | } p _ { k } ^ { 2 } \end{aligned}
+   从这个定义可以看出，Gini(D) 值对应的是信息熵的概念。和信息熵一样，Gini(D)越小，数据集 D 的纯度越高。属性 a 的基尼指数定义为
+   
+$$\operatorname { Gini } \operatorname { index } ( D , a ) = \sum _ { v = 1 } ^
+{ V } \frac { \left| D ^ { v } \right| } { | D | } \operatorname { Gini } \left(
+D ^ { v } \right)$$
+
+   因此,我们可用信息增益来进行决策树的划分属性选择,即利用 $a _ { * } = \underset
+   { a \in A } { \arg \max } \operatorname { Gini index } ( D , a )$ 选择属性.
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+ inf_entropy <- function(x, df){
+  x = enquo(x)
+  ent1 <- df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>% 
+    mutate(log_percent = log2(percent)) %>% 
+    summarise(ent1 = -sum(percent*log_percent))
+  
+  ent2 <- df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>%
+    mutate(log_percent = log2(percent)) %>% 
+    mutate(ent = -percent*log_percent) %>%  
+    set_names(c("value", "n", "percent", "log_percent", "ent")) %>% 
+    add_column(n_rows = nrow(df)) %>% 
+    mutate(ratio = n/n_rows) %>% 
+    summarise(ent2 = sum(ratio*ent)) 
+  
+  iv = df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>%
+    mutate(log_percent = log2(percent)) %>% 
+    mutate(ent = -percent*log_percent) %>%  
+    set_names(c("value", "n", "percent", "log_percent", "ent")) %>% 
+    add_column(n_rows = nrow(df)) %>% 
+    mutate(ratio = n/n_rows,
+           log_ratio = log2(ratio)) %>% 
+    summarise(iv = -sum(ratio*log_ratio))
+  
+  gini_index = df %>% 
+    pull(!!x) %>% 
+    janitor::tabyl() %>% 
+    mutate(percent_square = percent^2) %>% 
+    mutate(gain = 1 - percent_square) %>% 
+    add_column(n_rows = nrow(df)) %>% 
+    mutate(ratio = n/n_rows) %>% 
+    summarise(gini_index = sum(ratio*gain))
+
+  return(data.frame(ent1, ent2, iv, gini_index) %>%
+transmute(
+  ent = ent1,
+  gain = (ent1 - ent2),
+  gain_ratio = gain / iv,
+  gini_index
+))
+}
+df <- data.frame(x1 = c(1,2,3),
+                 x2 = c(2,2,4),
+                 x3 = c(2,2,2))
+
+bind_cols(
+  df %>% colnames(),
+  df %>% colnames() %>% map_df(~inf_entropy(.x,df))
+)
+#> New names:
+#> * NA -> ...1
+#>   ...1    ent   gain gain_ratio gini_index
+#> 1   x1 1.5850 1.0566     0.6667     0.8889
+#> 2   x2 0.9183 0.4822     0.5251     0.6667
+#> 3   x3 0.0000 0.0000        NaN     0.0000    
+   #+end_src
+
+
+- 解决过拟合的方法
+
+预剪枝、后剪枝
+
+预剪枝：对比训练集、验证集预测精度，如果验证集精度有提升则会剪枝，否则不会剪枝。
+
+后剪枝：也是对比训练集、验证集预测精度，只不过对比的是训练完的整棵树的精度。
+
+预剪枝是通过比对剪枝前后验证集的精度，提出剪枝策略，如果剪枝后验证集精度没有得到提升，便不会剪枝。缺点是有些分支的当前划分虽不能提升泛化性能、甚
+至可能导致泛化性能暂时下降，但在其基础上进行的后续划分却可能导致性能显著提高；预剪枝基于“贪心”本质禁止这些分支展开，给预剪枝决策树带来了欠拟合的风险。说白了，预剪枝的缺点在于会有欠拟合的风险。
+     
+后剪枝是先学习出一棵完整树，先给出整棵树的验证集精度，然后从最深的非叶子结点开始剪枝，计算出验证集的精度，如果有提高，剪枝，反之不剪。后剪枝的优势在于欠拟合风险很小，泛化性能往往优于预剪枝决策树。但后剪枝过程是在生成完全决策树之后进行，并且要自底向上地对树中所有非叶子结点进行逐一考察，因此其训练时间开销比未剪枝决策树和预剪枝决策树都要大很多。
+
+#+begin_src python
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+iris = load_iris()
+X = iris.data[:,2:]
+y = iris.target
+tree_clf = DecisionTreeClassifier(max_depth=2)
+tree_clf.fit(X,y)
+from sklearn.tree import export_graphviz
+export_graphviz(
+    tree_clf,
+    out_file = image_path("iris_tree.dot"),
+    feature_names = iris.feature_names[2:],
+    class_names = iris.target_names,
+    rounded = True,
+    filled = True
+)
+#+end_src
+
+连续值处理：可以通过先分箱，或者简单点直接二分法。
+
+一个简单的 python 样例。
+#+begin_src python
+ from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree.export import export_text
+iris = load_iris()
+decision_tree = DecisionTreeClassifier(random_state=0, max_depth=2)
+decision_tree = decision_tree.fit(iris.data, iris.target)
+r = export_text(decision_tree, feature_names=iris['feature_names'])
+print(r)
+#+end_src
+
+** 随机森林
+学习随机森林算法之前有几个问题：
+
+1、树的数目怎么定？
+
+一般的树的个数自己定，越多越好，数目越大越好，一般默认为 100.
+
+2、最后的汇总函数怎么给定？
+
+分输出的属性，如果输出的是连续值，一般取平均或者加权平均；如果是离散值，有三种做法，一是绝对多数投票法，意思是必须要超过 1/2 才行，相对多数投票法，一个比另外一个多就行，加权投票法，赋予不同分类器不同的权重得出的结果。
+
+3、变量的重要性怎么定义？
+
+总体有两类方法，一个是基于 gini 系数的方法，另外一个是基于 oob 的方法。总体从所有树中，考察一个特征的加入，能否使得 gini 系数和 oob 下降的很多。如果下降很多，说明这个特征很重要。
+
+- 随机森林和决策树做法不一致的地方
+
+传统决策树在选择划分属性时是在当前结点的属性集合(假定有 d 个属性)中选择一个最优属性;而在 RF 中,对基决策树的每个结点,先从该结点的属性集合中随机选择一个包含 k 个属性的子集,然后再从这个子集中选择一个最优属性用于划分.这里的参数 k 控制了随机性的引入程度:若令 k=d,则基决策树的构建与传统决策树相同;若令 k=1,则是随机选择一个属性用于划分;一般情况下,推荐值 k=log2d。
+
+- 随机森林和 bagging 不一致的地方
+
+随机森林对 Bagging 只做了小改动,但是与 Bagging 中基学习器的“多样性”仅通过样本扰动(通过对初始训练集采样)而来不同,随机森林中基学习器的多样性不仅来自样本扰动,还来自属性扰动（这就呼应了之前的每次随机选择不同的属性集合）,这就使得最终集成的泛化性能可通过个体学习器之间差异度的增加而进一步提升。
+
+#+begin_src python
+from sklearn.model_selection import train_test_split
+X=data[['sepal length', 'sepal width', 'petal length', 'petal width']]  # Features
+y=data['species']  # Labels
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+from sklearn.ensemble import RandomForestClassifier
+#Create a Gaussian Classifier
+clf=RandomForestClassifier(n_estimators=100)
+#Train the model using the training sets y_pred=clf.predict(X_test)
+clf.fit(X_train,y_train)
+y_pred=clf.predict(X_test)
+from sklearn import metrics
+# Model Accuracy, how often is the classifier correct?
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+clf.predict([[3, 5, 4, 2]])
+#+end_src
+
+** 感知机
+感知机是根据输入实例的特征向量 $x$ 对其进行二分类的线性分类模型：
+
+\[
+f(x)=\operatorname{sign}(w \cdot x+b)
+\]
+
+感知机模型对应于输入空间（特征空间）中的分离超平面 $w * x +b = 0$.
+
+感知机学习的策略是最小化损失函数：
+
+#+begin_src python
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+import matplotlib.pyplot as plt
+iris = load_iris()
+  
+#+end_src
+
+** 集成学习
+*** BOOSTING
+*freidman 等人证明如果是二分类问题，那么 boosting 可以近似看作是 additive
+logistic model。如果是多分类问题，那么就是分布函数是多项分布。*
+**** adaboost
+
+结论 1:The Discrete AdaBoost algorithm (population version) builds an additive
+logistic regression model via Newton-like updates for minimizing \(E\left(e^{-y F(x)}\right)\).
+
+结论 2:The Real AdaBoost algorithm fits an additive logistic regression
+model by stagewise and approximate optimization of \(J(F)=E\left[e^{-y F(x)}\right] .\)
+
+
+The AdaBoost procedure trains the classiﬁers $f_{m}(x)$ on weighted versions of
+the training sample, giving higher weight to cases that are cur- rently
+misclassiﬁed. 每次更新样本权重，分类错误的样本下次给与的权重越大。
+This is done for a sequence of weighted samples, and then the ﬁnal classiﬁer is deﬁned to be a linear combination of the classiﬁers from each stage.
+
+Interestingly, in many examples the test error seems to consistently decrease and then level off as more classiﬁers are added, rather than ultimately increase. For some reason, it seems that AdaBoost is resistant to overﬁtting.
+
+有趣的是，在许多示例中，随着添加更多分类器，测试误差似乎一直在下降，然后趋于平稳，而不是最终增加。出于某种原因，AdaBoost 似乎可以抵抗过拟合。
+
+- additive models
+
+\(E(y \mid x)=F(x)\),
+
+\begin{equation}
+F(x)=\sum_{j=1}^{p} f_{j}\left(x_{j}\right)
+\end{equation}
+
+![real adaboost](https://cdn.mathpix.com/snip/images/sysfs_rZNFyt5ICgafNllVKtuDhKfC7UG8csr1OpOTQ.original.fullsize.png)
+
+
+1.给定样本初始权重。
+2.利用基学习器判定样本分类结果，如果分错加大权重，分对就降低样本权重
+3.根据新的权重，再利用基学习器学习分类结果，再判断分错就加大样本权重，分对就降低
+样本权重，
+4.然后继续迭代，直至误差损失不在降低。
+
+stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用 LR 进行回归组合），从而得到完整的 stacking 模型。
+
+
+ bibliographystyle:natbib	
+ bibliography:~/Documents/坚果云/我的坚果云/学习/bibliography/ref.bib
+**** XGBoost
+参数估计方法：XGBoost 在函数空间中用牛顿法进行优化。
+
+XGBoost 的目标函数：
+\begin{equation}
+\mathcal{L}(\phi)=\sum_{i} l\left(\hat{y}_{i}, y_{i}\right)+\sum_{k} \Omega\left(f_{k}\right)
+\end{equation}
+
+相比较 GBDT,XGBoost 的目标函数多了一个正则项，使得学习出来的模型更加不容易过拟合。
+
+树的深度、内部节点个数、叶子节点个数（T）、叶节点分数（w） 可以衡量树的复杂度。
+XGBoost 采用的规则是
+
+\begin{equation}
+\Omega(f)=\gamma T+\frac{1}{2} \lambda\|w\|^{2}
+\end{equation}
+
+从上面的式子，对叶子节点个数进行惩罚，相当于在训练过程中做个剪枝。
+
+如何确定树结构？主要还是计算树分裂前后的增益？
+
+ID3 算法采用信息增益；C4.5 算法采用信息增益比; CART 采用 Gini 系数；XGBoost 还是
+对一个叶子节点进行分裂，分裂前后的增益，当对一个叶节点分割时，计算所有候选对应的
+gain,选取 gain 最大的进行分割。
+
+xgboost 的 python code
+
+#+begin_src python
+import pandas as pd
+import xgboost as xgb
+from sklearn.metrics import mean_squared_error
+import pandas as pd
+from sklearn.datasets import load_boston
+import numpy as np
+boston = load_boston()
+print(boston.keys())
+print(boston.feature_names)
+data = pd.DataFrame(boston.data)
+data.columns = boston.feature_names
+data['PRICE'] = boston.target
+data.info()
+data.describe()
+X, y = data.iloc[:,:-1], data.iloc[:,-1]
+data_dmatrix = xgb.DMatrix(data=X, label=y)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
+
+xg_reg = xgb.XGBRegressor(objective ='reg:linear', colsample_bytree = 0.3, learning_rate = 0.1,
+                max_depth = 5, alpha = 10, n_estimators = 10)
+
+xg_reg.fit(X_train,y_train)
+preds = xg_reg.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, preds))
+print("RMSE: %f" % (rmse))
+
+params = {"objective":"reg:linear",'colsample_bytree': 0.3,'learning_rate': 0.1,
+                'max_depth': 5, 'alpha': 10}
+
+cv_results = xgb.cv(dtrain=data_dmatrix, params=params, nfold=3,
+                    num_boost_round=50,early_stopping_rounds=10,metrics="rmse", as_pandas=True, seed=123)
+cv_results.head()
+print((cv_results['test-rmse-mean']).tail(1))
+
+xg_reg = xgb.train(params=params,
+                   dtrain = data_dmatrix,
+                   num_boost_round=10)
+
+import matplotlib.pyplot as plt
+xgb.plot_tree(xg_reg, num_trees=0)
+plt.rcParams['figure.figsize'] = [50, 10]
+plt.show()
+xgb.plot_importance(xg_reg)
+plt.rcParams['figure.figsize'] = [5, 5]
+plt.show()
+#+end_src
+
+有必要对 xgboost 超参数进行整理。
+
+- （学习率）learning_rate: step size shrinkage used to prevent overfitting. Range is [0,1]
+    
+- （树的最大深度）max_depth: determines how deeply each tree is allowed to grow during any boosting round.
+    
+- （每棵树的抽样比率）subsample: percentage of samples used per tree. Low value can lead to underfitting.
+    
+- （每棵树的特征抽样比率）colsample_bytree: percentage of features used per tree. High value can lead to overfitting.
+    
+- （树的个数）n_estimators: number of trees you want to build.
+    
+-  （损失函数选择）objective: determines the loss function to be used like reg:linear for regression problems, reg:logistic for classification problems with only decision, binary:logistic for classification problems with probability.
+
+XGBoost also supports regularization parameters to penalize models as they become more complex and reduce them to simple (parsimonious) models.
+
+惩罚函数参数：回顾下
+
+\begin{equation}
+ \Omega(f)=\gamma T+\frac{1}{2} \lambda\|w\|^{2} 
+\end{equation}
+
+gamma: controls whether a given node will split based on the expected reduction
+in loss after the split. A higher value leads to fewer splits. Supported only
+for tree-based learners. gamma 控制是否节点会分裂，如果 loss 下降的话，那么就会分
+裂，否则不分裂。
+    
+alpha: L1 regularization on leaf weights. A large value leads to more regularization.
+    
+lambda: L2 regularization on leaf weights and is smoother than L1 regularization.
+
+具体可以见 https://www.datacamp.com/community/tutorials/xgboost-in-python.
+
+**** GBDT 
+参数估计方法：GBDT 在函数空间中利用梯度下降法进行优化。
+
+估计流程：
+输入：\(\left(x_{i}, y_{i}\right), T, L\) ,即 data,基分类器个数（迭代次数），损失函数类型。
+
+1.初始化 $f_{0}$
+2.for t=1 to T do 
+2.1 计算响应：\(\widetilde{y_{i}}=-\left[\frac{\partial L\left(y_{i}, F\left(x_{i}\right)\right)}{\partial F\left(x_{i}\right)}\right]_{F(x)=F_{t-1}(x)}, i=1,2, \ldots N\)
+
+2.2 学习第 t 颗树：\(w^{*}=\underset{w}{\arg \min } \sum_{i=1}^{N}\left(\tilde{y}_{i}-h_{t}\left(x_{i} ; w\right)\right)^{2}\)
+
+2.3 line search 找步长：\(\rho^{*}=\underset{\rho}{\arg \min } \sum_{i=1}^{N} L\left(y_{i}, F_{t-1}\left(x_{i}\right)+\rho h_{t}\left(x_{i} ; w^{*}\right)\right)\)
+
+2.4 令 \(f_{t}=\rho^{*} h_{t}\left(x ; w^{*}\right)\), 更新模型：\(F_{t}=F_{t-1}+f_{t}\)
+
+3.输出 $F_{T}$.
+
+#+begin_src python
+from sklearn.datasets import make_classification
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+X, y = make_classification(random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+clf = GradientBoostingClassifier(random_state=0, learning_rate = 0.1, n_estimators = 150, loss = "exponential", subsample=0.5,)
+clf.fit(X_train, y_train)
+clf.predict(X_test[:2])
+clf.score(X_test, y_test) 
+#+end_src
+
+上面 code 里有 n_estimators 是 基学习器个数，learning_rate 是梯度下降的步长，
+loss 是损失函数，subsample 即在拟合一棵新的回归树时，不用完全的样本集，而仅是无放回的抽样其中的部分，通常为 50%，对于大的数据集，抽样的比例可以小于 50%。subsampling 的方式可以避免过拟合，同样地，更小的训练集也可以更快的完成训练。
+
+*** Bagging
+Bagging is purely a variance-reduction technique, and since trees tend to have high variance, bagging often produces good results.
+
+这解释了为啥 Bagging 为啥得到的估计大幅压缩方差，因为树的方差较大。
+
+Bagging 对样本重抽样，对每一重采样得到的子样本集训练一个模型，最后取平均。由于子样本集合的相似性以及使用的是同一种模型，因此各个模型有近似相等的 bias 和 variance (事实上，各模型的分布也近似相同，但是不独立).
+若各个子模型独立，那么肯定会显著降低方差（variance），若各个子模型完全相同，那么不会降低模型方差。bagging 方法得到的各子模型是有一定相关性，属于上面 2 个极端状况的中间态，因此可以在一定程度上降低 variance.
+
+所以说，bagging 方法主要是通过降低模型方差提升预测精度，boosting 主要利用 sequential 地最小化损失函数，其 bias 自然逐步下降，所以 boosting 主要靠降低 bias 来提升预测精度。
+
+能不能将 random forest 方法与 adaboost 方法进行结合？
+
+#+begin_src python
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+bag_clf = BaggingClassifier(
+  
+)
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+bag_clf = BaggingClassifier(DecisionTreeClassifier(),
+                            n_estimators=500,max_samples=100,bootstrap=True,n_jobs=-1)
+bag_clf.fit(X_train, y_train)
+y_pred = bag_clf.predict(X_test)
+y_pred
+#+end_src
+
+** CNN(convolutional neural network)
+卷积神经网络，利用卷积运算对图片进行特征提取，再经过 Relu, pooling 等过程进一步实
+现图像信息的有效提取，从而达到图片特征信息提取的作用，最后经过全连接也就是通常所
+说的 NN 中的 softmax 算法实现对图片分类目的。
+
+深度学习模型是一种表示学习（representation learning），能够学到数据更高层次的抽
+象表示，能够自动从数据中提取特征。 
+
+一个简单的卷积神经网络是由各种层按照顺序排列组成，网络中的每一层使用一个可微分的
+函数将数据从一层传递到下一层，卷积神经网络主要由三种类型的层构成：卷积层，池化层
+和全连接层。
+
+卷积是一种线性的\平移不变性的运算。
+
+1.卷积：首先需要有 feature,也就是卷积核（filter，一般是 3*3,5*5 大小）（问题：如
+何找到这卷积核？从训练集中提取，如果是找人，那么一定有鼻子\眼睛\嘴），然后与目标
+图片作卷积运算。
+
+2.Relu 层（非线性激活层）。卷积后产生的特征图中的值，越靠近 1 表示与该特征越关联，越靠近-1 表示越不关联，而我们进行特征提取时，为了使得数据更少，操作更方便，就直接舍弃掉那些不相关联的数据。
+
+3.pooling 池化层。进一步缩减图片大小。
 
 
 
 
+*** Resnet 
+深度残差网络（deep residual network, Resnet）。深度学习模型很难训练，存在梯度消
+失或爆炸问题。batchnorm 可以解决这个问题。
+
+** 迁移学习
+** 不平衡数据分类算法
+*** SMOTE
+
+* 主题学习 
+** 变量选择 
+
+- 绕封法：不断增加或删除预测变量，通过评估包含不同变量的模型找到最优的变量组合。
+  比如：向前，向后，逐步选择方法，模拟退火法，遗传算法。逐步选择法是向前选择法的一个变体：每在模型中加
+  入一个新的变量，重新评估选中的每个变量并移除没有达到标准的变量。在某些情况，选
+  入和删除变量使用的 P 值阈值可以不同。模拟退火法的思想是：选择一个初始预测变量
+  子集，然后估计模型表现（将$E_{1}$ 记为初始莫模型错误率，稍稍改变当前的预测变量
+  子集后重建模型，且计算新的错误率，记为$E_{2}$,若新模型优于老模型，即
+  $E_{2}<E_{1}$,则新的变量集合就被接受。）
+
+- 过滤法：在建模前先独立于模型评估预测变量和结果变量的相关性，然后在建模时只包含
+  那些满足一定条件的变量。过滤法跟建模过程本身没有关系。
+** 算法 
+*** EM 算法
+
+最大期望算法（Expectation-maximization algorithm，又译为期望最大化算法），是在概率模型中寻找参数最大似然估计或者最大后验估计的算法，其中概率模型依赖于无法观测的隐性变量。
+
+最大期望算法经过两个步骤交替进行计算：
+
+1. 计算期望（E），利用对隐藏变量的现有估计值，计算其最大似然估计值；
+
+2. 最大化（M），最大化在 E 步上求得的最大似然值来计算参数的值。M步上找到的参数估计值被用于下一个 E 步计算中，这个过程不断交替进行。
+**** 为何需要 EM 算法？
+
+ 含有隐变量 $Z$ 的模型比如混合高斯模型，
+
+ \begin{equation}
+ P(X ; \theta)=\sum_{k=1}^{K} \pi_{k} N\left(x ; \mu_{k}, \sigma_{k}\right)=\sum_{Z} P(Z ; \pi) P(X | Z ; \mu, \sigma)
+ \end{equation}
+
+ 上面假设共有 $K$ 个高斯模型混合，每个高斯模型的参数为 $\theta_{k}=\left(\mu_{k},
+ \sigma_{k}\right)$,每个高斯模型占总模型的比重为 $\pi_{k}$. 隐变量 $Z
+ \in\left\{z_{1}, z_{2}, \ldots, z_{K}\right\}$ 表示样本 $x_{i}$ 来自于哪一个高斯
+ 分布。分布列为： 
+
+ \begin{equation}
+ \begin{array}{l}{\mathrm{P}\left(\mathrm{Z}=z_{1}\right)=\pi_{1}} \\ {\cdots} \\ {\mathrm{P}\left(\mathrm{Z}=z_{K}\right)=\pi_{K}}\end{array}
+ \end{equation}
+
+ 可以认为，混合高斯分布的观测值是这样产生的：
+
+ 先以概率 $\pi_{k}$ 抽取一个高斯分布 $z_{k}$,再以该高斯分布 \(N\left(x ; \mu_{k},
+ \sigma_{k}\right)\) 去生成观测 $X$. 其实这里的 $\pi_{k}$ 就是 $\pi_{k}$ 就是 $Z$
+ 的先验分布 \(P(Z ; \pi)\),而 \(N\left(x ; \mu_{k}, \sigma_{k}\right)\) 就是给定
+ $Z$ 下的条件概率 \(P(X | Z ; \mu, \sigma)\).这时，令 \(\theta=(\mu, \sigma,
+ \pi), \theta^{*}=\left(\mu^{*}, \sigma^{*}, \pi^{*}\right)\),最大似然估计变为：
+
+ \begin{equation}
+ \begin{aligned} \theta^{*} &=\arg \max _{\theta} \sum_{X} \log P(X ; \theta) \\ &=\arg \max _{\theta} \sum_{X} \log \sum_{Z} P(Z ; \pi) P(X | Z ; \mu, \sigma) \\ &=\arg \max _{\theta} \sum_{X} \log \sum_{Z} P(X, Z ; \theta) \end{aligned}
+ \end{equation}
+
+ 上式求解$\theta$ 偏导有些许麻烦，所以就有了 EM 算法。
+
+ 总结：
+
+ EM 算法是针对传统似然含有未知数据或者缺失数据时，它的似然估计求导较为困难而提出
+ 的。
+**** E 步和 M 步
+
+为了让上式中的 log 函数进入到 $\sum_{Z}$ 中从而可以直接对最里层的式子求偏导。所
+以 E 步的作用就是想让 log 函数进入到 $\sum_{Z}$. 为了解决这个问题，可以使用 Jensen
+不等式，因为 log 是个凹函数，以隐变量 $Z$ 的任一函数 $f(Z)$ 举例：\(\log E[f(Z)]=\log \sum_{Z} P(Z) f(Z) \geq \sum_{Z} P(Z) \log f(Z)=E[\log f(Z)]\).
+
+根据 jensen 不等式的性质，当随机变量函数 $f(Z)$ 为常数时，不等式可取等式。上式中
+的期望换成条件期望，分布 $P(Z)$ 换成条件分布同样适用。
+
+\begin{equation}
+\begin{aligned} \operatorname{Max} &=\max _{\theta} \sum_{X} \log \sum_{Z} P(X, Z ; \theta) \\ &=\max _{\theta} \sum_{X} \log \sum_{Z} Q(Z ; \theta) \cdot \frac{P(X, Z ; \theta)}{Q(Z ; \theta)} \\ &=\max _{\theta} \sum_{X} \log E_{Q}\left[\frac{P(X, Z ; \theta)}{P(Z ; \theta)}\right] \\ & \geq \max _{\theta} \sum_{X} E_{Q}\left[\log \frac{P(X, Z ; \theta)}{Q(Z ; \theta)}\right] \\ &=\max _{\theta} \sum_{X} \sum_{Z} Q(Z ; \theta) \log \frac{P(X, Z ; \theta)}{Q(Z ; \theta)} \end{aligned}
+\end{equation}
+
+上式中 $Q(Z)$ 还是 $Z$ 的随机变量函数，只有当 \(\frac{P(X, Z ; \theta)}{Q(Z ;
+\theta)}=c\) (c 为任意常数),上公式才能取等号，注意到 $Q$ 是 $Z$ 的某一分布，有
+\(\sum_{Z} Q(Z ; \theta)=1\). 因此，
+
+\begin{equation}
+\begin{aligned} Q(Z ; \theta) &=\frac{P(X, Z ; \theta)}{c}=\frac{P(X, Z ; \theta)}{c \cdot \sum_{Z} Q(Z ; \theta)} \\ &=\frac{P(X, Z ; \theta)}{\sum_{Z} c \cdot Q(Z ; \theta)}=\frac{P(X, Z ; \theta)}{\sum_{Z} P(X, Z ; \theta)} \\ &=\frac{P(X, Z ; \theta)}{P(X ; \theta)}=P(Z | X ; \theta) \end{aligned}
+\end{equation}
+
+所以，只需要把 $Q$ 取给定 $X$ 下， $Z$ 的后验分布，就能使使之前的公式取等号，下
+一步只需要最大化即可。
+
+这时，\(\theta^{*}=\arg \max _{\theta} \sum_{X} \sum_{Z} P(Z | X ; \theta) \log \frac{P(X, Z ; \theta)}{P(Z | X ; \theta)}\).
+
+其中：\(P(X, Z ; \theta)=P(Z ; \pi) P(X | Z ; \mu, \sigma)=\pi_{k} N\left(x_{i} ; \mu_{k}, \sigma_{k}\right)\),\(P(Z | X ; \theta)=\frac{P(X, Z ; \theta)}{\sum_{Z} P(X, Z ; \theta)}=\frac{\pi_{k} N\left(x_{i} ; \mu_{k}, \sigma_{k}\right)}{\sum_{k=1}^{K} \pi_{k} N\left(x_{i} ; \mu_{k}, \sigma_{k}\right)}\).
+
+直接对 \((\mu, \sigma, \pi)\) 求导还是很麻烦，不过已经可以用迭代来最大化。迭代的
+步骤如下。
+
+1）根据上公式，由 \(\left(\mu^{(j)}, \sigma^{(j)}, \pi^{(j)}\right)\) 求解后验分布
+\(Q^{(j)}=P\left(Z | X ; \theta^{(j)}\right)\). 
+
+2）再把 $Q^{(j)}$ 代入上公式中，
+
+\begin{equation}
+\begin{aligned} \theta^{(j+1)} &=\arg \max _{\theta} \sum_{X} \sum_{Z} Q^{(j)} \log \frac{P(X, Z ; \theta)}{Q^{(j)}} \\ &=\arg \max _{\theta} \sum_{X} \sum_{Z}\left(Q^{(j)} \log P(X, Z ; \theta)-Q^{(j)} \log Q^{(j)}\right) \\ &=\arg \max _{\theta} \sum_{X} \sum_{Z} Q^{(j)} \log P(X, Z ; \theta) \end{aligned}
+\end{equation}
+
+这就只需要最大化联合分布 \(P(X, Z ; \theta)\) 了，最大化求出
+\(\left(\mu^{(j+1)}, \sigma^{(j+1)}, \pi^{(j+1)}\right)\) 后再重复这 2 步。
+
+M 步很显然，就是最大化那一步，E 步是那一步呢？根据上一公式有，
+
+\begin{equation}
+\begin{aligned} \theta^{(j+1)} &=\arg \max _{\theta} \sum_{X} \sum_{Z} Q^{(j)} \log P(X, Z ; \theta) \\ &=\arg \max _{\theta} \sum_{X} E_{Q^{(j)}}[\log P(X, Z ; \theta)] \\ &=\arg \max _{\theta} \sum_{X} E_{Z | X ; \theta^{(j)}}[\log P(X, Z ; \theta)] \\ &=\arg \max _{\theta} \sum_{X} E_{Z}\left[\log P(X, Z ; \theta) | X ; \theta^{(j)}\right] \end{aligned}
+\end{equation}
+
+其实，E 步就是求给定 $X$ 下的条件期望，也就是后验期望，使得 jenson 不等式能够取等
+号，是对 Jenson 不等式中小的那一端进行放大，使其等于大的那一端，这是一次放大；M步
+最大化联合分布，通过 0 梯度，拉格朗日等方法求极值点，又是一次放大。只要似然函数是
+有界的，只要 M 步中的 0 梯度点是极大值点，一直放大下去就能找到最终所求了。
+
+ example:
+ #+begin_src R :results output graphics :file fig_1.png :exports both 
+
+
+
+  
+ #+end_src
+
+
+总结下，EM 算法思想：
+Deﬁne the complete data log likelihood to be 
+$$
+\ell_{c}(\boldsymbol{\theta}) \triangleq \sum_{i=1}^{N} \log
+p\left(\mathbf{x}_{i}, \mathbf{z}_{i} | \boldsymbol{\theta}\right)
+$$
+
+This cannot be computed,since $\mathbf{z}_{i}$ is unknown.So let us define the *expected complete data log likelihood* as follows:
+
+\begin{equation}
+Q\left(\boldsymbol{\theta}, \boldsymbol{\theta}^{t-1}\right)=\mathbb{E}\left[\ell_{c}(\boldsymbol{\theta}) | \mathcal{D}, \boldsymbol{\theta}^{t-1}\right]
+\end{equation}
+
+where $t$ is the current iteration number. $Q$ is called the auxiliary
+function.The expectation is taken wrt the old parameters, $\theta^{t-1}$,and the
+observed data $\mathcal{D}$.The goal of the *E step* is to complete
+$Q\left(\boldsymbol{\theta}, \boldsymbol{\theta}^{t-1}\right)$,or rather, the
+terms inside of it which the MLE depends on;these are known as the *expected
+sufficient statistics* or ESS. In the *M step*,we optimize the Q function wrt $\boldsymbol{\theta}$:
+$$
+\boldsymbol{\theta}^{t}=\arg \max _{\boldsymbol{\theta}} Q\left(\boldsymbol{\theta}, \boldsymbol{\theta}^{t-1}\right)
+$$
+
+再次总结：
+1.先估计隐变量 z 的分布，然后利用 Z 的分布去估计目标参数的概率值。
+
+
+辅助资料：https://www.jianshu.com/p/1121509ac1dc ; https://www.zhihu.com/question/27976634

@@ -1,4 +1,39 @@
-* emacs wiki
+* emacs wiki                                                            :toc:
+  - [[#实用技能][实用技能]]
+    - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
+  - [[#常用快捷键][常用快捷键]]
+  - [[#emacs-mode][emacs mode]]
+  - [[#markdown-mode][markdown mode]]
+  - [[#ivy][ivy]]
+  - [[#lpy][lpy]]
+  - [[#avy][avy]]
+  - [[#counsel][counsel]]
+    - [[#counsel-rg][counsel-rg]]
+    - [[#counsel-etags-grep][counsel-etags-grep]]
+    - [[#counsel-descbind][counsel-descbind]]
+      - [[#counsel-swith-buffer][counsel-swith-buffer]]
+    - [[#counsel-etags-grep-1][counsel-etags-grep]]
+    - [[#counsel-packages][counsel-packages]]
+    - [[#counsel-imenu][counsel-imenu]]
+    - [[#counsel-google][counsel-google]]
+  - [[#swiper][swiper]]
+      - [[#swiper-all-thing-at-point][swiper-all-thing-at-point.]]
+      - [[#swiper-isearch-thing-at-point][swiper-isearch-thing-at-point.]]
+      - [[#swiper-thing-at-point][swiper-thing-at-point.]]
+  - [[#helm][helm]]
+  - [[#evil][evil]]
+  - [[#org][org]]
+    - [[#配置][配置]]
+    - [[#evil-org-mode][evil-org-mode]]
+    - [[#toc-org][toc-org]]
+  - [[#bm][bm]]
+  - [[#hydra][hydra]]
+  - [[#magit][magit]]
+  - [[#shell][shell]]
+  - [[#yas-nippet][yas-nippet]]
+  - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
+    - [[#ess][ess]]
+
 ** 实用技能
 *** 不重新启动 emacs,让.emacs 配置生效
 (1) 用 emacs 打开 .emacs 文件，C-x C-e 光标前面的运行一条语句。立即生效。
@@ -65,15 +100,22 @@
 |               |                                |
 
 ** counsel
-
 | 命令              | 快捷键 |
 | counsel-mark-ring | spc-c-m |
 *** counsel-rg
 这个包可以跨文件搜索 char 关键词。很方便的。
+*** counsel-etags-grep
+功能类似于 counsel-rg, 也可以进行搜索词汇.
+*** counsel-descbind
+可以快速了解当前可以还绑定哪些快捷键.
+
+
 **** counsel-swith-buffer
 
 *** counsel-etags-grep
 功能类似于这个包可以跨文件搜索 char 关键词。很方便的
+*** counsel-packages
+可以方便地删除你安装的 packgage.
 *** counsel-imenu
 可以充当文档目录,快捷键 spc-j-i 
 *** counsel-google 
@@ -84,8 +126,6 @@
 **** swiper-isearch-thing-at-point.
 **** swiper-thing-at-point.
 
-
-
 ** helm
 
 1、利用 helm-imenu 查看目录结构，比如 markdown 文件的目录结构。
@@ -95,7 +135,6 @@
 3、利用 helm-recentf 可以查看最近打开的文件位置。
 
 4、利用 helm-regexp 搜索中文文字，真是太方便了。
-** counsel
 ** evil
    vim 模式谁用谁知道啊！！！！太爽了！需要学习 vim 的按键快捷键。
 
@@ -147,7 +186,6 @@ visual mode
 ctrl + r
 
 ** org
-
 喜欢打开 org-indent-mode.这样可以同样 level 下标题能够缩进。
 
 *** 配置
@@ -193,24 +231,30 @@ ctrl + r
 <leader>l	evil-org-open-links
 <leader>o	evil-org-recompute-clocks
 
+*** toc-org
+org-set-tags-command(c-c c-q) 放在第一个标题后面输入这个命令,即可生成 toc.
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
 bm-remove-all-buffers 可以删除所有标记的 bookmark,真的很方便！
 ** hydra
 hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是很方便。
 ** magit
+参考连接:https://www.jianshu.com/p/990e69407b44
+文件管理神器 magit. 
+
+傻瓜流程:
+
+magit-status| s |c-c|pp
 
 需求:
 
-1.修改本地仓储
+1.修改本地仓储.(本地操作,magit-status)
 
-2.stage 这些修改 (spc g s)
+2.stage 这些修改 (s)
 
-3.提交修改
+3.提交修改.(创建 commit，然后 c-c)
 
-4.push 到远端 github
-
-
+4.push 到远端 github （p-p）
 
 Git 工作流程
 
