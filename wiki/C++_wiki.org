@@ -1,0 +1,668 @@
+* C/C++_wiki
+c 语言有个特点就是每行代码都需要加个分号。
+** #include<stdio.h>
+这行代码在 c 语言中真的是十分常见。stdio.h 文件是所有 c 语言编译器的标准部分，用
+来提供输入和输出的支持。
+
+stdio.h 的含义是 standard input/output header.
+
+** int main(void) 
+
+主函数，c 程序规定一个程序中有一个或多个函数，他们是 c 程序的基本模块。但必须有
+且只有一个 main 函数。因为 c 程序的执行将从 main 函数开始，到 main 函数结束而停止。
+
+在 main(void) 的函数申明中，前面的 int 表示 main() 这个函数在执行完成后返回一个
+整数。main 括号里的 void 表示空。
+
+一个 c 程序总是从 main() 函数开始执行的。
+
+***  printf
+
+d,i	以十进制形式输出有符号整数(正数不输出符号)
+O	以八进制形式输出无符号整数(不输出前缀 0)
+x	以十六进制形式输出无符号整数(不输出前缀 0x)
+U	以十进制形式输出无符号整数
+f	以小数形式输出单、双精度类型实数
+e	以指数形式输出单、双精度实数
+g	以%f 或%e 中较短输出宽度的一种格式输出单、双精度实数
+C	输出单个字符
+S	输出字符串
+
+    #+begin_src c
+      #include <stdio.h>
+int main()
+{
+    int a=12;
+    float b=3.1415;
+    char c='A';
+    printf("%d\n",a);
+    printf("o%o\n",a);
+    printf("0x%x\n",a);
+    printf("%3.2f\n",b);
+    printf("%c\n",c);
+    getchar();
+    return 0;
+}        
+    #+end_src
+
+** 变量与常量数据
+| 类型名称       | 占字节数 | 其他叫法           | 表示的数据范围                 |
+| char           |        1 | signed char        | -128 ～ 127                    |
+| unsigned char  |        1 | none               | 0 ~255                         |
+| int            |        4 | signed int         | -2,147,483,648 ~ 2,147,483,647 |
+| unsigned int   |        4 | unsigned           | 0 ~ 4,294,967,295              |
+| short          |        2 | short int          | -32,768 ~ 32,767               |
+| unsigned short |        2 | unsigned short int | 0 ~ 65535                      |
+| long           |        4 | long int           | -2,147,483,648 ~ 2,147,483,647 |
+| unsigned long  |        4 | unsigned long      | 0 ~ 4,294,967,295              |
+| float          |        4 | none               | 3.4E +/- 38 (7 digits)         |
+| double         |        8 | none               | 1.7E +/- 308 (15 digits)       |
+| long double    |       10 | none               | 1.2E +/- 4932 (19 digits)      |
+
+** 数组
+   #+begin_src c
+     
+   #+end_src
+
+** 基本输入与输出
+
+   #+begin_src c
+     int main(void)
+{
+    //char c;
+    //c = getchar()
+    putchar('A');
+}     
+   #+end_src
+
+** C++ 语言特点
+
+- In the C++ function each line must be terminated with ; In R, we use ; only
+  when we have multiple statements on the same line.
+
+- We must declare object types in the C++ version. In particular we need to
+  declare the types of the function arguments, return value and any intermediate
+  objects we create.
+
+- The function must have an explicit return statement. Similar to R, there can be multiple returns, but the function will terminate when it hits it’s first return statement.
+
+- You do not use assignment when creating a function.Object assignment must use = sign. The <- operator isn’t valid.
+
+- One line comments can be created using //. Multi-line comments are created using /*...*/
+** 命名空间
+为什么要写 using namespace std; 这句话呢？
+
+这是 c++ 新引入的一个机制，主要为了解决多个模块间命名冲突的问题，就像现实中的两
+个人重名一个道理，c++ 把相同的名字都放在不同的空间里，来防止名字的冲突。 好像 r
+也有这样的机制！
+
+** 常用数据类型
+| Type | Description |
+|      |             |
+char	A single character.
+int	An integer.
+float	A single precision floating point number.
+double	A double-precision floating point number.
+void	A valueless quantity.
+
+*** Vector
+
+#+begin_src C++
+ NumericVector V1(n);//创立了一个长度为n的默认初始化的数值型向量V1
+ NumericVector V2=NumericVector::create(1, 2, 3); //创立了一个数值型向量V2，并初始化使其含有三个数1，2，3。
+ LogicalVector V3=LogicalVector::create(true,false,R_NaN);//创立了一个逻辑型变量V3。如果将其转化为R Object，则其含有三个值TRUE, FALSE, NA。
+#+end_src
+ 
+**** size
+
+向量的大小用 a.size() 来表达。
+
+     #+begin_src C++
+       #include <Rcpp.h>
+using namespace Rcpp;
+//[[Rcpp::export]]
+NumericVector convolveCpp(NumericVector a, NumericVector b){
+    int na = a.size(),nb = b.size();
+    int nab = na + nb - 1;
+    NumericVector xab(nab);
+  
+    for(int i=0; i< na; i++)
+        for(int j=0; j < nb; j++)
+            xab[i+j] += a[i] * b[j];
+    return xab;
+}       
+     #+end_src
+
+*** Matrix
+#+begin_src c++ :exports code :eval never
+NumericMatrix M1(nrow,ncol);//创立了一个nrow*ncol的默认初始化的数值型矩阵。
+#+end_src
+*** Multidimensional Array
+#+begin_src C++ :includes <Rcpp.h>
+      NumericVector out=NumericVector(Dimension(2,2,3));//创立了一个多维数组。然而我不知道有什么卵用。
+#+end_src
+
+*** List
+    #+begin_src c++ :includes <Rcpp.h>
+      NumericMatrix y1(2,2);
+NumericVector y2(5);
+List L=List::create(Named("y1")=y1,
+                    Named("y2")=y2);
+    #+end_src
+*** DataFrame
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      NumericVector a=NumericVector::create(1,2,3);
+      CharacterVector b=CharacterVector::create("a","b","c");
+      std::vector<std::string> c(3);
+      c[0]="A";c[1]="B";c[2]="C";
+      DataFrame DF=DataFrame::create(Named("col1")=a,
+                                     Named("col2")=b,
+                                     Named("col3")=c);
+    #+end_src
+
+*** for 循环
+
+    #+begin_src c
+#include <Rcpp.h>
+using namespace Rcpp;
+//[[Rcpp::export]]
+NumericVector convolveCpp(NumericVector a, NumericVector b){
+  int na = a.size(), nb = b.size();
+  int nab = na + nb - 1;
+  NumericVector xab(nab);
+  
+  for(int i=0; i< na; i++)
+    for(int j=0; j < nb; j++)
+      xab[i+j] += a[i] * b[j];
+  return xab;
+}
+
+convolveCpp(1:5, 1:3)
+    #+end_src
+
+从上面的例子可以看出，在 c++ 中，变量函数必须给定数据类型。
+
+函数 convolveCpp 是向量， a.size 是向量的大小。
+
+** Rcpp
+*** Mac 配置坑
+之前，mac 一直编译不通，通过 google，发现~/R/ 目录下没有 Makevars 文件，通过寻
+找，可以在 RcppArmadillo 文件下找到类似的文件，然后在增加如下文件。
+
+#+begin_src 
+ VER=-7 
+CC=gcc$(VER)
+CXX=g++$(VER)
+CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
+CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
+FLIBS=-L/usr/local/Cellar/gcc/7.3.0/lib/gcc/5
+CXX1X=g++${VER}
+FC=gfortran${VER}
+F77=gfortran${VER}
+MAKE=make -j4 
+#+end_src
+
+*** RcppArmadillo 
+这个函数和 matlab 很像。
+**** matrix 
+矩阵的表示。
+#+begin_src C++
+  arma::mat betahat = {{1, 3},
+                       {2, 4}};
+#+end_src
+
+#+begin_src C++
+  arma::mat a1 (arma::mat x){
+    return x;
+}
+#+end_src
+***** randu 生成
+也可以通过 arma::mat X(2,2,arma::fill::randu) 这种方式生成 matrix。
+#+begin_src C++
+  void test(){
+    arma::mat A = {{2,3},{2,4}};
+    arma::mat B={{1,2,3},{4,5,6}};
+    //arma::mat X = randu<mat>(5,5);
+    arma::mat X(2,2,arma::fill::randu);
+    Rcpp::Rcout << X << "\n";
+    //Rcpp::Rcout << R << "\n";
+} 
+#+end_src
+
+类似地有，arma::mat Y(2,2,arma::fill::randn);
+**** 转置 
+#+begin_src C++
+  arma::mat betahat = {{1, 3},
+                       {2, 4}};
+ betahat.t()
+#+end_src
+**** as_col/as_row
+可以将矩阵变成向量，当然有两种方式，一是行向量，一是列向量。
+#+begin_src C++
+  void test(){
+    arma::mat A = {{1,2},{1,1}};
+    arma::mat B = {1, 3};
+    //arma::mat X = randu<mat>(5,5);
+    //arma::mat X(2,2,arma::fill::randu);
+    arma::mat C = arma::solve(A, B.t());
+    arma::vec v = A.as_col();
+    //arma::mat R;
+    //arma::mat Q;
+    //arma::qr(Q,R,A);
+    // arma::vec a = A.diag();
+    // A.resize(1,4);
+    // B.copy_size(A);
+    // B.set_size(1,4);
+    // B.reshape(1,4);
+    // B.ones(2,3);
+    // B.zeros(2,3);
+    // B.randu(3,4);
+    // B.randn(3,4);
+    // double y = B.is_empty();
+    // double y = B.is_finite();// 
+      // double y = B.is_square();
+      // double y = B.is_vec();
+    // double y = B.is_sorted();
+    // double y = B.has_inf();
+    // double y = B.has_nan();
+    // arma::mat val = ones<arma::mat>(6, 5);
+    //A.for_each([](mat::elem_type& val)
+    //   {val += 123.0});
+    // arma::vec v = arma::linspace<arma::vec>(10, 15, 6);
+    // val.each_col() +=v; 
+    // A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
+    Rcpp::Rcout << v << "\n";
+    //Rcpp::Rcout << R << "\n";
+} 
+#+end_src
+**** 求解方程 
+如果需要求解 AX=B，
+#+begin_src C++
+  void test(){
+    arma::mat A = {{1,2},{1,1}};
+    arma::mat B = {1, 3};
+    arma::mat C = arma::solve(A, B.t());
+    Rcpp::Rcout << v << "\n";
+} 
+#+end_src
+
+**** 求内积
+#+begin_src C++
+ double g(arma::vec x, arma::vec y) {
+  arma::mat d = x.t()*y;   
+   return d(0);
+ }
+#+end_src
+**** QR 分解
+QR 分解 常被用于计算 AX=b 的问题，因为样本量过小的时候(a*a')^-1 计算会变得极其不稳定，这时候就需要用 QR 分解来解决问题。
+参考链接为：https://www.zhihu.com/search?type=content&q=QR%20%E5%88%86%E8%A7%A3
+
+QR 分解数学表达式为：$A=QR$, Q 是正交矩阵，R是上三角矩阵。
+
+#+begin_src C++
+void test(){
+  arma::mat A = {{2,3},{2,4}};
+  arma::mat B={{1,2,3},{4,5,6}};
+  //arma::mat X = randu<mat>(5,5); 
+  arma::mat R;
+  arma::mat Q;
+  arma::qr(Q,R,A);
+  // arma::vec a = A.diag();
+  // A.resize(1,4);
+  // B.copy_size(A);
+  // B.set_size(1,4);
+  // B.reshape(1,4);
+  // B.ones(2,3);
+  // B.zeros(2,3);
+  // B.randu(3,4);
+  // B.randn(3,4);
+  // double y = B.is_empty();
+  // double y = B.is_finite();// 
+  // double y = B.is_square();
+  // double y = B.is_vec();
+  // double y = B.is_sorted();
+  // double y = B.has_inf();
+  // double y = B.has_nan();
+  // arma::mat val = ones<arma::mat>(6, 5);
+//A.for_each([](mat::elem_type& val)
+//   {val += 123.0});
+  // arma::vec v = arma::linspace<arma::vec>(10, 15, 6);
+  // val.each_col() +=v; 
+  // A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
+ Rcpp::Rcout << Q << "\n";
+ Rcpp::Rcout << R << "\n";
+} 
+#+end_src
+
+**** 矩阵计算
+#+begin_src C++
+  Rcpp::List a1 (arma::mat x){
+    int R = x.n_rows; //矩阵的行数
+    int C = x.n_cols; //矩阵的列数
+    arma:: vec y = vectorise(x); //矩阵向量化
+    Rcpp::NumericMatrix new_x = Rcpp::wrap(x);//arma::mat 转化为Rcpp::NumericMatrix
+    Rcpp::Rcout << "Rows:" << R << std::endl; //display R
+    Rcpp::Rcout << "cols:" << C << std::endl; //display C
+    x.print();
+    x.print("Note");
+    return Rcpp::List::create(Rcpp::Named("y") = y,
+                              Rcpp::Named("newx") = new_x);
+}
+#+end_src
+
+**** (i)
+access the i-th element, assuming a column-by-column layout.
+返回的是第 i 个元素。
+     #+begin_src matlab
+       void test_randu(){
+  arma::mat A = arma::randu<arma::mat>(4,5);
+  arma::vec a = A.diag();
+  double b = a(2);
+  Rcpp::Rcout << b << "\n";
+} 
+     #+end_src
+
+**** fill(k)
+set all elements to be equal to k.
+     #+begin_src matlab
+void test_randu(){
+  arma::mat A = {{2,3},{2,4}};
+  arma::vec a = A.diag();
+  arma::mat b = A.fill(2);
+  Rcpp::Rcout << b << "\n";
+} 
+     #+end_src
+
+**** resize
+可以对矩阵进行 resize。
+     #+begin_src matlab
+void test_randu(){
+  arma::mat A = {{2,3},{2,4}};
+  arma::vec a = A.diag();
+  A.resize(1,4);
+  Rcpp::Rcout << A << "\n";
+} 
+     #+end_src
+*****  reshape
+
+#+begin_src C++
+  Rcpp::List a1 (arma::mat x,int n, int r, double v){
+    x.print();
+    x.reshape(n,r);
+    x.fill(v);
+    arma:: mat x2 = x;
+    x2.reshape(r,n);
+    Rcpp::List ret;
+    ret["x1"] = x;
+    ret["x2"] = x2;
+    return(ret);
+}
+#+end_src
+
+*****  ones/zeros
+生成全为 1 或 0 的矩阵。
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+arma::mat y = x.ones();
+return y;
+#+end_src
+
+*****  index
+
+index the matrix value.
+#+begin_src C++
+double a1 (arma::mat x, int i, int j){
+arma::mat y = x.ones();
+return(y(i, j));
+#+end_src
+
+
+#+begin_src C++
+  arma::rowvec matrix_locs(arma::mat M, 
+                           arma::umat locs){
+    arma::uvec eids = sub2ind(size(M), locs);
+    arma::vec v = M.elem(eids);
+    return(v.t());
+}
+#+end_src
+
+*****  index entire rows 
+这块内容比较容易错误的是输出的类型是 matrix，而不是 vec。
+#+begin_src C++
+arma::mat a1 (arma::mat x, int i, int j){
+arma::mat y = x.ones();
+return(y.row(i);
+#+end_src
+
+- index entire columns 
+这块内容比较容易错误的是输出的类型是 matrix，而不是 vec。
+#+begin_src C++
+arma::mat a1 (arma::mat x, int i, int j){
+arma::mat y = x.ones();
+return(y.col(i);
+#+end_src
+
+- index multiple rows/columns
+可以一次性索引多行/列。
+#+begin_src C++
+  arma::mat a1 (arma::mat x, int i){
+    arma::mat y = x.ones();
+    return(y.cols(0,1));
+#+end_src
+
+
+- index multiple rows/columns
+可以一次性索引多行/列。
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+return(x + x);
+}
+#+end_src
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+  return(exp(x));
+}
+#+end_src
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+  return(x.t());
+}
+#+end_src
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+  return(x.t()*x);
+}
+#+end_src
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+  return(inv(x.t()*x));
+}
+#+end_src
+
+#+begin_src C++
+arma::mat a1 (arma::mat x){
+  return(chol(x*x.t()));
+}
+#+end_src
+
+- svd 分解
+
+#+begin_src C++
+  Rcpp::List a1 (arma::mat x){
+    arma::mat xtx = x.t()*x;
+    arma::mat U;
+    arma::vec s;
+    arma::mat V;
+    svd(U, s, V, xtx);
+    Rcpp::List ret;
+    ret["U"] = U;
+    ret["s"] = s;
+    ret["V"] = V;
+    return(ret);
+}
+#+end_src
+
+*****  行列式
+
+#+begin_src C++
+  double lma(arma::mat X,
+             arma::mat y){
+    arma::mat betahat;
+    double z=arma::det(X); //matrix 
+                               double x_norm = norm(X);
+                               betahat = (X.t()*X).i()*X.t() *y; 
+                               return(x_norm);
+}
+#+end_src
+
+**** set_size
+change size to specified dimensions, without preserving data.
+     #+begin_src matlab
+void test_randu(){
+  arma::mat A = {{2,3},{2,4},{5,6}};
+  arma::mat B={{1,2,3},{4,5,6}};
+  arma::vec a = A.diag();
+  // A.resize(1,4);
+  // B.copy_size(A);
+  B.set_size(1,4);
+  A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
+  Rcpp::Rcout << B << "\n";
+} 
+     #+end_src
+
+**** 向量操作
+***** head/tail
+类似 head/tail。
+#+begin_src C++
+  arma::vec b1(10, arma::fill::randu);
+  b1.tail(5) += 123;
+  b1.head(3) += 20;
+#+end_src
+
+最后 5 个元素和前 3 个元素分别增加 123 和 20.
+
+***** 向量表示
+#+begin_src C++
+  arma::vec A = {1, 2, 3};
+#+end_src
+***** Row
+
+vec a(5); a = 123;
+vec a(5); a.fill(123);
+
+上面两行代码含义完全不同，第一行的意思只是填充一个值，而第二行代码可以实现 5 个数值均为 123.
+
+#+begin_src C++
+  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5, 6);
+#+end_src
+
+***** linspace      
+linspace(start, end) #如果不指定 N，默认值为 100
+linspace(start, end, N)
+
+#+begin_src C++
+  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5, 6);
+#+end_src
+
+c++ 真是太严格了，数据的类型必须是严格定义。
+linspace 默认输出列向量，可以通过以下代码将其转成行向量。
+#+begin_src C++
+  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5, 6);
+  arma::rowvec a2 = arma::linspace<arma::rowvec>(0, 5, 6);  
+#+end_src
+***** regspace
+比 linspace 生成更加“标准的”数据。
+regspace(0,9) #默认步长是 1;
+regspace(0, 3, 9) #步长为 3;
+
+#+begin_src C++
+  arma::vec a3 = arma::regspace(0, 9);
+#+end_src
+
+***** rbind/cbind
+rbind: join_vert(A,B) or join_cols(A,B)
+
+cbind: join_horiz(A,B) or join_rows(A,B)
+***** which
+which(x>2) 相当于 find(x>2).finite(x) 相当于 find_finite(x)
+
+从以下代码可以看出，A.elem 函数可以遍历 A 的每个数值。
+
+#+begin_src C++
+  arma::vec find_equal(arma::vec A,
+                       double b){
+    arma::uvec idx = arma::find(A == b);
+    arma::vec out = A.elem(idx);
+    return(out);
+}
+  //arma::vec lma(arma::vec y,
+//    double replace_val = 1.5,
+//             double find_val = 3){
+//arma::uvec idx = find(y >= find_val);
+//y.elem(idx).fill(replace_val);  
+//arma::mat betahat;
+//arma::mat bind_row=arma::join_vert(y, y); //bind_rows操作
+//double z=arma::det(X); // 矩阵   
+                            //double x_norm = norm(X);//
+//int rank_x =arma::rank(X);
+//arma::mat min_x = arma::min(X, 1);
+  //betahat = (X.t()*X).i()*X.t() *y; 
+//return(y);
+  //}
+#+end_src
+**** member function & variable
+**** for loop
+
+     #+begin_src matlab
+for(const auto& val : A)
+  {
+  std::cout  << val << std::endl;
+  }
+  arma::mat::iterator it_end = A.end();
+  for(arma::mat::iterator it = A.begin(); it != it_end; ++it)
+  {
+    std::cout  << (*it) << std::endl;
+  }
+     #+end_src
+**** for_each
+     #+begin_src matlab
+void test_randu(){
+  arma::mat A = {{2,3},{2,4},{5,6}};
+  arma::mat B={{1,2,3},{4,5,6}};
+  arma::vec a = A.diag();
+  // A.resize(1,4);
+  B.copy_size(A);
+  A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
+  Rcpp::Rcout << B << "\n";
+} 
+     #+end_src
+
+** print
+以下代码类似于 print(A).
+#+begin_src C++
+ 	Rcpp::Rcout << A << std::endl;
+#+end_src
+
+
+
+
+**** lm 估计
+#+begin_src C++
+arma::mat lma(arma::mat X,
+              arma::mat y){
+arma::mat betahat;
+betahat = (X.t()*X).i()*X.t() *y; 
+return(betahat);
+}
+#+end_src
+
+

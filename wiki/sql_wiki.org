@@ -1,0 +1,349 @@
+#+TITLE: sql wiki
+#+DESCRIPTION:
+#+KEYWORDS:
+#+STARTUP:  content
+
+- [[wiki:index][Index]]
+
+- Related: [[wiki:R_WIKI][R]]
+
+* sql_wiki
+
+利用 R 包 sqldf 来学习 sql.
+https://github.com/ggrothendieck/sqldf#example-1-ordering-and-limiting
+
+dbplyr 包可以把 dplyr 语句翻译成 sql 语句，也是学习 sql 神器。
+
+可以想象需要实现 dplyr 包中的 select, filter, group_by, arrange, summarise 等操
+作. 其实 sql 包括以上功能，但不限于以上功能。比如还有 head 功能等等。
+
+** 常见错误
+No Database Selected.
+
+需要指定使用哪一个数据库。
+#+begin_src sql
+  use sys
+#+end_src
+
+** 创建数据库
+
+   #+begin_src sql
+     create database samp_db character set gbk;
+     drop database samp_db; --删除库名为samp_db
+     show databases;
+     use samp_db ;--选择创建的数据库samp_db
+     show tables;--显示samp_db下面所有的表名字
+     describe      
+   #+end_src
+
+** 删除数据库
+
+   #+begin_src sql
+     drop database samp_db; --删除库名为samp_db
+   #+end_src
+
+** head 
+R 中 head 一般是展示 6 行数据的功能。sql 语句可以写成如下： 
+
+#+begin_src sql
+  a1s <- sqldf("select * from iris limit 6")  
+#+end_src
+
+R 语句
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  iris %>%
+      head()
+#+end_src
+
+** where
+sql 语句中的 filter 是 where.
+*** like
+#+begin_src sql
+#从iris 数据集中筛选出Species 开头是"set" 的记录
+  sqldf("select * from iris where Species like 'set%'")  
+#+end_src
+
+R 语句可以这么写
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  library(data.table)
+  iris %>% 
+      filter(Species %like%  'set')  
+#+end_src
+*** in
+这个 in 很熟悉的。
+    #+begin_src sql
+      sqldf("select * from iris where Species in ('setosa','versicolor')")      
+    #+end_src
+
+R 语句
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  iris %>% 
+      filter(Species %in% c('setosa','versicolor'))  
+#+end_src
+
+当然还有更直接的＝语句
+
+#+begin_src 
+  sqldf("select * from iris where Species = 'setosa'")
+#+end_src
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  iris %>% filter(Species == 'setosa')  
+#+end_src
+
+
+
+*** between and 
+上面的语句是针对的是离散变量，如果变量是连续变量，那么就需要用到 between and 了。
+#+begin_src sql
+  sqldf("select * from mtcars where wt between 3 and 4")  
+#+end_src
+
+还能进一步显示行名，
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  sqldf("select * from mtcars where wt between 3 and 4", row.names = T)  
+#+end_src
+
+
+R 语句为
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  mtcars %>% 
+      filter(wt %>% between(3,4))  
+#+end_src
+
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     sqldf('select Abbr, avg("Sepal.Length")  from iris where Species in ('','') by Species')
+   #+end_src
+
+*** union/union all
+数据集的合并，类似于 R 中的 rbind.
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      sqldf("select * from a1 union all select * from a2")      
+    #+end_src
+
+必须注意 union 与 union all 之间的区别。
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      sqldf("select count(*) from (
+      select * from iris 
+      union all
+      select * from iris
+      )")      
+    #+end_src
+
+** ordering and limiting
+数据排序。
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     library(datasets)
+     library(tidyverse)
+     library(sqldf)
+                                        #> Loading required package: gsubfn
+                                        #> Loading required package: proto
+                                        #> Loading required package: RSQLite
+     sqldf('select * from iris order by "Sepal.Length" desc limit 3')
+                                        #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+                                        #> 1          7.9         3.8          6.4         2.0 virginica
+                                        #> 2          7.7         3.8          6.7         2.2 virginica
+                                        #> 3          7.7         2.6          6.9         2.3 virginica
+     iris %>% 
+         arrange(desc(Sepal.Length)) %>% 
+         head(3)
+                                        #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+                                        #> 1          7.9         3.8          6.4         2.0 virginica
+                                        #> 2          7.7         3.8          6.7         2.2 virginica
+                                        #> 3          7.7         2.6          6.9         2.3 virginica 
+   #+end_src
+** Averaging and Grouping
+这个就属于 summarise 范畴啦。
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     sqldf('select Species, avg("Sepal.Length") from iris group by Species')
+                                        #>      Species avg("Sepal.Length")
+                                        #> 1     setosa               5.006
+                                        #> 2 versicolor               5.936
+                                        #> 3  virginica               6.588
+
+     iris %>% 
+         select(Species, Sepal.Length) %>% 
+         group_by(Species) %>% 
+         summarise(mean(Sepal.Length))
+                                        #> # A tibble: 3 x 2
+                                        #>   Species    `mean(Sepal.Length)`
+                                        #>   <fct>                     <dbl>
+                                        #> 1 setosa                     5.01
+                                        #> 2 versicolor                 5.94
+                                        #> 3 virginica                  6.59     
+   #+end_src
+** nested select
+这一块暂时还没搞明白。
+ For each Species, find the average Sepal Length among those rows where Sepal Length exceeds the average Sepal Length for that Species. 
+#+begin_src sql
+  sqldf("select iris.Species '[Species]', 
+  avg(\"Sepal.Length\") '[Avg of SLs > avg SL]'
+  from iris, 
+  (select Species, avg(\"Sepal.Length\") SLavg 
+  from iris group by Species) SLavg
+  where iris.Species = SLavg.Species
+  and \"Sepal.Length\" > SLavg
+  group by iris.Species")  
+#+end_src
+
+上面的 sql 语句等价于下面
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     aggregate(Sepal.Length ~ Species, iris, function(x) mean(x[x > mean(x)]))
+   #+end_src
+
+请过滤出每组记录大于该组均值的记录。
+   #+begin_src sql
+     Emp <- data.frame(emp = letters[1:24], salary = 1:24, dept = rep(c("A", "B", "C"), each = 8))
+     sqldf("SELECT *
+     FROM Emp AS e1
+     WHERE salary > (SELECT avg(salary)
+     FROM Emp
+     WHERE dept = e1.dept)")     
+   #+end_src
+
+等价于以下 R 语言
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  Emp$ave_salary = ave(Emp$salary, Emp$dept)
+  Emp %>% 
+      filter(salary > ave_salary)  
+#+end_src
+
+** join
+数据连接方式，R and SQL 不同的地方。
+| R               | SQL                                                                |
+| inner_join()    | SELECT * FROM x JOIN y ON x.a = y.a                                |
+| left_join()     | SELECT * FROM x LEFT JOIN y ON x.a = y.a                           |
+| right_join()    | SELECT * FROM x RIGHT JOIN y ON x.a = y.a                          |
+| full_join()     | SELECT * FROM x FULL JOIN y ON x.a = y.a                           |
+| semi_join()     | SELECT * FROM x WHERE EXISTS (SELECT 1 FROM y WHERE x.a = y.a)     |
+| anti_join()     | SELECT * FROM x WHERE NOT EXISTS (SELECT 1 FROM y WHERE x.a = y.a) |
+| intersect(x, y) | SELECT * FROM x INTERSECT SELECT * FROM y                          |
+| union(x, y)     | SELECT * FROM x UNION SELECT * FROM y                              |
+| setdiff(x, y)   | SELECT * FROM x EXCEPT SELECT * FROM y                             |
+|                 |                                                                    |
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     Abbr <- data.frame(Species = levels(iris$Species), 
+                        Abbr = c("S", "Ve", "Vi"))
+     sqldf('select Abbr, avg("Sepal.Length") 
+   from iris natural join Abbr group by Species')
+                                        #>   Abbr avg("Sepal.Length")
+                                        #> 1    S               5.006
+                                        #> 2   Ve               5.936
+                                        #> 3   Vi               6.588
+
+     iris %>% 
+         inner_join(Abbr, by = "Species") %>% 
+         group_by(Species) %>% 
+         summarise(mean(Sepal.Length))
+                                        #> Warning: Column `Species` joining factor and character vector, coercing
+                                        #> into character vector
+                                        #> # A tibble: 3 x 2
+                                        #>   Species    `mean(Sepal.Length)`
+                                        #>   <chr>                     <dbl>
+                                        #> 1 setosa                     5.01
+                                        #> 2 versicolor                 5.94
+                                        #> 3 virginica                  6.59     
+   #+end_src
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+SNP1x <-
+  structure(list(Animal = c(194073197L, 194073197L, 194073197L, 
+                            194073197L, 194073197L), Marker = structure(1:5, .Label = c("P1001", 
+                                                                                        "P1002", "P1004", "P1005", "P1006", "P1007"), class = "factor"), 
+                 x = c(2L, 1L, 2L, 0L, 2L)), .Names = c("Animal", "Marker", 
+                                                        "x"), row.names = c("3213", "1295", "915", "2833", "1487"), class = "data.frame")
+
+SNP4 <- 
+  structure(list(Animal = c(194073197L, 194073197L, 194073197L, 
+                            194073197L, 194073197L, 194073197L), Marker = structure(1:6, .Label = c("P1001", 
+                                                                                                    "P1002", "P1004", "P1005", "P1006", "P1007"), class = "factor"), 
+                 Y = c(0.021088, 0.021088, 0.021088, 0.021088, 0.021088, 0.021088
+                 )), .Names = c("Animal", "Marker", "Y"), class = "data.frame", row.names = c("3213", 
+                                                                                              "1295", "915", "2833", "1487", "1885"))
+sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
+#>      Animal Marker       Y x
+#> 1 194073197  P1001 0.02109 2
+#> 2 194073197  P1002 0.02109 1
+#> 3 194073197  P1004 0.02109 2
+#> 4 194073197  P1005 0.02109 0
+#> 5 194073197  P1006 0.02109 2     
+   #+end_src
+
+** inner_join
+在 flights 数据集中，对 year,group 进行分组，筛选出大于均值 dep_time 的记录。
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     flights %>% 
+         group_by(year,month) %>% 
+         select(dep_time) %>% 
+         inner_join(flights %>% 
+                    group_by(year,month) %>% 
+                    summarise(mean(dep_time))) %>% 
+         filter(dep_time > `mean(dep_time)`)     
+   #+end_src
+
+   #+begin_src sql
+     <SQL>
+     SELECT *
+     FROM (SELECT `LHS`.`year` AS `year`, `LHS`.`month` AS `month`, `LHS`.`dep_time` AS `dep_time`, `RHS`.`mean(dep_time)` AS `mean(dep_time)`
+     FROM (SELECT `year`, `month`, `dep_time`
+     FROM `nycflights13::flights`) AS `LHS`
+     INNER JOIN (SELECT `year`, `month`, AVG(`dep_time`) AS `mean(dep_time)`
+     FROM `nycflights13::flights`
+     GROUP BY `year`, `month`) AS `RHS`
+     ON (`LHS`.`year` = `RHS`.`year` AND `LHS`.`month` = `RHS`.`month`)
+     )
+     WHERE (`dep_time` > `mean(dep_time)`)     
+   #+end_src
+
+** 插入变量
+用$ 可以插入变量。
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     minSL <- 7
+     limit <- 3
+     species <- "virginica"
+     fn$sqldf("select * from iris where \"Sepal.Length\" > $minSL and species = '$species' limit $limit")
+                                        #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+                                        #> 1          7.1         3.0          5.9         2.1 virginica
+                                        #> 2          7.6         3.0          6.6         2.1 virginica
+                                        #> 3          7.3         2.9          6.3         1.8 virginica     
+   #+end_src
+
+** summarise
+*** count
+计数
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     sqldf("select count(*) from iris")     
+   #+end_src
+
+*** mean/var
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     sqldf("select avg(demand) mean, variance(demand) var from BOD")
+      #>    mean   var
+                                        #> 1 14.83 21.44     
+   #+end_src
+
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     flights %>% 
+         group_by(year,month) %>% 
+         summarise(mean(dep_time)) %>% 
+         show_query()    
+   #+end_src
+
+上面 dplyr 语句 sql 写法是：
+   #+begin_src 
+    <SQL>
+SELECT `year`, `month`, AVG(`dep_time`) AS `mean(dep_time)`
+FROM `nycflights13::flights`
+GROUP BY `year`, `month` 
+   #+end_src

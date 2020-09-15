@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-07-08 Wed 18:07 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sql wiki</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="鲁亚军" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">sql wiki</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge9c5ad9">1. sql<sub>wiki</sub></a>
+<ul>
+<li><a href="#orgb0aba9b">1.1. 常见错误</a></li>
+<li><a href="#orgcde2648">1.2. 创建数据库</a></li>
+<li><a href="#org455d3ba">1.3. 删除数据库</a></li>
+<li><a href="#org0e9c27e">1.4. head</a></li>
+<li><a href="#org5026467">1.5. where</a>
+<ul>
+<li><a href="#org4fbaa79">1.5.1. like</a></li>
+<li><a href="#orge04d96a">1.5.2. in</a></li>
+<li><a href="#orga95f96a">1.5.3. between and</a></li>
+<li><a href="#orgd826c15">1.5.4. union/union all</a></li>
+</ul>
+</li>
+<li><a href="#orgf5e6c66">1.6. ordering and limiting</a></li>
+<li><a href="#org320e19b">1.7. Averaging and Grouping</a></li>
+<li><a href="#org752151c">1.8. nested select</a></li>
+<li><a href="#org117f2e9">1.9. join</a></li>
+<li><a href="#org02b146b">1.10. 插入变量</a></li>
+<li><a href="#org9a0e30a">1.11. count</a></li>
+<li><a href="#org8429854">1.12. mean/var</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<ul class="org-ul">
+<li><a href='index.html'>Index</a></li>
+
+<li>Related: <a href='R_WIKI.html'>R</a></li>
+</ul>
+
+<div id="orge9c5ad9" class="outline-2">
+<h2 id="orge9c5ad9"><span class="section-number-2">1</span> sql<sub>wiki</sub></h2>
+<div class="outline-text-2" id="text-1">
+<p>
+利用 R 包 sqldf 来学习 sql.
+<a href="https://github.com/ggrothendieck/sqldf#example-1-ordering-and-limiting">https://github.com/ggrothendieck/sqldf#example-1-ordering-and-limiting</a>
+</p>
+
+<p>
+可以想象需要实现 dplyr 包中的 select, filter, group<sub>by</sub>, arrange, summarise 等操作. 其实 sql 包括以上功能，但不限于以上功能。比如还有 head 功能等等。
+</p>
+</div>
+
+<div id="orgb0aba9b" class="outline-3">
+<h3 id="orgb0aba9b"><span class="section-number-3">1.1</span> 常见错误</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+No Database Selected.
+</p>
+
+<p>
+需要指定使用哪一个数据库。
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">use sys
+</pre>
+</div>
+</div>
+</div>
+
+<div id="orgcde2648" class="outline-3">
+<h3 id="orgcde2648"><span class="section-number-3">1.2</span> 创建数据库</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #F92672;">create</span> database samp_db <span style="color: #66D9EF;">character</span> <span style="color: #F92672;">set</span> gbk;
+<span style="color: #F92672;">drop</span> database samp_db; <span style="color: #75715E;">--&#21024;&#38500;&#24211;&#21517;&#20026;samp_db</span>
+show databases;
+use samp_db ;<span style="color: #75715E;">--&#36873;&#25321;&#21019;&#24314;&#30340;&#25968;&#25454;&#24211;samp_db</span>
+show tables;<span style="color: #75715E;">--&#26174;&#31034;samp_db&#19979;&#38754;&#25152;&#26377;&#30340;&#34920;&#21517;&#23383;</span>
+<span style="color: #F92672;">describe</span>      
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org455d3ba" class="outline-3">
+<h3 id="org455d3ba"><span class="section-number-3">1.3</span> 删除数据库</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #F92672;">drop</span> database samp_db; <span style="color: #75715E;">--&#21024;&#38500;&#24211;&#21517;&#20026;samp_db</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org0e9c27e" class="outline-3">
+<h3 id="org0e9c27e"><span class="section-number-3">1.4</span> head</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+R 中 head 一般是展示 6 行数据的功能。sql 语句可以写成如下： 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql">a1s &lt;- sqldf("<span style="color: #F92672;">select</span> * <span style="color: #F92672;">from</span> iris <span style="color: #F92672;">limit</span> <span style="color: #AE81FF;">6</span>")  
+</pre>
+</div>
+
+<p>
+R 语句
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">iris <span style="color: #AE81FF;">%&gt;%</span>
+    head()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org5026467" class="outline-3">
+<h3 id="org5026467"><span class="section-number-3">1.5</span> where</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+sql 语句中的 filter 是 where.
+</p>
+</div>
+<div id="org4fbaa79" class="outline-4">
+<h4 id="org4fbaa79"><span class="section-number-4">1.5.1</span> like</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<div class="org-src-container">
+<pre class="src src-sql">#&#20174;iris &#25968;&#25454;&#38598;&#20013;&#31579;&#36873;&#20986;Species &#24320;&#22836;&#26159;"<span style="color: #F92672;">set</span>" &#30340;&#35760;&#24405;
+  sqldf("<span style="color: #F92672;">select</span> * <span style="color: #F92672;">from</span> iris <span style="color: #F92672;">where</span> Species <span style="color: #F92672;">like</span> <span style="color: #E6DB74;">'set%'</span>")  
+</pre>
+</div>
+
+<p>
+R 语句可以这么写
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #AE81FF;">library</span>(data.table)
+iris <span style="color: #AE81FF;">%&gt;%</span> 
+    filter(Species <span style="color: #AE81FF;">%like%</span>  <span style="color: #E6DB74;">'set'</span>)  
+</pre>
+</div>
+</div>
+</div>
+
+<div id="orge04d96a" class="outline-4">
+<h4 id="orge04d96a"><span class="section-number-4">1.5.2</span> in</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+这个 in 很熟悉的。
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">sqldf("<span style="color: #F92672;">select</span> * <span style="color: #F92672;">from</span> iris <span style="color: #F92672;">where</span> Species <span style="color: #F92672;">in</span> (<span style="color: #E6DB74;">'setosa'</span>,<span style="color: #E6DB74;">'versicolor'</span>)")      
+</pre>
+</div>
+
+<p>
+R 语句
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">iris <span style="color: #AE81FF;">%&gt;%</span> 
+    filter(Species <span style="color: #AE81FF;">%in%</span> c(<span style="color: #E6DB74;">'setosa'</span>,<span style="color: #E6DB74;">'versicolor'</span>))  
+</pre>
+</div>
+
+<p>
+当然还有更直接的＝语句
+</p>
+
+<pre class="example">
+sqldf("select * from iris where Species = 'setosa'")
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-R">iris <span style="color: #AE81FF;">%&gt;%</span> filter(Species == <span style="color: #E6DB74;">'setosa'</span>)  
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="orga95f96a" class="outline-4">
+<h4 id="orga95f96a"><span class="section-number-4">1.5.3</span> between and</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<p>
+上面的语句是针对的是离散变量，如果变量是连续变量，那么就需要用到 between and 了。
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">sqldf("<span style="color: #F92672;">select</span> * <span style="color: #F92672;">from</span> mtcars <span style="color: #F92672;">where</span> wt <span style="color: #F92672;">between</span> <span style="color: #AE81FF;">3</span> <span style="color: #F92672;">and</span> <span style="color: #AE81FF;">4</span>")  
+</pre>
+</div>
+
+<p>
+还能进一步显示行名，
+</p>
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">"select * from mtcars where wt between 3 and 4"</span>, row.names = T)  
+</pre>
+</div>
+
+
+<p>
+R 语句为
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">mtcars <span style="color: #AE81FF;">%&gt;%</span> 
+    filter(wt <span style="color: #AE81FF;">%&gt;%</span> between(<span style="color: #AE81FF;">3</span>,<span style="color: #AE81FF;">4</span>))  
+</pre>
+</div>
+
+
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">'select Abbr, avg("Sepal.Length")  from iris where Species in ('','') by Species'</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="orgd826c15" class="outline-4">
+<h4 id="orgd826c15"><span class="section-number-4">1.5.4</span> union/union all</h4>
+<div class="outline-text-4" id="text-1-5-4">
+<p>
+数据集的合并，类似于 R 中的 rbind.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">"select * from a1 union all select * from a2"</span>)      
+</pre>
+</div>
+
+<p>
+必须注意 union 与 union all 之间的区别。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">"select count(*) from (</span>
+<span style="color: #E6DB74;">select * from iris </span>
+<span style="color: #E6DB74;">union all</span>
+<span style="color: #E6DB74;">select * from iris</span>
+<span style="color: #E6DB74;">)"</span>)      
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="orgf5e6c66" class="outline-3">
+<h3 id="orgf5e6c66"><span class="section-number-3">1.6</span> ordering and limiting</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+数据排序。
+</p>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #AE81FF;">library</span>(datasets)
+<span style="color: #AE81FF;">library</span>(tidyverse)
+<span style="color: #AE81FF;">library</span>(sqldf)
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; Loading required package: gsubfn</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; Loading required package: proto</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; Loading required package: RSQLite</span>
+sqldf(<span style="color: #E6DB74;">'select * from iris order by "Sepal.Length" desc limit 3'</span>)
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1          7.9         3.8          6.4         2.0 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2          7.7         3.8          6.7         2.2 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3          7.7         2.6          6.9         2.3 virginica</span>
+iris <span style="color: #AE81FF;">%&gt;%</span> 
+    arrange(desc(Sepal.Length)) <span style="color: #AE81FF;">%&gt;%</span> 
+    head(<span style="color: #AE81FF;">3</span>)
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1          7.9         3.8          6.4         2.0 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2          7.7         3.8          6.7         2.2 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3          7.7         2.6          6.9         2.3 virginica </span>
+</pre>
+</div>
+</div>
+</div>
+<div id="org320e19b" class="outline-3">
+<h3 id="org320e19b"><span class="section-number-3">1.7</span> Averaging and Grouping</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+这个就属于 summarise 范畴啦。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">'select Species, avg("Sepal.Length") from iris group by Species'</span>)
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;      Species avg("Sepal.Length")</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1     setosa               5.006</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2 versicolor               5.936</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3  virginica               6.588</span>
+
+iris <span style="color: #AE81FF;">%&gt;%</span> 
+    select(Species, Sepal.Length) <span style="color: #AE81FF;">%&gt;%</span> 
+    group_by(Species) <span style="color: #AE81FF;">%&gt;%</span> 
+    summarise(mean(Sepal.Length))
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; # A tibble: 3 x 2</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Species    `mean(Sepal.Length)`</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   &lt;fct&gt;                     &lt;dbl&gt;</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1 setosa                     5.01</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2 versicolor                 5.94</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3 virginica                  6.59     </span>
+</pre>
+</div>
+</div>
+</div>
+<div id="org752151c" class="outline-3">
+<h3 id="org752151c"><span class="section-number-3">1.8</span> nested select</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+这一块暂时还没搞明白。
+ For each Species, find the average Sepal Length among those rows where Sepal Length exceeds the average Sepal Length for that Species. 
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">sqldf("<span style="color: #F92672;">select</span> iris.Species <span style="color: #E6DB74;">'[Species]'</span>, 
+<span style="color: #F92672;">avg</span>(\"Sepal.<span style="color: #F92672;">Length</span>\") <span style="color: #E6DB74;">'[Avg of SLs &gt; avg SL]'</span>
+<span style="color: #F92672;">from</span> iris, 
+(<span style="color: #F92672;">select</span> Species, <span style="color: #F92672;">avg</span>(\"Sepal.<span style="color: #F92672;">Length</span>\") SLavg 
+<span style="color: #F92672;">from</span> iris <span style="color: #F92672;">group</span> <span style="color: #F92672;">by</span> Species) SLavg
+<span style="color: #F92672;">where</span> iris.Species = SLavg.Species
+<span style="color: #F92672;">and</span> \"Sepal.<span style="color: #F92672;">Length</span>\" &gt; SLavg
+<span style="color: #F92672;">group</span> <span style="color: #F92672;">by</span> iris.Species")  
+</pre>
+</div>
+
+<p>
+上面的 sql 语句等价于下面
+</p>
+<div class="org-src-container">
+<pre class="src src-R">aggregate(Sepal.Length ~ Species, iris, <span style="color: #F92672;">function</span>(x) mean(x[x &gt; mean(x)]))
+</pre>
+</div>
+
+<p>
+请过滤出每组记录大于该组均值的记录。
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">Emp &lt;- <span style="color: #F92672;">data</span>.frame(emp = letters[<span style="color: #AE81FF;">1</span>:<span style="color: #AE81FF;">24</span>], salary = <span style="color: #AE81FF;">1</span>:<span style="color: #AE81FF;">24</span>, dept = rep(c("A", "B", "C"), <span style="color: #F92672;">each</span> = <span style="color: #AE81FF;">8</span>))
+sqldf("<span style="color: #F92672;">SELECT</span> *
+<span style="color: #F92672;">FROM</span> Emp <span style="color: #F92672;">AS</span> e1
+<span style="color: #F92672;">WHERE</span> salary &gt; (<span style="color: #F92672;">SELECT</span> <span style="color: #F92672;">avg</span>(salary)
+<span style="color: #F92672;">FROM</span> Emp
+<span style="color: #F92672;">WHERE</span> dept = e1.dept)")     
+</pre>
+</div>
+
+<p>
+等价于以下 R 语言
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">Emp$ave_salary = ave(Emp$salary, Emp$dept)
+Emp <span style="color: #AE81FF;">%&gt;%</span> 
+    filter(salary &gt; ave_salary)  
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org117f2e9" class="outline-3">
+<h3 id="org117f2e9"><span class="section-number-3">1.9</span> join</h3>
+<div class="outline-text-3" id="text-1-9">
+<div class="org-src-container">
+<pre class="src src-R">  Abbr <span style="color: #AE81FF;">&lt;-</span> data.frame(Species = levels(iris$Species), 
+                     Abbr = c(<span style="color: #E6DB74;">"S"</span>, <span style="color: #E6DB74;">"Ve"</span>, <span style="color: #E6DB74;">"Vi"</span>))
+  sqldf(<span style="color: #E6DB74;">'select Abbr, avg("Sepal.Length") </span>
+<span style="color: #E6DB74;">from iris natural join Abbr group by Species'</span>)
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Abbr avg("Sepal.Length")</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1    S               5.006</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2   Ve               5.936</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3   Vi               6.588</span>
+
+  iris <span style="color: #AE81FF;">%&gt;%</span> 
+      inner_join(Abbr, by = <span style="color: #E6DB74;">"Species"</span>) <span style="color: #AE81FF;">%&gt;%</span> 
+      group_by(Species) <span style="color: #AE81FF;">%&gt;%</span> 
+      summarise(mean(Sepal.Length))
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; Warning: Column `Species` joining factor and character vector, coercing</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; into character vector</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; # A tibble: 3 x 2</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Species    `mean(Sepal.Length)`</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   &lt;chr&gt;                     &lt;dbl&gt;</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1 setosa                     5.01</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2 versicolor                 5.94</span>
+                                     <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3 virginica                  6.59     </span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">SNP1x <span style="color: #AE81FF;">&lt;-</span>
+  structure(list(Animal = c(<span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>, 
+                            <span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>), Marker = structure(<span style="color: #AE81FF;">1</span>:<span style="color: #AE81FF;">5</span>, .Label = c(<span style="color: #E6DB74;">"P1001"</span>, 
+                                                                                        <span style="color: #E6DB74;">"P1002"</span>, <span style="color: #E6DB74;">"P1004"</span>, <span style="color: #E6DB74;">"P1005"</span>, <span style="color: #E6DB74;">"P1006"</span>, <span style="color: #E6DB74;">"P1007"</span>), class = <span style="color: #E6DB74;">"factor"</span>), 
+                 x = c(<span style="color: #AE81FF;">2L</span>, <span style="color: #AE81FF;">1L</span>, <span style="color: #AE81FF;">2L</span>, <span style="color: #AE81FF;">0L</span>, <span style="color: #AE81FF;">2L</span>)), .Names = c(<span style="color: #E6DB74;">"Animal"</span>, <span style="color: #E6DB74;">"Marker"</span>, 
+                                                        <span style="color: #E6DB74;">"x"</span>), row.names = c(<span style="color: #E6DB74;">"3213"</span>, <span style="color: #E6DB74;">"1295"</span>, <span style="color: #E6DB74;">"915"</span>, <span style="color: #E6DB74;">"2833"</span>, <span style="color: #E6DB74;">"1487"</span>), class = <span style="color: #E6DB74;">"data.frame"</span>)
+
+SNP4 <span style="color: #AE81FF;">&lt;-</span> 
+  structure(list(Animal = c(<span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>, 
+                            <span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>, <span style="color: #AE81FF;">194073197L</span>), Marker = structure(<span style="color: #AE81FF;">1</span>:<span style="color: #AE81FF;">6</span>, .Label = c(<span style="color: #E6DB74;">"P1001"</span>, 
+                                                                                                    <span style="color: #E6DB74;">"P1002"</span>, <span style="color: #E6DB74;">"P1004"</span>, <span style="color: #E6DB74;">"P1005"</span>, <span style="color: #E6DB74;">"P1006"</span>, <span style="color: #E6DB74;">"P1007"</span>), class = <span style="color: #E6DB74;">"factor"</span>), 
+                 Y = c(<span style="color: #AE81FF;">0.021088</span>, <span style="color: #AE81FF;">0.021088</span>, <span style="color: #AE81FF;">0.021088</span>, <span style="color: #AE81FF;">0.021088</span>, <span style="color: #AE81FF;">0.021088</span>, <span style="color: #AE81FF;">0.021088</span>
+                 )), .Names = c(<span style="color: #E6DB74;">"Animal"</span>, <span style="color: #E6DB74;">"Marker"</span>, <span style="color: #E6DB74;">"Y"</span>), class = <span style="color: #E6DB74;">"data.frame"</span>, row.names = c(<span style="color: #E6DB74;">"3213"</span>, 
+                                                                                              <span style="color: #E6DB74;">"1295"</span>, <span style="color: #E6DB74;">"915"</span>, <span style="color: #E6DB74;">"2833"</span>, <span style="color: #E6DB74;">"1487"</span>, <span style="color: #E6DB74;">"1885"</span>))
+sqldf(<span style="color: #E6DB74;">"select * from SNP4 left join SNP1x using (Animal, Marker) limit 5"</span>)
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;      Animal Marker       Y x</span>
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1 194073197  P1001 0.02109 2</span>
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2 194073197  P1002 0.02109 1</span>
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3 194073197  P1004 0.02109 2</span>
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 4 194073197  P1005 0.02109 0</span>
+<span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 5 194073197  P1006 0.02109 2     </span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org02b146b" class="outline-3">
+<h3 id="org02b146b"><span class="section-number-3">1.10</span> 插入变量</h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+用$ 可以插入变量。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">minSL <span style="color: #AE81FF;">&lt;-</span> <span style="color: #AE81FF;">7</span>
+limit <span style="color: #AE81FF;">&lt;-</span> <span style="color: #AE81FF;">3</span>
+species <span style="color: #AE81FF;">&lt;-</span> <span style="color: #E6DB74;">"virginica"</span>
+fn$sqldf(<span style="color: #E6DB74;">"select * from iris where \"Sepal.Length\" &gt; $minSL and species = '$species' limit $limit"</span>)
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1          7.1         3.0          5.9         2.1 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 2          7.6         3.0          6.6         2.1 virginica</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 3          7.3         2.9          6.3         1.8 virginica     </span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org9a0e30a" class="outline-3">
+<h3 id="org9a0e30a"><span class="section-number-3">1.11</span> count</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+计数
+</p>
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">"select count(*) from iris"</span>)     
+</pre>
+</div>
+</div>
+</div>
+
+<div id="org8429854" class="outline-3">
+<h3 id="org8429854"><span class="section-number-3">1.12</span> mean/var</h3>
+<div class="outline-text-3" id="text-1-12">
+<div class="org-src-container">
+<pre class="src src-R">sqldf(<span style="color: #E6DB74;">"select avg(demand) mean, variance(demand) var from BOD"</span>)
+ <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt;    mean   var</span>
+                                   <span style="color: #75715E;">#</span><span style="color: #75715E;">&gt; 1 14.83 21.44     </span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: 鲁亚军</p>
+<p class="date">Created: 2020-07-08 Wed 18:07</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

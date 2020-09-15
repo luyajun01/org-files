@@ -1,37 +1,29 @@
-# -*- org-confirm-babel-evaluate: nil; -*-
-#+PROPERTY: header-args :eval never-export
-#+TITLE: R_WIKI
-#+DESCRIPTION:
-#+KEYWORDS:
-#+STARTUP:  content
-#+OPTIONS: author:nil email:nil creator:nil timestamp:nil html-postamble:nil H:6 
+#+TITLE: R_wiki
+#+OPTIONS: TeX:t LaTeX:t TOC:nil
+#+latex_class: article
+#+latex_compiler: xelatex
+#+OPTIONS: author:nil email:nil creator:nil timestamp:nil html-postamble:nil
 
-- [[wiki:index][Index]]
-
-- Related: [[wiki:统计][统计]]
-
-+begin_quote
+#+begin_quot
 这个文档专门用于记录 R 语言在使用过程中的心得体会，避免今后 coding 的重复劳动。
 #+end_quote
-
+ 
 * 问题
 ** 如何快速地删除确定的行？
 ** 如何对两个不同长度的向量作 map2?
 比如：c("1","2","3"),c("1","2")month 想要得到 c("11","12","21","22","23")
 
-#+BEGIN_SRC R
-purrr::cross(list("1","2","3"),list("1","2"))
-library(tidyverse)
-list(
-    c("1","2","3"),
-    c("1","2")
-) %>% cross() %>% 
-    map(lift(str_c))
-#+END_SRC
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  purrr::cross(list("1","2","3"),list("1","2"))
+  library(tidyverse)
+  list(
+      c("1","2","3"),
+      c("1","2")
+  ) %>% cross() %>% 
+      map(lift(str_c))
+#+end_src
 
-#+RESULTS:
-
-* R 语言编程规范
+* 0 R 语言编程规范
 
 缩进：使用两个空格来缩进，不要用 tab 键（制表符），当括号内发生换行时，另起一行与括号内的第一个字符对齐。
 
@@ -42,22 +34,22 @@ list(
 命名：用小写字母命名对象，并用句号分隔。
 
 ** 帮助文档
-#+BEGIN_SRC R
-help.start() #打开帮助文档首页
-help("foo") #或？foo 查看函数foo的帮助
-help.search("foo") #或？？foo 以foo为关键词搜索本地帮助文档
-example("foo")
-example("lapply") #函数lapply 的使用示例 
-RSiteSearch("foo")                                      #以foo为关键词搜索在线文档和邮件
-apropos("foo",mode = "function") #列出名称中含有foo 的所有可用函数
-data()#列出当前已加载包中所含有的所有可用示例数据集
-vignette() #列出当前已安装包中所有可用的vignette文档
-vignette("foo") #为主题foo 显示指定的vignette 文档
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+  help.start() #打开帮助文档首页
+  help("foo") #或？foo 查看函数foo的帮助
+  help.search("foo") #或？？foo 以foo为关键词搜索本地帮助文档
+  example("foo")
+  example("lapply") #函数lapply 的使用示例 
+  RSiteSearch("foo")                                      #以foo为关键词搜索在线文档和邮件
+  apropos("foo",mode = "function") #列出名称中含有foo 的所有可用函数
+  data()#列出当前已加载包中所含有的所有可用示例数据集
+  vignette() #列出当前已安装包中所有可用的vignette文档
+  vignette("foo") #为主题foo 显示指定的vignette 文档
 #+END_SRC
 
 ** TODO 工作空间
 
-#+BEGIN_SRC R
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
 getwd() #显示当前的工作目录
 setwd() #修改当前的工作目录为mydirectory
 ls()    #列出当前工作空间中的对象
@@ -75,7 +67,7 @@ q() #退出R.
 #+END_SRC
 
 ** 输入和输出
-#+BEGIN_SRC R
+#+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
 source("filenames") #可在当前会话中执行一个脚本
 sink("filenames",append = TRUE,split = TRUE) #将输出重定向到文件filename 中，如果文件已经存在，则它的内容将被覆盖，使用参数append=TRUE 可以将文本追加到文件后，而不是覆盖它，参数split=TRUE 可将输出同时发送到屏幕和输出文件中。
 
@@ -100,105 +92,79 @@ postscript("filename.ps") #postscript 文件
 * R 环境配置
 ** 重要的开始文件地址
  R_HOME 是安装 R 的文件地址。HOME 是用户的 home 文件。
- #+BEGIN_SRC R
- file.edit(file.path("~",".Rprofile")) # edit .Rprofile in HOME
- file.edit(".Rprofile") # edit project specific .Rprofile
- #+END_SRC
+ #+begin_src R :results output graphics :file fig_1.png :exports both 
+   file.edit(file.path("~",".Rprofile")) # edit .Rprofile in HOME
+   file.edit(".Rprofile") # edit project specific .Rprofile
+ #+end_src
 
- #+BEGIN_SRC R
- user_renviron = path.expand(file.path("~", ".Renviron")) if(!file.exists(user_renviron)) # check to see if the file already exists
+ #+begin_src R :results output graphics :file fig_1.png :exports both 
+   user_renviron = path.expand(file.path("~", ".Renviron")) if(!file.exists(user_renviron)) # check to see if the file already exists
 
-                                                              file.create(user_renviron) file.edit(user_renviron) # open with another text editor if this fails  
- #+END_SRC
+                                                                file.create(user_renviron) file.edit(user_renviron) # open with another text editor if this fails  
+ #+end_src
 
- #+BEGIN_SRC R
- ## delete all saved object
- rm(list = ls())
- gc()
- library(rlang)
- library(tidyverse)
- library(tidyr)
- library(nycflights13)
- ## rscodeio::install_theme() #vs样式的界面
- library(data.table)
- library(styler) # 代码美观
- library(lintr) # 检查代码错误
- library(languageserver)
- options()#设置或检验全局参数；常用参数有：width，digits,error
- ls() #显示搜索路径下对象；指定 path=“path”时，按样式条件搜索。
- ls.str()#搜索路径下每个变量
- dir()#在当前的目录下显示文件 = list.files()
- help(languageserver)
- ## only style with scope = "spaces" when using the Addin
- options(
-   styler.addins_style_transformer = "styler::tidyverse_style(scope = 'spaces')"
- )
-                                       # Get a List of all files named with a key word, say all `.csv` files
- filenames <- ist.files("C:/your/folder", pattern = glob2rx("*.csv"), full.names = TRUE)
-                                       # Load and bind all data sets
- data <- rbindlist(lapply(filenames, fread))
+ #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
+   ## delete all saved object
+   rm(list = ls())
+   gc()
+   library(rlang)
+   library(tidyverse)
+   library(tidyr)
+   library(nycflights13)
+   ## rscodeio::install_theme() #vs样式的界面
+   library(data.table)
+   library(styler) # 代码美观
+   library(lintr) # 检查代码错误
+   library(languageserver)
+   options()#设置或检验全局参数；常用参数有：width，digits,error
+   ls() #显示搜索路径下对象；指定 path=“path”时，按样式条件搜索。
+   ls.str()#搜索路径下每个变量
+   dir()#在当前的目录下显示文件 = list.files()
+   help(languageserver)
+   ## only style with scope = "spaces" when using the Addin
+   options(
+     styler.addins_style_transformer = "styler::tidyverse_style(scope = 'spaces')"
+   )
+                                         # Get a List of all files named with a key word, say all `.csv` files
+   filenames <- ist.files("C:/your/folder", pattern = glob2rx("*.csv"), full.names = TRUE)
+                                         # Load and bind all data sets
+   data <- rbindlist(lapply(filenames, fread))
  #+END_SRC
 ** 获取错误信息
 可以用 try 来获取错误信息。
- #+BEGIN_SRC R
- good=try(1+1,silent = T)
- good
- bad=try(1+"1",silent = T)
- bad
- if(class(bad) == "try-error")
-  ## do something  
- #+END_SRC
+ #+begin_src R :results output graphics :file fig_1.png :exports both 
+   good=try(1+1,silent = T)
+   good
+   bad=try(1+"1",silent = T)
+   bad
+   if(class(bad) == "try-error")
+    ## do something  
+ #+end_src
 ** Rprofile 文件 
 R 环境中的默认设置环境放在 .Rprofile 文件下。
-#+BEGIN_SRC R
-file.edit(file.path("~", ".Rprofile")) # edit .Rprofile in HOME
-file.edit(".Rprofile") ## edit project specific .Rprofile 
-#+END_SRC
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  file.edit(file.path("~", ".Rprofile")) # edit .Rprofile in HOME
+  file.edit(".Rprofile") ## edit project specific .Rprofile 
+#+end_src
 ** .Renviron ﬁle
 这个文件是 R 环境文件，可以确定 R 的默认程序以及 load packages.
-#+BEGIN_SRC R
-#R_LIBS_USER="~/R"
-R_LIBS_USER="/Library/Frameworks/R.framework/Versions/3.6/Resources/library"
-R_DEFAULT_PACKAGES=utils,grDevices,graphics,stats,methods,tidyverse,lubridate,vctrs  
-#+END_SRC
-
-  #+BEGIN_SRC R
-  user_renviron = path.expand(file.path("~", ".Renviron"))
-  if(!file.exists(user_renviron)) # check to see if the file already exists
-      file.create(user_renviron)
-  file.edit(user_renviron) # open with another text editor if this fails    
-  #+END_SRC
-** option
-forces R to import character data as character objects. 
-   #+BEGIN_SRC R
-   options(stringsAsFactors=FALSE)     
-   #+END_SRC
-
-option 参数包括
-
 #+begin_src R :results output graphics :file fig_1.png :exports both 
-  add.smooth	TRUE
-  check.bounds	FALSE
-  continue	"+ "
-  digits	7
-  echo	TRUE
-  encoding	"native.enc"
-  error	NULL
-  expressions	5000
-  keep.source	interactive()
-  keep.source.pkgs	FALSE
-  max.print	99999
-  OutDec	"."
-  prompt	"> "
-  scipen	0
-  show.error.messages	TRUE
-  timeout	60
-  verbose	FALSE
-  warn	0
-  warning.length	1000
-  width	80  
+  #R_LIBS_USER="~/R"
+  R_LIBS_USER="/Library/Frameworks/R.framework/Versions/3.6/Resources/library"
+  R_DEFAULT_PACKAGES=utils,grDevices,graphics,stats,methods,tidyverse,lubridate,vctrs  
 #+end_src
 
+  #+begin_src R :results output graphics :file fig_1.png :exports both 
+    user_renviron = path.expand(file.path("~", ".Renviron"))
+    if(!file.exists(user_renviron)) # check to see if the file already exists
+        file.create(user_renviron)
+    file.edit(user_renviron) # open with another text editor if this fails    
+  #+end_src
+** option
+forces R to import character data as character objects. 
+   #+begin_src R :results output graphics :file fig_1.png :exports both 
+     options(stringsAsFactors=FALSE)     
+   #+end_src
 ** 环境
 在 R 中与其他事物一样，环境也是对象。在内部 R 将符号映射到 hash 表中。
 *** assign
@@ -255,13 +221,7 @@ rm
                                         #> [1] "package:lattice"  
 #+end_src
 
-*** brew
-下面这个函数让你知道 R session 所有信息。
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-  browseURL(paste('file://',file.path(getwd(),'brew-test-2.html'),sep=''))      
-    #+end_src
-
-* 常见 R 函数
+* 1 常见 R 函数
 ** 显示对象个数
 
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -449,7 +409,6 @@ desired length of the sequence. A non-negative number, which for seq and seq.int
 #+begin_src R :results output graphics :file fig_1.png :exports both 
   f1 <- factor("a")
   f2 <- factor("b")
-  library(dplyr)
   combine(list(a=1, b=2))
                                         #> [1] 1 2
   stack(list(a=1, b=2))
@@ -584,7 +543,7 @@ sys.call(which =  0)
       unnest()
 #+end_src
 
-* 导入数据
+* 2 导入数据
 ** fread/fwrite
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
   library(data.table)
@@ -599,6 +558,7 @@ sys.call(which =  0)
 #+END_SRC
 
 ** spark_read_parquet/spark_write_parquet
+
 此函数可以迅速将 spark object 存储到 hdfs 上
 
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -643,7 +603,7 @@ hdfs 被误删数据到下面这个路径去寻找!!
           function(x){fread(file = sprintf("%s/train_data_hj_zc_um_tx_br_09m_12m/%s", modelpath, x) , integer64 = "character", data.table = F)}))      
     #+end_src
 
-* 数据处理
+* 3 数据处理
 ** 宽表处理
 *** 常用宽表查询地址
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -724,6 +684,7 @@ list to matrix:注意在 list to matrix 过程中，字符型变量也会转换�
   list2mat(list1)
   data.matrix(list1)
 #+END_SRC
+
 ***  数据切分
 可以利用 purrr 包进行数据切分。
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -888,29 +849,30 @@ df %>% unnest(a) %>% unnest(b)
 df %>% unnest(a)
 
 #+END_SRC
+
 ***  非标准计算
+
 流程：read-eval-print 是读入文本，然后进行解析，然后求值，最后打印，这个就是我们日常看到的命令行操作。
 
 - 语法解析：substitute(), parse(), deparse()
 - 表达式构造：quote()
 - 表达式求值：eval(), source()
-- 表达式：expression() 
+- 表达式：expression()
 
-****  Base 
-*****  parse
-parse 主要负责把字符解析为 R 语言表达式。表达式是可以被求值的代码。在 R 中解析有三种不同的变种：
+**** Base 包 
+***** parse 
+parse 主要负责把字符解析为 R 语言表达式。表达式是可以被求值的代码。
+在 R 中解析有三种不同的变种：
 
 - the read-eval-print loop
 - parsing of text files
 - parsing of character strings   
 
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  parse(text = "1+2")
-  parse(text = "1+2") %>% class
-#+end_src
-
-
-
+#+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
+  #ggplot::results output graphics,plot::results graphics 
+parse(text = "1+2")
+parse(text = "1+2") %>% class
+#+END_SRC
 
 ***** deparse
 和 parse 相反，deparse 是把 R 表达式逆解析为字符。
@@ -1030,7 +992,6 @@ a3[1]
   a <- 10
   mutate_y(df1)
 #+END_SRC
-
 
 近期在做聚信力多头规则替换时，发现此方法可以解决 fro 循环问题，真的十分方便。
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -1326,7 +1287,6 @@ data %>% head(10) #显示前 10 行
 data %>% tail(-1) #减去第一行
 data %>% tail(10) #显示后 10 行
 ```
-
 ## 缺失值分析
 在 sparklyr 中，常用 na.replace()函数对缺失值进行插补。
 #+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
@@ -1446,7 +1406,7 @@ chisq.test()函数可以对二维表的行变量和列变量进行卡方独立�
   scatterplotMatrix(states,spread=FALSE,lty.smooth=2)
 #+END_SRC
 
-* 字符型数据
+* 4 字符型数据
 ** 常见函数
    #+begin_src R :results output graphics :file fig_1.png :exports both 
 nchar("a") #char size
@@ -2034,7 +1994,7 @@ factors 应该常常和 rev 函数配合使用。
       )
 #+END_SRC
 
-* 模型
+* 5 模型
 **  求解没有常数项的线性回归模型
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
   result <- lm(y ~ 0 + x1, data = data)
@@ -2079,11 +2039,8 @@ cancor(pop, oec)
   library(Rcmdr)
 #+END_SRC
 
-* 作图
+* 6 作图
 ** ggplot2
-
-字体大小
-
 *** theme_set 
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       library(ggplot2)
@@ -2135,6 +2092,7 @@ cancor(pop, oec)
 
 *** 分面
 将图分割成多个分面，这种方法适合添加分类变量。
+
 #+begin_src R :results output graphics :file fig_1.png :exports both 
   ggplot(data = mpg) +
       geom_point(mapping = aes(x = displ, y = hwy)) +
@@ -2430,9 +2388,8 @@ x <- iris[which(iris[,5] != "setosa"),c(1,5)]
   system.time(res = parLapply(cl, 1:5000000, doit))
   stopCluster(cl)
 #+END_SRC
-
-* Packages
-** Base
+* 7 Packages
+** 7.0 Base
 *** c 
 Combine Values into a Vector or List.
 #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -2465,115 +2422,49 @@ Combine Values into a Vector or List.
                                         #>   1   2   7
 #+end_src
 
-x[ [1] ] 可以将 atomic vector 转化为 numeric。
- #+begin_src R ::results output graphics :file fig_1.png :exports both
-x[
-# [1] 1 2
-# Levels: 1 2
-
-
-x <- c(a=1, b=2)
-x[1] %>% str()
-#>  Named num 1
-#>  - attr(*, "names")= chr "a"
-x[[1]]
-#> [1] 1
-x[['a']]
-#> [1] 1
+值得注意的是原子向量的类型是统一的，即
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  c("a", 1)
+                                        # [1] "A" "1"
 #+end_src
-*** matrix 
-
- #+begin_src R ::results output graphics :file fig_1.png :exports both
-  library(magrittr)
-a <- matrix(1:4, nrow = 2)
-a
-#>      [,1] [,2]
-#> [1,]    1    3
-#> [2,]    2    4
-a[1,,drop=FALSE] %>% class()
-#> [1] "matrix"
-a[1,] %>% class()
-#> [1] "integer"
-is.vector(a[1,])
-#> [1] TRUE
-is.vector(a[1,,drop=F])
-#> [1] FALSE
+*** is.data.frame
+可以测试对象是否是data.frame。
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+is.data.frame(df)
 #+end_src
-*** data.frame
+
+需要注意的是list和atom vector 不能一起放在 data.frame 里。实在要放需要用I().这导致data.frame()将列表视为一个单位：
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+data.frame(x = 1:3,
+           y = list(1:2, 1:3, 1:4))
+                                        #> Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE, : 参数值意味着不同的行数: 2, 3, 4
+data.frame(x = 1:3,
+           y = I(list(1:2, 1:3, 1:4)))
+                                        #>   x          y
+                                        #> 1 1       1, 2
+                                        #> 2 2    1, 2, 3
+                                        #> 3 3 1, 2, 3, 4
+#+end_src
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-df <- data.frame(a=1:2, b=1:2)
-df
-#>   a b
-#> 1 1 1
-#> 2 2 2
-str(df[2])
-#> 'data.frame':    2 obs. of  1 variable:
-#>  $ b: int  1 2
-str(df[,2])
-#>  int [1:2] 1 2
-str(df[[1]])
-#>  int [1:2] 1 2
-str(df[,"a",drop=F])
+df <- data.frame(a = 1:2, b = 1:2)
+str(df[1])
 #> 'data.frame':    2 obs. of  1 variable:
 #>  $ a: int  1 2
-str(df[,"a"])
+#> 'data.frame':    2 obs. of  1 variable:
+#>  $ a: int  1 2
+str(df[[1]])
+#>  int [1:2] 1 2
+#>  int [1:2] 1 2
+str(df[, "a", drop = FALSE])
+#> 'data.frame':    2 obs. of  1 variable:
+#>  $ a: int  1 2
+#> 'data.frame':    2 obs. of  1 variable:
+#>  $ a: int  1 2
+str(df[, "a"])
 #>  int [1:2] 1 2
 #+end_src
-*** factor
-需要注意 drop 参数。
- #+begin_src R ::results output graphics :file fig_1.png :exports both
-x[1:2, drop = T]
-# [1] 1 2
-# Levels: 1 2
-#+end_src
-*** list
-$诡异之处。
 
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-x = list(abc=1)
-x
-#> $abc
-#> [1] 1
-x$a
-#> [1] 1
-x[["a"]]
-#> NULL
-options(warnPartialMatchDollar = T)
-#+end_src
-*** missing/out of bound indices
-
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-x <- 1:4
-x[5]
-#> [1] NA
-x[[5]]
-#> Error in x[[5]]: 下标出界
-x[NULL]
-#> integer(0)
-x[NA_real_]
-#> [1] NA
-x[[NA_real_]]
-#> Error in x[[NA_real_]]: 下标出界
-x[[NULL]]
-#> Error in x[[NULL]]: attempt to select less than one element in get1index
-
-x <- list(1:4)
-x[5]
-#> [[1]]
-#> NULL
-x[NA_real_]
-#> [[1]]
-#> NULL
-x[NULL]
-#> list()
-x[[5]]
-#> Error in x[[5]]: 下标出界
-x[[NA_real_]]
-#> NULL
-x[[NULL]]
-#> Error in x[[NULL]]: attempt to select less than one element in get1index
-#+end_src
 *** head/tail
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       head(tail(mtcars, n = 10), n = 3) 
@@ -2640,6 +2531,9 @@ A character vector of length 1 is returned.
                                         #> [1] "a, b...."
     #+end_src
 *** tryCatch
+这个函数可以一面输出错误信息，一面又可以输出数值结果，当然需要结合error函数来实
+现。
+
     #+begin_src R ::results output graphics :file fig_1.png :exports both
       tryCatch(1, finally = print("Hello"))
                                         #> [1] "Hello"
@@ -2707,6 +2601,32 @@ Find All Names in an Expression.这个函数十分重要!!!
       str_remove(all.names(quote(23*x+12*ty)),"[*|+]") %>% 
           str_detect("")      
     #+end_src
+*** is.recursive
+可以检查向量是否是递归向量。
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      x <- list(list(list(list())))
+      str(x)
+      is.recursive(x)
+      # TRUE
+    #+end_src
+
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      c(list(1,2),c(3,4))
+      c(list(1,2),c(3,4))
+                                        #> [[1]]
+                                        #> [1] 1
+                                        #> 
+                                        #> [[2]]
+                                        #> [1] 2
+                                        #> 
+                                        #> [[3]]
+                                        #> [1] 3
+                                        #> 
+                                        #> [[4]]
+                                        #> [1] 4
+    #+end_src
+
+当list型变量和vector 型变量在一起时，会将变量统一成list型变量。
 
 *** apply
 
@@ -2733,75 +2653,26 @@ Here:
   [1] 15 40 15 40 15 40  
 #+end_src
 
-*** aggregate
-以前不知道这个函数，真是好用啊。
-Compute Summary Statistics of Data Subsets. Splits the data into subsets, computes summary statistics for each, and returns the result in a convenient form.
+*** attribute
 
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  aggregate(Sepal.Length ~ Species, data = iris, mean)
-                                        #>      Species Sepal.Length
-                                        #> 1     setosa        5.006
-                                        #> 2 versicolor        5.936
-                                        #> 3  virginica        6.588
-  iris %>% 
-      group_by(Species) %>% 
-      summarise(mean(Sepal.Length))
-                                        #> `summarise()` ungrouping output (override with `.groups` argument)
-                                        #> # A tibble: 3 x 2
-                                        #>   Species    `mean(Sepal.Length)`
-                                        #>   <fct>                     <dbl>
-                                        #> 1 setosa                     5.01
-                                        #> 2 versicolor                 5.94
-                                        #> 3 virginica                  6.59  
-#+end_src
-pipeline 版本的 code 如下：
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  iris %>% 
-      aggregate(Sepal.Length ~ Species,.,mean)  
-#+end_src
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+y <- 1:10
+attr(y, "my_attribute") <- "This is a vector"
+attr(y, "my_attribute")
+#> [1] "This is a vector"
+str(y, "my_attribute")
+#>  int [1:10] 1 2 3 4 5 6 7 8 9 10
+#>  - attr(*, "my_attribute")= chr "This is a vector"
+    #+end_src
 
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  testDF <- data.frame(v1 = c(1,3,5,7,8,3,5,NA,4,5,7,9),
-                       v2 = c(11,33,55,77,88,33,55,NA,44,55,77,99) )
-
-  by1 <- c("red", "blue", 1, 2, NA, "big", 1, 2, "red", 1, NA, 12)
-  by2 <- c("wet", "dry", 99, 95, NA, "damp", 95, 99, "red", 99, NA, NA)
-  aggregate(x = testDF, by = list(by1, by2), FUN = "mean")
-                                        #>   Group.1 Group.2 v1 v2
-                                        #> 1       1      95  5 55
-                                        #> 2       2      95  7 77
-                                        #> 3       1      99  5 55
-                                        #> 4       2      99 NA NA
-                                        #> 5     big    damp  3 33
-                                        #> 6    blue     dry  3 33
-                                        #> 7     red     red  4 44
-                                        #> 8     red     wet  1 11  
-#+end_src
-
-*** ave 
-这个函数可以分组计算均值。
-
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  ave(1:3)
-                                        #> [1] 2 2 2
-  library(datasets)
-  attach(warpbreaks)
-  ave(breaks, wool)
-                                        #>  [1] 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04
-                                        #> [12] 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04 31.04
-                                        #> [23] 31.04 31.04 31.04 31.04 31.04 25.26 25.26 25.26 25.26 25.26 25.26
-                                        #> [34] 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26
-                                        #> [45] 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26 25.26
-  breaks
-                                        #>  [1] 26 30 54 25 70 52 51 26 67 18 21 29 17 12 18 35 30 36 36 21 24 18 10
-                                        #> [24] 43 28 15 26 27 14 29 19 29 31 41 20 44 42 26 19 16 39 28 21 39 29 20
-                                        #> [47] 21 24 17 13 15 15 16 28
-  wool
-                                        #>  [1] A A A A A A A A A A A A A A A A A A A A A A A A A A A B B B B B B B B
-                                        #> [36] B B B B B B B B B B B B B B B B B B B
-                                        #> Levels: A B  
-#+end_src
-
+可以使用structure 函数返回具有修改后属性的新对象：
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      structure(1:10, 
+                my_attribute = "This is a vector")
+                                        #>  [1]  1  2  3  4  5  6  7  8  9 10
+                                        #> attr(,"my_attribute")
+                                        #> [1] "This is a vector"
+    #+end_src
 *** aperm
 对数列的维度进行重塑。
     #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -3558,6 +3429,18 @@ Convert Numeric to Factor.cut divides the range of x into intervals and codes th
       my_sqrt(-1)      
     #+end_src
 
+*** missing
+写函数的时候，经常会忘了数据的缺省值，此时就需要用到missing函数了。
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      myplot <- function(x, y) {
+          if(missing(y)) {
+              y <- x
+              x <- 1:length(y)
+          }
+          plot(x, y)
+}
+    #+end_src
 *** data.class
 Determine the class of an arbitrary R object.
     #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -3604,7 +3487,7 @@ Turn unevaluated expressions into character strings.
                                         #> [4] "NULL"      
     #+end_src
 
-** dplyr
+** 7.1 dplyr
 这个包主要包括 5 个核心函数，分别是:
 *** filter
 filter:按值筛选观测（相当于 sql 中的 select），filter 选择行，而 select 选择列，也就是特征。参数中 .preserve=T 表示保持当前的分组结果，所以这个参数一般和 group_trim 和 group_keys() 配合使用，一般默认的是 false,具体例子可以考虑下面的例
@@ -3697,7 +3580,7 @@ first(x, order_by = NULL, default = default_missing(x))
 
 last(x, order_by = NULL, default = default_missing(x))
 Arguments
-x A vector.
+x	A vector.
 
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
   x <- 1:10
@@ -4380,7 +4263,6 @@ mutate:使用现有变量的函数创建新变量,新变量总是放在最后
                                          # variables instead of modifying the variables in place:
    iris %>% mutate_if(is.numeric, list(~log(.))) #对所有 numeric 型的变量取对数
  #+END_SRC
-
 **** mutate_at()
 
 mutate_at 真是谁用谁知道哈～ mutate_at 针对固定的列作变换真是谁用谁知道。
@@ -4418,11 +4300,11 @@ mutate_at 真是谁用谁知道哈～ mutate_at 针对固定的列作变换真�
         mutate(num3=num) %>% 
         mutate_at("num3",~sort(.,decreasing = F)) %>% 
         dplyr::summarise(equal_ratio=(mean(num==num2|num==num3)))
-    # A tibble: 6 x 6
-    # Groups:   var [2]
+                                        # A tibble: 6 x 6
+                                        # Groups:   var [2]
     ## var                                value var_bin                            num   num2  num3 
     ## <chr>                              <dbl> <chr>                              <chr> <chr> <chr>
-    ## 1 als_d15_cell_nbank_cf_allnum    0.0477   als_d15_cell_nbank_cf_allnum_X03   03    05    01   
+                                                                                                 ## 1 als_d15_cell_nbank_cf_allnum    0.0477   als_d15_cell_nbank_cf_allnum_X03   03    05    01   
     ## 2 als_d15_cell_nbank_cf_allnum   -0.000132 als_d15_cell_nbank_cf_allnum_X01   01    04    02   
     ## 3 als_d15_cell_nbank_cf_allnum   -0.00798  als_d15_cell_nbank_cf_allnum_X02   02    03    03   
     ## 4 als_d15_cell_nbank_cf_allnum   -0.0270   als_d15_cell_nbank_cf_allnum_X04   04    02    04   
@@ -4867,18 +4749,6 @@ models %>% do(data.frame(
   slice(mtcars, n())
   mtcars %>% tail(1)
 #+END_SRC
-
-衍生函数如下：
-slice_head(): dplyr (data.frame).
-slice_tail(): dplyr (data.frame).
-slice_min(): dplyr (data.frame).
-slice_max(): dplyr (data.frame).
-slice_sample(): dplyr (data.frame).
-
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  
-#+end_src
-
 
 *** between()
 This is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables.
@@ -5384,7 +5254,7 @@ setdiff(y,z) #保留下y中独有的值,去除重复的去除重复的
   setequal(mtcars, mtcars[32:1, ])
 #+END_SRC
 
-** dbplyr
+** 7.2 dbplyr
 *** sql_render
 这个命令可以将 dplyr 包命令转换为 sql 语句。
 #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -5420,7 +5290,7 @@ setdiff(y,z) #保留下y中独有的值,去除重复的去除重复的
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
   translate_sql(x == 1 && (y < 2 || z > 3))
 #+END_SRC
-** purrr
+** 7.3 purrr
 这个函数主要应用于 list 型。
 *** accumulate
 accumulate 其实是 reduce 的一种改良版本。可以把 reduce 所得结果的整个过程输出。
@@ -5702,15 +5572,15 @@ map 也可以和 pluck 一样，摘取 list 中的元素。但是和 pluck 不�
 Usage
 exec(.fn, ..., .env = caller_env())
 Arguments
-.fn 
+.fn	
 A function, or function name as a string.
 
-... 
+...	
 Arguments to function.
 
 These dots support tidy-dots features.
 
-.env  
+.env	
 Environment in which to evaluate the call. This will be most useful if f is a
 string, or the function has side-effects.
 
@@ -5940,9 +5810,9 @@ This is a convenient way of generating sample data. It works similarly to replic
 Usage
 rerun(.n, ...)
 Arguments
-.n  
+.n	
 Number of times to run expressions
-... 
+...	
 Expressions to re-run.
      #+begin_src R :results output graphics :file fig_1.png :exports both 
        2 %>% rerun(rnorm(5))
@@ -6491,7 +6361,6 @@ list_merge 更像是 list 型数据的 rbind.
       l <- list(new = 1, y = zap(), z = 5)
       str(list_modify(x, !!!l))
     #+end_src
-
 *** imap_ 
 imap_xxx(x, ...), an indexed map, is short hand for map2(x, names(x), ...) if x has names, or map2(x, seq_along(x), ...) if it does not. This is useful if you need to compute on both the value and the position of an element.
 这个函数是简化版本的 map2,等价于 map2(x,names(x),...) 或者是 seq_along(x).
@@ -6571,6 +6440,7 @@ Same type of output as input: modify().modify 函数好处是输出和输入类�
       y <- c(TRUE, FALSE)
       modify2(x, y, ~ if (.y) .x else 0L)      
     #+end_src
+**** modify_depth
 
 *** vec_depth
 Compute the depth of a vector.The depth of a vector is basically how many levels that you can index into it.
@@ -6590,26 +6460,26 @@ Reduce a list to a single value by iteratively applying a binary function.
 mapreduce?
 
 Arguments
-.x  
+.x	
 A list or atomic vector.
 
-.f  
+.f	
 For reduce(), and accumulate(), a 2-argument function. The function will be passed the accumulated value as the first argument and the "next" value as the second argument.
 
 For reduce2() and accumulate2(), a 3-argument function. The function will be passed the accumulated value as the first argument, the next value of .x as the second argument, and the next value of .y as the third argument.
 
 The reduction terminates early if .f returns a value wrapped in a done().
 
-... 
+...	
 Additional arguments passed on to the mapped function.
 
-.init 
-If supplied, will be used as the first value to start the accumulation, rather than using .x. This is useful if you want to ensure that reduce returns a correct value when .x is empty. If missing, and .x is empty, will throw an error.
+.init	
+If supplied, will be used as the first value to start the accumulation, rather than using .x[[1]]. This is useful if you want to ensure that reduce returns a correct value when .x is empty. If missing, and .x is empty, will throw an error.
 
-.dir  
+.dir	
 The direction of reduction as a string, one of "forward" (the default) or "backward". See the section about direction below.
 
-.y  
+.y	
 For reduce2() and accumulate2(), an additional argument that is passed to .f. If init is not set, .y should be 1 element shorter than .x.
 
   #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -6666,6 +6536,7 @@ detect_index() 函数则可以返回这个元素的位置，应该是满足第�
           detect_index(~ . >5)
     #+end_src
 *** head_while/tail_while
+ 
 作用和 detect 类似，head_while 和 tail_while 分别从向量开头和结尾找出预测值为真的元素。
 
 Find head/tail that all satisfies a predicate.
@@ -6675,13 +6546,13 @@ head_while(.x, .p, ...)
 
 tail_while(.x, .p, ...)
 Arguments
-.x  
+.x	
 A list or atomic vector.
 
-.p  
+.p	
 A single predicate function, a formula describing such a predicate function, or a logical vector of the same length as .x. Alternatively, if the elements of .x are themselves lists of objects, a string indicating the name of a logical element in the inner lists. Only those elements where .p evaluates to TRUE will be modified.
 
-... 
+...	
 Additional arguments passed on to the mapped function.
 
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
@@ -6691,6 +6562,7 @@ Additional arguments passed on to the mapped function.
   head_while(0:10, big)
   tail_while(0:10, big)
 #+END_SRC
+
 *** rep_along
 These functions take the idea of seq_along() and apply it to repeating values.
 对给定的序列，重复填充给定的数值。
@@ -6703,8 +6575,6 @@ These functions take the idea of seq_along() and apply it to repeating values.
                                         # rep_named() repeats a value along a names vectors
       rep_named(c("foo", "bar"), list(letters))  
     #+end_src
-
-
 *** %||%
 This infix function makes it easy to replace NULLs with a default value. It's inspired by the way that Ruby's or operation (||) works.
     #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -6793,7 +6663,6 @@ Combine objects into a list, storing S3 objects as sub-lists. splice(x, y, "foo"
                                         #> 1 3.5 1.4 0.2  
 #+end_src
 
-
 ** furrr
 这个包其实就是 purrr 的并行版本。
 *** future_imap_chr
@@ -6816,7 +6685,6 @@ mtcars %>%
     future_map(~ lm(mpg ~ wt, data = .x)) %>%
     future_map_dfr(~ as.data.frame(t(as.matrix(coef(.)))))
     #+end_src
-
 
 *** future_map2
 
@@ -6965,14 +6833,6 @@ adply(.data, .margins, .fun = NULL, ..., .expand = TRUE,
     #+end_src
 
 ** pryr
-*** %.%
-compose multiple function.
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-not_null <- `!` %.% is.null
-not_null(4)
-not_null(NULL)
-#+end_src
-
 *** otype
 用来确定对象是否是 S3 对象还是 S4 对象。
 #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -6984,6 +6844,7 @@ not_null(NULL)
 在 S3 中，方法属于函数，称为泛型函数，和简称泛型（generics）。S3 的方法不属于对象或类。S3 型函数可以用 UseMethod()函数查看它的源代码。
 *** %<a-%
 Create an active binding.Infix form of makeActiveBinding which creates an active binding between a name and an expression: every time the name is accessed the expression is recomputed.
+
 可以生成一列随机变换的数列。
     #+begin_src R ::results output graphics :file fig_1.png :exports both
       x %<a-% runif(10)
@@ -7003,34 +6864,8 @@ Infix form of delayedAssign which creates an delayed or lazy binding, which only
       x
                                         #> [1] 110
     #+end_src
-*** %<c-%
-Infix wrapper for assign + lockBinding that creates a constant: a binding whose value can not be changed.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-y %<c-% 1 + 2
-y
-z %<c-% (1 + 2)
-z    
-    #+end_src
-*** typename 
-typename determines the internal C typename.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-x <- 1:10
-typename(x)
-## [1] "INTSXP"    
-    #+end_src
-*** address
-address returns the memory location of the object.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-    address(x)
-## [1] "0x7f96fa9b6408"
-    #+end_src
-*** inspect 
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
- inspect(x)
-## <INTSXP 0x7f970d78a3a0>    
-    #+end_src
-
 *** f
+
     #+begin_src R ::results output graphics :file fig_1.png :exports both
       f(x + y)
                                         #> function (x, y) 
@@ -7065,34 +6900,6 @@ address returns the memory location of the object.
       make_call(quote(f), list(a = 1, b = 2))
                                         #> f(a = 1, b = 2)      
     #+end_src
-*** f_capture
-This should be used sparingly if you want to implement true non-standard evaluation with 100% magic. I recommend avoiding this unless you have strong reasons otherwise since requiring arguments to be formulas only adds one extra character to the inputs, and otherwise makes life much much simpler.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
- f_capture(a + b)
-## ~a + b
-    #+end_src
-*** f_eval 
-f_eval_rhs evaluates the RHS of a formula and f_eval_lhs evaluates the LHS. f_eval is a shortcut for f_eval_rhs since that is what you most commonly need.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-f_eval(~ 1 + 2 + 3)    
-# 6
-    #+end_src
-
-
-*** dots_capture
-This should be used sparingly if you want to implement true non-standard evaluation with 100% magic. I recommend avoiding this unless you have strong reasons otherwise since requiring arguments to be formulas only adds one extra character to the inputs, and otherwise makes life much much simpler.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
- dots_capture(a + b, c + d, e + f)
- ## [[1]]
-## ~a + b
-
-## [[2]]
-## ~c + d
-
-## [[3]]
-## ~e + f  
-    #+end_src
-
 *** fget
 Find a function with specified name.
     #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -7210,18 +7017,6 @@ Rebind an existing name
   a
                                         #> [1] 2
 #+end_src
-*** lazy_eval
-    #+begin_src python
-f <- function(x) {
-  z <- 100
-  ~ x + z
-}
-z <- 10
-f(z)
-lazy_eval(f(10))
-lazy_eval(f(10), list(x = 100))
-lazy_eval(f(10), list(x = 1, z = 1))    
-    #+end_src
 
 ** tidyr
 *** chop()
@@ -8139,19 +7934,19 @@ augment adds columns to a dataset, containing information such as fitted values,
 **** specify
 specify(x, formula, response = NULL, explanatory = NULL, success = NULL)
 Arguments
-x 
+x	
 A data frame that can be coerced into a tibble.
 
-formula 
+formula	
 A formula with the response variable on the left and the explanatory on the right. Alternatively, a response and explanatory argument can be supplied.
 
-response  
+response	
 The variable name in x that will serve as the response. This is an alternative to using the formula argument.
 
-explanatory 
+explanatory	
 The variable name in x that will serve as the explanatory variable. This is an alternative to using the formula argument.
 
-success 
+success	
 The level of response that will be considered a success, as a string. Needed for inference on one proportion, a difference in proportions, and corresponding z stats.
 
 
@@ -8165,9 +7960,42 @@ The level of response that will be considered a success, as a string. Needed for
            specify(response = age, explanatory = partyid)       
      #+end_src
 ** rlang
+*** abort 
+所有需要终止的命令，需要用到abort。
+Signal an error, warning, or message
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  abort("Can't supply both `e1` and `.x` to binary operator")
+                                        #> Error: Can't supply both `e1` and `.x` to binary operator
+#+end_src
+*** as_function 
+Convert to function or closure.
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  f <- as_function(~ .x + 1)
+  f(10)
+#> [1] 11
+  g <- as_function(~ -1 * .)
+  g(4)
+#> [1] -4
+#+end_src
+
+还能判断是否是lambda 函数。
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+is lambda(x)
+#+end_src
+
+
+
+*** arg_match 
+Match an argument to a character vector.
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  fn <- function(x = c("foo", "bar")) arg_match(x)
+  fn("bar")
+                                        #> [1] "bar"
+#+end_src
 *** missing 
 Missing values are represented in R with the general symbol NA. They can be inserted in almost all data containers: all atomic vectors except raw vectors can contain missing values. To achieve this, R automatically converts the general NA symbol to a typed missing value appropriate for the target vector. The objects provided here are aliases for those typed NA objects.
-
 na_lgl
 na_int
 na_dbl
@@ -8186,14 +8014,14 @@ na_cpl
 *** call2
 Create a call.
      #+begin_src R :results output graphics :file fig_1.png :exports both 
-       library(rlang)
-       args <- list(na.rm = TRUE, trim = 0)
-       call2("mean", 1:10, !!!args)
-       ## mean(1:10, na.rm = TRUE, trim = 0)
-       call2("mean", 1:10, !!!args)
-       ## base::list(1, 2)
-       call2("[", quote(x), , drop = )
-       ## x[, drop = ]
+     library(rlang)
+     args <- list(na.rm = TRUE, trim = 0)
+     call2("mean", 1:10, !!!args)
+     ## mean(1:10, na.rm = TRUE, trim = 0)
+     call2("mean", 1:10, !!!args)
+     ## base::list(1, 2)
+     call2("[", quote(x), , drop = )
+     ## x[, drop = ]
      #+end_src
 *** is_call
 This function tests if x is a call. 
@@ -8575,77 +8403,6 @@ Create tibbles using an easier to read row-by-row layout.
            "b", 4:6
        )
      #+end_src 
-** abind
-这个函数主要生成的是 matrix 类型数据。
-   #+begin_src R ::results output graphics :file fig_1.png :exports both
-     abind(x = 1:4, y = 5:8)
-                                        #> x1 x2 x3 x4 y1 y2 y3 y4 
-                                        #>  1  2  3  4  5  6  7  8     
-   #+end_src
-
-   #+begin_src R ::results output graphics :file fig_1.png :exports both
-     abind(x = 1:4, y = 5:8, along = 2)
-                                        #>      x y
-                                        #> [1,] 1 5
-                                        #> [2,] 2 6
-                                        #> [3,] 3 7
-                                        #> [4,] 4 8 
-   #+end_src
-
-可以很方便地生成 3 维 array.
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  abind(x=matrix(1:16,nrow=4), y=matrix(17:32,nrow=4), along=3)
-#+end_src
-
-
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  x <- matrix(1:12,3,4)
-  y <- x+100
-  abind(x, y, along = 0)
-                                        #> , , 1
-                                        #> 
-                                        #>      [,1] [,2] [,3]
-                                        #> [1,]    1    2    3
-                                        #> [2,]  101  102  103
-                                        #> 
-                                        #> , , 2
-                                        #> 
-                                        #>      [,1] [,2] [,3]
-                                        #> [1,]    4    5    6
-                                        #> [2,]  104  105  106
-                                        #> 
-                                        #> , , 3
-                                        #> 
-                                        #>      [,1] [,2] [,3]
-                                        #> [1,]    7    8    9
-                                        #> [2,]  107  108  109
-                                        #> 
-                                        #> , , 4
-                                        #> 
-                                        #>      [,1] [,2] [,3]
-                                        #> [1,]   10   11   12
-                                        #> [2,]  110  111  112
-  abind(x, y, along = 3)
-                                        #> , , 1
-                                        #> 
-                                        #>      [,1] [,2] [,3] [,4]
-                                        #> [1,]    1    4    7   10
-                                        #> [2,]    2    5    8   11
-                                        #> [3,]    3    6    9   12
-                                        #> 
-                                        #> , , 2
-                                        #> 
-                                        #>      [,1] [,2] [,3] [,4]
-                                        #> [1,]  101  104  107  110
-                                        #> [2,]  102  105  108  111
-                                        #> [3,]  103  106  109  112
-#+end_src
-
-还能这么玩？？
-
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  abind(x,y,along=1.5)  
-#+end_src
 ** glue
 *** glue 
 
@@ -8824,7 +8581,6 @@ data.table 中的这个函数类似于 dplyr 中的%>% between(7,9). between is 
     #+end_src
 
 *** %inrange%
-重新学习了这个函数。
 inrange checks whether each value in x is in between any of the intervals provided in lower,upper.
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       Y = data.table(a=c(8,3,10,7,-10), val=runif(5))
@@ -9022,7 +8778,9 @@ patterns returns the matching indices in the argument cols corresponding to the 
                                         #>  9:        2      9      i
                                         #> 10:        2     10      j  
 #+end_src
+
 *** %like% 
+
 Convenience function for calling grep.Intended for use in i in [.data.table, i.e., for subsetting/filtering. Syntax should be familiar to SQL users, with interpretation as regex.
 
 #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -9048,6 +8806,7 @@ Convenience function for calling grep.Intended for use in i in [.data.table, i.e
 *** chmatch
 这个函数等价于 match 函数。而 match 函数的作用在于确定前一个数据元素在后一个数据
 列中的位置。
+
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       print(match(5, c(1,2,9,5,3,6,7,4,5)))
       #[1] 4
@@ -9062,6 +8821,7 @@ Convenience function for calling grep.Intended for use in i in [.data.table, i.e
       > x <- chmatch(v1,v2)
       > x
                                         #[1] 6 8 NA 3
+
     #+end_src
 
 *** %chin%
@@ -9102,37 +8862,6 @@ A convenience function for generating a run-length type id column to be used in 
   DT = data.table(grp=rep(c("A", "B", "C", "A", "B"), c(2,2,3,1,2)), value=1:10)
   rleid(DT$grp)
                                         #>  [1] 1 1 2 2 3 3 3 4 5 5
-#+end_src
-
-*** tstrsplit
-这个函数和 tidyr::separate 一样。
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  library(data.table)
-  dt <- data.table(
-      Start_Date = as.Date(c(
-          "2019-05-01", "2019-08-04", "2019-07-05",
-          "2019-07-04", "2019-04-27", "2019-04-26",
-          "2019-02-13", "2019-02-15", "2018-11-26",
-          "2018-11-11"
-      )),
-      End_Date = as.Date(c(
-          "2019-06-01", "2019-08-09", "2019-08-14",
-          "2019-07-05", "2019-05-10", "2019-05-20",
-          "2019-02-16", "2019-03-02", "2018-12-17",
-          "2018-11-19"
-      )),
-      Category = c(
-          "Q-Y-M-V", "E-E-E-H", "A-N-T-D",
-          "J-T-B-X", "D-R-H-Z", "R-O-C-R",
-          "Z-C-A-M", "O-I-J-E", "G-D-K-W", "V-Z-O-B"
-      )
-  )
-  dt
-
-  dt[, paste0("Category_", 1:4) := tstrsplit(Category, split = "-")][]
-
-  dt %>% 
-      separate(Category, into = paste0("Category_", 1:4),remove = F,sep = "-")  
 #+end_src
 
 ** readr
@@ -9656,8 +9385,7 @@ str_split()函数可以将字符串拆分为多个片段。通过设置 simplify
       ## [,1]         [,2]      [,3]     [,4]     
       ## [1,] "apples"     "oranges" "pears"  "bananas"
       ## [2,] "pineapples" "mangos"  "guavas" ""   
-    #+end_src  
-
+    #+end_src
 *** str_locate
 str_locate() 和 str_locate_all() 函数可以给出每个匹配的开始位置和结束位置。当没有 其他函数能够精确地满足需求时，这两个函数特别有用。你可以使用 str_locate() 函数找 出匹配的模式，然后使用 str_sub() 函数来提取或修改匹配的内容。
     #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -9821,96 +9549,6 @@ Reverses the order of the code points in every string.
   stri_reverse(c("123", "abc d e f"))
   #[1] "321"       "f e d cba"
 #+end_src
-** assertthat
-*** has_name 
-可以检查是否有 attribute or name?
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  y <- list(a = 1, b = 2)
-  y %has_name% "c"
-                                        #> [1] FALSE
-#+end_src
-*** has_attr
-Has attribute or name?
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  x <- 10
-  x %has_attr% "a"
-                                        #> [1] FALSE  
-#+end_src
-
-*** assert-is
-该函数可以检查是否有错误信息。is.error(x)/is.time(x)/is.date(x).
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  a <- Sys.time()
-  is.time(a)
-                                        #> [1] TRUE
-  b <- Sys.Date()
-  is.date(b)
-                                        #> [1] TRUE
-  c <- try(stop("!!"))
-                                        #> Error in try(stop("!!")) : !!
-  is.error(c)
-                                        #> [1] TRUE 
-#+end_src
-
-*** assert_that
-**** assert_that
-     #+begin_src R ::results output graphics :file fig_1.png :exports both
-       assert_that(length(x) == 3)
-                                        #> Error: length(x) not equal to 3 
-     #+end_src
-
-**** see_if
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-      see_if(is.character(x))
-                                        #> [1] FALSE
-                                        #> attr(,"msg")
-                                        #> [1] "x is not a character vector" 
-    #+end_src
-
-*** not_empty
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-    not_empty(numeric())
-#> [1] FALSE
-    #+end_src
-
-*** noNA
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-see_if(noNA("a"))
-#> [1] TRUE    
-    #+end_src
-
-*** is_dir
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-tmp <- tempfile()
-see_if(file.exists(tmp))
-#> [1] FALSE
-#> attr(,"msg")
-#> [1] "Path 'C:\\Users\\tonylu\\AppData\\Local\\Temp\\RtmpyURS1m\\file48986f6775dd' does not exist"
-see_if(is.dir(tmp))
-#> [1] FALSE
-#> attr(,"msg")
-#> [1] "Path 'C:\\Users\\tonylu\\AppData\\Local\\Temp\\RtmpyURS1m\\file48986f6775dd' does not exist"    
-    #+end_src
-
-** parallel
-*** clusterApply
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-      cl <- makeCluster(getOption("cl.cores", 2))
-      clusterApply(cl, 1:2, get("+"), 3)
-                                        #> [[1]]
-                                        #> [1] 4
-                                        #> 
-                                        #> [[2]]
-                                        #> [1] 5
-      xx <- 1
-      clusterExport(cl, "xx")
-      clusterCall(cl, function(y) xx + y, 2)
-                                        #> [[1]]
-                                        #> [1] 3
-                                        #> 
-                                        #> [[2]]
-                                        #> [1] 3      
-    #+end_src
 
 ** rlang
 rlang 包的思想就是元编程，认为 code is data.
@@ -10601,14 +10239,6 @@ Return the closure environment of a function.
                                         #> [1] "`foo(...)`"
      #+end_src
 
-** blorr
-*** blr_plot_leverage
-    #+begin_src R ::results output graphics :file fig_1.png :exports both
-      model <- glm(honcomp ~ female + read + science, data = hsb2,
-                   family = binomial(link = 'logit'))
-      blr_plot_leverage(model)  
-    #+end_src
-
 ** caret
 *** confusionMatrix
     #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -10690,13 +10320,6 @@ Printing tibbles.方便打印 tibble
 *** ansi-styles 
 确定输出的字体颜色。
 **** col_blue
-输出蓝色字体文字。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  col_blue("Hello ", "world!")
-                                        #> <ansi_string>
-                                        #> [1] Hello world! 
-  cat(col_blue("Hello ", "world!"))
-#+end_src
 
 **** col_red
      #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -10704,79 +10327,6 @@ Printing tibbles.方便打印 tibble
                                         #> <ansi_string>
                                         #> [1] Hello world!       
      #+end_src
-
-*** style_italic
-字体斜体。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  style_italic("Hello")
-                                        #> <ansi_string>
-                                        #> [1] Hello 
-#+end_src
-
-*** combine_ansi_styles
-可以合并多种字体类型进行展示。
-     #+begin_src R ::results output graphics :file fig_1.png :exports both
-       combine_ansi_styles("red", bg_cyan)
-     #+end_src
-
-*** cat_line
-These helpers provide useful wrappers around cat(): most importantly they all set sep = "", and cat_line() automatically adds a newline.
-
-生成一条红色的线。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  cat_line("This is ", "a ", "line of text.", col = "red") 
-#+end_src
-
-*** cat_bullet 
-生成如下格式数据。
-     #+begin_src R ::results output graphics :file fig_1.png :exports both
-       cat_bullet(letters[1:5], bullet = "tick", bullet_col = "green")
-                                        #> √ a
-                                        #> √ b
-                                        #> √ c
-                                        #> √ d
-                                        #> √ e
-     #+end_src
-
-*** boxx
-生成一个盒子，具体形式如下。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  boxx("Hello there!")
-                                        #> +------------------+
-                                        #> |                  |
-                                        #> |   Hello there!   |
-                                        #> |                  |
-                                        #> +------------------+ 
-#+end_src
-
-*** custom spinner
-     #+begin_src R ::results output graphics :file fig_1.png :exports both
-       sp3 <- make_spinner("simpleDotsScrolling", template = "Downloading {spin}")
-       fun_with_spinner3 <- function() {
-           lapply(1:100, function(x) { sp3$spin(); Sys.sleep(0.05) })
-           sp2$finish()
-       }
-       ## Downloading .
-     #+end_src
-
-*** cli_alert
-Alerts are typically short status messages.
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-      cli_alert("Cannot lock package library.")
-      #> Cannot lock package library.
-    #+end_src
-
-*** cli_alert_success
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-      cli_alert_success("Package {.pkg cli} installed successfully.")
-      #> Cannot lock package library.
-    #+end_src
-
-** clipr
-复制函数。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-clip_text <- read_clip()
-#+end_src
 
 ** janitor
 *** row_to_names 
@@ -10817,6 +10367,8 @@ row_to_names(df, row_number = 3)
 #> 11 NES               61.91      
     #+end_src
 *** tabyl
+可以很方面的统计各组的频率。
+
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       library(janitor)
       library(tibble)
@@ -11289,26 +10841,26 @@ fct_lump(f, n, prop, w = NULL, other_level = "Other",
   ties.method = c("min", "average", "first", "last", "random", "max")).
 
 Arguments
-f 
+f	
 A factor (or character vector).
 
-n, prop 
+n, prop	
 If both n and prop are missing, fct_lump lumps together the least frequent levels into "other", while ensuring that "other" is still the smallest level. It's particularly useful in conjunction with fct_inorder().
 
 Positive n preserves the most common n values. Negative n preserves the least common -n values. It there are ties, you will get at least abs(n) values.
 
 Positive prop preserves values that appear at least prop of the time. Negative prop preserves values that appear at most -prop of the time.
 
-w 
+w	
 An optional numeric vector giving weights for frequency of each value (not level) in f.
 
-other_level 
+other_level	
 Value of level used for "other" values. Always placed at end of levels.
 
-ties.method 
+ties.method	
 A character string specifying how ties are treated. See rank() for details.
 
-min 
+min	
 Preserves values that appear at least min number of times.
 
 Lump together least/most common factor levels into "other". 这个函数默认的是如果
@@ -11710,6 +11262,7 @@ ymd() 和类似的其他函数可以创建日期，要想创建日期时间型�
 
 
 
+
 **** 通过各个成分创建
 除了单个字符串，日期时间数据的各个成分还经常分布在表格的多个列中。如果想要按照这
 种表示方法来创建日期或时间，可以使用 make_date() 函数创建日期，使用
@@ -11719,7 +11272,7 @@ make_datetime() 函数创建日期时间。
   nycflights13::flights %>% 
       select(year,month,day,hour,minute) %>% 
       str
-  ## Classes ‘tbl_df’, ‘tbl’ and 'data.frame':  336776 obs. of  5 variables:
+  ## Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	336776 obs. of  5 variables:
   ##                                                                 $ year  : int  2013 2013 2013 2013 2013 2013 2013 2013 2013 2013 ...
   ## $ month : int  1 1 1 1 1 1 1 1 1 1 ...
   ## $ day   : int  1 1 1 1 1 1 1 1 1 1 ...
@@ -12205,15 +11758,13 @@ common type.
 #+end_src
 
 *** vec_assert
-声明型变量。 Assert an argument has known prototype and/or size.
+声明型变量。
+Assert an argument has known prototype and/or size.
 vec_assert(x, ptype = NULL, size = NULL, arg = as_label(substitute(x))).
 如果知道这个向量的大小和数据类型，那么就可以提出一个声明～，确保准确。
-
-这个函数可以用于生成报错信息。
-
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       x <- c(a = 1, b = 2, c = 3)
-      vec_assert(x, ptype = character())
+      vec_assert(x,ptype = character())
                                         #> Error: `x` must be a vector with type <character>.
                                         #> Instead, it has type <double>.      
     #+end_src
@@ -12225,7 +11776,7 @@ vec_assert(x, ptype = NULL, size = NULL, arg = as_label(substitute(x))).
     #+end_src
 
 *** vec_bind
-这个函数和 rbind 函数主要不同在于，rbind/cbind 返回 matrix 类型数据，而 vec_bind 返回的是 list 型数据。
+
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       vec_rbind(
           data.frame(x = 1),
@@ -12329,8 +11880,6 @@ vec_match(x, y):x 在 y 中的位置。
 *** vec_chop
 vec_chop() provides an efficient method to repeatedly slice a vector. It
 captures the pattern of map(indices, vec_slice, x = x).vec_chop 可以提供一个有效的方法重复地对一个向量采样！
-按照特定的顺序对元素进行抽样。
-
 #+begin_src R :results output graphics :file fig_1.png :exports both 
   x <- c("a", "b", "c", "d")
   indices <- list(2, c(3, 1), 4)
@@ -12352,7 +11901,6 @@ vec_unchop() combines a list of vectors into a single vector, placing elements i
                                         #> [1] "a" "b" "c" "d"
     #+end_src
 *** vec_cast
-    这个函数类似于 as.character。
 This function should typically be called from the default vec_cast() method for your class, e.g. vec_cast.myclass.default(). 
     #+begin_src R :results output graphics :file fig_1.png :exports both 
       enframe(1:3) %>% 
@@ -12366,7 +11914,8 @@ This function should typically be called from the default vec_cast() method for 
     #+end_src
 
 *** vec_equal
-Test if two vectors are equal。也可以是 data.frame 和 vector 对比检查是否相等。
+Test if two vectors are equal。
+也可以是 data.frame 和 vector 对比检查是否相等。
 #+begin_src R :results output graphics :file fig_1.png :exports both 
   df <- data.frame(x = c(1, 1, 2, 1, NA), y = c(1, 2, 1, NA, NA))
   vec_equal(df, data.frame(x = 1, y = 2))
@@ -12418,6 +11967,7 @@ Order and sort vectors.
                                         #>  [1]  6  9  5  8  2  3  4  1  7 10
          #+end_src
 *** vec_sort
+
     #+begin_src R :results output graphics :file fig_1.png :exports both 
  vec_sort(df)
                                         #>    g     x
@@ -12593,6 +12143,7 @@ vec_unique_count(): the number of unique values.
                                         #> [1] 13      
     #+end_src
 *** vec_ptype
+
 vec_ptype() returns the unfinalised prototype of a single vector. vec_ptype_common() finds the common type of multiple vectors. vec_ptype_show() nicely prints the common type of any number of inputs, and is designed for interactive exploration.
 
 **** vec_ptype_show
@@ -12810,7 +12361,7 @@ RawVector | raw
 可以用 sourceCpp 转换 C++ 程序。Rcpp 包为 C++ 提供了一个 NumericVector 数据类型，
 用来存储数值型向量。用成员函数 size() 访问其大小，用方括号下标访问其元素。
 
-特殊的注释//[ [Rcpp::export ] ] 用来指定哪些 C++ 函数要转换为 R 函数的。这叫做 Rcpp 属性
+特殊的注释//[[Rcpp:export]] 用来指定哪些 C++ 函数要转换为 R 函数的。这叫做 Rcpp 属性
 功能。
  
 #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -12881,34 +12432,8 @@ RawVector | raw
 #+end_src
 
 ** fs
-*** file_copy
-拷贝文件函数。
-
-*** dir_exists    
-检验当前目录下是否存在查询文件。
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-      library(fs)
-      file_exists("Document")  
-      #TRUE
-    #+end_src
-
 *** dir_ls
 List files.类似于 list.file.
-*** dir_tree
-可以显示文件目录树。
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  fs::dir_tree("/Users/luyajun/Documents/")  
-#+end_src
-*** dir_info
-文件夹 summary 信息。
-#+begin_src R
-  dir_info(getwd())
-#+end_src
-*** dir_map
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-      dir_map(getwd(), identity)      
-    #+end_src
-
 ** Rcpp
 *** wrap
 在 R api 中用.call() 函数调用 C 程序库函数时，R 对象的数据类型一般是 SEXP. Rcpp
@@ -13248,70 +12773,6 @@ get_positive(x)
 
 *** NumericMatrix 类
 
-** pillar
-这个包可以对 vector 进行 format 展示。
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  pillar(c(1e10, 1e-10), width = 20)
-               ## <dbl>
-            ## 1.00e+10
-            ## 1.00e-10
-#+end_src
-
-** intrval 
-*** %[]%  
-Relational Operators Comparing Values to Intervals.
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-library(intrval)
-ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)
-trt <- c(4.81,4.17,4.41,3.59,5.87,3.83,6.03,4.89,4.32,4.69)
-group <- gl(2, 10, 20, labels = c("Ctl","Trt"))
-weight <- c(ctl, trt)
-lm.D9 <- lm(weight ~ group)
-## compare 95% confidence intervals with 0
-(CI.D9 <- confint(lm.D9))
-0 %()% CI.D9
-## (Intercept)    groupTrt 
-## FALSE        TRUE 
-#+end_src
-*** %()% 
-*** %[o]%
-Functions for evaluating if two intervals overlap or not.
-可以方便地评估两个区间是否存在覆盖。
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)
-trt <- c(4.81,4.17,4.41,3.59,5.87,3.83,6.03,4.89,4.32,4.69)
-group <- gl(2, 10, 20, labels = c("Ctl","Trt"))
-weight <- c(ctl, trt)
-lm.D9 <- lm(weight ~ group)
-lm.D90 <- lm(weight ~ group - 1) # omitting intercept
-## compare 95% confidence intervals with 0
-(CI.D9 <- confint(lm.D9))
-0 %()% CI.D9
-(CI.D90 <- confint(lm.D90))
-CI.D90[1,] %[o]% CI.D90[2,]
-#+end_src
-*** %(o)%
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
- cbind(rep(3,5),rep(4,5)) %(o)% cbind(1:5, 2:6)
-## [1] FALSE FALSE  TRUE FALSE FALSE   
-    #+end_src
-*** %[]o[]%
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
-dt1 <- as.Date(c("2000-01-01", "2000-03-15"))
-dt2 <- as.Date(c("2000-03-15", "2000-06-07"))
-dt1 %[]o[]% dt2
-## [1] TRUE    
-    #+end_src
-
-** reprex
-该包的主要目的用于报告的生成。
-** h2o
-*** h2o.performance 
-该函数可以输出有关混淆矩阵的若干统计量。
-#+begin_src R ::results output graphics :file fig_1.png :exports both
-  h2o.performance(model_object)  
-#+end_src
-
 * 专题
 ** 缺失值处理
 **** 如何删掉缺失值？
@@ -13335,6 +12796,7 @@ dt1 %[]o[]% dt2
 
 ** 向量化计算
 对应在 purrr 包中的 map，map_*,map2 等函数。 
+
 | func   | descriptions                      |
 | apply  | 分组计算                          |
 | sapply | lapply 的简化版本                 |
@@ -13344,6 +12806,7 @@ dt1 %[]o[]% dt2
 | lapply | 循环迭代                          |
 | rapply | lapply 的递归版本                 |
 | eapply | 环境空间遍历                      |
+
 *** for 循环 
 
     #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -13583,10 +13046,12 @@ times(n)
 **** %do% 
 %do% 运算符可以顺序执行表达式，而%dopar% 运算符可以用来并行执行表达式。
 来分析这个 foreach 包，它的逻辑其实更像是 lapply.
+
 foreach(i = 1:5, .combine = "myfun") %do% rnorm(3) 
 
 这个 i 其实不用管，i是迭代次数，.combine 是将数据连接的方式，后面 %do% 后面是真
 正需要迭代的函数。
+
      #+begin_src R :results output graphics :file fig_1.png :exports both 
        foreach(i = 1:5) %do% sqrt(i)
                                         #> [[1]]
@@ -13722,6 +13187,7 @@ rimpala.query2save("select miid,date,max(ishit) as ishit,max(cast(porvalue as in
                                        where date between 20190901 and 20190924 and porid=44
                                        and eventId=1018
                                       group by 1,2",file=sprintf("%s/duotou.csv", modelpath))
+
 duotou=fread(sprintf("%s/duotou.csv", modelpath))
 #+END_SRC
 
@@ -13779,6 +13245,7 @@ vars_com(df1,df2)
 #+end_src
 
 #+begin_src R :results output graphics :file fig_1.png :exports both 
+
 diff <- function(df1, df2, var_name){
 data <- df1 %>% inner_join(df2, by = "id")
 var_diff <- quo_name(str_c(var_name, "_diff"))
@@ -13836,4 +13303,3 @@ return(tibble(reduce(df2 %>% select_if(is.character) %>% colnames() %>% tail(-1)
                                         #关闭进度条
      close(pb)      
    #+end_src
-** 

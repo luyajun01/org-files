@@ -1,0 +1,111 @@
+* git_wiki
+** 基本命令
+
+*** 利用 git 上传本地文件、文件夹到 GitHub 
+
+- 1.输入自己的用户名和邮箱（为注册 GITHUB 账号时的用户名和邮箱）
+ 
+#+begin_src git
+$ git config --global user.name "luyajun01@gmail.com"
+  $ git config --global user.email "luyajun01@gmail.com"
+#+end_src
+
+- 2.设置 SSH key
+#+begin_src git
+   $ cd ~/.ssh
+   $ ls 
+#+end_src
+如果没有密钥，则执行以下命令来生成密钥：
+#+begin_src git
+ $ ssh-keygen -t rsa -C "luyajun01@gmail.com" 
+#+end_src
+生成过程中按 3 次回车键就好（默认路径，默认没有密码登录），生成成功后，去对应默认路径里用记事本打开 id_rsa.pub，得到 ssh key 公钥。
+
+- 3.上传本地文件
+
+（1）首先进入 layout 文件夹
+
+#+begin_src git
+$ cd d:\layout //假如需要上传的文件是d 盘文件
+#+end_src
+
+（2）执行指令进行初始化，会在原始文件夹中生成一个隐藏的文件夹.git：
+
+#+begin_src git
+  $ git init //指令初始化，会在原始文件夹生成一个隐藏的文件夹.git
+#+end_src
+
+（3）执行指令将文件添加到本地仓库：
+#+begin_src git
+     $ git add .         //添加当前文件夹下的所有文件
+    $ git add **.cpp    //添加当前文件夹下的**.cpp这个文件 
+#+end_src
+
+（4）输入本次的提交说明，准备提交暂存区中的更改的已跟踪文件，单引号内为说明内容：
+#+begin_src git
+    $ git commit -m "layout"  //引号中的内容为对该文件的描述 
+#+end_src
+
+- 4.关联 github 仓库
+
+在 github 中新建一个 repository，复制仓库地址：
+
+执行命令：
+#+begin_src git
+   //新建一个repository时会出现下面的代码，直接复制即可
+   $ git remote add origin https://github.com/CongliYin/CSS.git 
+#+end_src
+
+如果出现错误：fatal: remote origin already exists，则执行以下语句：
+#+begin_src git
+ $ git remote rm origin 
+#+end_src
+再重新执行：
+#+begin_src git
+ $ git remote add origin https://github.com/CongliYin/CSS.git 
+#+end_src
+即可成功。
+最后执行命令：
+
+#+begin_src git
+     $ git push origin master 
+#+end_src
+
+
+** magit
+
+运行 M-x:magit-status 打开当前 git 仓库 (如果当前没仓库会让你选择相应的路径)
+
+| 功能                                          | 界面             |
+| 当前处于哪个 branch                           | head             |
+| 要 push 到哪个远程 branch                     | push             |
+| 哪些文件未被 git 管理                         | Untracked files  |
+| 哪些文件修改了未 stage                        | Unstaged Changes |
+| 哪些文件处于 staged 状态（即运行了 git add ） | Staged Changes   |
+| 哪些 commit 未 push 到远程分支                | Unpushed to      |
+| 哪些提交 未拉取到本地                         | Unpulled from    |
+|                                               |                  |
+|                                               |                  |
+|                                               |                  |
+
+甚至可以查看具体文件修改了哪些内容
+在相应的文件上回车则打开那个文件,在相应的修改部位回车则直接跳转到文件修改的位置
+在相应的 commit 上回车则能查看此次 commit 都修改了哪些文件，具体的文件进行了哪些修改
+
+*** Stage (git add )与 Unstage
+如果你修改了一个 git 管理的文件，但是未运行 git add 则当前文件处于 Unstaged 状态
+运行 git add 之后则处于 Stage 状态。git commit 之后，则变成了一个 commit 会处于 Unpushed 状态
+
+s 	Stage 	git add filename 	从 unstaged 变成 staged
+u 	Unstage 	git reset HEAD filename 	从 staged 变成 Unstaged
+
+ 	
+
+
+
+
+
+
+
+
+

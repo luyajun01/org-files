@@ -57,33 +57,17 @@
 但是这个包在使用过程中，需要注意一些问题。
 首先开机使用的时候，应该执行 pyvenv-workon 命令选择虚拟环境，再执行 lpy-mode。
 ** avy
-这个函数可以实现快速跳转！
+
 | 命令          | 快捷键                         |
 | avy-move-line | 将目标行快速剪切到到你所在的行 |
-| avy-goto-line | 快速跳转到目标行               |
-| avy-word      | 实现单词跳转,很实用!           |
+| avy-goto-line | 快速跳转到目标行                   |
+|               |                                |
 |               |                                |
 
 ** counsel
 
 | 命令              | 快捷键 |
 | counsel-mark-ring | spc-c-m |
-*** counsel-rg
-这个包可以跨文件搜索 char 关键词。很方便的。
-**** counsel-swith-buffer
-
-*** counsel-etags-grep
-功能类似于这个包可以跨文件搜索 char 关键词。很方便的
-*** counsel-imenu
-可以充当文档目录,快捷键 spc-j-i 
-*** counsel-google 
-可以方便地 google.
-
-** swiper 
-**** swiper-all-thing-at-point.
-**** swiper-isearch-thing-at-point.
-**** swiper-thing-at-point.
-
 
 
 ** helm
@@ -96,6 +80,9 @@
 
 4、利用 helm-regexp 搜索中文文字，真是太方便了。
 ** counsel
+*** counsel-rg
+这个包可以跨文件搜索 char 关键词。很方便的。
+
 ** evil
    vim 模式谁用谁知道啊！！！！太爽了！需要学习 vim 的按键快捷键。
 
@@ -199,19 +186,7 @@ bm-remove-all-buffers 可以删除所有标记的 bookmark,真的很方便！
 ** hydra
 hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是很方便。
 ** magit
-
-需求:
-
-1.修改本地仓储
-
-2.stage 这些修改 (spc g s)
-
-3.提交修改
-
-4.push 到远端 github
-
-
-
+*** git 使用
 Git 工作流程
 
 代码仓库的管理，即管理四棵“Tree”，远程仓库(remote repository)、本地仓库(HEAD/local repository)、缓冲区(INDEX/stage)、本地目录(Local directory)。
@@ -288,4 +263,3 @@ ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉
   sessionInfo()
   #+END_SRC
 
-  

@@ -1,0 +1,263 @@
+---
+title: "统计理论概念WIKI"
+author: "tonylu"
+date: "2019/10/3"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+> 如果你对数据绝对没有任何假设，那么你没有理由会更偏好于某个模型。—— “没有免费午餐定理”
+
+# 统计学名词
+## 自由度
+统计模型中经常涉及到自由度。一般自由度=样本量-模型估计参数-1.
+## 相关系数
+
+$$
+
+r ( X , Y ) = \frac { \operatorname { Cov } ( X , Y ) } { \sqrt { \operatorname { Var } [ X ] \operatorname { Var } [ Y ] } }
+
+$$
+
+其中， $cov(X,Y)$ 为 $X$ 与 $Y$ 的协方差, $Var[X]$ 为 $X$ 的方差，$Var[Y]$
+为 $Y$ 的方差。
+
+样本协方差的计算公式：$cov _ { x y } = \frac { 1 } { n - 1 } \sum _ { i = 1 } ^ { n } \left( x _ { i } - \overline { x } \right) \left( y _ { i } - \overline { y } \right)$
+
+样本方差的计算公式： $s ^ { 2 } = \frac { \sum \left( X _ { i } - \bar{X} \right) ^ { 2 } } { n - 1 }$
+
+## 训练集、验证集、测试集
+
+现在假设你在两个模型（一个线性模型和一个多项式模型）之间犹豫不决：如何判断？做法是训练两个模型，然后对比它们对测试数据的泛化能力。（说白了用新的数据去验证模型的预测能力，用mse、auc指标去验证）。
+
+*如果数据是80%的数据进行训练，保留另外的20%来做测试,这样的模型泛化误差最小，比如5%，但是实际生产环境中，这样的误差可能会达到15%。*
+
+为啥会出现这样的问题？
+
+问题出在你对测试集的泛化误差进行了多次度量，并且调整模型和超参数来得到拟合那个测试集的最佳模型。这就意味着该模型对于新的数据不太可能有良好的表现。
+
+常见的解决方案是再单独分出来一个保留集合，**称为验证集** 。在训练集上，使用不同的超参数训练多个模型，然后通过验证集，选择最好的那个模型和对应的超参数，当你对模型基本满意之后，再用测试集运行最后一轮测试，并得到泛化误差的估值。
+
+为了避免验证集“浪费“太多的训练数据，常见的技术是使用交叉验证；将训练集分成若干个互补子集进行验证。一旦模型和超参数都被选定，最终的模型会带着这些超参数对整个训练集进行一次训练，最后再用测试集测量泛化误差。
+
+## 回归模型理论
+根据自变量因子的性质，可以将线性模型分为三类：凡自变量因子都是数量因子，**就称为这个模型是回归分析模型**；如果自变量因子均为属性变量，**则称为模型是方差分析模型**，倘若自变量因子中，既有属性因子，也有数量因子，**就称为协方差分析模型**。
+### 简单回归
+
+假定因变量$Y$和自变量$X$满足线性回归模型，其方程为：
+
+$$
+Y=X\beta+\epsilon
+$$
+
+式中，因变量$Y$为$n$维向量；自变量$X$为$n\times p$矩阵；误差项$\epsilon$为$n$维向量。需要注意的是在简单回归中，误差项$\epsilon$的元素一般要求是独立同分布零均值的，而通常分布假定为正态的，在最小二乘回归的标准输出中，对系数的$t$检验和方差分析的F检验，常常认为p值小就意味着“显著”，但需要注意误差是否偏离正态性，如果不考虑正态性或者渐近正态性不成立，那么t检验和F检验就没有任何意义。
+
+在模型比较过程中，需要注意的是对于不满足正态性假定的模型也可以进行互相比较，但所用方法不是这些基于正态性的检验，可以用AIC之类的准则或交叉验证来比较。
+### 估计方法
+
+#### 最小二乘法
+优势在于：
+1、模型估计是无偏估计且具有最小方差。
+2、模型的残差服从正态分布，那么残差平方和服从卡方分布，那么就可以做F检验，检验模型参数是否显著。
+#### 极大似然估计
+1、估计结果是渐近无偏，但是是在小样本上常常是有偏估计。
+2、对于大样本情况下，参数估计的方差的极大似然估计能够达到最小。
+#### 两种估计的关系
+如果样本服从正态分布，那么最小二乘和极大似然估计就是等价关系。在这种情况下，无论样本大小，极大似然估计得出的都是无偏估计。
+### 回归诊断
+
+
+
+### logistic回归模型
+
+
+一些有用的结论：
+
+- 随着样本量$n$的增加，二项分布近似于正态分布.随机变量$Z=\frac{Y-n p}{\sqrt{\{} n p(1-p)\}}$接近正态分布。McCullagh等人证明当$np(1-p)\ge2$,随机变量Y即可满足正态分布假设，特别是当$p$接近于0.5的时候，所以当n等于10的时候，二项分布近似于正态分布。
+
+
+在样本量足够大时，二项分布近似于正态分布。
+- 利用线性模型拟合逾期率
+
+$y_{i}=0$为失败，$y_{i}=1$为成功。$E(Y_{i})=n_{i}p_{i}$,$var(Y_{i})=n_{i}p_{i}(1-p_{i})$
+
+$$
+\sum_{i=1}^{n}\left(\frac{y_{i}}{n_{i}}-p_{i}\right)^{2}=\sum_{i=1}^{n}\left(\tilde{p}_{i}-\beta_{0}-\beta_{1} x_{1 i}-\cdots-\beta_{k} x_{k i}\right)^{2}
+$$
+
+但是这种方法有很多的缺点：比如，异方差问题，$\operatorname{var}\left(\tilde{p}_{i}\right)=p_{i}(1-p_{i})/n_{i}$,当$p_{i}$在0.25-0.75时，$0.19<p_{i}(1-p_{i})<0.25$,也就是方差不会相差很大，但是p值很大或者很小的时候，那么方差变化就会很大！一种解决的方法就是加权回归模型$\sum_{i=1}^{n} w_{i}\left(\tilde{p}_{i}-p_{i}\right)^{2}$。第二个问题就是正态分布，当n很大的时候，这个问题不存在。第三个问题就是，估计值可能是负数！而$\hat{p}$不可能是负数！
+
+所以，需要对成功概率$p$作logit变换$log(p/(1-p))$，可以写作$logit(p)$.logit变换后，值域就变成了$(-\inf，+\inf)$
+
+#### 模型形式
+
+$$
+\operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}
+$$
+
+or
+
+$$
+p_{i}=\frac{\exp \left(\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}\right)}{1+\exp \left(\beta_{0}+\beta_{1} x_{1 i}+\cdots+\beta_{k} x_{k i}\right)}
+$$
+
+观测$y_{i}$服从于一个二项分布，均值是$n_{i}p_{i}$，能够表示为$y_{i}=n_{i}p_{i}+\epsilon_{i}$，残差部分$\epsilon_{i}=y_{i}-n_{i}p_{i}$是零均值，但是不再服从的是二项分布，实际上，$\epsilon$**服从的是位移二项分布**。
+【问题？】
+什么是位移二项分布？
+
+似然函数
+$$
+L(\boldsymbol{\beta})=\prod_{i=1}^{n}\left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right) p_{i}^{y_{i}}\left(1-p_{i}\right)^{n_{i}-y_{i}}
+$$
+
+$$
+\begin{aligned} \log L(\boldsymbol{\beta}) &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \log p_{i}+\left(n_{i}-y_{i}\right) \log \left(1-p_{i}\right)\right\} \\ &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{c}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \log \left(\frac{p_{i}}{1-p_{i}}\right)+n_{i} \log \left(1-p_{i}\right)\right\} \\ &=\sum_{i=1}^{n}\left\{\log \left(\begin{array}{l}{n_{i}} \\ {y_{i}}\end{array}\right)+y_{i} \eta_{i}-n_{i} \log \left(1+e^{\eta_{i}}\right)\right\} \end{aligned}
+$$
+
+$$
+\frac{\partial \log L(\boldsymbol{\beta})}{\partial \beta_{j}}=\sum_{i=1}^{n} y_{i} x_{j i}-\sum_{i=1}^{n} n_{i} x_{j i} e^{\eta_{i}}\left(1+e^{\eta_{i}}\right)^{-1}, \quad j=0,1, \ldots, k
+$$
+
+可知，上式是没有办法求解$\beta$的精确解，只能求得数值解。一个广泛的求解方法就是Fisher ’s 得分法，此法相当于是一个重复加权最小二乘方法,$z_{i}=\eta_{i}+(y_{i}-n_{i}p_{i})/\{n_{i}p_{i}(1-p_{i})\}$，weight等于$n_{i}p_{i}(1-p_{i})$。
+
+
+### 回归诊断
+
+### 广义线性混合模型（glmm）
+
+给定一个随机效应 $\alpha$,观测值 $y_{1},\cdots,y_{n}$ 是条件独立的，以至于 $y_{i} \sim N(x^{'}_{i}\beta+z^{'}_{i}\alpha,\tau^2)$, $x_{i},z_{i}$是已知的向量，$\tau^2$ 是未知的方差参数。
+
+glmm中，两个重要的特性是条件独立性，给定随机效应时，服从一个条件分布；第二个是随机效应的分布。
+
+
+
+#### deviance
+
+#### 消除异方差性
+
+#### 一些统计量
+
+- deviance 
+
+Deviance is a measure of goodness of fit of a generalized linear model.
+Or rather, it’s a measure of badness of fit–higher numbers indicate worse fit.R reports two forms of deviance – the null deviance and the residual deviance.
+
+- null deviance
+
+The null deviance shows how well the response variable is predicted by a model that includes only the intercept (grand mean).
+
+Null Deviance = 2(LL(Saturated Model) - LL(Null Model)) on df = df_Sat - df_Null
+
+- residual deviance
+
+Residual Deviance = 2(LL(Saturated Model) - LL(Proposed Model)) df = df_Sat - df_Proposed
+
+The Saturated Model is a model that assumes each data point has its own parameters (which means you have n parameters to estimate.)
+
+The Null Model assumes the exact "opposite", in that is assumes one parameter for all of the data points, which means you only estimate 1 parameter.
+
+The Proposed Model assumes you can explain your data points with p parameters + an intercept term, so you have p+1 parameters.
+
+If your Null Deviance is really small, it means that the Null Model explains the data pretty well. Likewise with your Residual Deviance.
+
+What does really small mean? If your model is "good" then your Deviance is approx Chi^2 with (df_sat - df_model) degrees of freedom.
+
+(Null Deviance - Residual Deviance) approx Chi^2 with df Proposed - df Null = (n-(p+1))-(n-1)=p
+
+#### 加权回归模型
+
+
+
+
+#### 分类效果度量
+##### 校准（calibration） 
+
+目的:一个分类模型能否用于预测垃圾邮件、一个分子的毒性状态或者作为保险欺诈和客户终身价值计算的输入，我们期望估计的类概率更能代表样本真实潜在的概率，也就是说,预测的类概率必须是良好校准的。为了达到良好校准，概率必须有效反映出感兴趣事件的真实似然。以垃圾邮件过滤为例，如果模型预测一封邮件为垃圾邮件的概率（或概率类似值）为20%，若平均每5个样本中真正有1个类似类型的邮件，**那么这个概率是良好校准的**。
+
+**一种评估类概率的方法是校准图**（calibration plot），对于给定的数据集，校准图展示事件的观测概率与预测的类概率之间的对比度量。创建校准图的一种方法是分类模型对收集的已知结果（测试集效果更佳）样本进行打分，接下来基于样本的类概率对数据封箱成不同的组。例如，封箱集合可能是[0,10%],(10%,20%],...,(90%,100%].对于每一箱，确定观测事件发生率，假定有50个样本落入[0,10%]箱子且仅有一个事件发生，则箱的中点是5%，观测事件的发生率为2%。校准图以箱的中点为x轴，观测事件发生率为y轴绘图。如果点落在沿45%的对角线上，模型就具备良好的校准率。
+
+
+### 样条方法
+在真实的生活中，函数 \(f(x)\) 是 $X$ 的线性函数的情况很少见。对于回归问题，通常 $f(X)=E(Y|X)$ 在 $X$ 上是非线性和非可加的。对于线性模型，你可以将其理解为 $f(x)$ 的一阶泰勒展开。
+
+在非线性回归模型中，基展开（basis expansion）是运用较多的方法。假设 $h _ { m } ( X ) : \mathbb { R } ^ { p } \mapsto \mathbb { R }$ 为 $X$ 的第 $m$ 个转化变量， $m=1,\cdots,M$.则模型可表述为：
+\[
+f ( X ) = \sum _ { m = 1 } ^ { M } \beta _ { m } h _ { m } ( X )
+\]
+
+其为 $X$ 的线性基展开。不难看出在确定 $h_{m}$ 后，模型对拓展后的输入变量为线性，可以用之前介绍的方法拟合。
+
+一组典型的样条基函数，形式如下：
+
+\begin{aligned} h _ { 1 } ( X ) & = 1 , h _ { 3 } ( X ) = X ^ { 2 } , h _ { 5 } ( X ) = \left( X - \xi _ { 1 } \right) _ { + } ^ { 3 } \\ h _ { 2 } ( X ) & = X , h _ { 4 } ( X ) = X ^ { 3 } , h _ { 6 } ( X ) = \left( X - \xi _ { 2 } \right) _ { + } ^ { 3 } \end{aligned}
+
+其中，截幂函数的形式为：
+
+\begin{aligned} h _ { j } ( X ) & = X ^ { j - 1 } , j = 1 , \ldots , M \\ h _ { M + l } ( X ) & = \left( X - \xi _ { l } \right) _ { + } ^ { M - 1 } , l = 1 , \ldots , K \end{aligned}
+
+为啥选择三次样条?因为三次样条号称是阶数最低的肉眼无法分辨结点连续程度的样条函数。
+
+在样条理论中，需要确定样条的阶数、结点的个数及结点的位置。一个简单的方法是将基函数的个数或自由度作为样条模型的参数，再从观测样本 $x_{i}$ 的范围决定结点的位置。截幂基函数虽然定义简洁，但大数的幂运算可能导致严重的取整问题。B样条基函数可以在结点数量 $K$ 很大时仍然可以快速地计算结果。
+
+如何求解 $f(x)$?
+
+\[
+\operatorname { RSS } ( f , \lambda ) = \sum _ { i = 1 } ^ { N } \left\{ y _ { i } - f \left( x _ { i } \right) \right\} ^ { 2 } + \lambda \int \left\{ f ^ { \prime \prime } ( t ) \right\} ^ { 2 } d t
+\]
+
+# 统计检验
+> 任何检验都是为了否定（而不是为了肯定什么）而设立
+
+## 方差齐次性
+
+为啥要做方差齐次性检验？
+
+关于方差分析的基本假定有三个:
+
+### 可加性
+
+方差分析的每一次观察值都包含了总体平均数、各因素主效应、各因素间的交互效应、随机误差等许多部分，这些组成部分必须以叠加的方式综合起来，即每一个观察值都可视为这些组成部分的累加和。
+
+### 正态性　　
+ 即随机误差$\epsilon$必须为相互独立的正态随机变量。这也是很重要的条件，如果它不能满足，则均方期望的推导就不能成立，采用 
+
+### 方差齐性
+
+所谓方差齐性，也就是方差相等，在t检验和方差分析中，都需要满足这一前提条件。在两组和多组比较中，方差齐性的意思很容易理解，无非就是比较各组的方差大小，看看各组的方差是不是差不多大小，如果差别太大，就认为是方差不齐，或方差不等。如果差别不大，就认为方差齐性或方差相等。当然，这种所谓的差别大或小，需要统计学的检验，所以就有了方差齐性检验。
+
+
+然而在线性回归中，理论上\(X\)是有方差的。然而这种理论上的方差，除非你知道总体中每个\(X\)取值上的所有对应\(Y\)的值，否则你是没有办法真正去计算方差的。但这种情况几乎是不可能发生的，因此在线性回归中的方差齐性检验，很多情况下只是一种探测而已。既然线性回归无法做到对每一个\(X\)取值上的\(Y\)值计算方差，那我们可以放宽一下，可以简单地看某一\(X\)取值范围内的\(Y\)值的方差，这是可以做到的。所以实际中我们经常通过线性回归的残差图来判断方差齐性，即以因变量残差作为纵坐标，以某自变量作为横坐标，绘制散点图。如果残差总的来说时随机分布的，没有随着自变量的增加而有其它趋势，基本就可以认为方差齐性。
+
+方差齐性检验方法：
+绘制散点图：一般情况因变量是纵轴，但是，在方差齐性检验中，因变量被设置为横轴，纵轴是学生化残差。原因就是，要弄清究竟因变量和残差之间有没有关系。结果说明：如果残差随机分布在一条穿过零点的水平直线的两侧，就说明残差独立，也就是证明因变量方差齐性。
+
+- 离群点检测
+
+残差杠杆图可以告诉我们哪个观测值（如果有）会对模型造成过度影响，换句话说，是否存在我们应该关注的异常值。鉴别强影响点的统计量是 *库克距离* ，一般认为，如果这个统计量的值大于1，就需要进行更深入的检查。
+
+# 不平衡数据
+## SMOTE算法
+
+- 对于少数类 $(X)$ 中每一个样本 $x_{i}$, 计算它到少数类样本集 $(X)$ 中所有样本的距离，得到其 $K$ 个近邻
+
+- 根据样本不平衡比例设置一个采样比例以确定采样倍率sampling_rate, 对于每一个少数类样本 $x_{i}$, 从其 $k$ 近邻中随机选择sampling_rate 个近邻为 $x^{1},x^{2},\cdots,x^{sampling_{rate}}$   
+
+- 对于每一个随机选出的近邻 $x^{i},(i=1,2,\cdots,sampling_rate)$ ,分别与原样本按照如下的公式构建新的样本
+
+\[
+New=x+rand(0,1) \times (x_{i}-x),i=1,2,\cdots,N
+\]
+
+其中， $x_{i}$ 为少数类中的一个观测值， $y_{j}$ 为 $k$ 个邻近中随机抽取的样本。
+
+- 将新样本与原始数据合成，产生新的训练集
+
+# 集成学习
+
+stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用LR进行回归组合），从而得到完整的stacking模型。
+
+
+
+
+
+

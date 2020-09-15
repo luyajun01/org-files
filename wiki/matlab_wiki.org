@@ -1,0 +1,146 @@
+* matlab wiki 
+读研期间，一直使用的软件，这个软件精于处理 matrix 运算，而且它的帮助文档写的最好，
+所以不妨用它学习新的理论知识。
+* matrix
+** size
+矩阵大小。
+#+begin_src matlab
+  a = [1 2;3 4]
+a(1,1)
+size(a) #数据的维度
+size(a,1) #行的维度
+size(a,2) #列的维度
+#+end_src
+** numel
+   #+begin_src matlab
+     numel(a) #元素的个数
+# 4
+   #+end_src
+*** 列
+    #+begin_src matlab
+      a(:,1) #第一列
+    #+end_src
+
+    #+begin_src matlab
+      a(:,1:2)
+    #+end_src
+*** 行
+    #+begin_src matlab
+      a(1,:) #第一行
+    #+end_src
+*** 转置 
+    #+begin_src matlab
+      a' #矩阵转置
+    #+end_src
+** zeros
+生成全为 0 的矩阵。
+#+begin_src matlab
+  A = zeros(size(A))
+A = zeros(k) #生成 k*k 维度矩阵
+#+end_src
+
+** ones 
+生成全为 0 的矩阵。
+#+begin_src matlab
+  A = ones(size(A))
+A = ones(k) #生成 k*k 维度矩阵
+#+end_src
+
+** A.*B
+   #+begin_src matlab
+    a.*ones(size(a)) #两个矩阵相✖ 
+   #+end_src
+
+** A./B
+   #+begin_src matlab
+    a./ones(size(a)) #两个矩阵相除 
+   #+end_src
+
+** A\B
+   #+begin_src matlab
+     A\B #inv(A)*B
+   #+end_src
+
+** A+1/A-1
+   #+begin_src matlab
+     A+1
+A-1
+   #+end_src
+
+** A(:)
+矩阵向量化。
+#+begin_src matlab
+  A(:)
+#+end_src
+
+** [A B]/[a ; b]
+   #+begin_src matlab
+     [A B] #
+[a ; b]
+   #+end_src
+
+** randn(a,b)
+随机生成 a*b 维度矩阵。
+#+begin_src matlab
+  randn(3, 5)
+#+end_src
+** repmat
+矩阵重复性计算。
+#+begin_src matlab
+  repmat(A,2) #将A 矩阵重复2次
+#+end_src
+
+* math
+** kronecker 积
+   #+begin_src Matlab
+     A = [1 2 3; 4 5 6];
+     B = ones(2);
+     #使用 kron 计算 Kronecker 张量积。
+     K = kron(A,B)
+   #+end_src
+** eig
+   #+begin_src matlab
+    A = gallery('lehmer',4)
+eig(A)
+[V,D] = eig(A) # 返回特征值的对角矩阵 D 和矩阵 V，其列是对应的右特征向量，使得 A*V = V*D。
+   #+end_src
+** ones
+   #+begin_src matlab
+    ones(4,1)
+#1
+#     1
+#     1
+#     1
+ones(3,3)
+#1     1     1
+#     1     1     1
+#     1     1     1 
+   #+end_src
+** randsample
+生成随机样本 U(c(1,n))
+
+#+begin_src matlab
+  randsample(10,1)
+#9
+randsample(10,3)
+# 10
+# 4
+# 5
+#+end_src
+** det
+计算行列式。
+
+#+begin_src matlab
+ A = [1 -2 4; -5 2 0; 1 0 3]
+det(A)
+#+end_src
+** isfinite
+检查矩阵元素是否是有限的。
+#+begin_src matlab
+isfinite(A)
+#+end_src
+
+* statistic
+
+
+

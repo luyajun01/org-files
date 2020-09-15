@@ -1,0 +1,2460 @@
+* Python_wiki
+和 R_WIKI 一样，Python_wiki 也是为了能够迅速查阅 python 而建。
+python 中有四种内置的数据结构：列表（list），元组（tuple），字典和集合（set）。
+
+** 工作目录
+类似于 R 的 getwd(),setwd().
+   #+begin_src python
+     ##引入模块，获得工作目录
+import os
+os.getcwd()
+os.chcwd('D:/work') #改变工作目录
+os.mkdir('work') #建立新目录
+os.rmdir('work') #删除目录
+os.rename('fff.txt','fool.txt') #重命名
+     os.remove('h.txt') #删除文件     
+   #+end_src
+
+** 常见函数
+   #+begin_src python
+   help() #可以获取帮助文档
+#比如:
+   help(re.match)
+   #+end_src
+*** list 
+python 中的 list 转变为 array.
+    #+begin_src python
+      items = [1, 2, 3, 4, 5]
+      type(items)
+      l = np.array(items)
+      type(l)      
+    #+end_src
+*** print
+在 python 中，print 的功能要比 R 要丰富的多。类似于是 glue。 
+
+#+begin_src python
+  new_points = alien_0['color']
+  print("you just earned " + str(new_points) + " points!")  
+#+end_src
+
+*** tolist
+array 转变成 list.
+
+#+begin_src python
+  import array as arr
+  a = arr.array("i", [10, -20, 30])
+  print("type of a:", type(a))
+  print("a is:", a)
+  list1 = list()
+  a.tolist()  
+#+end_src
+
+*** title 
+Python title() 方法返回"标题化"的字符串,就是说所有单词都是以大写开始，其余字母均为小写(见 istitle())。
+    #+begin_src python
+      a = []
+      a.append("df")
+      a.append("sd")
+      a.insert(0,"sa")
+      a
+      b = a.pop(0)
+      b.title()
+    #+end_src
+
+*** range 
+使用 range() 创建数字列表，可以使用函数 list() 将 range() 的结果直接转换为列表。
+这个函数类似于 seq.
+
+    #+begin_src python
+      numbers = list(range(1, 6))
+      print(numbers)
+      # [1, 2, 3, 4, 5]
+    #+end_src
+
+*** for 循环
+for 循环中的 print 需要缩进。
+
+    #+begin_src python
+      magicians = ['alice', 'david', 'carolina']
+for magician in magicians:
+print(magician)
+    #+end_src
+
+*** 长度
+可以列表的长度。
+    #+begin_src python
+      cars = ['bmw', 'audi']
+      len(cars)
+    #+end_src
+
+*** reverse
+倒着打印列表。
+    #+begin_src python
+      cars = ['bmw', 'audi']
+      cars.reverse()
+      print(cars)      
+    #+end_src
+
+*** sort
+对列表进行永久性排序。
+#+begin_src python
+  magicians = ['alice', 'david', 'carolina']
+  magicians.sort()
+  magicians  
+#+end_src
+
+*** sorted
+使用 sorted() 对列表进行 *临时排序* 。要保留列表元素原来的列表的顺序，同时以特定的顺序呈现它们。
+#+begin_src python
+  magicians = ['alice', 'david', 'carolina']
+  sorted(magicians)  
+#+end_src
+
+*** append
+在列表中添加元素。该方法在其末尾添加新元素“ducati”。在列表末尾添加元素。
+#+begin_src python
+  a = []
+  a.append("df")
+  a  
+#+end_src
+
+*** insert
+在任意位置添加新元素。
+
+#+begin_src python
+  a = []
+  a.append("df")
+  a.append("sd")
+  a.insert(0,"sa")
+  a  
+#+end_src
+
+*** del
+从列表中删除元素。可以删除任意位置的元素。
+
+#+begin_src python
+  a = ['honda', "bmw"]
+  del a[0]
+  a  
+#+end_src
+
+*** pop
+可以使用 pop() 可以删除末尾元素。
+#+begin_src python
+  a = ['honda', "bmw"]
+  del a[0]
+  a.append("dff")
+  a
+  a.pop()
+  a  
+#+end_src
+
+如果要从列表中删除一个元素，且不再以任何方式使用它，那就用 del 语句；如果要在删除
+元素后还能继续使用它，就使用方法 pop().
+
+*** remove
+根据值删除元素。
+
+#+begin_src python
+  a = []
+  a.append("df")
+  a.append("sd")
+  a.insert(0,"sa")
+  a
+  b = a.pop(0)
+  a.remove("df")
+  a
+
+  c = "df"
+  a.remove(c)
+  a
+#+end_src
+
+*** 列表解析
+列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。
+#+begin_src python
+  squres = [value**2 for value in range(1, 11)]
+  print(squres)
+  #[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+#+end_src
+
+*** if
+
+    #+begin_src python
+      cars = ['audi', 'bmw']
+for car in cars:
+    if car == 'bmw':
+        print(car.upper())
+    else:
+        print(car.title())      
+    #+end_src
+
+    #+begin_src python
+      c = "haha"
+if c != "sd":
+    print("hold the anchovies!")      
+    #+end_src
+
+*** boolen
+
+    #+begin_src python
+      cars = ['audi', 'bmw']
+      car == "bmw"
+      #True
+      car = "Audi"
+      car.lower() == "audi"
+    #+end_src
+
+*** 检查多个条件
+and/or
+
+and 等价于 R 中的&.
+
+#+begin_src python
+  age_0 = 22
+  age_1 = 18
+  age_0 >= 21 and age_1 >=21
+  age_0 >= 21 or age_1 >=21
+#+end_src
+
+*** in
+    #+begin_src python
+      df = ['a', 'b', 'c']
+      "a" in df      
+    #+end_src
+
+*** not in
+检查特点之
+    #+begin_src python
+      df = ['a', 'b', 'c']
+      "a" not in df
+    #+end_src
+
+    #+begin_src python
+      df = ['a', 'b', 'c']
+      a = "d"
+      "a" not in df
+if a not in df:
+    print(a.title() + ", you can post a response if you wish.")      
+    #+end_src
+
+*** if-else 语句
+
+    #+begin_src python
+      age = 17
+if age >= 18:
+    print("you are old enough to vote!")
+    print("Have you registered to vote yet?")
+else:
+    print("Sorry, you are too young to vote")      
+    #+end_src
+
+*** if-elif-else 结构
+
+    #+begin_src python
+      age = 12
+if age < 4:
+    print("Your admission cost is $0.")
+elif age < 18:
+    print("Your admission cost is $5.")
+else:
+    print("your admission cost is $10.")      
+    #+end_src
+
+使用多个 elif 代码块。
+
+#+begin_src python
+  age = 12
+if age < 4:
+    price = 0
+elif age < 18:
+    price = 5
+elif age < 65:
+    price = 10
+else:
+    price = 5
+
+    print("Your admission cost is $" + str(price) + ".")  
+#+end_src
+
+也可以省略 else 代码块。
+
+#+begin_src python
+  age = 12
+if age < 4:
+    price = 0
+elif age < 18:
+    price = 5
+elif age < 65:
+    price = 10
+elif age >= 65:
+    price = 4
+    
+print("Your admission cost is $" + str(price) + ".")  
+#+end_src
+
+*** for,if
+
+    #+begin_src python
+      s = ['a', 'b', 'c']
+for s in s:
+    if s == 'b':
+        print("sorry, we are out.")
+    else:
+        print("adding " + s + ".")
+        print("\nfinished!")      
+    #+end_src
+
+在运行 for 循环前确定列表是否为空很重要！
+
+#+begin_src python
+  a = []
+if a:
+    for b in a:
+        print("sd")
+        print("\nfinishing")
+else:
+    print("c")  
+#+end_src
+
+*** 引号
+**** 单引号、双引号
+单引号和双引号工作机制完全相同.可以通过单引号、双引号指定字符串。
+
+#+begin_src python
+  '''
+  这是一段多行字符串。这是它的第一行。
+This is the second line.
+
+"What's your name?," I asked.
+
+He said "Bond, James Bond."
+  '''  
+#+end_src
+
+**** 三引号
+
+*** append
+添加元素。
+#+begin_src python
+  x = [1,2,3]
+  x.append(4)
+  x  
+#+end_src
+
+*** map
+Map applies a function to all the items in an input_list. Here is the blueprint:
+map(function_to_apply, list_of_inputs).
+Most of the times we want to pass all the list elements to a function one-by-one and then collect the output. 
+    #+begin_src python
+     items=[1,2,3,4,5]
+      squared=list(map(lambda x:x**2,items))
+      squared     
+    #+end_src
+*** filter
+As the name suggests, filter creates a list of elements for which a function returns true. 
+    #+begin_src python
+      number_list = range(-5, 5)
+      less_than_zero = list(filter(lambda x: x < 0, number_list))
+      print(less_than_zero)      
+    #+end_src
+*** reduce
+Reduce is a really useful function for performing some computation on a list and returning the result. 
+    #+begin_src python
+      from functools import reduce
+      product = reduce((lambda x, y: x * y), [1, 2, 3, 4])
+      product      
+    #+end_src
+*** format
+python 中 format 方法所做的事情便是将每个参数值替换至格式所在的位置。这之中可以有
+更详细的格式。
+
+#+begin_src python
+  print('{0:.3f}'.format(1.0/3))
+  print('{0:_^11}'.format('hello'))
+  print('{name} wrote {book}'.format(name='swaroop',book='python'))  
+#+end_src
+*** while
+
+    #+begin_src python
+      number = 23
+      running = True
+while running:
+    guess = int(input('Enter an integer : '))
+
+    if guess == number:
+        print('Congratualtions, you guessed it.')
+        running = False
+    elif guess < number:
+        print('No, it is a little higher than that.')
+    else:
+        print('No,it is a little lower than that.')
+else:
+    print('The while loop is over.')
+
+    print('Done.')      
+    #+end_src
+
+*** for
+for...in 语句是另一种循环语句，其特点是会在一系列对象上进行迭代。
+
+    #+begin_src python
+      for i in range(1,5):
+          print(i)
+else:
+    print('The for loop is over')  
+    #+end_src
+
+*** dir 
+内置的 dir() 函数能够返回由对象所定义的名称列表。
+有点像 R 中的 ls().
+#+begin_src python
+  dir(pandas)
+  dir()
+  a = 5
+  dir()  
+#+end_src
+
+*** do.call
+python 版的 do.call 可以用以下代码实现，可以看出 python 的编程思想和 r 还是有些区别的。 
+
+#+begin_src python
+  import builtins
+def do_call(what, *args, **kwargs):
+    return getattr(builtins, what)(*args, **kwargs)
+
+do_call("sum", range(1,11))
+
+functions = {
+    "sum": sum,
+    "mean":lambda v:sum(v)/len(v)
+}
+  functions['sum'](range(1,11))
+
+#+end_src
+
+*** break 语句
+break 语句用以中断（break）循环语句，也就是中断循环语句的执行，即使循环条件没有
+变更为 False,或队列中的项目尚未完全迭代依旧如此。
+
+#+begin_src python
+  while True:
+      s = input('Enter something:')
+    if s == 'quit':
+        break
+    print('Length of the string is', len(s))
+    print('Done')  
+#+end_src
+
+*** 函数
+函数可以通过关键字 def 来定义。
+
+在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称
+作“实参”（arguments）。
+
+    #+begin_src python
+      def say_hello():
+          print('hello world')
+
+          say_hello()      
+    #+end_src
+    #+begin_src python
+      def print_max(a, b):
+    if a > b:
+        print(a, 'is maximum')
+    elif a == b:
+        print(a, 'is equal to', b)
+    else:
+        print(b, 'is maximum')
+
+        print_max(3,4)      
+    #+end_src
+
+*** 局部变量
+当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的
+变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作
+用域（scope）。
+
+    #+begin_src python
+      x = 50
+def func(x):
+    print("x is", x)
+    x = 2
+    print('Changed local x to', x)
+
+func(x)
+      print("x is still", x)      
+    #+end_src
+
+*** global 语句
+
+如果想给一个在程序顶层的变量赋值（也就是说不存在于任何作用域中，无论是函数还是
+类），那么你必须告诉 python 这一变量并非局部，而是全局（global）。因为在不使用
+global 语句的情况下，不可能为一个定义于函数之外的变量赋值。
+
+    #+begin_src python
+      x = 50
+def func():
+    global x
+    
+    print('x is', x)
+    x = 2
+    print('Changed global x to', x)
+
+func()
+      print('Value of x is', x)      
+    #+end_src
+
+下面 times = 1,就是默认的参数值。
+
+    #+begin_src python
+      def say(message, times=1):
+          print(message * times)
+
+say('hello')
+      say('world',5)      
+    #+end_src
+
+*** 关键字参数
+
+    #+begin_src python
+      def func(a,b=5,c=10):
+          print("a is", a, "and b is", b, "and c is", c)
+
+func(3,7)
+func(25,c=7)
+      func(c=50, a=100)      
+    #+end_src
+
+*** 可变参数
+有时你可能想定义的函数里面能够有任意数量的变量，也就是参数数量是可变的，这可以通
+过使用星号来实现。
+
+*** return
+
+return 语句用于从函数中返回，也就是中断函数。
+    #+begin_src python
+      def maximun(x, y):
+    if x > y:
+        return  x
+    elif x == y:
+        return "The numbers are equal"
+    else:
+        return y
+
+    print(maximun(2, 3))      
+    #+end_src
+
+*** 基本数学运算
+**** sqrt 
+
+    #+begin_src python
+      from math import sqrt
+      print('square root of 16 is', sqrt(16))      
+    #+end_src
+
+** pycharm 使用技巧
+| 功能          | 快捷键             |
+| main 函数补全 | tab                |
+| alt+/         | 实现函数和变量补全 |
+|               |                    |
+其实，我想从 tidyverse 对应的 Python 学起。
+** numpy 
+*** 查看版本
+    #+begin_src python
+import numpy
+numpy.__version
+    #+end_src
+
+*** create ndarray 
+构造一个 array.
+    #+begin_src python
+      data1 = [6, 7.5, 8, 0,1]
+      np.array(data1)      
+    #+end_src
+    #+begin_src python
+      data2 = [[1,2,3,4],[5,6,7,8]]
+      arr2 = np.array(data2)
+      arr2 = np.array(data2, dtype=np.float32) #dtype 可以修改数据类型
+      arr2.ndim #2
+      arr2.shape #(2,4)
+      arr2.dtype
+    #+end_src
+
+**** astype 
+这个函数可以修改数据类型。
+
+#+begin_src python
+  data1 = [6, 7.5, 8, 0,1]
+  temp = np.array(data1)
+  temp.dtype
+  temp1 = temp.astype(np.int64)
+  temp1.dtype  
+#+end_src
+
+和 R 一样，python 也可以字符串型转为数值型。
+
+#+begin_src python
+  data2 = ['6', '7.5', '8', '0,1']
+  temp2 = np.array(data2, dtype=np.string_)  
+  temp2
+  temp2.dtype
+  temp2.astype(float) #有些问题，需要排查
+#+end_src
+
+**** np.zeros/np.empty
+
+ 生成全为 0 的向量和空值矩阵。
+
+     #+begin_src python
+       np.zeros(10)
+       np.zeros((3,6))
+       np.empty((2,3,2)) #空矩阵
+     #+end_src
+**** np.arange
+类似于 R 中的 seq().
+
+#+begin_src python
+  np.arange(4)  
+#+end_src
+
+**** np.random
+    #+begin_src python
+ import numpy as np
+ data=np.random.randn(2,3)
+ data
+    #+end_src
+**** np.linspace
+在指定的间隔内返回均匀间隔的数字。
+#+begin_src python
+  np.linspace(start = 0, stop = 19, num = 20)  
+#+end_src
+
+*** 数据维度
+
+    #+begin_src python
+data.shape      
+    #+end_src
+
+相当于 r 中的 dim(data)
+*** 数据类型
+    #+begin_src python
+data.dtype  #typeof()     
+    #+end_src
+*** 生成数据
+  随机生成一组 2*3 维度数据。
+  #+begin_src python
+import numpy as np
+data = np.random.randn(2, 3) #生成2*3 维float 型数据
+print(data.shape) #数据维度
+print(data.dtype) #显示数据类型
+print(data) #打印数据
+  #+end_src
+
+  #+begin_src python
+import pandas
+from dplython import (DplyFrame, X, diamonds, select, sift, sample_n,
+                        sample_frac, head, arrange, mutate, group_by, summarize, DelayFunction)
+diamonds >> select(X.carat) >> head(5)
+
+  #+end_src
+*** np.c_
+有点像 cbind,可以将 array 连接起来。
+#+begin_src python
+  np.c_[np.array([1,2,3]), np.array([4,5,6])]  
+#+end_src
+*** np.r_
+这个函数不象 rbind, 类似 append 函数。
+#+begin_src python
+  np.r_[np.array([1,2,3]), np.array([4,5,6])]  
+#+end_src
+*** 单位矩阵、对角矩阵、三角矩阵
+numpy 函数命名方式很像 matlab.
+    #+begin_src python
+      np.eye(5)
+      import numpy as np
+      x = np.array([[10,2,7],
+                    [3,5,4],
+                    [4,2,1],
+                    [2,4,5]])
+      x
+      np.diag(x)
+    #+end_src
+
+    #+begin_src python
+      np.triu(x) #上三角矩阵
+      np.tril(x) #下三角矩阵     
+    #+end_src
+*** 特征值问题解
+
+    #+begin_src python
+      np.random.seed(1010)
+      x = np.random.randn(5, 3)
+      va, ve = np.linalg.eig(np.cov(x))
+      va
+      ve      
+    #+end_src
+*** svd 分解
+
+    #+begin_src python
+      u,d,v = np.linalg.svd(x) #奇异值分解      
+    #+end_src
+*** cholesky 分解
+
+    #+begin_src python
+      Z = np.array([[1, -2j], [2j, 5]])
+      L = np.linalg.cholesky(Z)
+      L      
+    #+end_src
+
+** pandas
+
+| 函数     | dplyr     | pandas      |
+| 创建列   | mutate    | assign      |
+| 选择列   | select    | filter      |
+| rename   | rename    | rename      |
+| 过滤行   | filter    | query       |
+| 排序     | arrange   | sort_values |
+| 分组     | group_by  | groupby     |
+| 摘要统计 | summarize | agg         |
+
+*** Series
+类似于 R 中的 vector.pandas.Series(data, index, dtype, copy).
+
+1 data    data takes various forms like ndarray, list, constants
+
+2 index   Index values must be unique and hashable, same length as data. Default np.arrange(n) if no index is passed.
+
+3 dtype   dtype is for data type. If None, data type will be inferred
+
+4 copy    Copy data. Default False.
+
+#+begin_src python
+  import pandas as pd
+  s = pd.Series()
+  print(s)  
+
+  import numpy as np
+  data = np.array(['a', 'b', 'c'])
+  s = pd.Series(data)
+  print(s)
+#+end_src
+
+*** dict
+Create a series from dict.
+
+A dict can be passed as input and if no index is specified, then the dictionary keys are taken in a sorted order to construct index. If index is passed, the values in data corresponding to the labels in the index will be pulled out.
+
+#+begin_src python
+  import pandas as pd
+  import numpy as np
+  data = {'a' : 0., 'b' : 1., 'c' : 2.}
+  s = pd.Series(data)
+  print s  
+#+end_src
+
+#+begin_src python
+import pandas as pd
+  import numpy as np
+  data = {'a' : 0., 'b' : 1., 'c' : 2.}
+  s = pd.Series(data, index=['b','c','d','a'])
+  print(s["b"])
+#+end_src
+
+*** scalar
+If data is a scalar value, an index must be provided. The value will be repeated to match the length of index.
+#+begin_src python
+  s = pd.Series(5, index=[0,1])
+  s
+  print(s[0])
+  print(s[:3])
+  print(s[-3:])
+#+end_src
+
+retrieve multiple elements using a list of index label values
+
+#+begin_src python
+  data = {'a' :0.,'b' : 1., 'c' : 2.}
+  s = pd.Series(data, index=['b','c','d','a'])
+  print(s[["b",'a']])  
+#+end_src
+
+*** ndarray
+
+create a series from ndarray.
+
+#+begin_src python
+  import pandas as pd
+  from pandas import Series, DataFrame
+  pd.Series([4, 7, -5, 3])  
+  import pandas as pd
+  import numpy as np
+  data = np.array(['a', 'b', 'c', 'd'])
+  print(data)
+  print(data.dtype)
+  s = pd.Series(data)
+  print(s)
+  print(s.dtype)
+#+end_src
+
+pd.series 中的 index
+
+#+begin_src python
+  data = np.array(['a', 'b', 'c', 'd'])
+  s = pd.Series(data, index = [100, 101, 102, 103])
+  print(s)  
+#+end_src
+
+*** DataFrame
+pandas.DataFrame(data, index, columns, dtype, copy)
+
+create a pandas dataframe using various inputs like
+
+- lists
+- dict
+- series
+- numpy ndarray
+- another dataframe.
+
+**** create an empty dataframe 
+
+     #+begin_src python
+       import pandas as pd
+       df = pd.DataFrame()
+       print(df)       
+     #+end_src
+
+**** create a dataframe from lists
+
+     #+begin_src python
+       data = [1,2,3,4,5]
+       df = pd.DataFrame(data)
+       print(df)       
+     #+end_src
+
+     #+begin_src python
+       data = [['Alex',10],['Bob',12]]
+       df = pd.DataFrame(data, columns=['Name','Age'])
+       df = pd.DataFrame(data, columns=['Name','Age'], dtype=float)
+       print(df)       
+     #+end_src
+
+**** create a dataframe from dict of ndarrays/lists
+
+     #+begin_src python
+       data = {'Name':['Tom'],'Age':[28]}
+       df = pd.DataFrame(data)
+       print(df)       
+     #+end_src
+
+     #+begin_src python
+       data = {'Name':['Tom'],'Age':[28]}
+       df = pd.DataFrame(data, index = ['rank1'])
+       print(df)       
+     #+end_src
+
+****  create a dataframe from list of dicts
+List of Dictionaries can be passed as input data to create a DataFrame. The dictionary keys are by default taken as column names.
+
+#+begin_src python
+  data = [{'a' : 1, 'b' : 2},{'a':5,'b':10,'c':20}]
+  df = pd.DataFrame(data, index=['rank1','rank2'])
+  print(df)  
+#+end_src
+
+#+begin_src python
+  df1 = pd.DataFrame(data, index=['first', 'second'], columns=['a','b'])
+  df2 = pd.DataFrame(data, index=['first', 'second'], columns=['a','b1'])
+  print(df1)
+  print(df2)  
+#+end_src
+
+**** create a dataframe from dict of series
+
+     #+begin_src python
+       d = {'one':pd.Series([1,2,3],index=['a','b','c']),
+            'two':pd.Series([1,2,3,4],index=['a','b','c','d'])}
+       df = pd.DataFrame(d)
+       print(df)
+       print(df['one'])
+     #+end_src
+
+**** column addition
+
+     #+begin_src python
+       import pandas as pd
+       d = {'one': pd.Series([1,2,3], index = ['a', 'b', 'c']),
+            'two': pd.Series([1,2,3,4], index = ['a', 'b', 'c', 'd'])}
+
+df = pd.DataFrame(d)
+
+df['three'] = pd.Series([10,20,30],index=['a', 'b', 'c'])
+print(df)
+       df['four'] = df['one'] + df['three']
+       print(df)
+     #+end_src
+
+**** 删除某一列
+
+     #+begin_src python
+       del df['one']
+       print(df)       
+     #+end_src
+
+**** row selection,addition, and deletion
+
+row can be selected by passing row label to a loc function.
+
+     #+begin_src python
+       print(df.loc['a'])       
+     #+end_src
+
+**** selection by integer location
+
+rows can be selected by passing integer location to an iloc fucntion.
+
+     #+begin_src python
+       print(df.iloc[2])       
+     #+end_src
+
+**** slice rows
+multiple rows can be selected using ":" operator.
+
+#+begin_src python
+  print(df[0:3])  
+#+end_src
+
+**** addition of rows
+add new rows to a dataframe using the append function.
+
+#+begin_src python
+  df = pd.DataFrame([[1,2],[3,4]],columns=['a','b'])
+  df2 = pd.DataFrame([[5,6],[7,8]],columns=['a','b'])
+  df = df.append(df2)
+  print(df)  
+#+end_src
+
+**** deletion of rows
+
+     #+begin_src python
+       df = df.drop(0)
+       print(df)  
+     #+end_src
+
+
+
+
+*** function application
+**** table-wise function application
+
+    #+begin_src python
+      def adder(ele1,ele2):
+    return ele1 + ele2
+df = pd.DataFrame(np.random.randn(5,3),columns=['col1', 'col2', 'col3'])
+print(df)
+print(df + 2)
+      print(df.pipe(adder,2))      
+    #+end_src
+
+**** row/column wise function application
+
+    #+begin_src python
+      import numpy as np
+def adder(ele1,ele2):
+    return ele1 + ele2
+
+df = pd.DataFrame(np.random.randn(5,3),columns=['col1', 'col2', 'col3'])
+df.pipe(adder,2)
+      print(df.apply(np.mean)) #列
+      print(df.apply(np.mean, axis=1)) ##行
+    #+end_src
+
+#极大值与极小值相减
+    #+begin_src python
+      print(df.apply(lambda x:x.max() - x.min()))      
+    #+end_src
+
+**** element wise function application
+
+只对一列元素作变换
+
+     #+begin_src python
+       import numpy as np
+       df['col1'].map(lambda x:x*100)       
+     #+end_src
+
+对所有元素作变换
+
+     #+begin_src python
+       df.applymap(lambda x:x*100)       
+     #+end_src
+
+*** DocStrings
+python 注释语言功能就是 docstring.当程序运行时，可以通过一个函数来获取文档。
+
+下面函数的第一行的字符串就是该函数的文档字符串（docstring）。
+
+该文档字符串所约定的是一串多行字符串，其中第一行以某一大写字母开始，以句号结束。
+第二行为空行，后跟的第三行开始是任何详细的解释说明。在此强烈建议你在你所有重要功 能的所有文档字符串中都遵循这一约定。
+
+可以通过使用函数的__doc__(注意其中的双下划线)属性（属于函数的名称）来获取函数
+print_max 的文档字符串属性。
+
+#+begin_src python
+  def print_max(x,y):
+      ''' Prints the maximum of two numbers.打印两个数值中的最大数。
+
+    The two values must be integers.这两个数都应该是整数'''
+      x = int(x)
+      y = int(y)
+
+    if x > y:
+        print(x, 'is maximum')
+    else:
+        print(y, 'is maximum')
+
+print_max(3 ,5)
+print(print_max.__doc__) #获取注释
+  Prints the maximum of two numbers.
+
+  The two values must be integers.  
+#+end_src
+
+*** 选取元素
+
+.index 更像 R 中的行元素名称。
+
+    #+begin_src python
+      obj = pd.Series([4, 7, -5, 3])
+      obj.values
+      obj.index
+      obj1 = pd.Series([4, 7, -5, 3], index= ['d', 'b', 'a', 'c'])
+      obj1.index      
+    #+end_src
+
+可以挑选元素大于 0 的元素。
+
+    #+begin_src python
+      obj1[obj1 > 0]      
+    #+end_src
+
+可以利用下面函数查询 index 是否会在 series 中。
+
+#+begin_src python
+  "b" in obj1  
+#+end_src
+
+*** select
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      library(dplyr)
+      select(df,var1,var2)
+      select(df,-var3)
+    #+end_src
+
+    #+begin_src python
+df[['var1', 'var2']]
+df.drop('var3', 1)
+    #+end_src
+
+
+
+    #+begin_src python
+import seaborn as sns
+sns.set()
+import pandas as pd
+tips = sns.load_dataset("tips")
+iris =  .
+iris.info(null_counts=True) #类似于R 中的 glimpse(iris)
+##filter
+iris[iris.sepal_width > 0.2]
+iris.query("sepal_width > 0.2")
+##select
+iris.loc[:, [["sepal_width", "sepal_length"]]]
+iris.loc[1, :] #第一列数据
+iris.loc[[1], :] #第一行数据
+
+df %>% select(-col1)
+df.drop(columns=["col1"])
+#+end_src
+
+**** regex 
+这部份在 dplyr 里面是 tidyselect 包中的内容。
+
+contain,match 等等。
+
+     #+begin_src python
+       df = sns.load_dataset('iris')
+       df.filter(regex='length$')
+     #+end_src
+
+*** arrange
+
+    #+begin_src R :results output graphics :file fig_1.png :exports both 
+      df %>%
+          arrange(desc(col1))
+    #+end_src
+
+    #+begin_src python
+df.sort_values(by="col1", ascending=False)
+    #+end_src
+*** mutate
+    #+begin_src python
+iris.assign(new=iris.sepal_width/iris.sepal,
+            newcol=lambda x:x["col"]+1)
+import pandas
+    #+end_src
+*** group_by
+    #+begin_src python
+
+      import pandas as pd
+ df = pd.DataFrame({'Animal':['Falcon','Falcon','Parrot','Parrot'],'Max Speed':[380.,370.,24.,26.]})
+df.groupby(['Animal']).mean #对animal 进行分组然后求mean()
+
+arrays = [['Falcon','Falcon','Parrot', 'Parrot'],
+           ['Captive', 'Wild', 'Captive', 'Wild']]
+
+index = pd.MultiIndex.from_arrays(arrays, names=('Animal', 'Type'))
+df = pd.DataFrame({'Max Speed':[390., 350., 30., 20.]}, index=index)
+df.groupby(level=0).mean()
+df.groupby(level=1).mean()     
+    #+end_src
+*** filter
+    #+begin_src python
+      
+    #+end_src
+*** select
+
+    #+begin_src python
+
+
+      
+    #+end_src
+*** join
+    #+begin_src python 
+      import pandas as pd
+      left = pd.DataFrame({
+          'id':[1,2,3,4,5],
+          'Name': ['Alex', 'Amy', 'Allen', 'Alice', 'Ayoung'],
+          'subject_id':['sub1','sub2','sub4','sub6','sub5']})
+
+left
+
+right = pd.DataFrame(
+    {'id':[1,2,3,4,5],
+     'Name': ['Billy', 'Brian', 'Bran', 'Bryce', 'Betty'],
+     'subject_id':['sub2','sub4','sub3','sub6','sub5']})
+
+pd.merge(left, right, on = "id")
+pd.merge(left, right, on = ["id", "subject_id"])
+pd.merge(left, right, on = ["id", "subject_id"], how="left")
+pd.merge(left, right, on = ["id", "subject_id"], how="right")
+pd.merge(left, right, on = ["subject_id"], how="outer")
+pd.merge(left, right, on = ["subject_id"], how="inner")
+     
+    #+end_src
+*** date
+
+    #+begin_src python
+      import pandas as pd
+      df = pd.DataFrame(iris.data, columns=iris.feature_names)
+      print(pd.Timedelta(days=2))
+      import pandas as pd
+      s = pd.Series([pd.date_range('2012-1-1', periods=3, freq='D')])
+      td = pd.Series([pd.Timedelta(days=i) for i in range(3)])
+      df = pd.DataFrame(dict(A=s,B=td))      
+    #+end_src
+*** string
+**** str.replace
+     #+begin_src python
+       str = 'this is string'
+       print(str.replace("is", "was"))       
+     #+end_src
+**** 大小写
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.lower()) #小写
+       print(s.str.upper()) #大写
+     #+end_src
+**** str.len
+字符长度
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.len())       
+     #+end_src
+**** str.cat
+类似于 R 中的 str_c.
+#+begin_src python
+  import pandas as pd
+  import numpy as np
+  s = pd.Series(['Tom ', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+  print(s.str.cat(sep='_'))  
+#+end_src
+**** str.contains
+类似于 str_detect.
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.contains(' '))       
+     #+end_src
+**** str.repeat
+重复字符串。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.repeat(2))
+     #+end_src
+**** str.count
+字符串计数。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.count('m')) 
+     #+end_src
+**** startswith
+检查字符串是否以固定字符开头。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.startswith('T'))       
+     #+end_src
+**** endswith
+检查字符串是否以固定字符结尾。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.endswith('t'))       
+     #+end_src
+**** str.find
+发现字符出现位置，如果返回－1,说明字符里面没有匹配的字符。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.find('e'))       
+     #+end_src
+**** str.findall
+上面 str.find 的加强版。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.findall('i'))       
+     #+end_src
+**** str.swapcase
+将字符串中第一个字符确定为小写，其他字符均为大写。
+
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.swapcase())       
+     #+end_src
+**** str.islower
+判断字符是否为小写。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.islower())       
+     #+end_src
+**** str.isupper
+判断字符是否为大写。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.isupper())       
+     #+end_src
+**** str.isnumeric
+判断字符是否为数字型。
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+       print(s.str.isnumeric())       
+     #+end_src
+*** 统计函数
+**** 方差 
+     #+begin_src python
+       import pandas as pd
+       import numpy as np
+       s1 = pd.Series(np.random.randn(10))
+       s2 = pd.Series(np.random.randn(10))
+       print(s1.cov(s2))       
+     #+end_src
+
+** 修改列表元素
+
+#+begin_src python
+age=23
+str(age)
+#+end_src
+
+** 转换
+   #+begin_src python
+     motorcycles = ['honda', 'yamaha', 'suzuki']
+     print(motorcycles)
+     motorcycles[0] = 'dycati'
+     print(motorcycles)     
+   #+end_src
+
+给我的感觉，python 在数据类型转换方面显得很笨拙。 
+
+list 型转 string.在 R 中，只需要 as.str(L) 即可。
+#+begin_src python
+  L = list(range(10))
+  type(L[0])
+  L2 = [str(c) for c in L]
+  L2  
+#+end_src
+
+从这个 L2 中，可以看出 L2 第一个 str(c) 显然是 L2 的数据类型，后面 string
+是一个 for 循环。
+
+#+begin_src python
+  L3 = [True, "2", 3, 4]
+  [type(item) for item in L3]  
+  
+#+end_src
+** 列表中添加元素
+在列表末尾添加元素，使用 append 的方法。任意位置插入元素使用 insert 的方法。
+#+begin_src python
+motorcycles.append("ducati")
+print(motorcycles)
+motorcycles.insert(0,'ducati')
+motorcycles.insert(1,'anyone')
+motorcycles
+#+end_src
+
+** 列表删除元素
+使用 del 对列表中的确定位置元素进行删除。可以使用 pop() 删除任意  一个元素，值得注意的是，每当使用 pop() 时，被弹出的元素就不再列表中了。
+
+除了 del,pop(), 还有 x.remove('python') 可以删除.
+
+#+begin_src python
+del motorcycles[0]
+motorcycles
+
+poped_motorcycles=motorcycles.pop()
+motorcycles
+poped_motorcycles
+
+motorcycles = ['honda', 'yamaha', 'suzuki']
+last_owned=motorcycles.pop()
+motorcycles
+print("the last motorcycle I owned was a " + last_owned.title() + ".")
+first_owned = motorcycles.pop(0) #截取第一个元素
+motorcycles = ['honda', 'yamaha', 'suzuki']
+motorcycles.remove('honda')
+motorcycles
+#+end_src
+
+** 根据值删除元素
+
+可以使用 remove 将元素移除，但是也可以接着使用它的值。 
+
+#+begin_src python
+motorcycles = ['honda', 'yamaha', 'suzuki']
+motorcycles.remove('suzuki') #把suzuki 从元素列表中移除
+#+end_src
+
+** 组织列表
+*** 排序
+可以使用 sort() 对字符串进行排序，参数 reverse=T 可以倒序显示。利用 sorted() 对列表进行临时排序。 
+#+begin_src python
+cars=['bmw','audi','toyota']
+cars.sort()
+cars
+sorted(cars)
+#+end_src
+
+*** 倒着打印列表
+
+注意 reverse() 不是指按与字母顺序相反的顺序排列列表元素，而只是反转表元素顺序。 
+
+#+begin_src python
+cars=['bmw','audi','toyota']
+cars.reverse()
+#+end_src
+
+*** 列表长度
+#+begin_src python
+len(cars)
+#+end_src
+
+*** 索引
+
+索引－1 总是返回最后一个列表元素。
+#+begin_src python
+  print(cars[-1])
+#+end_src
+
+** 循环
+
+*** 遍历整个列表
+#+begin_src python
+magicians = ['alice', 'david', 'carolina']
+for magician in magicians:
+    print(magician)
+
+magicians = ['alice', 'david', 'carolina']
+for magician in magicians:
+    print(magician.title()+",that was a great trick!")
+#+end_src
+
+** 创建数字列表
+*** 使用函数 range()
+
+#+begin_src python
+for value in range(1,5):
+    print(value) 
+#+end_src
+*** 使用 range() 创建数字列表
+
+#+begin_src python
+numbers=list(range(1,6))
+print(numbers)
+#+end_src
+range 还可以指定步长。
+#+begin_src python
+even_numbers=list(range(2,11,2))
+print(even_numbers)
+#+end_src
+
+#+begin_src python
+squres=[]
+for value in range(1,11):
+    squre=value**2
+    squres.append(squre)
+
+print(squres)
+#+end_src
+
+上述代码可以写的更加简洁一些。
+
+#+begin_src python
+squres=[]
+for value in range(1,11):
+    squres.append(value**2)
+print(squres)
+#+end_src
+** 字典
+简单示例：
+#+begin_src python
+  alien_0 = {'color':'green','points':5}
+  alien_0['color']
+  # 'green'
+#+end_src
+*** 添加键－值对 
+
+    #+begin_src python
+      alien_0 = {'color':'green','points':5}
+      alien_0['x_pos'] = 0
+      alien_0['y_pos'] = 1
+      alien_0
+      # {'color': 'green', 'points': 5, 'x_pos': 0, 'y_pos': 1}
+    #+end_src
+
+*** 创建空字典
+
+    #+begin_src python
+      alien_0 = {}
+      alien_0['color'] = "green"
+      alien_0['points'] = 5
+      alien_0
+      # {'color': 'green', 'points': 5}
+    #+end_src
+
+*** 修改字典中的值 
+下面这个示例可以看出 python 在打印时没有 R 那么的灵活方便。
+#+begin_src python
+  alien_0 = {}
+  alien_0['color'] = "green"
+  print("Alien is " + alien_0['color'])
+  alien_0['color'] = 'blue'
+  print('alien is ' + alien_0['color'])  
+#+end_src
+
+这点 python 没有 R 那么的方便，在 R 中，如果打印的话，直接是  print('alien is
+' + alien_0) 即可。
+
+#+begin_src python
+  alien_0['color'] = 0
+  print('alien is ' + str(alien_0['color']))  
+#+end_src
+
+*** 删除键-值对
+使用 del 语句时，必须指定字典名和要删除的键。
+    #+begin_src python
+      alien_0 = {'color':'green', 'point':5}
+      del alien_0['point']
+      alien_0
+      # {'color': 'green'}      
+    #+end_src
+
+*** 遍历字典 
+
+    #+begin_src python
+      import pandas as pd
+      import numpy as np
+      user_0 = {
+          'username':'eferni',
+          'first':'enrico',
+          'last':'fermi'
+      }
+
+for key,value in user_0.items():
+    print('\nKey:' + key)
+    print('Value:' + value)      
+    #+end_src
+
+for 语句的第二部分包含字典名和方法 items()，它返回一个键-值对列表。
+
+*** 遍历字典中的所有键
+.keys
+
+#+begin_src python
+  user_0 = {
+      'username':'eferni',
+      'first':'enrico',
+      'last':'fermi'
+  }
+
+for name in user_0.keys():
+    print(name.title())  
+#+end_src
+
+*** 按顺序遍历字典中的所有键
+
+    #+begin_src python
+      favorite_lang = {
+          'jen':'python',
+          'sarah':'c',
+          'edward':'R'
+      }
+
+for name in sorted(favorite_lang.keys()):
+    print(name.title() + ", thank you for talking the poll.")
+
+    # Edward, thank you for talking the poll.
+    # Jen, thank you for talking the poll.
+    # Sarah, thank you for talking the poll.
+    #+end_src
+
+上述 for 语句类似于其他 for 语句，但对方法 dictinary.keys() 的结果调用了函数
+sorted().这让 python 列出字典中的所有键，并在遍历前对这个列表进行排序。
+
+*** 遍历字典中的所有值
+    #+begin_src python
+      favorite_lang = {
+          'jen':'python',
+          'sarah':'c',
+          'edward':'R',
+          'lu':'python'
+      }
+for name in favorite_lang.values():
+    print(name.title() + ', is favorite language.')
+
+    # Python, is favorite language.
+    # C, is favorite language.
+    # R, is favorite language.
+    # Python, is favorite language.
+    #+end_src
+
+可以看出上述输出有重复值，利用 set(),可以去重。
+
+#+begin_src python
+ favorite_lang = {
+    'jen':'python',
+    'sarah':'c',
+    'edward':'R',
+    'lu':'python'
+}
+for name in set(favorite_lang.values()):
+    print(name.title() + ', is favorite language.')
+ # Python, is favorite language.
+    # C, is favorite language.
+    # R, is favorite language.
+#+end_src
+
+*** 嵌套
+有时候，需要将一系列字典存储在列表中，或将列表作为值存储在字典中，这成为“嵌套”。
+#+begin_src python
+  alien = []
+  #创建30个绿色的外星人
+for alien_number in range(30):
+    new_alien = {'color': 'green', 'points':5,'speed':'slow'}
+    alien.append(new_alien)
+
+    len(alien)  
+#+end_src
+
+*** 在字典中存储列表
+字典中还有列表型数据。
+    #+begin_src python
+      favorite_lang = {
+          'jen':['python', 'ruby'],
+          'sarah':['c'],
+          'edward':['ruby','go'],
+          'phil':['python', 'haskell']
+      }
+
+for name, languages in favorite_lang.items():
+    print("\n" + name.title() + "'s favorite languages are:")
+    for languages in languages:
+        print('\t' + languages.title())      
+    #+end_src
+
+
+*** 字典中还有字典
+
+    #+begin_src python
+      users = {
+          'aeinstein':{
+              'first':'albert',
+              'last':'einstein',
+              'location':'princeton',
+          },
+          'mcurie':{
+              'first':'marie',
+              'last':'curie',
+              'location':'paris',
+          }
+      }
+
+for username, user_info in users.items():
+    print("\nUsername:" + username)
+    full_name = user_info['first'] + " " + user_info['last']
+    location = user_info['location']
+    print("\tFull name: " + full_name.title())
+    print("\tLocation: " + location.title())      
+    #+end_src
+
+** 正则表达式
+在 python 中 re 模块可以完成对文本的正则化处理。匹配对象的两种方法：group() 和 groups().
+*** 匹配多个字符串 
+在正则表达式中，通常会选用 | 符号匹配多个字符串。
+#+begin_src python
+  bt = 'bat|bet|bit'
+  m = re.match(bt, "bat")
+  m.group()  
+#+end_src
+
+*** 匹配任何单个字符
+**** .可以匹配任何字符
+python 和 r 不同，在正则表达式中，模式在前，字符串在后面。
+     #+begin_src python
+       anyend = '.end'
+       m = re.match(anyend, 'bend')
+       m.group()       
+     #+end_src
+** 用户输入和 while 循环
+*** 函数 input 
+    #+begin_src python
+      message = input("tell me something, and I will repeat it back to you:")
+      print(message)
+    #+end_src
+
+    #+begin_src python
+      import numpy as np
+      import pandas as pd
+      name = input("Please enter your name: ")
+      print("Hello, " + name + "!")  
+    #+end_src
+
+    #+begin_src python
+      x = eval(input('Enter a number'))
+      print(x, type(x))      
+    #+end_src
+
+*** int() 获取数值输入
+
+    #+begin_src python
+      age = input("how old are you?")
+      age
+      21
+    #+end_src
+
+*** 求模运算符
+%,这点和 R 一样。
+
+#+begin_src python
+  4 % 3
+  # 1
+#+end_src
+
+*** while 循环
+for 循环用于针对集合中的每个元素的一个代码块，而 while 循环不断地运行，直到指定
+的条件不满足为此。
+    #+begin_src python
+      current_num = 1
+while current_num <= 5:
+    print(current_num)
+    current_num +=1      
+    #+end_src
+
+*** 函数 
+
+定义函数：
+
+#+begin_src python
+  def greet_user():
+      """显示简单的问候语"""
+      print("Hello!")
+
+      greet_user()
+
+      #Hello!
+#+end_src
+
+*** 向函数传递信息
+
+    #+begin_src python
+      def greet_user(usename):
+          print("Hello, " + usename.title() + "!")
+
+          greet_user('jesse')      
+    #+end_src
+
+在上面的函数参数中，usename 是形参，jesse 是实参。
+
+和 R 不同，python 可以返回字典。
+
+#+begin_src python
+  def build_person(first_name, last_name):
+      person = {'first': first_name, 'last': last_name}
+    return person
+
+musician = build_person('jimi', 'hendrix')
+  print(musician)
+  # {'first': 'jimi', 'last': 'hendrix'}
+#+end_src
+
+*** 传递列表 
+
+    #+begin_src python
+      def greet_user(names):
+    for name in names:
+        msg = "Hello, " + name.title() + "!"
+        print(msg)
+
+usernames = ['hannah', 'ty', 'margot']
+      greet_user(usernames)      
+    #+end_src
+
+*** 传递任意数量的实参 
+    #+begin_src python
+      def make_pizza(*toppings):
+          print(toppings)
+
+make_pizza('pepperoni')
+      make_pizza('pepperoni','green peppers') 
+    #+end_src
+
+形参名*toppings 中的星号让 python 创建一个名为 toppings 的空元组，并将收到的所有
+值都封装到这个元组中。
+
+这点跟 R 不一样。
+
+*** 导入整个模块
+这块类似于 R 中的.R 执行文件，文件中可以包含 function 函数。
+
+要让函数是可导入的，得先创建模块。模块是扩展名为.py 的文件。
+
+*** 导入特定的函数
+
+    #+begin_src python
+from module_name import function_name      
+    #+end_src
+
+通过用逗号分隔函数名，可根据需要从模块中导入任意数量的函数。
+
+#+begin_src python
+from module_name import function_0, function_1, function_2      
+#+end_src
+
+使用 as 给函数指定别名，如：
+
+#+begin_src python
+import numpy as np  
+#+end_src
+
+指定别名的通用语法如下：
+
+#+begin_src python
+  from module_name import function_name as fn  
+#+end_src
+
+
+
+*** 使用 as 给模块指定别名
+不光可以给函数命名，还可以给模块命名。
+#+begin_src python
+  import pizza as p
+  p.make_pizza(16, 'pepperoni')  
+#+end_src
+*** 导入模块中的所有函数
+    #+begin_src python
+      from pizza import *
+      make_pizza(16, 'pepperoni')      
+    #+end_src
+** 面向对象编程
+*** 类
+类与对象是面向对象编程的两个主要方面。一个类（class）能够创建一种新的类型（type），
+其中对象（object）就是类的实例（instance）。
+
+python 中的 self 相当于 c++ 中的 this 指针及 java 与 C# 中的 this 引用。
+
+
+ 面向对象编程，在编写类时，定义一大类对象都有通用的行为。
+
+ 类对象支持两种操作：属性引用和实例化。属性引用使用 python 中所有属性所使用的标准
+ 语法：obj.name, 有效的属性名称是类对象被创建时存在于类命名空间中的所有名称。
+
+ 如果类的定义是这样：
+
+ #+begin_src python
+   class MyClass:
+       """A simple example class"""
+       i = 12345
+
+     def f(self):
+         return 'hello world'  
+ #+end_src
+
+ 那么 MyClass.i 和 MyClass.f 就是有效的属性引用，将分别返回一个整数和一个函数对象。
+ 类属性也可以被赋值，因此可以通过赋值来更改 MyClass.i 的值。__doc__ 也是一个有效
+ 属性，将返回所属类的文档字符串："""A simple example class""".
+
+ 类的实例化使用函数表示法。可以把类对象视为是返回该类的一个新实例的不带参数的函数。
+
+ #+begin_src python
+   class Complex:
+      def __init__(self, realpart, imagpart):
+          self.r = realpart
+          self.i = imagpart
+
+ x = Complex(3.0, -4.5)
+   x.r,x.i  
+ #+end_src
+
+ #+begin_src python
+   class Dog:
+       kind = 'canine'
+      
+     def __init__(self, name):
+         self.name = name
+
+ d = Dog('Fido')
+ e = Dog('Buddy')
+ d.kind
+   # 'canine'
+   e.kind
+   # 'canine'
+ #+end_src
+** 字符串
+isdecima(),isdigit(),isalpha(),isalnum()
+
+可以测试字符串 S 是否是数字\字母\字母或数字，对于非 Unicode 字符串。
+#+begin_src python
+  print('34'.isdigit())
+  print('34'.isalnum())
+  print('34'.isdecimal())  
+#+end_src
+
+** 向量 
+*** 将序列分解为单独变量
+
+    #+begin_src python
+      p = (4, 5)
+      x, y = p
+      x
+      y
+
+data = ['a', 50, 10, {2012,12,30}]
+      name, share, price, date = data
+      name
+      share
+      price
+      date      
+    #+end_src
+
+实际上不仅仅是元组或列表，只要对象恰好是可迭代的，那么就可以执行分解操作。这包括
+字符串\文件\迭代器及生成器。
+
+*** 从任意长度的可迭代对象中分解元素
+
+如果需要从某个可迭代对象中分解出 N 个元素，但是这个可迭代对象的长度可能超过 N.
+
+#+begin_src python
+  import pandas as pd
+  import numpy as np
+def drop_first_last(grades):
+    first, *middle, last = grades
+    return np.mean(middle)
+
+  drop_first_last((1,2,3,4))  
+#+end_src
+
+可以利用*表达式解决这个问题，这个表达式有点类似于 R 中的 everything。
+
+#+begin_src python
+  record = ("a", 'b', '1',"2")
+  a, b, *other = record
+  a
+  b
+  other  
+#+end_src
+
+*** 找到最大或最小的 N 个元素
+heapq 模块中有两个函数－nlargest() 和 nsmallest().
+#+begin_src python
+  import heapq
+  nums = [1, 8, 2, 23, 7, -4]
+  print(heapq.nlargest(3, nums))
+  print(heapq.nsmallest(3, nums))
+#+end_src
+*** 去重（set）
+    #+begin_src python
+      a = [1, 5, 2, 1, 9]
+      set(a)
+      # {1, 2, 5, 9} 
+    #+end_src
+*** lambda 
+一个 lambda 函数是一个小的匿名函数。
+语法是：
+#+begin_src python
+lambda arguments:expression
+#+end_src
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  x = lambda a : a + 10
+  x(5)
+#+end_src
+
+lambda functions can take any number of arguments.
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  x = lambda a, b : a*b
+  x(5,6)  
+#+end_src
+
+#+begin_src python
+  x = lambda a,b,c: a+b+c
+  print(x(5,6,2))  
+#+end_src
+*** 全为 0/1 的数组
+    #+begin_src python
+      np.ones((2, 2, 3))
+      np.zeros((2, 2, 3))
+      np.empty((2, 2, 3) )     
+    #+end_src
+** 元组
+元组是一个固定长度，不可改变的 python 序列对象。创建元组的最简单方式，用用逗号分
+隔一列值： 
+
+tuple 和 list 非常类似（一个用圆括号，一个用方括号），主要区别在于 tuple 不能增减
+或更改其元素，而 dict 则是有索引的多元组（用花括号表示），有其方便的地方。
+
+#+begin_src python
+  tup = 4, 5, 6 
+  tup
+  # (4, 5, 6)
+#+end_src
+
+#+begin_src python
+  nested_tup = (4,5,6),(7,8)
+  nested_tup
+  # ((4, 5, 6), (7, 8))
+#+end_src
+
+用 tuple 可以将任意序列或迭代器转换成元组：
+
+#+begin_src python
+  tuple([4,0,2])
+  # (4, 0, 2)
+  tuple('string')
+  # ('s', 't', 'r', 'i', 'n', 'g')
+#+end_src
+
+如果元组中的某个对象是可变的，比如列表，可以在原位进行修改。
+
+#+begin_src python
+  tup = tuple(['foo', [1,2], True])
+  tup[1].append(3)
+  tup
+  # ('foo', [1, 2, 3], True)
+#+end_src
+
+可以用加号运算符将远组串联起来。
+
+#+begin_src python
+  (4,None,'foo') + (6,0) + ('bar',)
+  # (4, None, 'foo', 6, 0, 'bar')
+#+end_src
+
+元组乘以一个整数，像列表一样，会将几个元组的复制串联起来：
+
+#+begin_src python
+  ('foo', 'bar')*4
+  # ('foo', 'bar', 'foo', 'bar', 'foo', 'bar', 'foo', 'bar')
+#+end_src
+** 列表（list）
+与元组对比，列表的长度可变，内容可以被修改。
+#+begin_src python
+  tup = ('foo', 'bar')
+  b_list = list(tup)
+  b_list
+  b_list[1] = 'peekaboo'
+  b_list  
+#+end_src
+** 列表长度
+   #+begin_src python
+   len([1,2,3])  
+   #+end_src
+
+
+*** 笛卡尔积 
+python 真的很喜欢用 for 循环。
+#+begin_src python
+  colors = ['black', 'white']
+  sizes = ['S', 'M', 'L']
+  tshirts = [(color, size) for color in colors for size in sizes]
+  tshirts
+  # [('black', 'S'), ('black', 'M'), ('black', 'L'), ('white', 'S'), ('white', 'M'), ('white', 'L')]
+#+end_src
+
+** 切片操作
+在 python 里，像列表（list）\元组（tuple）\字符串（str）这类序列类型
+都支持切片操作。
+
+#+begin_src python
+  l = [10, 20, 30, 40]
+  l[:2]
+  # [10, 20]
+  l[0:3]  
+  # [10, 20, 30]
+#+end_src
+
+还可以对对象进行切片。可以用 s[a:b:c]的形式对 s 在 a 和 b 之间
+以 c 为间隔取值。c 的值还可以为负，负值意味着可以反向取值。
+
+#+begin_src python
+  s = 'bicycle'
+  s[::3] #间隔为3
+  # bye
+  s[::-1]
+  # 'elcycib'
+  s[::-2]
+  # 'eccb'
+#+end_src
+
+给切片赋值
+
+#+begin_src python
+  l = list(range(10))
+  l
+  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  l[2:5] = [20, 30]
+  l
+  # [0, 1, 20, 30, 5, 6, 7, 8, 9]
+  del l[5:7]
+  l
+  l[3::2] = [11, 22]
+  l
+  # [0, 1, 20, 11, 5, 22, 9]
+  l[2:5] = 100
+  l[2:5] = [100]
+  l  
+#+end_src
+
+第一种索引器是 loc 属性，表示取值和切片都是显式。
+
+python 代码的设计原则是“显式优于隐式”。
+#+begin_src python
+  data = pd.Series(['a', 'b', 'c'], index=[1, 3, 5])
+  data
+  data[1]
+  data[1:3]
+  data.loc[1]
+  data.loc[1:3]  
+#+end_src
+
+** 对序列使用＋和*
+
+   #+begin_src python
+     l = [1, 2, 3]
+     l * 2
+     # [1, 2, 3, 1, 2, 3]
+     2 * 'abc'
+     # 'abcabc'
+   #+end_src
+
+*** 建立由列表组成的列表 
+
+    #+begin_src python
+      
+    #+end_src
+** 聚合
+reduce,类似于 R 中的函数。
+如果需要存储每次计算的中间结果，那么可以使用 accumulate.
+
+np.sum,np.prod,np.cumsum,np.cumprod 这些函数都可以实现 reduce 的功能。
+#+begin_src python
+  x = np.arange(1, 6)
+  x
+  np.add.reduce(x)  
+  np.multiply.reduce(x)
+  np.multiply.accumulate(x)
+#+end_src
+** 外积 
+
+   #+begin_src python
+     np.multiply.outer(x, x)     
+   #+end_src
+** 广播
+对于同样大小的数组，二进制操作是对相应元素逐个计算：
+#+begin_src python
+  a = np.array([0, 1, 2])
+  b = np.array([5, 5, 5])
+  a + b
+  a = np.array([0, 1, 2])
+  a + 5
+#+end_src
+
+** 统计记录个数
+如果需要统计布尔数组中 True 记录的个数，可以使用 np.count_nonzero 函数。
+   #+begin_src python
+     X = np.random.random((10, 3))
+     X.mean(0)
+     X < 0.2
+     np.count_nonzero(X<0.2)     
+   #+end_src
+
+value_counts() 相当于 dplyr 包中的 count().
+   #+begin_src python
+     housing['income_cat'].value_counts()
+   #+end_src
+
+** 处理缺失值 
+*** 发现缺失值
+
+    #+begin_src python
+      df1 = pd.Series([1, np.nan, 2, None])
+      df1.isnull()     
+    #+end_src
+
+    #+begin_src python
+      df1[df1.notnull()]  
+    #+end_src
+    
+在 series 里使用的 isnull() 和 notnull() 同样适用于 dataframe
+
+*** 剔除缺失值
+分别是 dropna() (剔除缺失值) 和 fillna() (填充缺失值).
+#+begin_src python
+  df1 = pd.Series([1, np.nan, 2, None])
+  df1.dropna()
+#+end_src
+默认情况下，dropna() 会剔除任何包含缺失值的整行数据。
+#+begin_src python
+  df = pd.DataFrame([[1, np.nan, 2],
+                     [2, 3, 5],
+                     [np.nan, 4, 6]])
+  df
+  df.dropna()
+#+end_src
+
+可以设置按不同的坐标轴剔除缺失值，比如 axis = 1 (或 axis = 'columns') 会剔除任何包
+含缺失值的整列数据。
+
+#+begin_src python
+  df.dropna(axis='columns')
+
+  df.dropna(axis='columns', how='all')
+#+end_src
+
+默认设置是 how = 'any',也就是只要有缺失值就是剔除整行或整列（通过 axis 设置座标轴），
+还可以设置 how = 'all',这样就只会剔除全部是缺失值的行或列了。
+
+#+begin_src python
+  df.dropna(axis='rows', thresh=3)  
+#+end_src
+
+** 合并数据集
+*** concat 与 append 操作
+numpy 中可以用 np.concatenate 函数将 numpy 数组进行合并。
+    #+begin_src python
+      x = [1, 2, 3]
+      y = [4, 5, 6]
+      np.concatenate([x,y])
+      # array([1, 2, 3, 4, 5, 6])
+
+      x = np.array([[1,2],[3,4]])
+      y = np.array([[5,6],[7,8]])
+      np.concatenate((x, y), axis = 0) #x,y 纵向叠加合并成4乘2矩阵
+      np.concatenate((x, y), axis = 1) #x,y 纵向叠加合并成2乘4矩阵
+      np.vstack((x, y)) #np.concatenate((x, y), axis = 0)
+      np.hstack((x, y)) #np.concatenate((x, y), axis = 1)
+    #+end_src
+*** pd.concat
+这个函数不能将 list 型数据进行合并。
+pd.concat(objs, axis=0, join='outer')
+
+#+begin_src python
+  pd.concat([pd.Series(x),pd.Series(y)],axis=1)  
+#+end_src
+
+*** 伪随机数
+
+    #+begin_src python
+      import random
+      random.seed(1010)
+      random.randint(1, 100)
+      random.choice([1,2,4,'word'])
+      random.sample(range(100), 5)
+      random.random()      
+    #+end_src
+
+** 集合运算
+基本模块的集合运算不能直接用于 list，但可以用于通过函数 set()转换的 list,这些计算包括集合的差（difference），并（union），交（intersection）。
+
+#+begin_src python
+  set(['I', 'you', 'he', 'I'])  
+#+end_src
+
+#+begin_src python
+  set.difference(set(['a',2,'5']),set(['a',7])) 
+  set.union(set(['a',2,'5']),set(['a',7]))
+  set.intersection(set(['a',2,'5']),set(['a',7]))
+#+end_src
+
+** 统计
+*** 最小值和最大值
+   #+begin_src python
+     min(L),max(L)     
+   #+end_src
+
+   #+begin_src python
+     M = np.random.random((2, 2))
+     M.sum()
+     #指定axis=0 找到每一列的最小值
+     M.min(axis = 0)     
+   #+end_src
+
+   #+begin_src python
+     from sklearn.preprocessing import MinMaxScaler 
+     #区间缩放，返回值为缩放到[0, 1]区间的数据 
+minMaxScaler = MinMaxScaler().fit(X_train) 
+     minMaxScaler.transform(X_train)     
+   #+end_src
+
+*** 数组值求和\累积\乘积\差分 
+   #+begin_src python
+     import numpy as np
+     L = np.random.random(100)
+     sum(L)
+     np.prod(x)
+     np.cumsum(x)
+   #+end_src
+
+array 变成矩阵
+#+begin_src python
+  x = np.array([32, -12, 3, 5])
+  x.shape = 2, 2
+  np.diff(x, axis=0) #按行差分
+  np.diff(x, axis=1) #按列差分
+#+end_src
+
+*** kronecker 积
+
+    #+begin_src python
+      A = np.eye(3)
+      B = np.array([[1,2], [3, 4]])
+      np.kron(A, B)      
+    #+end_src
+
+*** 舍入运算
+在 R 里面是 round(x,6).
+#+begin_src python
+  x = np.array([1.234, 2.387, 3.673])
+  np.round(x, 2) #四舍五入
+  np.around(x, 2)
+  np.floor(x) #保留整数位
+  np.ceil(x)
+#+end_src
+
+指数，对数，符号函数，绝对值，极值
+
+#+begin_src python
+  x = np.array([-2, 7, 9, 6]).reshape(2, 2)
+  x
+  np.sign(x)
+  np.exp(x)
+  np.log(x)
+  np.abs(x)
+  x.max()
+  np.argmin(x, 0)  
+#+end_src
+
+arange,range
+
+#+begin_src python
+  np.arange(3,5,.5) #从3到5(不包含5)等间隔为0.5 的数列  
+  np.arange(4)
+  # array([0, 1, 2, 3])
+#+end_src
+
+点乘法
+
+#+begin_src python
+  x = np.arange(4,7,.4)
+  y = np.arange(1,5)
+  np.dot(x.reshape(len(x), 1), 
+         y.reshape(1, len(y)))  
+#+end_src
+
+数组形状
+
+#+begin_src python
+  np.shape(x)
+  np.shape(y)  
+#+end_src
+
+维数转换
+
+#+begin_src python
+  x = [[2,3],[7,5]]
+  z = np.asmatrix(x)
+  z
+  print(z, type(z))
+  print(z.transpose()*z)
+  print(z.T*z)  
+#+end_src
+
+维数和形状
+#+begin_src python
+  np.ndim(z)
+  z.shape  
+#+end_src
+
+*** 画图
+
+    #+begin_src python
+      import matplotlib
+      import matplotlib.pyplot as plt
+      import numpy as np
+      import pandas as pd
+      import sklearn
+def prepare_country_stats(oecd_bli, gdp_per_capita):
+    oecd_bli = oecd_bli[oecd_bli["INEQUALITY"]=="TOT"]
+    oecd_bli = oecd_bli.pivot(index="Country", columns="Indicator", values="Value")
+    gdp_per_capita.rename(columns={"2015": "GDP per capita"}, inplace=True)
+    gdp_per_capita.set_index("Country", inplace=True)
+    full_country_stats = pd.merge(left=oecd_bli, right=gdp_per_capita,
+                                  left_index=True, right_index=True)
+    full_country_stats.sort_values(by="GDP per capita", inplace=True)
+    remove_indices = [0, 1, 6, 8, 33, 34, 35]
+    keep_indices = list(set(range(36)) - set(remove_indices))
+    return full_country_stats[["GDP per capita", 'Life satisfaction']].iloc[keep_indices]
+
+##load data
+url1 = "https://raw.githubusercontent.com/WillKoehrsen/Hands-On-Machine-Learning/master/handson-ml-master/datasets/lifesat/oecd_bli_2015.csv"
+oecd_bli = pd.read_csv(url1, thousands=',')
+
+url2 = 'https://raw.githubusercontent.com/ageron/handson-ml/master/datasets/lifesat/gdp_per_capita.csv'
+gdp_per_capita = pd.read_csv(url2, thousands=',', delimiter='\t', encoding='latin1',na_values="n/a")
+
+#prepare the data
+country_stats = prepare_country_stats(oecd_bli, gdp_per_capita)
+x = np.c_[country_stats['GDP per capita']]
+y = np.c_[country_stats['Life satisfaction']]
+
+##visualize the data
+      country_stats.plot(kind='scatter', x="GDP per capita", y='Life satisfaction')
+      plt.show()      
+    #+end_src
+
+
+
+
+*** 线性模型
+
+    #+begin_src python
+      ##load data
+url1 = "https://raw.githubusercontent.com/WillKoehrsen/Hands-On-Machine-Learning/master/handson-ml-master/datasets/lifesat/oecd_bli_2015.csv"
+oecd_bli = pd.read_csv(url1, thousands=',')
+
+url2 = 'https://raw.githubusercontent.com/ageron/handson-ml/master/datasets/lifesat/gdp_per_capita.csv'
+gdp_per_capita = pd.read_csv(url2, thousands=',', delimiter='\t', encoding='latin1',na_values="n/a")
+
+#prepare the data
+country_stats = prepare_country_stats(oecd_bli, gdp_per_capita)
+x = np.c_[country_stats['GDP per capita']]
+y = np.c_[country_stats['Life satisfaction']]
+
+##visualize the data
+country_stats.plot(kind='scatter', x="GDP per capita", y='Life satisfaction')
+plt.show()
+
+#select a linear model
+lin_reg_model = sklearn.linear_model.LinearRegression()
+
+#train the model
+lin_reg_model.fit(x,y)
+#Make a prediction for cyprus
+x_new = [[22587]]
+      print(lin_reg_model.predict(x_new))      
+    #+end_src
+
+    #+begin_src python
+      np.random.seed(1010)
+      X = np.random.randn(100, 3)
+      X1 = np.hstack((np.ones((100, 1)),X))
+      y = np.random.randn(100)
+      beta,SSR,rank,sv = np.linalg.lstsq(X, y)
+      beta      
+    #+end_src
+
+*** lasso
+    #+begin_src python
+      from sklearn import linear_model
+      clf = linear_model.Lasso(alpha=0.1)
+      clf.fit([[0, 0],
+               [1, 1],
+               [2, 2]],
+              [0, 1, 2])
+      clf.coef_
+      clf.intercept_      
+    #+end_src
+
+** 数据清理 
+*** 数字型变量
+
+ 删除缺失值，删除一个特征，将缺失值填充为一个固定值。
+
+ #+begin_src python
+   housing.dropna(subset=['total_bedrooms']) #option 1 可以理解为删除缺失值
+   housing.drop('total_bedrooms', axis=1)  #删除一个特征
+   median = housing['total_bedrooms'].median()
+   housing['total_bedrooms'].fillna(median)
+ #+end_src
+*** 文本型变量
+    #+begin_src python
+      ##LabelBinarizer 类可以一次性完成两个转换
+from sklearn.preprocessing import LabelBinarizer
+encoder = LabelBinarizer()
+housing_cat_1hot = encoder.fit_transform(housing_cat)
+      housing_cat_1hot      
+    #+end_src
+
+    #+RESULTS:
