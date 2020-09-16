@@ -1,0 +1,13 @@
+* GTD
+** 2020
+*** 09
+**** week2
+***** 进行中 v656,v657 模型比对
+      :LOGBOOK:
+      - State "进行中"     from              [2020-09-16 Wed 14:21]
+      :END:
+***** STARTED 跟踪模型上线进度 
+      SCHEDULED: <2020-09-16 Wed>
+      :LOGBOOK:
+      CLOCK: [2020-09-16 Wed 15:12]
+      :END:

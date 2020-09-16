@@ -30,9 +30,9 @@
     - [[#配置][配置]]
     - [[#evil-org-mode][evil-org-mode]]
     - [[#toc-org][toc-org]]
+    - [[#org-agenda][org-agenda]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
-  - [[#magit][magit]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
   - [[#pyim][pyim]]
@@ -201,7 +201,6 @@ ctrl + r
 
 ** org
 喜欢打开 org-indent-mode.这样可以同样 level 下标题能够缩进。
-
 *** 配置
     #+begin_src lisp
       (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-, 
@@ -247,67 +246,23 @@ ctrl + r
 
 *** toc-org
 org-set-tags-command(c-c c-q) 放在第一个标题后面输入这个命令,即可生成 toc.
+*** org-agenda
+https://www.zhihu.com/topic/19649552/hot
+可以方便地记录每项工作花费的时间.
+
+- 安排任务时间
+
+使用快捷键 Ctrl c + Ctrl s 就可以安排对应任务的时间了.
+
+- 任务计时
+
+我们将光标移动到想要进行时间记录的任务上，然后按 Ctrl c + Ctrl x + Ctrl i 就能够进行任务开始时间的记录了
+
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
 bm-remove-all-buffers 可以删除所有标记的 bookmark,真的很方便！
 ** hydra
 hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是很方便。
-** magit
-参考连接:https://www.jianshu.com/p/990e69407b44
-文件管理神器 magit. 
-
-傻瓜流程:
-
-magit-status| s |c-c|pp
-
-需求:
-
-1.修改本地仓储.(本地操作,magit-status)
-
-2.stage 这些修改 (s)
-
-3.提交修改.(创建 commit，然后 c-c)
-
-4.push 到远端 github （p-p）
-
-Git 工作流程
-
-代码仓库的管理，即管理四棵“Tree”，远程仓库(remote repository)、本地仓库(HEAD/local repository)、缓冲区(INDEX/stage)、本地目录(Local directory)。
-
-严格来说，管理的三棵树：仓库、缓冲区、本地目录；使用频繁的基本操作：
-
-检出仓库：git clone <server:/repository>
-
-跟踪文件：git add <filename>，添加至缓存区
-
-取消跟踪文件：git rm --cached <filename>
-
-提交：git commit -m "代码提交信息"，提交到本地仓库(Local repository)
-
-删除文件：git rm <filename>，取消 HEAD 的提交，并将本地文件置为“Stage：delete”状态
-
-检出文件：git checkout <filename>，使用最新的提交覆盖目标文件
-
-rollback：git reset --soft <commit>，保持当前文件修改的状态，版本 rollback 至 commit 版本
-
-                git reset --hard <commit>, 版本 rollback 至 commit 版本
-
-新建/切换分支：git branch <branch_name>
-
-删除分支：git branch -d <branch_name>
-
-检出(远程)分支：git checkout -b <(origin/)branch_name>
-
-推送分支：git push origin <branch_name>，推送至远程仓库
-
-设置推送的目标远程仓库：git remote add origin <server>，在推送分支前，需先配置
-
-同步代码：git pull，本地仓库更新到远程仓库的最新提交
-
-合并分支至当前分支：git merge <branch_name>
-
-丢弃本地改动及提交，同步最新远程仓库版本：git reset --hard <origin/branch_name> 或 git fetch orgin
-
 ** shell
 在 spacemacs 中，有专门的 shell layer，但是目前还不是很熟悉，可以先用 eshell 代替，后面再做研究。
 | 功能  | 快捷键     |

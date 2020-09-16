@@ -1,6 +1,17 @@
-* git_wiki
-** 基本命令
+* git_wiki                                                                      :toc:
+  - [[#基本命令][基本命令]]
+    - [[#利用-git-上传本地文件文件夹到-github][利用 git 上传本地文件、文件夹到 GitHub]]
+  - [[#如何在-githubcom-上删除某个-repository-中的某个文件夹][如何在 GitHub.com 上删除某个 Repository 中的某个文件夹？]]
+  - [[#magit][magit]]
+    - [[#stage-git-add-与-unstage][Stage (git add )与 Unstage]]
+  - [[#magit-1][magit]]
+- [[#linux][linux]]
+  - [[#常用文件夹][常用文件夹]]
+  - [[#打开-terminial][打开 terminial]]
+  - [[#打开文件夹][打开文件夹]]
+  - [[#删除文件夹][删除文件夹]]
 
+** 基本命令
 *** 利用 git 上传本地文件、文件夹到 GitHub 
 
 - 1.输入自己的用户名和邮箱（为注册 GITHUB 账号时的用户名和邮箱）
@@ -71,9 +82,12 @@ $ cd d:\layout //假如需要上传的文件是d 盘文件
      $ git push origin master 
 #+end_src
 
+** 如何在 GitHub.com 上删除某个 Repository 中的某个文件夹？
+git rm -r --cached .idea  #--cached 不会把本地的.idea 删除
+git commit -m 'delete .idea dir'
+git push -u origin master
 
 ** magit
-
 运行 M-x:magit-status 打开当前 git 仓库 (如果当前没仓库会让你选择相应的路径)
 
 | 功能                                          | 界面             |
@@ -99,9 +113,93 @@ $ cd d:\layout //假如需要上传的文件是d 盘文件
 s 	Stage 	git add filename 	从 unstaged 变成 staged
 u 	Unstage 	git reset HEAD filename 	从 staged 变成 Unstaged
 
- 	
+可以通过 cc 来创建 git commit,通过 push 来 push git。
+** magit
+参考连接:https://www.jianshu.com/p/990e69407b44
+文件管理神器 magit. 
+
+傻瓜流程:
+
+magit-status| s |c-c|pp
+
+需求:
+
+1.修改本地仓储.(本地操作,magit-status)
+
+2.stage 这些修改 (s)
+
+3.提交修改.(创建 commit，然后 c-c)
+
+4.push 到远端 github （p-p）
+
+Git 工作流程
+
+代码仓库的管理，即管理四棵“Tree”，远程仓库(remote repository)、本地仓库(HEAD/local repository)、缓冲区(INDEX/stage)、本地目录(Local directory)。
+
+严格来说，管理的三棵树：仓库、缓冲区、本地目录；使用频繁的基本操作：
+
+检出仓库：git clone <server:/repository>
+
+跟踪文件：git add <filename>，添加至缓存区
+
+取消跟踪文件：git rm --cached <filename>
+
+提交：git commit -m "代码提交信息"，提交到本地仓库(Local repository)
+
+删除文件：git rm <filename>，取消 HEAD 的提交，并将本地文件置为“Stage：delete”状态
+
+检出文件：git checkout <filename>，使用最新的提交覆盖目标文件
+
+rollback：git reset --soft <commit>，保持当前文件修改的状态，版本 rollback 至 commit 版本
+
+                git reset --hard <commit>, 版本 rollback 至 commit 版本
+
+新建/切换分支：git branch <branch_name>
+
+删除分支：git branch -d <branch_name>
+
+检出(远程)分支：git checkout -b <(origin/)branch_name>
+
+推送分支：git push origin <branch_name>，推送至远程仓库
+
+设置推送的目标远程仓库：git remote add origin <server>，在推送分支前，需先配置
+
+同步代码：git pull，本地仓库更新到远程仓库的最新提交
+
+合并分支至当前分支：git merge <branch_name>
+
+丢弃本地改动及提交，同步最新远程仓库版本：git reset --hard <origin/branch_name> 或 git fetch orgin
 
 
+
+* linux 
+** 常用文件夹
+| 文件名       | 命令                    |
+| .spacemacs.d | nautilus ~/.spacemacs.d |
+| rime         | ~/.config/fcitx/rime    |
+|              |                         |
+
+** 打开 terminial
+ctrl + alt + t 打开终端
+
+   #+begin_src 
+    创建文件： touch a.txt
+    创建文件夹： mkdir NewFolder
+    删除文件： rm a.txt
+    删除文件夹： rmdir NewFolder
+    删除带有文件的文件夹： rm -r NewFolder
+   #+end_src
+
+** 打开文件夹
+以下代码可以在 ubuntu 的 terminal 里方便地打开文件夹。
+#+begin_src  
+nautilus ~/.emacs.d
+#+end_src
+
+** 删除文件夹
+   #+begin_src 
+rmdir ~/.spacemacs.d
+   #+end_src
 
 
 

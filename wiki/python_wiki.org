@@ -535,8 +535,29 @@ x.append(99)
 spam(1)
 #+end_src
 
+- 减少可调用对象的参数个数
 
+如果需要减少某个函数的参数个数，你可以使用 functools.partital().
+  
 
+#+begin_src python
+from functools import partial
+def spam(a, b, c, d):
+    print(a, b, c, d)
+
+s1 = partial(spam, 1)
+s1
+s1(2, 3, 4)
+s2 = partial(spam, d = 42)
+s2(1, 2, 3)
+s2(4, 5, 5)
+s3 = partial(spam, 1, 2, d = 42)
+s3(3)
+s3(4)
+s3(5)
+#+end_src
+
+partial() 函数允许你给一个或多个参数设置固定的值，减少接下来被调用时的参数个数。
 
 *** set
 集合，是 python 一种数据类型，可以去重。
