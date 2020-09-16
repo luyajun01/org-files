@@ -1,3 +1,5 @@
+# -*- org-confirm-babel-evaluate: nil; -*-
+#+PROPERTY: header-args :eval never-export
 #+TITLE: sql wiki
 #+DESCRIPTION:
 #+KEYWORDS:
@@ -7,15 +9,29 @@
 
 - Related: [[wiki:R_WIKI][R]]
 
-* sql_wiki
-
-利用 R 包 sqldf 来学习 sql.
-https://github.com/ggrothendieck/sqldf#example-1-ordering-and-limiting
-
-dbplyr 包可以把 dplyr 语句翻译成 sql 语句，也是学习 sql 神器。
-
-可以想象需要实现 dplyr 包中的 select, filter, group_by, arrange, summarise 等操
-作. 其实 sql 包括以上功能，但不限于以上功能。比如还有 head 功能等等。
+* sql_wiki                                                              :toc:
+  - [[#常见错误][常见错误]]
+  - [[#创建数据库][创建数据库]]
+  - [[#建表][建表]]
+  - [[#删除数据库][删除数据库]]
+  - [[#head][head]]
+  - [[#where][where]]
+    - [[#like][like]]
+    - [[#in][in]]
+    - [[#between-and][between and]]
+    - [[#unionunion-all][union/union all]]
+  - [[#ordering-and-limiting][ordering and limiting]]
+  - [[#averaging-and-grouping][Averaging and Grouping]]
+  - [[#nested-select][nested select]]
+  - [[#join][join]]
+  - [[#inner_join][inner_join]]
+  - [[#插入变量][插入变量]]
+  - [[#summarise][summarise]]
+    - [[#count][count]]
+    - [[#meanvar][mean/var]]
+  - [[#string-截取][string 截取]]
+- [[#spark_wiki][Spark_wiki]]
+- [[#hive_wiki][Hive_wiki]]
 
 ** 常见错误
 No Database Selected.
@@ -34,6 +50,29 @@ No Database Selected.
      use samp_db ;--选择创建的数据库samp_db
      show tables;--显示samp_db下面所有的表名字
      describe      
+   #+end_src
+
+** 建表 
+
+   #+begin_src sql
+     CREATE TABLE STUDENT
+     (SNO VARCHAR(3) NOT NULL,
+     SNAME VARCHAR(4) NOT NULL,
+     SSEX VARCHAR(2) NOT NULL,
+     SBIRTHDAY DATETIME,
+     CLASS VARCHAR(5));
+   #+end_src
+
+   #+begin_src 
+insert into grade values(90,100,'A')
+
+insert into grade values(80,89,'B')
+
+insert into grade values(70,79,'C')
+
+insert into grade values(60,69,'D')
+
+insert into grade values(0,59,'E')
    #+end_src
 
 ** 删除数据库
@@ -94,8 +133,6 @@ R 语句
   iris %>% filter(Species == 'setosa')  
 #+end_src
 
-
-
 *** between and 
 上面的语句是针对的是离散变量，如果变量是连续变量，那么就需要用到 between and 了。
 #+begin_src sql
@@ -139,6 +176,8 @@ R 语句为
 
 ** ordering and limiting
 数据排序。
+order by var desc 降序排列。
+
    #+begin_src R :results output graphics :file fig_1.png :exports both 
      library(datasets)
      library(tidyverse)
@@ -280,7 +319,6 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
 
 ** inner_join
 在 flights 数据集中，对 year,group 进行分组，筛选出大于均值 dep_time 的记录。
-
    #+begin_src R :results output graphics :file fig_1.png :exports both 
      flights %>% 
          group_by(year,month) %>% 
@@ -305,6 +343,29 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
      WHERE (`dep_time` > `mean(dep_time)`)     
    #+end_src
 
+查询所有学生的 sname，cno，degree 列
+
+   #+begin_src sql
+          select SNAME,CNO,DEGREE from (select SNAME, SNO from STUDENT) as A
+     inner join (select SNO, CNO, DEGREE from  SCORE) as B
+     on A.SNO = B.SNO    
+   #+end_src
+
+   #+begin_src sql
+     select SNO,CNAME,DEGREE from
+     (select CNO, CNAME from COURSE) AS A
+     inner join (select * from SCORE) AS B
+     on A.CNO = B.CNO    
+   #+end_src
+
+   #+begin_src sql
+     select SNAME, CNO, DEGREE from (
+     select  SNAME,SNO from STUDENT
+     ) as A
+     join (select * from SCORE) as B
+     on A.SNO = B.SNO
+   #+end_src
+
 ** 插入变量
 用$ 可以插入变量。
 
@@ -322,6 +383,8 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
 ** summarise
 *** count
 计数
+
+select count(class) as ct from STUDENT where class = "abc"
    #+begin_src R :results output graphics :file fig_1.png :exports both 
      sqldf("select count(*) from iris")     
    #+end_src
@@ -331,6 +394,13 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
      sqldf("select avg(demand) mean, variance(demand) var from BOD")
       #>    mean   var
                                         #> 1 14.83 21.44     
+   #+end_src
+
+   #+begin_src sql
+     select SNAME, DEGREE from
+     (select SNO,SNAME,CLASS from STUDENT) as A
+     join (select * from SCORE) as B
+     on A.SNO = B.SNO where CLASS = "95033"
    #+end_src
 
    #+begin_src R :results output graphics :file fig_1.png :exports both 
@@ -347,3 +417,15 @@ SELECT `year`, `month`, AVG(`dep_time`) AS `mean(dep_time)`
 FROM `nycflights13::flights`
 GROUP BY `year`, `month` 
    #+end_src
+** string 截取 
+从左截取字符串。
+
+#+begin_src sql
+  select left(SBIRTHDAY, 4) from STUDENT where SNO = "108" 
+#+end_src
+* Spark_wiki
+* Hive_wiki 
+Hive 是 Hadoop 家族中一款数据仓库产品，Hive 最大的特点就是提供了类 SQL 的语法，封装了底层的 MapReduce 过程，让有 SQL 基础的业务人员，也可以直接利用 Hadoop 进行大数据的操作。就是这一个点，解决了原数据分析人员对于大数据分析的瓶颈。
+
+Hive 是建立在 Hadoop 上的数据仓库基础构架。它提供了一系列的工具，可以用来进行数据提取转化加载（ETL），这是一种可以存储、查询和分析存储在 Hadoop 中的大规模数据的机制。Hive 定义了简单的类 SQL 查询语言，称为 HQL，它允许熟悉 SQL 的用户查询数据。同时，这个语言也允许熟悉 MapReduce 开发者的开发自定义的 mapper 和 reducer 来处理内建的 mapper 和 reducer 无法完成的复杂的分析工作。
+

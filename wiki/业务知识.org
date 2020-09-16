@@ -1,0 +1,1317 @@
+# -*- org-confirm-babel-evaluate: nil; -*-
+#+PROPERTY: header-args :eval never-export
+
+* 信贷 wiki                                                             :toc:
+  - [[#业务问题][业务问题]]
+    - [[#什么是表现期和观察期][什么是表现期和观察期？]]
+    - [[#什么叫策略回测][什么叫策略回测？]]
+    - [[#怎么判定客户是高风险用户][怎么判定客户是高风险用户？]]
+    - [[#预授信和申请制的区别][预授信和申请制的区别？]]
+    - [[#预授信阶段会查询互金吧][预授信阶段会查询互金吧？]]
+    - [[#巴塞尔新资本协议有哪些内容][巴塞尔新资本协议有哪些内容？]]
+    - [[#目前授信通过率多少][目前，授信通过率多少？]]
+    - [[#模型的通过率][模型的通过率]]
+    - [[#怎么去判断隐私数据还是公开数据][怎么去判断隐私数据还是公开数据？]]
+    - [[#收益率怎么计算][收益率怎么计算？]]
+    - [[#小米这边的-label-是如何定义的][小米这边的 label 是如何定义的？]]
+    - [[#帐户迁移率怎么计算][帐户迁移率怎么计算？]]
+  - [[#名词解释][名词解释]]
+    - [[#label-定义][label 定义]]
+    - [[#表现期观察期观察点][表现期，观察期，观察点]]
+    - [[#贷款][贷款]]
+      - [[#循环贷款][循环贷款]]
+      - [[#循环额度下分账户][循环额度下分账户]]
+      - [[#非循环贷款][非循环贷款]]
+      - [[#大额专项分期][大额专项分期]]
+    - [[#账龄mob][账龄（MOB）]]
+    - [[#逾期天数days-past-duedpd][逾期天数（days past due,dpd）]]
+    - [[#逾期期数m][逾期期数（M）]]
+    - [[#vintage-分析也称为账龄分析][vintage 分析（也称为账龄分析）]]
+    - [[#滚动率分析][滚动率分析]]
+    - [[#如何利用滚动率与-vintage-确定响应变量-y][如何利用滚动率与 vintage 确定响应变量 Y？]]
+    - [[#迁移率flow-rate-analysis][迁移率（flow rate analysis）]]
+    - [[#坏账准备金][坏账准备金]]
+    - [[#贷款余额][贷款余额]]
+    - [[#止付][止付]]
+    - [[#用户导流][用户导流]]
+    - [[#融资租赁][融资租赁]]
+  - [[#小米金融][小米金融]]
+    - [[#商业模式][商业模式]]
+    - [[#业务种类][业务种类]]
+    - [[#模型组业务][模型组业务]]
+      - [[#风险模型][风险模型]]
+      - [[#营销模型][营销模型]]
+    - [[#小米贷款][小米贷款]]
+      - [[#重要指标][重要指标]]
+        - [[#逾期率][逾期率]]
+        - [[#金额逾期率][金额逾期率]]
+        - [[#额度系数][额度系数]]
+      - [[#业务相关][业务相关]]
+      - [[#贷款产品类型][贷款产品类型]]
+  - [[#基本的信贷逻辑][基本的信贷逻辑]]
+  - [[#授信数据提供商][授信数据提供商]]
+  - [[#参与项目][参与项目]]
+      - [[#相关策略][相关策略]]
+        - [[#授信流程][授信流程]]
+    - [[#人行征信][人行征信]]
+      - [[#小米征信策略][小米征信策略]]
+      - [[#常见问题][常见问题]]
+        - [[#如何对不同的人群进行查验-auc][如何对不同的人群进行查验 auc？]]
+      - [[#聚信力多头规则替换反欺诈][聚信力多头规则替换反欺诈]]
+- [[#工作中常见问题][工作中常见问题]]
+    - [[#人群分布][人群分布]]
+    - [[#人群划分][人群划分]]
+      - [[#贷超申请表][贷超申请表]]
+  - [[#业务相关内容][业务相关内容]]
+    - [[#常见建模数据库表地址][常见建模数据库表地址]]
+    - [[#授信通过人群进入多头多头拦截主政策主模型通过][授信通过人群\进入多头\多头拦截\主政策\主模型通过]]
+      - [[#授信通过人群][授信通过人群]]
+    - [[#label-相关问题][label 相关问题]]
+        - [[#常见-1-期3期-自营贷超-label-地址][常见 1 期，3期 自营&贷超 label 地址]]
+        - [[#多头拦截相关问题][多头拦截相关问题]]
+      - [[#v7-模型][V7 模型]]
+      - [[#如何查看不同渠道用户][如何查看不同渠道用户？]]
+    - [[#已上线模型的-score-地址][已上线模型的 score 地址]]
+    - [[#人群风险分档][人群风险分档]]
+    - [[#模型效力评价][模型效力评价]]
+      - [[#区分度指标][区分度指标]]
+      - [[#稳定性指标][稳定性指标]]
+  - [[#建模基本规则][建模基本规则]]
+    - [[#模型设计规范][模型设计规范]]
+      - [[#取样本][取样本：]]
+      - [[#数据存储格式][数据存储格式：]]
+    - [[#信用评分卡建模流程][信用评分卡建模流程]]
+    - [[#内存问题][内存问题]]
+    - [[#kill-进程][kill 进程]]
+    - [[#常见错误][常见错误！！]]
+      - [[#粗心导致的错误][粗心导致的错误]]
+      - [[#业务不熟导致的错误][业务不熟导致的错误]]
+        - [[#读取-spark_read_csvspark_read_parquet-函数时需要注意-函数中-name-名称一定不能一致如果相同则会被覆盖][读取 spark_read_csv/spark_read_parquet 函数时，需要注意 函数中 name 名称一定不能一致，如果相同则会被覆盖。]]
+        - [[#建模之前需要检查-label-是否有缺失值][建模之前，需要检查 label 是否有缺失值？]]
+        - [[#过滤掉-providerbasicinfo_provider-为-1-的人群][过滤掉 provider/basicinfo_provider 为 1 的人群]]
+        - [[#互金自有数据有缺失的情况哪些天需要-check-自有数据需要跟庆荣确认互金数据的-check-逻辑是][互金，自有数据有缺失的情况，哪些天需要 check! 自有数据需要跟庆荣确认，互金数据的 check 逻辑是]]
+        - [[#需要将-province-定义为-char这样才能将其定义为-catgory][需要将 province 定义为 char，这样才能将其定义为 catgory]]
+        - [[#建模时vars_ignore-变量中一定有-xiaomi_idlabeltagcredit_timebasicinfo_providerprovincemifi_user_date-等变量][建模时，vars_ignore 变量中一定有 xiaomi_id,label,tag,credit_time,basicinfo_provider,province,mifi_user_date 等变量。]]
+        - [[#一定要重视错误不管是-sparklyr-还是其他-r-包错误均要高度重视][一定要重视错误，不管是 sparklyr 还是其他 R 包错误均要高度重视！*]]
+        - [[#自营及贷超-label-有可能出现同一个人一天内有-2-个-label-的情况需要将其删除][自营及贷超 label 有可能出现同一个人一天内有 2 个 label 的情况！需要将其删除！]]
+        - [[#hdfs-文件地址不能出现等异常符号][hdfs 文件地址不能出现＋等异常符号！！]]
+        - [[#不管是-get_file_from_hdfs-还是-push_file_to_hdfs-拉到本地文件均要重新命名][不管是 get_file_from_hdfs 还是 push_file_to_hdfs 拉到本地文件均要重新命名！！*]]
+        - [[#需要检查是否有一人有多个-label-的现象][需要检查是否有一人有多个 label 的现象！]]
+        - [[#检查各-bin-系数是否满足单调性][检查各 bin 系数是否满足单调性]]
+        - [[#缺失值不能写成-if_elseyna10而要写成-if_elseisnay10][缺失值不能写成 if_else(y==NA,1,0),而要写成 if_else(is.na(y),1,0)！！]]
+        - [[#filter-函数-filterdate--20200327一定要用号不能用号][filter 函数 filter(date == 20200327),一定要用==号，不能用=号]]
+        - [[#上传-hdfs-的验证集结果需要-check-数据列名会遗失数据][上传 hdfs 的验证集结果需要 check 数据列名，会遗失数据!!]]
+        - [[#数据-join-时一定要注意去重-所以一定要精简变量][数据 join 时一定要注意去重！！ 所以一定要精简变量！！]]
+        - [[#字符串大小写问题一定要注意字符串一律定义为小写][字符串大小写问题一定要注意，字符串一律定义为小写！！！]]
+        - [[#建模的缺失值需要检查是否有---等不规则的字符串][建模的缺失值需要检查是否有“--”，"" 等不规则的字符串！]]
+        - [[#providerbasicinfo_provider-都不能入模][provider/basicinfo_provider 都不能入模！]]
+    - [[#良好的编程习惯][良好的编程习惯]]
+  - [[#编程规范][编程规范]]
+    - [[#上传代码][上传代码]]
+  - [[#组外项目][组外项目]]
+    - [[#early-mob][early mob]]
+    - [[#实时模型-label-标注模型][实时模型 label 标注模型]]
+    - [[#信贷市场监控设计][信贷市场监控设计]]
+    - [[#反欺诈模型lwj][反欺诈模型（lwj）]]
+    - [[#预授信模型lwj][预授信模型（lwj）]]
+  - [[#特征衍生][特征衍生]]
+- [[#footnotes][Footnotes]]
+
+** 业务问题
+*** 什么是表现期和观察期？
+表现期的长短对逾期率大小有何影响？
+表现期越长，信用风险暴露越彻底，但意味着观察期离当前越远，用以提取样本特征的历史数据将越陈旧，建模样本和未来样本的差异也越大；反之，表现期越短，风险还未暴露完全，但好处是能用到更近的样本。
+*** 什么叫策略回测？
+回测是通过真实的历史数据对策略有效性的验证。
+
+*** 怎么判定客户是高风险用户？
+猜用模型或者是政策去认定？
+结合模型分，主要由政策同学进行等级认定。
+*** 预授信和申请制的区别？
+预授信是刚开始的一种活动是吧？
+现在已经没有预授信类吧？现在都是申请制？ 我看 wiki 资料上导流到芝麻渠道\同盾渠道\百融渠道等等是什么意思？
+*** 预授信阶段会查询互金吧？
+
+包括自有数据也会有？
+
+*** 巴塞尔新资本协议有哪些内容？
+
+*** 目前，授信通过率多少？
+*** 模型的通过率
+大致在 40% 左右。
+*** 怎么去判断隐私数据还是公开数据？
+
+*** 收益率怎么计算？
+*** 小米这边的 label 是如何定义的？
+只要有一次没还，就判定为违约？
+*** 帐户迁移率怎么计算？
+** 名词解释
+*** label 定义 
+
+名词标签定义可参考：https://wiki.n.miui.com/pages/viewpage.action?pageId=142333201
+#+caption: 名词定义
+| 名称                           | 含义                                                                                                                                                                                                                                                                                                                                                                              |   |
+|--------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---|
+| M1                             | 逾期 1-30 天（也称为逾期 1 期）                                                                                                                                                                                                                                                                                                                                                   |   |
+| M1+                            | 逾期>=30 天（表示逾期数>=M1）                                                                                                                                                                                                                                                                                                                                                     |   |
+| Mn+                            | 逾期>（n-1）*30 天                                                                                                                                                                                                                                                                                                                                                                |   |
+| 核销金额                       | 贷款逾期 M7 后经审核进行销帐，核销金额即在核销日期当天的贷款余额                                                                                                                                                                                                                                                                                                                  |   |
+| 呆帐                           | 长期不还款，具体逾期天数未知。一般是逾期 180 天以上！                                                                                                                                                                                                                                                                                                                             |   |
+| 结清                           | 借款人该笔贷款全部还清，贷款余额为 0                                                                                                                                                                                                                                                                                                                                              |   |
+| 正常还款                       | 表示借款人已经按时归还该月应还款金额的全部，且该账户没有逾期。 *提前还款但尚未结清，也归入“N-正常还款”*                                                                                                                                                                                                                                                                         |   |
+| 头寸                           | 头寸就是资金，指的是银行当前所有可以运用的资金的总和，主要包括在央行的超额准备金、存放同业清算款项净额、银行存款以及现金等部分。头寸管理的目标就是在保证流动性的前提下尽可能的降低头寸占用，避免资金闲置浪费。                                                                                                                                                                    |   |
+| 表内资金                       | 表内资产是指资产负债表上反映的资产，与表外资产是对称的概念。表内资产主要用在企业或者公司中的资产负债表。在资产所有权未转入筹资企业表内，而其使用权已经转入时，表内资金可以使企业满足扩大经营规模，缓解资金不足之需。比如：银行存款、贷款等                                                                                                                                        |   |
+| 表外业务                       | 不在资产负债表上反映,但是在一定时期可以转化成资产负债表上的内容的或有负债业务.比如,担保业务、承诺业务。表外业务也称为中间业务。是有风险的经营活动，形成银行的或有资产和或有负债，其中一部分还有可能转变为银行的实有资产和实有负债，故通常要求在会计报表的附注中予以揭示。表外业务类型包括，担保类业务、承诺业务、金融衍生交易业务等（说白了，表外业务做好了就会转化成表内业务。） |   |
+| FPD，首期逾期率                | FPD 一般用来做反欺诈，因为欺诈用户他第一期是根本不会还款的。                                                                                                                                                                                                                                                                                                                      |   |
+| 账龄                           | 贷款持续时间                                                                                                                                                                                                                                                                                                                                                                      |   |
+| 贷款回报率                     | 贷款收入或利润占贷款金额的比例                                                                                                                                                                                                                                                                                                                                                    |   |
+| 未尝余额                       | 尚未偿清的贷款余额                                                                                                                                                                                                                                                                                                                                                                |   |
+| 票息                           | 债券发行人要求兑付当期的利息                                                                                                                                                                                                                                                                                                                                                      |   |
+| 逾期天数 DPD （Days past Due） | 自应还日次日起到实还日期间的日期数                                                                                                                                                                                                                                                                                                                                                |   |
+*逾期天数 DPD （Days past Due）* ：自应还日次日起到实还日期间的日期数。DPD30+表示逾期天数>=30 天的合同。
+
+*逾期期数* ：自应还日次日起到实还日期间的期数。
+正常资产：C
+逾期 1 期：M1
+逾期 2 期：M2
+逾期 n 期：Mn
+逾期 N 期（含以上）：Mn+
+逾期期数>=M7:M7+
+
+*贷款余额 ENR*:至某时点借款人尚未偿还的本金，即：全部剩余本金作为贷款余额。（所以这里面不包括利息）
+
+*月均贷款余额 ANR:* 月均贷款余额 = (月初贷款余额＋月末贷款余额)/2,月初贷款余额即上月月底贷款余额。
+
+*C,M1,M2,M3 的贷款余额* ：根据逾期期数（C,M1,M2,M3,...）计算出每条借款的当时的贷款余额。
+
+贷款余额 = 放款时合同额度－已还本金
+已还本金 = (放款日次日～T-1) 的还款本金总额，这里的 T 是指还款日。
+
+*核销金额* ：贷款逾期 M7 后经审核进行销账，核销金额即在核销日期当天的贷款余额。
+
+需要用呆账准备金（银行利润）来弥补，所以每家银行都需要建立准备金制度，呆账贷款额每笔 5 万以下的，由地方级银行会同中央财政机构进行审批，呆账贷款额每笔 5 万以上，10 万以下由省级银行会同中央财政机构进行审批，呆账贷款额每笔 10 万以上的，由各专业银行总行根据下级行和省级中央财政机构的意见审批，报财政部备案。
+
+不是任何一笔不良贷款都可以核销，必须要符合一定条件，核销呆账是用利润来核销，银监局对银行有不良贷款率的指标要求，因此各家银行必须综合考虑利润和不良指标，决定是否进行核销。
+
+*回收金额* ：来自历史所有 *已核销合同* 的全部实收金额。
+*净坏账 NCL*:当月新增核销金额 - 当月回收金额。
+*MOB0* ：放款日至当月月底，MOB1：放款后第二个完整的月份，MOB2：放款后第三个完整的月份。
+
+所以说，mob 是指放款后的月份。
+*滚动率*: 是指账户状态的迁移，(C->M1、M1->M2、M2->M3、M3->M4、M4->M5、M5->M6).
+
+C-M1=当月进入 M1 的贷款余额/上月末 C 的贷款余额
+M2-M3=当月进入 M3 的贷款余额/上月末 M2 的贷款余额
+
+继续补充 https://www.zhihu.com/question/51583052
+
+*** 表现期，观察期，观察点
+在坐标轴上位置为，观察期\观察点\表现期。
+
+观察期：时间轴左侧， *主要是用来生成用户特征的时间区间* ，不宜太长也不宜太短（为啥不
+宜太长），一般为 1 年到 3 年左右。在小米信贷中，观察期一般是瞬时的概念，一般是观
+察点数据，特别是自有数据，外部数据，特别是多头类的数据，会有 2-3 年，征信数据甚
+至到 5 年。观察期不能过长可能导致大量客户无法获取相应时间长度的数据,大批样本不能
+进入模型; 观察期过短导致无法真正充分暴露用户的违约风险.
+
+观察点：这个点并不是一个具体时间点，在时间坐标轴上处于观察期和表现期中间，而是一个时间区段，表示的是客户申请贷款的时间，
+用来搜集那些用来建模的客户样本，在该时间段内申请的客户会是我们用来建模的样本。
+
+表现期：用来定义用户是否好坏的时间区段，一般是 6 月到 1 年左右，一般最常用的是定义为
+坏样本的指标有：M3+逾期、M3 以内逾期中定义为失联、欺诈、身份盗用等情况，应业务而
+定。
+
+表现期越长，信用风险暴露将越彻底，但意味着观察期离当前越远，用以提取样本特征的历
+史数据将越陈旧，建模样本和未来样本的差异也越大。反之，表现期越短，风险还未暴露完
+全，但好处是能用到更近的样本。 *表现期是用来定义标签 $Y$. *
+
+
+*通过率\逾期率\收益率*
+
+*** 贷款
+**** 循环贷款
+特点：需要抵押！信用卡是典型的循环贷产品。
+循环贷是指客户将商品住房（或信用免担保）抵押给银行、小贷机构，就可获得一定的贷款额度，在房产抵押期限内客户可分次提款、循环使用，不超过可用额度单笔用款时，只需客户填写提款申请表，不用专门再次审批，一般 1 小时便可提取现金，等于随身有了一个安全又方便的流动大“金库”。
+**** 循环额度下分账户
+循环额度下分账户用于循环授信额度下逐笔管理的贷款， *逐笔意为需要针对每一笔借款分开归还,循环贷用于循环额度下还款统一管理的贷款，即每月根据当前累计借款余额计算出的还款金额，需借款人统一归还.* 
+**** 非循环贷款
+针对的是循环贷款，不能分次提款和循环使用。
+**** 大额专项分期
+大额专项分期业务，是银行根据客户特定消费需求，综合客户资质，提供的个人免抵押信用贷款业务。业务优势主要有：零首付、低费率，手续简便，放款速度快。消费类型主要有：汽车分期\家庭分期\婚庆分期\车位分期等。
+*** 账龄（MOB）
+指资产放款月份，一旦申贷订单被放款，也就有了账龄和生命周期。MOB0：放款日至当月月底，MOB1：放款后第二个完整的月份，MOB2：放款后第三个完整的月份。
+
+MOB 的最大值取决于信贷产品期限，如果是 12 期产品，那么该资产的生命周期是 12 期，MOB 最大到 MOB12.
+例如：2019 年 11 月 13 日放款的订单，2019 年 11 月是 mob0，2019 年 12 月是 mob1，以此类推。
+
+账龄分析主要分析账户成熟期、变化规律等。
+*** 逾期天数（days past due,dpd）
+逾期天数 = 实际还款日 - 应还款日
+
+DPDN+：表示逾期天数>＝N 天，如 DPD30+表示逾期天数>=30 天的资产
+
+例如，若还款日是每月 8 号，那么 9 号就是逾期第一天。如果客户在 10 号还款，那么逾期 2 天。
+
+*** 逾期期数（M）
+指实际还款日与应还款日之间的逾期天数，并按区间划分后的逾期状态。M 取自 month on book 的第一个单词。
+
+M0：当前未逾期（或用 C 表示，取自 Current）
+M1：逾期 1-30 日
+M2：逾期 31-60 日
+M3：逾期 61-90 日
+M4：逾期 91-120 日
+M5：逾期 121-150 日
+M6：逾期 151-180 日
+M7：逾期 180 日以上。此时也被称为呆账（Bad Debts），会予以注销账户（write-off）
+
+*** vintage 分析（也称为账龄分析）
+vintage 分析用于确定合适的表现期.滚动率分析用于定义客户的好坏程度.
+
+为什么还需要 vintage 分析来确定表现期?这是因为：虽然滚动率分析确定了 M4+作为坏的程度，但是对于 12 期的产品，有些账户是在前 4 期 MOB（也就是 MOB1 ~ MOB4，经过 4 个表现期）就达到 M4+，有些是在后几期才达到 M4+。
+
+所以,定义好坏帐户需要结合 vintage 分析和滚动率分析的结果,一般展示为:
+
+Bad = 账户经过 9 期表现期后，逾期状态为 M4+（逾期超过 90 天）。此时 $Y=1$.
+
+Good = 经过 9 期表现期，但未达到 M4+逾期状态。此时 $Y=0$.
+
+Intermediate = 未进入 9 期表现期，账户还未成熟，无法定义好坏，也就是不定样本。
+
+主要用以分析 *账户成熟期* ，变化规律等。
+
+vintage 分析的目的为以账龄（month on book,MOB）为主轴，分析核拨后各往来期间的逾期情况，也就是说用来 *观察贷后 N 个月的逾期比率* ，由于核贷后逾贷尚需一段时间才会陆续出现，因此 N 多从 6 开始计算。
+
+所以，要计算 vintage,只需要确定 MOB,放款月份,逾期率（不管是金额还是逾期单比率）；
+
+vintage 分析的用途：
+1.确定资产质量：用逾期率定义资产质量。
+2.分析变化规律：如果前几期逾期率上升很快，那么就说明短期风险没有捕捉住，欺诈风险较高。
+3.确定账户成熟期：用来判断客户表现好坏的时间因素，如果逾期率在一定时间内趋于平稳，那么说明这个账户就成熟了。
+4.分析影响因素。
+
+*贷后 6 个月的逾期比率。*
+
+vintage 分析的优势在于：
+1.确定资产质量：一般以逾期率来定义资产质量，也就是曲线平缓后对应的逾期率。
+2.分析变化规律：资产质量（例如逾期率指标）的变化情况，如果前几期逾期率上升很快，那么就说明短期风险没有捕捉住，欺诈风险较高；反之，如果曲线一直在上升，说明信用风险识别能力不佳。
+3.*确定账户成熟期*：用来判断客户展现好坏的时间因素，从而帮助定义表现期。
+4.分析影响因素：风控策略收紧或放松、客群变化、市场环境、政策法规等都会影响资产质量。分析影响因素，可以用来指导风控策略的调整。
+
+逾期率的计算口径：
+1.订单口径，逾期率 = 逾期订单数/总放贷订单数。
+2.金额口径，逾期率 = 逾期金额/总放贷金额。
+
+vintage 分析用于确定合适的 *表现期* 。
+
+https://pic3.zhimg.com/80/v2-855513c1db679f5602e7a189fb9f6b0a_1440w.jpg
+
+从上图可以看似, vintage 分析主要看的还是逾期率, M1,M2,M3....M12 的逾期率, 如果说
+在经过 9 个 MOB 后逾期率开始稳定,那么说明帐户的成熟期就是 9 个月.
+
+为啥需要通过 vintage 分析来确定表现期？因为虽然滚动率分析确定了 M4+ 作为坏的程度，但是对于 12 期的产品，有些帐户是在前 4 期 MOB(也就是 MOB1~MOB4,经过 4 个表现期)就达到 M4+,有些是在后几期才达到 M4+.
+
+在实际应用过程中，常常需要将滚动率和 vintage 分析结合起来使用。比如说：
+BAD = 账户经过 9 期表现期后，逾期状态为 M4+（逾期超过 90 天），此时 Y=1.
+good = 经过 9 期表现期，但是未达到 M4+逾期状态，此时 Y=0.
+intermediate = 未进入 9 期表现期，账户还未成熟，无法定义好坏，也就是不定样本。
+
+参考资料：
+https://zhuanlan.zhihu.com/p/81027037
+
+*** 滚动率分析
+滚动率分析就是从某个观察点之前的一段时间（观察期）的最坏的状态，向观察点之后的一段时间（表现期）的最坏状态的发展变化情况。
+
+滚动率分析的具体操作步骤为：
+
+1.确定数据源。一般利用客户还款计划表（repayment schedule）。
+2.选择观察点，以观察点为截止时间，统计客户在观察期（如过去 6 个月）的最长逾期期
+数，按 *最坏逾期状态* 将用户分为几个层次，如 C\M1\M2\M3\M4+ 等。
+3. *以观察点为起始时间，统计客户在表现期（如未来 6 个月）* 的最长逾期期数，按最坏逾期状态将用户分为几个层次，如 C\M1\M2\M3\M4+.
+4.交叉统计每个格子里的客户数。
+5.统计每个格子里的客户占比。
+6.为了排除观察点选择时的随机影响，一般会选择多个观察点。
+
+滚动率分析用于定义客户的 *好坏程度* 。
+
+比如说:逾期状态为 M1 的客户，未来有 81%会回到正常状态，即从良率(从 M1+状态变成
+C)为 81%，有 7%会恶化(从 M1+ 变成 M2 以上)，13%会保持 M1 状态；逾期状态为 M4+的
+客户，从良率仅为 4%(从 M4+状态变成 C)，有 80%会继续保持此状态。那么说明 M4+ 的客
+户已经坏透了,几乎不会从良.为了让风控模型有更好的区分能力,需要将客户好坏界限尽可
+能清晰.
+
+*** 如何利用滚动率与 vintage 确定响应变量 Y？
+
+- 利用 *滚动率分析* 用于定义客户的好坏程度。
+
+- vintage 分析用于确定合适的 *表现期* ,比如以 M4+ 作为资产质量指标，统计 vintage 数据表，绘制 vintage 曲线，目的是分析账户成熟期。
+
+*** 迁移率（flow rate analysis）
+迁移率（Flow Rate）：观察前期逾期金额落入下一期的几率，一般缩写为(C-M1、M4-M5)，例如：M2-M3=当月进入 M3 的贷款余额/上月末 M2 的贷款余额。
+
+迁移率分析法也叫做净流量滚动比例法，能形象展示客户贷款账户在整个生命周期中的变化轨迹，也是预测未来坏账损失的最常用的方法。其核心假设为：处于某一逾期状态（如 M2）的账户，一个月后，要么从良为 M0 账户，要么恶化为更坏的下一逾期状态（如 M3）。
+
+迁移率 = 前一期逾期金额到下一期逾期金额的转化率
+
+一般缩写为 M0-M1,M4-M5 等形式，例如：
+
+M0-M1 = 当月进入 M1 的贷款余额/上月末 M0 的贷款余额
+
+M2-M3 = 当月进入 M3 的贷款余额/上月末 M2 的贷款余额 
+
+迁移率分析的具体步骤：
+
+1.定义逾期状态，如前文所述 M0,M1,M2 等。
+2.计算各逾期状态之间的迁移率，如 M0-M1,M2-M3 等。
+3.计算不同月份（也可以称为 vintage）的平均迁移率。目的是对本平台在不同时期的资产的迁移率有整体的认知。
+4.根据平均迁移率和不良资产回收率，计算净坏账损失率。
+
+迁移率分析用以分析不同逾期状态之间的转化率。
+
+https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
+
+*** 坏账准备金
+为了应对未来的呆账可能，信贷机构一般都会设定一个储备资金，这就是坏账准备金，如何计算它？
+
+一般是将未清偿贷款余额乘以一定的准备金比例所得。计算坏账准备金的步骤：
+
+1.统计未清偿贷款金额的分布，也就是 M0-M6 状态分别对应的资产余额。
+2.为每个逾期状态的资产分配一个准备金比例。
+3.每个子项目的准备金金额 = 未清偿贷款余额 * 准备金比例。
+4.每个子项目的准备金金额相加， 得到最终的准备金。
+
+由于坏账准备金是用来覆盖预期的未来呆账损失的，准备金比例必须等于处于各个逾期状态的资产未来演变为呆账的比例。
+
+*** 贷款余额
+
+贷款余额指至某一节点日期为止，借款人尚未归还放款人的贷款总额。亦指到会计期末尚未偿还的贷款，尚未偿还的贷款余额等于贷款总额扣除已偿还的银行贷款。
+
+*** 止付
+信用卡止付是银行为加强管理，保证安全，防止伪卡及遗失卡被冒用造成损失和不良影响而采取的一种防范措施。
+*** 用户导流
+贷款导流业务是指互联网平台为包括持牌金融机构等在内的资金方提供的借款用户导流服务。
+说白了就是平台有多余的用户然后推给资金方，这个行为就是导流。
+*** 融资租赁
+目前是国际上最为普遍，最基本的非银行金融形式。它是指出租人根据用户的请求，与第三
+方（供货商）订立供货合同，根据此合同，出租人出资向供货商购买用户选定的设备，同时，
+出租人与用户订立一项租赁合同，将设备出租给用户，并向用户收取一定的租金。
+
+说白了就是，在所有资金到位前，用户只拥有商品的使用权，没有商品的所有权。
+
+** 小米金融
+*** 商业模式
+助贷，联合贷等
+对于网络贷款业务而言，资金\流量\风控三者是有机组成。像银行等传统金融机构本身具有资金和放贷业务资质，但是缺乏线上获客渠道\能力，资金利用率不高。
+
+对互联网平台而言，为资金方发放贷款进行导流是其实实现自身流量变现的一条有效渠道。
+一方面，部分导流方本身并不具备放贷业务资质，只能选择向具备放贷资质的机构输出流量。
+另一方面，部分互联网巨头虽然通过早期积累获得了相应的放贷业务牌照，但仍然可能受到
+业务规模限制的影响无法完全消化其积累的用户流量，例如各地监管对小额贷款公司通常会
+有一定的资金杠杆限制，因此选择对外输出多余的流量。
+
+国家有关部门在出台小额贷款公司政策时，规定小额贷款公司为一般工商企业，只能向两家金融机构融资，且融资额不超过净资本的 50%.(这杠杆不到 1 倍？)
+根据目前北京市的政策，小贷公司的杠杆放宽至 3 倍。
+
+*** 业务种类
+目前，小米金融的业务种类包括：供应链金融、小米理财、小米保险、支付。小米信贷包括两类：小米贷款、小米分期。
+
+硬件服务端有：小米贷款 APP、小米金融 app、小米钱包安全组件、极速版－安卓 *（这是
+什么？）*、微信 h5。
+
+2020 年初新增了消费金融。消费金融\小贷差异：
+
+消费金融的要求更高，业务内容更加广泛，涉及办理
+个人消费贷款，信贷资产转让，境内同业同业拆借，境内金融机构借款，发行发型金融债券，
+固定收益类证券投资业务
+
+总结起来就是，消费金融的业务内容更多，资金来源也不同。
+
+*** 模型组业务
+模型组业务主要分为 2 类：*风险模型和营销模型*
+
+**** 风险模型 
+预授信风险模型
+
+利率敏感度模型
+
+反欺诈模型
+
+贷中风险模型
+
+支用拦截模型（宇航）
+
+风险监测模型
+
+催收模型:
+
+统一监测分：
+
+小微贷模型（自恒）：小微银联外部数据
+
+- 模型是干什么的？
+- 用的是什么数据？
+
+**** 营销模型
+
+*** 小米贷款
+**** 重要指标
+***** 逾期率
+ 6 期 30+ label 逾期率大概在 7%左右；
+ 3 期 30+ label 逾期率大概在 ?%左右；
+ 1 期 30+ label 逾期率大概在 0.7%-1%左右。
+***** 金额逾期率
+
+
+***** 额度系数
+
+**** 业务相关
+- 业务流程
+
+贷前：
+①预授信（只过小米风控）
+
+②用户主动申请（申请制），在申请制中会切一拨流量到南京银行，也就是 *导流。* ③南京银行：是助贷模式
+
+贷中：①贷中支用②用户分发（过资金方风控）
+
+贷后：①还款计划②贷后催收
+
+[[e:/我的坚果云/github/wiki/pic/小米授信流程.PNG]]
+
+根据这张图可以看出，南京银行渠道是和预授信、申请制两种贷款业务是平行共存的，所以不难猜想 *，南京银行业务是助贷模式* 。
+
+- 资金分布
+
+①自有资金②外部资金：银行系、消费金融公司、小贷公司、保理[fn:1]\信托[fn:2]。③资金模式：助贷模式、联合放款
+
+- 用户来源
+
+一、小米金融 app 预装 
+
+二、营销触达 
+
+- 年度 kpi
+
+放款 300 亿
+
+- 人员分配
+
+业务团队、技术团队（策略系统、反欺诈系统、催收系统、信贷流程系统结算、账务系统、模型）、风控团队（策略和模型）
+
+- 业务模式
+
+3 期\9 期\12 期
+    
+- 使用场景
+
+- 开通场景
+
+仅在小米体系下的场景使用
+
+小米商城\小米有品
+
+[[E:/我的坚果云/github/wiki/pic/小米贷款商业模式.png]]
+
+从图上可知，有这么几层的关系：
+
+1、用户和小米贷款的关系：借贷关系。小米贷款放款，而用户给小米贷款以利息/手续费。
+   2、小米贷款与贷款超市的关系:小米贷款给贷款超市导流(问题就是到底是谁给谁提供资金？小米提供人？)，贷款超市给小米贷款利润分成。
+
+小米提供客户，一般模型拒绝或者是多头判断拒绝会进入贷超环节。
+
+3、小米贷款与资金方的关系：小米贷款给资金方导流资金 *（小米还提供资金？）* ，资金方给小米贷款以利润分成。
+   [[E:/我的坚果云/github/wiki/pic/小米贷款流程.png]]
+
+   从这个小米贷款流程，可知：
+   1、获客。产业链的最上游是客户的来源渠道即产品渠道，有来自微信、小米金融、小米贷款、有品等。 2、授信导流。紧接着进行授信、导流操作，在授信中，一种是预授信（只有小米金融有）、另一种是申请制（包括芝麻渠道、同盾渠道、百融渠道）。导流中，主要导流到南京银行、贷款超市，这些都是申请失败后，导流至这些地方，发现恶心欺诈后是不允许进入到贷款超市的。
+   3、授信认证。每个获客渠道的认证项是不同的，以芝麻渠道为例，需要芝麻授权，同盾渠道，需要安全手机等等。
+   4、资金导流。授信通过后，其实就有资金的流动。主要包括表内资产、联合贷、助贷、导流资金、贷超资金等。
+   5、支用认证项。一些联合贷的机构，需要补充登记个人信息，包括职业信息、绑定卡等。
+
+    资金模式：
+联合贷模式——双方按放款比例兜底。参加的银行有：新网银行、苏州银行、百信银行、民生银行。需要注意的是在联合贷中，在支用环节，需要依据资金方要求补充信息。
+
+    *银行助贷[fn:3]——资金方兜底：民生银行、新网银行* 说白了就是由这些民生银行、新网银行进行资金兜底，然后由小米提供风险控制，而且承担损失风险。 
+
+   自营模式（注册资本，借款，ABS)——自己兜底，自有资金：中航信托，ABS：航海信托等
+   导流资金：南京银行（说白了就是，当自营资金不足时，需要将人员导流到其他资金渠道。）
+   贷超资金：合作方资金（说白了就是小米不要的黑名单用户以及模型被拒用户，才会导入到合作方资金那里）
+   引入第三方担保（担保公司，保险公司）——担保公司兜底
+
+**** 贷款产品类型
+
+大额长期贷款、小额贷款、小米贷款
+目标人群分级：A;C-;A|B|C+
+对象：优质用户、高风险用户（怎么认定是高风险用户？）、优质用户与次优用户
+额度有效期：7期；长期；长期
+是否循环：否；是；是
+额度：小米建议最低 30 万；50\1000\2000;1000~20w
+期数：12\24\36 个月；1、3个月；6、9、12 个月
+定价：0.05，差异化利率(这个差异化的利率应该是指如果你的信用分越高，你的利率就越低)；0.065%,差异化利率；0.05%,差异化利率（这里的利率是日息，万 5,意思就是借 10000,每天需要还 5 元，转化为年利率就是 5％×360=18%，月息就是 5%*30=1.5%）
+还款方式：等额本息；等额本息；小米贷款全量用户还款方式有两种，一是等额本息，另外一种是先息后本[fn:4]。 
+逾期罚息:利率上浮 50%,真实年化不超过 24%.
+
+** 基本的信贷逻辑
+** 授信数据提供商
+
+provider 字段
+
+NONE(0, "未分配"),
+MIFI(1, "小米金融"),
+NANJING(2, "南京银行"),
+DUMIAO(3, "读秒"),
+COMPOSITE(4, "复合渠道"),
+LOAN_MARKET(5, "贷款超市"),
+BAIRONG(6, "百融"),
+TONGDUN(7, "同盾"),
+TIANCHUANG(8, "天创"),
+UMENG(9, "友盟"), /随机流量/
+WEICHENG(10, "卫诚"), /回捞/
+EXTRA_DATA(11, "补充数据项"),/回捞/
+PBC_NANJING(12, "人行征信-南京"),
+PBC_XINWANG(13, "人行征信-新网"),
+PBC_BOHAI_XT(14, "人行征信-渤海信托"),
+PBC_BAIXIN(15, "人行征信-百信银行"),
+PBC_SCXJ(17, "人行征信-尚城消金"),
+PBC_ZHNEXING(18, "人行征信-振兴消金"),
+
+
+不同特征在哪个环节调用一定要牢记清楚！比如说，有盟数据在反欺诈、多头未通过的人群上就不能使用！！！
+
+** 参与项目 
+所参与的所有项目均需要用到了哪些特征，在哪些数据表里。*基本所有特征表均在这里* https://wiki.n.miui.com/pages/viewpage.action?pageId=47097651.
+
+**** 相关策略
+***** 授信流程
+[[E:/我的坚果云/work/小米/业务知识/申请制贷前模型/申请制贷前策略流程图.PNG]]
+
+从上图可以看出，授信前，需要过反欺诈规则，之前是利用的是聚信力的多头规则，即大于 5 家（聚信立多头数（searched_org_cnt））即被认定为是高风险人群，现在一般用百融特征去拟合一个 score,再去认定是否通过多头规则，下面就是一个二叉树。
+
+如果通过多头，那么看看是否会接入人行征信，如果是多头拒绝，那么会回捞一批高多头的用户
+
+*** 人行征信
+授信时，小米自身没有强制要求人行征信授权，而在联合贷时，则会要求进人行征信。
+新版的人行征信的信息更新速度为 T+1 上报。说是 T+1 其实更多的是自己定，一般为 2 周
+到一个月不等。
+**** 小米征信策略
+**** 常见问题
+***** 如何对不同的人群进行查验 auc？
+去 loaning_fact 表中，去察看 basicinfo_source(授信来源),也可以去看看 basicinfo_business_channel,basicinfo_cash_strategy_provider,basicinfo_group_provider.
+ #+begin_src R ::results output graphics :file fig_1.png :exports both
+   loaning_fact=spark_read_parquet(sc, "loaning_fact",path = "/user/h_data_platform/platform/mifi/mifidw_loaning_fact", memory = F) %>% filter(date=20190227)
+ #+end_src
+
+**** 聚信力多头规则替换反欺诈
+
+**
+
+* 工作中常见问题
+*** 人群分布
+在做信贷评价指标分析时，一定要了解清楚人群是来自哪里？一定要多思考！！
+是否通过授信，多头拦截，回溯，反欺诈，征信。回溯的话，（当时授信没通过，在其他家机构通过了，有了数据，被小米买回来）一般是针对高多头人群？
+*** 人群划分
+1.授信通过人群、creditStatus==1 且有 1 期或者 3 期 label_zy 人群,tag=="label_zy"
+
+2.授信通过人群、creditStatus==1 没有 1 期、3期 label_zy 人群,tag=="自营休眠"
+
+3.授信没有通过人群(creditStatus==-1)且没有进入贷超申请表,tag=="放弃"
+
+4.授信没有通过人群(creditStatus==-1)、进入贷超申请表、creditStatus==1、有贷超 label,tag== "label_dc"
+
+5.授信没有通过人群(creditStatus==-1)、进入贷超申请表、creditStatus==1、没有贷超 label,tag == "贷超休眠"
+
+6.授信没有通过人群(creditStatus==-1)、进入贷超申请表、creditStatus==-1)、tag == "贷超拒绝"
+
+授信通过人群取数逻辑：
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+ sdf_credit_composite_model <-
+   spark_read_csv(sc,
+     name = "sdf_credit_composite_model",
+     path = "/user/h_data_platform/platform/mifi/credit_composite_model",
+     delimiter = "\t", memory = F, overwrite = T, header = F, infer_schema = F,
+     columns = c(xiaomi_id = "character", risk_score = "character", risk_level = "character", income_score = "character", income_level = "character", creditStatus = "character", cash_amount = "character", instalment_amount = "character", credited_time = "double", create_time = "character", update_time = "character", device = "character", model_version = "character", model_type = "character", process_version = "character", provider = "character", cash_rate = "character", cash_rate_version = "character", instalment_rate = "character", instalment_rate_version = "character", pre_risk_score = "character", instruction = "character", user_level = "character", user_level_version = "character", credit_scene = "character", user_channel = "character", amount_status = "character", amount_source = "character", credit_action = "character", refuse_reason = "character", high_risk_score = "character")
+   ) %>%
+     mutate(credit_date = from_unixtime(credited_time / 1000, "yyyyMMdd")) %>%
+     filter(credit_date == date & credit_date >= "20190401" & credit_date < "20190901") %>%
+     filter(model_version != "0") %>%
+     distinct(xiaomi_id, credited_time, credit_date, creditStatus, model_version)
+ 
+ sdf_pass <- sdf_id %>% left_join(sdf_credit_composite_model %>% group_by(xiaomi_id,credit_date) %>% arrange(desc(credited_time)) %>%
+   filter(row_number()==1) %>% ungroup() %>% select(-credited_time) %>% distinct(),by = c("xiaomi_id","create_date"="credit_date"))
+ 
+ sdf_credit_composite_model %>% group_by(creditStatus) %>% tally() 
+#+end_src
+
+**** 贷超申请表
+
+ #+begin_src R ::results output graphics :file fig_1.png :exports both
+   ##贷超申请表
+                                         dc_register <- spark_read_parquet(sc,
+                                            name = "sdf_dc_register",
+                                            path = "/user/h_data_platform/platform/mifi/ods_mifidw_lm_user_register",
+                                            memory = F
+                                          ) %>%
+                                            filter(date == "20190901") %>%
+                                            mutate(credit_time = from_unixtime(as.numeric(credit_time)/1000,"yyyyMMdd")) %>%
+                                            filter(credit_time >= "20190401" & credit_time < "20190901") %>%
+                                            select(xiaomi_id, status, credit_time) %>%
+                                            distinct() %>% my_sdf_collect()  
+ #+end_src
+
+** 业务相关内容
+需要对所使用的表的内容掌握清楚！（多动脑，勤思考！）在提问之前，需要认真地思考整个建模流程，包括业务背景，所使用数据来源等。
+*** 常见建模数据库表地址 
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+mf_dm_data_library()
+#+end_src
+
+百融表： 
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  sdf_bairong = spark_read_parquet(sc, "sdf_bairong", "/user/h_mifi/user/yepeng3/bairong_job_parquet", memory = F, overwrite = T)   # 增量表
+#+end_src
+
+常用表名：
+
+| 表名                | 地址                                                               | 属性                                           |
+| 百融表              | /user/h_mifi/user/yepeng3/bairong_job_parquet                      | 这个表 update_time 不能当作 credit_time 使用！ |
+|                     |                                                                    |                                                |
+| user_event          | /user/h_data_platform/platform/mifi/user_event                     | 了解是否进入反欺诈，申请制等信息               |
+| 贷前模型 score 地址 | /user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data | version == "6.37",意味着模型版本号是 6.37      |
+|                     |                                                                    |                                                |
+
+*** 授信通过人群\进入多头\多头拦截\主政策\主模型通过 
+
+**** 授信通过人群 
+
+在 credit_composite_model 表里，取 creditstatus == "1",就是授信通过人群。 
+
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      sdf_credit_composite_model = 
+  spark_read_csv(sc, name = "sdf_credit_composite_model",
+                 path = "/user/h_data_platform/platform/mifi/credit_composite_model", 
+                 delimiter = "\t", memory = F, overwrite = T, header = F, infer_schema=F,
+                 columns = c(xiaomi_id="character",risk_score="character",risk_level="character",income_score="character",income_level="character",
+                             creditStatus="character",cash_amount="double",instalment_amount="character",credited_time="double",create_time="character",
+                             update_time="character",device="character",model_version="character",model_type="character",process_version="character",
+                             provider="character",cash_rate="character",cash_rate_version="character",instalment_rate="character",
+                             instalment_rate_version="character",pre_risk_score="character",instruction="character",user_level="character",
+                             user_level_version="character",credit_scene="character",user_channel="character",amount_status="character",
+                             amount_source="character",credit_action="character",refuse_reason="character",high_risk_score="double")) %>% 
+  mutate(credit_time = from_unixtime(as.numeric(credited_time) / 1000, "yyyyMMdd"))
+
+sdf_V6_36_duotoupass %>% 
+  inner_join(sdf_credit_composite_model %>% select(xiaomi_id, credit_time, creditStatus) %>% 
+               filter(creditStatus == "1"), by = c("xiaomi_id", "credit_time")) %>% 
+  spark_write_csv(path = "/user/h_mifi/user/luyajun/temp/V6_36_duotoupass_sx.csv")     
+    #+end_src
+
+     #+begin_src R ::results output graphics :file fig_1.png :exports both
+       /user/h_data_platform/platform/mifi/user_event
+     #+end_src
+
+可以从这里面取到多头环节、多头拦截、到主政策环节、主模型拒绝的用户.
+
+*** label 相关问题 
+***** 常见 1 期，3期 自营&贷超 label 地址
+
+*需要注意的是，贷超 label 中，会经常出现一个人一天有 2 个 label 的情况！* 所以需要对其作如下处理。
+
+*此外，在建模过程中，需要对 provider 也要进行过滤筛选！*
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))
+#+end_src
+
+1 期 label 地址
+
+     #+begin_src R ::results output graphics :file fig_1.png :exports both
+       #label
+       ##1期30+自营
+       sdf_label_zy <- mf_load_labels("prm",repay_month="1",pay_diff_days="30",ovd_days="30")
+       ##1期30+贷超
+       sdf_label_dc <- mf_load_labels("loan_market",repay_month="1",pay_diff_days="30",ovd_days="30")       
+     #+end_src
+
+3 期 30+ label 地址
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  #label
+  ##3期30+自营
+  sdf_label_zy <- mf_load_labels("prm",repay_month="3",pay_diff_days="30",ovd_days="30")
+  ##3期30+贷超
+  sdf_label_dc <- mf_load_labels("loan_market",repay_month="3",pay_diff_days="30",ovd_days="30")       
+#+end_src
+
+6 期 30+ label 地址
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  ## 
+  sdf_label6 = spark_read_parquet(sc, "sdf_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/prm_label_users_v4_30_6_30", memory = F) %>% select(xiaomi_id, credit_time, label)
+  ###贷超label,
+  sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))  
+#+end_src
+
+一般常见的 label 处理逻辑是
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  ##1期30+自营
+  sdf_label_zy <- mf_load_labels("prm",repay_month="1",pay_diff_days="30",ovd_days="30")
+  ##1期30+贷超
+  sdf_label_dc <- mf_load_labels("loan_market",repay_month="1",pay_diff_days="30",ovd_days="30")
+
+  sdf_label <- sdf_bind_rows(
+      sdf_label_zy %>%
+      mutate(tag = "zy") %>%
+      filter(credit_time > 20191031) %>%
+      select(xiaomi_id, credit_time, basicinfo_provider,label, tag),
+      sdf_label_dc %>% mutate(basicinfo_provider="dc",tag = "dc") %>%
+      filter(credit_time > "20191031") %>%
+      select(xiaomi_id, credit_time, label,basicinfo_provider ,tag)
+  ) %>% distinct() # %>% my_sdf_collect()  
+#+end_src
+
+***** 多头拦截相关问题 
+
+目前，cp 表中包括来多头通过\高多头捞回的人群。注意 cp 表是全量表，所以需要加上 filter(date == 20200309), 日期就取当天。
+
+*只要牵涉到外部数据，必须要对 cp 表进行过滤，过滤的条件就是从 cp 表中选出 credit_scene == 1 就是预授信， ==2 是申请制* 。amount_version 是筛选了高多头中的回捞用户，只保留了多头通过用户。
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  ## sdf_cp_credit_instruction = 
+  ##     spark_read_csv(sc, name = "sdf_cp_credit_instruction",
+  ##                    path = "/user/h_data_platform/platform/mifi/mifidw_cp_credit_instruction",
+  ##                    delimiter = "\t", memory = F, ovspark_diserwrite = T, header = F,
+  ##                    columns = c("id","instruction","xiaomi_id","device","internal_risk_score_pdc","mifi_allowed","apply_allowed","anti_fraud_pass","small_amount_anti_fraud_pass","apply_anti_fraud_pass","process_id","income_model_id","risk_model_id","workflow_policy_id","amount_policy_id","provider","channel","risk_score","income_score","risk_level","income_level","cash_amount","instalment_amount","amount_version","amount_status","cash_rate","cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12","instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source","credit_scene","date")) %>% 
+  ##     filter(date == 20200309)
+
+sdf_cp_credit_instruction =
+  spark_read_csv(sc, name = "sdf_cp_credit_instruction",
+                 path = sprintf("/user/h_data_platform/platform/mifi/mifidw_cp_credit_instruction/date=%s",schedule_date),
+                 delimiter = "\t", memory = F, ovspark_diserwrite = T, header = F,
+                 columns = c("id","instruction","xiaomi_id","device","internal_risk_score_pdc","mifi_allowed","apply_allowed",
+                             "anti_fraud_pass","small_amount_anti_fraud_pass","apply_anti_fraud_pass","process_id","income_model_id",
+                             "risk_model_id","workflow_policy_id","amount_policy_id","provider","channel","risk_score","income_score",
+                             "risk_level","income_level","cash_amount","instalment_amount","amount_version","amount_status","cash_rate",
+                             "cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12",
+                             "instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source",
+                             "credit_scene","nominal_cash_rate","nominal_rate_version","component_name")) %>% 
+  mutate(credit_date = from_unixtime(credit_time/1000, 'yyyyMMdd')) %>% 
+  filter(credit_date == schedule_date) %>% 
+  distinct(xiaomi_id, credit_date) %>% 
+  mutate(credit_date = as.numeric(credit_date))
+  
+#credit_scene ==1,预授信，==2，申请制
+  sdf_cp_users <- sdf_cp_credit_instruction %>%
+      select(xiaomi_id, credit_time, amount_version,credit_scene) %>%
+      mutate(credit_date = from_unixtime(as.numeric(credit_time) / 1000, "yyyyMMdd")) %>%
+      filter(credit_date >= 20191101 & credit_date <= 20200223 &
+             amount_version %in% c(
+                                     "640", "641", "642", "643", "644", "645", "646", "647", "648", "649", "650", "651", "652", "653", "657", "659", "660",
+                                     "661", "662", "663", "664", "665", "666", "667", "668", "669", "670", "671", "672", "673", "674", "675", "676", "677",
+                                     "678", "679", "680", "681", "682", "683", "684", "685", "686", "687", "688", "689", "690", "691", "692"
+                                        #"701", "702", "703", "704", "705", "706", "707", "708", "709"
+                                 )) %>%
+      distinct(xiaomi_id, credit_date,credit_scene)
+#+end_src
+
+**** V7 模型
+
+包括高多头中回捞的用户。
+
+**** 如何查看不同渠道用户？
+
+     #+begin_src R ::results output graphics :file fig_1.png :exports both
+       
+     #+end_src
+
+*** 已上线模型的 score 地址
+
+从这个地址可以查看已上线的各版模型分数。
+
+   #+begin_src R ::results output graphics :file fig_1.png :exports both
+     /user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data
+
+                                         mifi_model_prm_risk_score <- spark_read_parquet(sc, "mifi_model_prm_risk_score", "/user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data")
+                                         sdf_score <- sdf_id %>%
+                                           left_join(mifi_model_prm_risk_score %>%
+                                             filter(version == "6.12") %>%
+                                             distinct(),
+                                           by = c("xiaomi_id", "create_date" = "credit_time")
+                                           )
+   #+end_src
+
+*** 人群风险分档
+政策根据模型分以及自身策略规则，将人群进行分档。以便用于用户提额，提价等等。
+一般将人群分为 A,B,C,D 四档。
+
+*** 模型效力评价
+**** 区分度指标
+所谓区分度指模型对好坏客户的辨识能力，区分度越强，表示模型准确性越高。
+在实际工作中，绝大多数状况下，坏客户集中于低分区域，而好客户则集中于分数较高区域，但两者仍会有一定程度的重叠，建模人员所要努力的是尽可能将好坏客群的分数差距拉开。
+最糟糕的状况是完全无法显现风险排序效果，好坏客户的分配一样。
+
+常见的区分度指标有 k-s 值及 gini 系数。k-s 值主要是测量好坏分布的最大差距，因此需先依分数分别画出好坏客户累积百分比线图，两者之间最大的差距值即为 k-s 值，计算公式为 max(bad%(累计)-good%(累计)),其值越大表示模型区分能力越强。
+
+**** 稳定性指标
+稳定性是有参照的，需要两个分布——实际分布和预期分布，其中，在建模时通常 *以训练样本作为预期分布，而验证样本通常作为实际分布。*
+
+计算 psi 步骤：
+
+step1: 将变量预期分布进行分箱离散化，统计各个分箱里的样本占比。
+注意：
+1.分箱可以是等频、等距或其他方式，分箱方式不同，将导致计算结果略微有差异。
+2.对于连续型变量（特征变量、模型分数等），分箱数需要设置合理，一般设为 10 或 20；对于离散型变量，如果分箱太多可以提前考虑合并小分箱；分箱数太多，可能会导致每个分箱内的样本量太少而失去统计意义；分箱数太少，又会导致计算结果精度降低。
+
+step2: 按相同分箱区间，对实际分布（actual）统计各分箱内的样本占比。
+step3:计算各分箱内的 A - E 和 Ln(A / E)，计算 index = (实际占比 - 预期占比）* ln(实际占比 / 预期占比) 。
+step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
+
+在计算得到 PSI 指标后，这个数字又代表什么业务含义呢？PSI 数值越小，两个分布之间的差异就越小，代表越稳定。
+
+** 建模基本规则
+*** 模型设计规范
+建模一定要清楚模型使用场景是什么，目标用户是什么，为什么要训练这个模型，应该用什么方式评估。
+**** 取样本：
+
+取样本一定注意数据缺失问题。
+
+*没查、查了未返回、查了返回缺失值是完全不同的含义。* 
+
+这句话的意思就是什么时候用 left_join,什么时候用 inner_join,甚至会要用到 full_join.
+
+如申请制场景用到百融友盟数据，因为预授信完全不查百融友盟，一定不能取预授信用户（basicinfo_provider!=1,credit_scence!=1）。 *所以互金和自有数据会查询？*
+用到互金数据，不能取完全没查互金的样本。
+**** 数据存储格式：
+
+如果不是必须用 text file，所有数据文件写到 hdfs 都应为 parquet。
+
+如果不是必须用 csv ( "," 分隔)，所有 text file 都应用 tsv ( "\t" 分隔)。（有很多数据中包含逗号，如某一个字段值为 json，csv 读取报错）
+
+所有 id 相关的字段，字符类型都要存储为 string。如 xiaomi_id，con_id，mifi_id。（R的数值型精度是 16 位有效数字，长整型最后几位会以随机数代替）
+
+*** 信用评分卡建模流程
+
+1.数据准备
+
+    选取样本：一定时间内，已经成熟的申请制数据
+    匹配三要素信息：需要李洋组支持，加密成特定编码形式，如 md5,sha256 等
+    匹配第三方数据：注意保留 label 与 key 的对应关系
+    根据业务需要与时间外验证，选取训练集与验证集
+
+2.数据初步筛选
+
+    信息值 IV(>=0.02)
+    覆盖率与数据质量（极大值极小值平均值众数等）
+    *单变量分析：坏账率随变量值变化是否单调*
+
+3.变量值转换
+
+    缺失值处理
+    变量最优分箱
+    连续型/类别型变量 WOE 转换
+    标准化
+
+4.训练模型
+
+    逻辑回归
+    逐步回归 stepwise（P 值显著,<0.05）
+
+5.入模变量稳定性和坏账分布
+
+    *变量稳定性：按月查看变量分布* (值得注意!!)
+    相关性检验与共线性检验
+
+6.模型产生与调整
+
+    删除不稳定变量后，重新跑逐步回归，通过多轮筛选与比较，重复 4,5 步骤，直到入模变量合适
+
+7.模型评估
+
+    通过率与坏账率曲线
+    KS
+    预测分分布及 PSI
+
+*** 内存问题
+
+  > Error in mcfork() : 
+    unable to fork, possible reason: Cannot allocate memory
+
+  将 mc_cores 值降低
+  ```{r}
+  mc_cores <- 5
+  ```
+
+  或者利用 doMC 包解决这个问题
+  ```{r}
+  library(doMC)
+  registerDoMC(5)
+  ```
+  ## 2.建表
+  在数据工厂中进行建表，界面已经截图。
+  需要注意几个地方，一是数据类型:
+  xiaomi_id 设为 string 型；credit_time 设为 int32 型；label 设为 int16 型；score 设为 double 型。
+
+  整个业务逻辑是这样的：
+
+  1、首先将得到的四个指标形成本地 csv 文件，然后上传至 hdfs；
+
+  2、利用 spark_read_csv 函数读进 spark 中；
+
+  3、进行数据类型转换，确保于建的表保持一致；
+
+  4、将文件上传至建表路径
+
+  5、检查数据是否上传成功
+
+  ```{r}
+  data %>%
+    mutate(
+      xiaomi_id = as.character(xiaomi_id),
+      credit_time = as.integer(credit_time),
+      label = as.integer(label),
+      score = as.double(score)
+    )
+
+  fwrite(data1, sprintf("%s/data1.csv", modelpath)) # 形成本地 csv 文件
+  push_file_to_hdfs(sprintf("%s/data1.csv", modelpath), sprintf("%s/data1.csv", hdfs_report_path))
+  sdf_data <- spark_read_csv(sc, "sdf_data",path = sprintf("%s/data1.csv", hdfs_report_path)) #表名应该要取
+
+  sdf_data1 <- sdf_data %>%
+    select(xiaomi_id, credit_time, score, label) %>%
+    mutate(
+      xiaomi_id = as.character(xiaomi_id),
+      credit_time = as.integer(credit_time),
+      label = as.integer(label)
+    )
+
+  sdf_data1 %>% sdf_schema() # 类似 summary
+
+  sdf_data3 <- sdf_repartition(sdf_data1, partitions = 1)
+
+  spark_write_parquet(sdf_data3, path = "/user/h_data_platform/platform/mifi/mifimodel_antifraud_jxl_rule_replace_br/data", mode = "overwrite")
+
+  sdf_data2 <- spark_read_parquet(sc, ,path = "/user/h_data_platform/platform/mifi/mifimodel_antifraud_jxl_rule_replace_br/data")
+  sdf_data2 %>%
+    summarise(n(), mean(score), sum(label)) # 如果文件上传成功，可以成功显示
+  # 连接 impala，查看数据是否更新成功
+  rimpala_zjy_init()
+  rimpala.switch(5)
+  rimpala.query("refresh table mifimodel_antifraud_jxl_rule_replace_br")
+  # REFRESH TABLE tableName
+  rimpala.query("select * from mifimodel_antifraud_jxl_rule_replace_br limit 10")
+  ```
+*** kill 进程
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      system("ps -aux | grep luyajun") #获取pid
+                                        #or
+      Sys.getpid() #获取pid
+      system("kill -9 3044") #3044 是pid
+    #+end_src
+*** 常见错误！！
+**** 粗心导致的错误
+1.变量名是否与数据的生成逻辑或者获取地址相匹配？
+
+解决方法：细心、细心、再细心！每做完一次数据，就需要对数据的大小，日期进行筛查！
+
+2. 缺失值为－1 或 -999 版本
+
+如果是-999 版本的话，上线时需要跟吉老师说清楚。
+
+3.encode_all 编码文件不能覆盖！！
+
+4.做过的模型文件一定要及时保存到 hdfs 上！
+
+5.在做 hdfs 文件命名时一定要注意文件路径要正确！！！
+
+一旦发生 push_file_to_hdfs/get_file_from_hdfs 命令发生错误，务必需要。
+
+6.经常在训练模型时，覆盖 encode_all 文件，建议加上以下语句！！
+
+7.发出去的数据最好 check 下列名和数据维度。
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  if(length(str_subset(ls(),"(encode_all|onehot_encode)"))>0)
+      warning("The environment has encode_all file!!") else{
+                                                           cat("The environment has not encode_all file :)")
+                                                       }
+  if(length(list.files(sprintf("%s/",modelpath),pattern = "onehot_encode.RData"))>0)
+      warning("The model path has onehot_encode.RData file,Please check, don't converge it!!") else{
+                                                                                                   cat("The model path has not onehot_encode.RData file :)")
+                                                                                               }  
+#+end_src
+
+**** 业务不熟导致的错误
+***** 读取 spark_read_csv/spark_read_parquet 函数时，需要注意 函数中 name 名称一定不能一致，如果相同则会被覆盖。
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  app_category_feature <- spark_read_parquet(sc,
+                                             name = "app_category", path = "/user/h_mifi/user/mifi_features/user/app_category_rfm_features",
+                                             memory = F, overwrite = T
+                                             )
+#+end_src
+
+***** 建模之前，需要检查 label 是否有缺失值？
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  model_data %>% group_by(label) %>% group_keys()
+#+end_src
+
+*如果有缺失值，那么就需要将缺失值给删除掉* 。
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+ model_data %>% filter(!is.na(data))
+#+end_src
+
+***** 过滤掉 provider/basicinfo_provider 为 1 的人群
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  sdf_data %>% filter(basicinfo_provider!=1)
+#+end_src
+
+为啥要过滤掉这部分人群，因为这部人人群是预授信人群，需要将其过滤掉。
+
+此类问题还有 credit_scence ==1 是预授信，==2 是申请制用户。
+
+***** 互金，自有数据有缺失的情况，哪些天需要 check! 自有数据需要跟庆荣确认，互金数据的 check 逻辑是
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  hj_ignore =spark_read_parquet(sc, "hujin_ign",path = "/user/h_mifi/user/mifi_pub/mifi_score/hj_v1.0", memory = F) %>% 
+      filter(date>=20191101 & date<=20200223) %>% my_sdf_collect()
+
+  hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>% filter(ovd>0.1 & credit_date %>% between(20191101,20191226)) %>% View()
+#+end_src
+
+***** 需要将 province 定义为 char，这样才能将其定义为 catgory
+***** 建模时，vars_ignore 变量中一定有 xiaomi_id,label,tag,credit_time,basicinfo_provider,province,mifi_user_date 等变量。
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  vars_ignore = c("label","tag","credit_time","basicinfo_provider","xiaomi_id","mifi_user_date","create_time", "update_time", "totalorg", "queryatotalorg", "infoquerybean", "update_date","create_date","key_id","province")  
+#+end_src
+
+***** 一定要重视错误，不管是 sparklyr 还是其他 R 包错误均要高度重视！*
+
+只要是出现红色文字还是黄色文字，都是在提醒，这个程序肯定有问题！
+
+***** 自营及贷超 label 有可能出现同一个人一天内有 2 个 label 的情况！需要将其删除！
+
+***** hdfs 文件地址不能出现＋等异常符号！！
+
+***** 不管是 get_file_from_hdfs 还是 push_file_to_hdfs 拉到本地文件均要重新命名！！*
+
+***** 需要检查是否有一人有多个 label 的现象！
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  model_data %>% group_by(xiaomi_id,credit_time) %>% 
+      select(xiaomi_id,credit_time,label) %>% summarise(n=n()) %>% arrange(desc(n))
+  n 大于2说明有问题!
+#+end_src
+
+***** 检查各 bin 系数是否满足单调性
+
+      #+begin_src R :results output graphics :file fig_1.png :exports both 
+        ##检查变量各bin系数是否满足单调性
+        fit_lr_step_V4 %>% coef() %>% 
+            as.data.frame() %>% 
+            rownames_to_column() %>% 
+            set_names(c("var_bin_name","value")) %>% 
+            tail(-1) %>% mutate(var_names=var_bin_name) %>% 
+            mutate_at("var_names",~str_sub(.,1,str_length(.)-4)) %>% 
+            mutate(num=var_bin_name) %>% mutate_at("num",~str_sub(.,str_length(.)-1,str_length(.))) %>% 
+            mutate(num_sort_d=num,num_sort=num) %>% group_by(var_names) %>% arrange(var_names,value) %>% 
+            mutate_at("num_sort",~sort(.,decreasing = T)) %>% 
+            mutate_at("num_sort_d",~sort(.)) %>% summarise(equal_ratio= (mean(num==num_sort_d|num==num_sort))) %>% 
+            filter(equal_ratio!=1)
+      #+end_src
+
+      #+begin_src R :results output graphics :file fig_1.png :exports both 
+var_names <- df %>% 
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
+  add_column(var_bin=df1$var) %>% 
+  mutate(num=var_bin) %>% 
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
+  group_by(var) %>% 
+  arrange(var,desc(value)) %>% 
+  mutate(num2=num) %>%
+  filter(num %ni% c("01")) %>% 
+  mutate_at("num2",~sort(.,decreasing = T)) %>% 
+  mutate(num3=num) %>% 
+  mutate_at("num3",~sort(.,decreasing = F)) %>% 
+  dplyr::summarise(equal_ratio=(mean(num==num2|num==num3))) %>% 
+  filter(equal_ratio!=1) %>% 
+  mutate(var_match=var) %>% 
+  map_at("var_match",~str_subset(.,"_id.*allnum$"))
+
+var_dis <- df %>% 
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
+  add_column(var_bin=df1$var) %>% 
+  mutate(num=var_bin) %>% 
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
+  group_by(var) %>% 
+  arrange(var,desc(value)) %>% 
+  mutate(num2=num) %>%
+  mutate_at("num2",~sort(.,decreasing = T)) %>% 
+  mutate(num3=num) %>% 
+  mutate_at("num3",~sort(.,decreasing = F)) %>% 
+  filter(var %in% var_names$var_match) %>% arrange(var,num) %>% 
+  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>% 
+  mutate(tag=if_else(value_new>0,"单调递减",
+                     if_else(value_new<0,"单调递增","1 group"))) %>% dplyr::count(var) %>% 
+  group_by(var) %>% 
+  mutate(var_dis=seq(n_distinct(var)))
+  
+id <- map2(var_dis$var_dis,var_dis$n,~rep(.x,.y)) %>% flatten_int()
+
+df %>% 
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
+  add_column(var_bin=df1$var) %>% 
+  mutate(num=var_bin) %>% 
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
+  group_by(var) %>% 
+  arrange(var,desc(value)) %>% 
+  mutate(num2=num) %>%
+  filter(num %ni% c("01")) %>% 
+  mutate_at("num2",~sort(.,decreasing = T)) %>% 
+  mutate(num3=num) %>% 
+  mutate_at("num3",~sort(.,decreasing = F)) %>% 
+  filter(var %in% var_names$var_match) %>% arrange(var,num) %>% 
+  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>% 
+  mutate(tag=if_else(value_new>0,"单调递减",
+                     if_else(value_new<0,"单调递增","1 group"))) %>% add_column(id=id) %>% select(id,var,var_bin,value,tag) %>% 
+  View()        
+      #+end_src
+
+***** 缺失值不能写成 if_else(y==NA,1,0),而要写成 if_else(is.na(y),1,0)！！
+***** filter 函数 filter(date == 20200327),一定要用==号，不能用=号
+***** 上传 hdfs 的验证集结果需要 check 数据列名，会遗失数据!!
+***** 数据 join 时一定要注意去重！！ 所以一定要精简变量！！
+***** 字符串大小写问题一定要注意，字符串一律定义为小写！！！
+
+      #+begin_src R ::results output graphics :file fig_1.png :exports both
+        data <- train_data %>% 
+            mutate(province = as.character(province)) %>% 
+            mutate_if(is.character,tolower) #将province定义为char,将所有char型改成小写.
+      #+end_src
+***** 建模的缺失值需要检查是否有“--”，"" 等不规则的字符串！
+
+可以通过以下代码 check 是否有“--”，"" 等不规则字符串。
+      #+begin_src R ::results output graphics :file fig_1.png :exports both
+        df <- tibble(x1 = c("","--",1), x2 = c(2,"",2),x3=c(1,3,4))
+        df %>% filter_all(any_vars(. == "--"))        
+      #+end_src
+
+如果有的话，需要利用以下代码将缺失值进行填充！
+
+train_test$train = train_test$train %>% 
+  mutate_at(vars(feat_cate),
+            funs(ifelse(. %in% c("--",NA,""),-99999,.)) 
+  ) 
+train_test$validate = train_test$validate %>% 
+  mutate_at(vars(feat_cate),
+            funs(ifelse(. %in% c("--",NA,""),-99999,.)) 
+  ) 
+***** provider/basicinfo_provider 都不能入模！
+
+*** 良好的编程习惯
+
+认真！认真！认真！争取一次性完成！
+*1. 别人写的 code 一定要 check!!!*
+
+*2. 复制沾贴的代码一定要 check!!!*
+
+3. 每次编程时只开一个确保只有一个页面窗口。
+
+4.一旦识别出表的主键，最好验证一下，看看它们能否真正唯一标识每个观测。一种验证方法是对主键进行 count() 操作，然后查看是否有 n 大于 1 的记录.
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  df1 %>% count(xiaomi_id,credit_time) %>% 
+      filter(n>1)    
+#+end_src
+
+5. 每写一行代码必须确保准确无误，不能抱着过后重复看的习惯。
+
+6.写代码时必须要专注，不能分心走神，写完的代码必须要检查一遍。
+
+7.代码业务问题必须要熟知，简明扼要地介绍取数逻辑。
+** 编程规范
+*** 上传代码 
+
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+      setwd("/home/work/rstudio-home/luyajun/git_code/mifi_model_prm")
+      system("ssh-keygen -f /home/work/.ssh/id_rsa_luyajun -t rsa -C 'work@tj1-ai-g2p4-finance01.kscn'")
+
+
+      system(sprintf("git config --local user.name '%s'", "luyajun"))
+      system(sprintf("git config --local user.email '%s'", "luyajun@xiaomi.com"))
+
+      system("git clone gitlab.luyajun:mengfangui/mifi_model_config")
+      system("git clone gitlab.luyajun:mengfangui/mifi_model_prm")
+      system("git clone gitlab.luyajun:mengfangui/mifi_model_pricing")      
+    #+end_src
+
+    #+begin_src R ::results output graphics :file fig_1.png :exports both 
+      
+      system("git branch -a")
+      system("git branch luyajun")
+      system("git checkout luyajun")
+      system("ls")
+
+      system("git status")
+      system("git add training_main_model_4_90.Rmd")
+      system("git commit -m '训练模型代码'")
+
+      system("git checkout master")
+      system("git merge luyajun")
+      system("git push origin luyajun")      
+    #+end_src
+
+如何删除文件？
+
+当我们需要删除暂存区或分支上的文件, 同时工作区也不需要这个文件了, 可以使用
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  git rm file_path
+  git commit -m 'delete somefile'
+  git push
+#+end_src
+
+当我们需要删除暂存区或分支上的文件, 但本地又需要使用, 只是不希望这个文件被版本控制, 可以使用
+
+#+begin_src R ::results output graphics :file fig_1.png :exports both
+  git rm --cached file_path
+  git commit -m 'delete remote somefile'
+  git push  
+#+end_src
+
+** 组外项目
+*** early mob
+通过 7 天的支用与多头数据预测其 30 天的逾期概率。     
+对于所有授信通过的用户，通过其授信后一周内的支用、外部多头、端内数据，预测其第 1 期 30 天逾期概率。 
+有何作用？ 用于提高对授信通过后第 1 期还款逾期 30 天样本的识别能力。
+*** 实时模型 label 标注模型
+应用于实时风险模型未成熟样本的 Label 标注.(什么是未成熟样本？猜是没有预期信息?)
+某月授信通过，且在其后 2-6 个月每月月底对所有未有 M1+一起表现的用户预测其在授信后 7 个月内逾期超过 30 天的概率。
+
+*** 信贷市场监控设计
+*** 反欺诈模型（lwj）
+*** 预授信模型（lwj）
+** 特征衍生
+主要利用 RFM 模型进行特征衍生。可以用来 *实现客户分层* 。
+R(recency):客户最近一次交易时间间隔。R 值越大，表示客户交易发生的日期越久，反之
+则表示客户交易发生的日期越近。
+F(frequency):客户在最近一段时间内交易的次数。F值越大，表示客户交易越频繁，反之则
+表示客户交易不够活跃。
+M(monetary):客户在最近一段时间内交易的金额。M值越大，表示客户价值越高，反之则表
+示客户价值越低。
+
+* Footnotes
+
+[fn:4] 先息后本和等额本息的区别是：1、先息后本是指项目每月付息，到期还本。（也就是说先息后本，他需要多付出一些利息）2、等额本息是指每月还部分本金和利息，回收本金递增，剩余本金不断减少，回收利息递减，但每月收到的回款本息都是相等的。
+
+[fn:3]该模式不仅通过表外融资为小额贷款公司提供持续的资金支持，而且扩大了银行微贷款业务规模，开辟了新的盈利增长点，实现了银行、微贷机构和小企业、低收入人群的多方共赢。金融中介机构（主要银行）提供资金，助贷机构负责获客、风控等环节，金融中介机构与助贷机构的风险与收益划分由双方协商决定。
+
+[fn:2]信托是委托人基于对受托人的信任，将其财产权委托给受托人，由受托人按委托人的意愿以自己的名义，为受益人的利益或特定目的，进行管理和处分的行为。 
+
+[fn:1] 
+保理（Factoring），全称保付代理，又称托收保付，是一个金融术语，指卖方将其现在或将来的基于其与买方订立的货物销售/服务合同所产生的应收账款转让给保理商（提供保理服务的金融机构），由保理商向其提供资金融通、买方资信评估、销售账户管理、信用风险担保、账款催收等一系列服务的综合金融服务方式。
+
+
+

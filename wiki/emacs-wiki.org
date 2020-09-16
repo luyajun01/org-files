@@ -35,6 +35,8 @@
   - [[#magit][magit]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
+  - [[#pyim][pyim]]
+    - [[#手动加词和删词][手动加词和删词]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
     - [[#ess][ess]]
 
@@ -324,6 +326,17 @@ rollback：git reset --soft <commit>，保持当前文件修改的状态，版�
 
 参考文献：
 https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
+** pyim
+*** 手动加词和删词
+
+`pyim-create-Ncchar-word-at-point 这是一组命令，从光标前提取 N 个汉字字符组成字符串，并将其加入个人词库。
+
+`pyim-translate-trigger-char' 以默认设置为例：在“我爱吃红烧肉”后输入“5v” 可以将“爱吃红烧肉”这个词条保存到用户个人词库。
+
+`pyim-create-word-from-selection', 选择一个词条，运行这个命令后，就可以将这个词条添加到个人词库。
+
+`pyim-delete-word' 从个人词库中删除当前高亮选择的词条。
+
 
 ** 安装各种包遇到的坑
 *** ess
