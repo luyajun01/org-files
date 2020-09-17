@@ -25,3 +25,9 @@
       :END:
 ***** STARTED 了解 lispy,lispyville 
       SCHEDULED: <2020-09-17 Thu>
+***** STARTED 业务方面
+      SCHEDULED: <2020-09-17 Thu>
+***** STARTED 读一本关于金融类的书籍
+      SCHEDULED: <2020-09-17 Thu>
+***** STARTED 不看斗音
+      SCHEDULED: <2020-09-17 Thu>

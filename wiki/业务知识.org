@@ -71,7 +71,6 @@
         - [[#多头拦截相关问题][多头拦截相关问题]]
       - [[#v7-模型][V7 模型]]
       - [[#如何查看不同渠道用户][如何查看不同渠道用户？]]
-    - [[#已上线模型的-score-地址][已上线模型的 score 地址]]
     - [[#人群风险分档][人群风险分档]]
     - [[#模型效力评价][模型效力评价]]
       - [[#区分度指标][区分度指标]]
@@ -81,7 +80,6 @@
       - [[#取样本][取样本：]]
       - [[#数据存储格式][数据存储格式：]]
     - [[#信用评分卡建模流程][信用评分卡建模流程]]
-    - [[#内存问题][内存问题]]
     - [[#kill-进程][kill 进程]]
     - [[#常见错误][常见错误！！]]
       - [[#粗心导致的错误][粗心导致的错误]]
@@ -140,8 +138,8 @@
 *** 模型的通过率
 大致在 40% 左右。
 *** 怎么去判断隐私数据还是公开数据？
-
 *** 收益率怎么计算？
+利差统计口径是啥?
 *** 小米这边的 label 是如何定义的？
 只要有一次没还，就判定为违约？
 *** 帐户迁移率怎么计算？
@@ -408,19 +406,19 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 业务规模限制的影响无法完全消化其积累的用户流量，例如各地监管对小额贷款公司通常会
 有一定的资金杠杆限制，因此选择对外输出多余的流量。
 
-国家有关部门在出台小额贷款公司政策时，规定小额贷款公司为一般工商企业，只能向两家金融机构融资，且融资额不超过净资本的 50%.(这杠杆不到 1 倍？)
-根据目前北京市的政策，小贷公司的杠杆放宽至 3 倍。
+国家有关部门在出台小额贷款公司政策时，规定小额贷款公司为一般工商企业，只能向两家
+金融机构融资，且融资额不超过净资本的 50%.(这杠杆不到 1 倍？) 
+
+*根据目前北京市的政策，小贷公司的杠杆放宽至 3 倍。*
 
 *** 业务种类
 目前，小米金融的业务种类包括：供应链金融、小米理财、小米保险、支付。小米信贷包括两类：小米贷款、小米分期。
 
-硬件服务端有：小米贷款 APP、小米金融 app、小米钱包安全组件、极速版－安卓 *（这是
-什么？）*、微信 h5。
+硬件服务端有：小米贷款 APP、小米金融 app、小米钱包安全组件、极速版－安卓、微信 h5。
 
 2020 年初新增了消费金融。消费金融\小贷差异：
 
-消费金融的要求更高，业务内容更加广泛，涉及办理
-个人消费贷款，信贷资产转让，境内同业同业拆借，境内金融机构借款，发行发型金融债券，
+消费金融的要求更高，业务内容更加广泛，涉及办理个人消费贷款，信贷资产转让，境内同业同业拆借，境内金融机构借款，发行发型金融债券，
 固定收益类证券投资业务
 
 总结起来就是，消费金融的业务内容更多，资金来源也不同。
@@ -597,7 +595,7 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
 ***** 如何对不同的人群进行查验 auc？
 去 loaning_fact 表中，去察看 basicinfo_source(授信来源),也可以去看看 basicinfo_business_channel,basicinfo_cash_strategy_provider,basicinfo_group_provider.
  #+begin_src R ::results output graphics :file fig_1.png :exports both
-   loaning_fact=spark_read_parquet(sc, "loaning_fact",path = "/user/h_data_platform/platform/mifi/mifidw_loaning_fact", memory = F) %>% filter(date=20190227)
+ loaning_fact=spark_read_parquet(sc, "loaning_fact",path = "/user/h_data_platform/platform/mifi/mifidw_loaning_fact", memory = F) %>% filter(date=20190227)
  #+end_src
 
 **** 聚信力多头规则替换反欺诈
@@ -825,22 +823,6 @@ sdf_cp_credit_instruction =
        
      #+end_src
 
-*** 已上线模型的 score 地址
-
-从这个地址可以查看已上线的各版模型分数。
-
-   #+begin_src R ::results output graphics :file fig_1.png :exports both
-     /user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data
-
-                                         mifi_model_prm_risk_score <- spark_read_parquet(sc, "mifi_model_prm_risk_score", "/user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data")
-                                         sdf_score <- sdf_id %>%
-                                           left_join(mifi_model_prm_risk_score %>%
-                                             filter(version == "6.12") %>%
-                                             distinct(),
-                                           by = c("xiaomi_id", "create_date" = "credit_time")
-                                           )
-   #+end_src
-
 *** 人群风险分档
 政策根据模型分以及自身策略规则，将人群进行分档。以便用于用户提额，提价等等。
 一般将人群分为 A,B,C,D 四档。
@@ -932,21 +914,6 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
     KS
     预测分分布及 PSI
 
-*** 内存问题
-
-  > Error in mcfork() : 
-    unable to fork, possible reason: Cannot allocate memory
-
-  将 mc_cores 值降低
-  ```{r}
-  mc_cores <- 5
-  ```
-
-  或者利用 doMC 包解决这个问题
-  ```{r}
-  library(doMC)
-  registerDoMC(5)
-  ```
   ## 2.建表
   在数据工厂中进行建表，界面已经截图。
   需要注意几个地方，一是数据类型:
@@ -1295,12 +1262,11 @@ train_test$validate = train_test$validate %>%
 *** 预授信模型（lwj）
 ** 特征衍生
 主要利用 RFM 模型进行特征衍生。可以用来 *实现客户分层* 。
-R(recency):客户最近一次交易时间间隔。R 值越大，表示客户交易发生的日期越久，反之
-则表示客户交易发生的日期越近。
-F(frequency):客户在最近一段时间内交易的次数。F值越大，表示客户交易越频繁，反之则
-表示客户交易不够活跃。
-M(monetary):客户在最近一段时间内交易的金额。M值越大，表示客户价值越高，反之则表
-示客户价值越低。
+R(recency):客户最近一次交易时间间隔。R 值越大，表示客户交易发生的日期越久，反之则表示客户交易发生的日期越近。
+
+F(frequency):客户在最近一段时间内交易的次数。F值越大，表示客户交易越频繁，反之则表示客户交易不够活跃。
+
+M(monetary):客户在最近一段时间内交易的金额。M值越大，表示客户价值越高，反之则表示客户价值越低。
 
 * Footnotes
 
