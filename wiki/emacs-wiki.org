@@ -26,6 +26,7 @@
       - [[#swiper-thing-at-point][swiper-thing-at-point.]]
   - [[#helm][helm]]
   - [[#evil][evil]]
+  - [[#lispyville][lispyville]]
   - [[#org][org]]
     - [[#配置][配置]]
     - [[#evil-org-mode][evil-org-mode]]
@@ -35,8 +36,10 @@
   - [[#hydra][hydra]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
-  - [[#pyim][pyim]]
-    - [[#手动加词和删词][手动加词和删词]]
+  - [[#little-packages][little packages]]
+    - [[#pyim][pyim]]
+      - [[#手动加词和删词][手动加词和删词]]
+    - [[#color-rg][color-rg]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
     - [[#ess][ess]]
 
@@ -114,7 +117,10 @@
 | 命令              | 快捷键 |
 | counsel-mark-ring | spc-c-m |
 *** counsel-rg
-这个包可以跨文件搜索 char 关键词。很方便的。
+    这个包可以跨文件搜索 char 关键词。很方便的。
+在 windows 里，download 地址 https://github.com/BurntSushi/ripgrep/releases, 然
+后记得把它的文件夹放在 path 里。
+
 *** counsel-etags-grep
 功能类似于 counsel-rg, 也可以进行搜索词汇.
 *** counsel-descbind
@@ -198,9 +204,21 @@ visual mode
 复原
 重复上一操作
 ctrl + r
+** lispyville
+这个插件我一直想学会！ motion normal visual 三种状态，快捷键不一样！
+
+;; before (cursor at |)
+(foo  ; bar baz)
+
+| 功能 | 快捷键                               | states |
+| J    | evil-join (将下行内容直接拉倒同一行) | normal |
+| ;    | comment                              | normal |
+|      |                                      |        |
+
+
 
 ** org
-喜欢打开 org-indent-mode.这样可以同样 level 下标题能够缩进。
+喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
 *** 配置
     #+begin_src lisp
       (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-, 
@@ -250,9 +268,13 @@ org-set-tags-command(c-c c-q) 放在第一个标题后面输入这个命令,即�
 https://www.zhihu.com/topic/19649552/hot
 可以方便地记录每项工作花费的时间.
 
+- 工作状态
+
+很方便, t 即可!
+
 - 安排任务时间
 
-使用快捷键 Ctrl c + Ctrl s 就可以安排对应任务的时间了.
+使用快捷键 c-c c-s 就可以安排对应任务的时间了.
 
 - 任务计时
 
@@ -281,8 +303,9 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 
 参考文献：
 https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
-** pyim
-*** 手动加词和删词
+** little packages
+*** pyim
+**** 手动加词和删词
 
 `pyim-create-Ncchar-word-at-point 这是一组命令，从光标前提取 N 个汉字字符组成字符串，并将其加入个人词库。
 
@@ -291,8 +314,15 @@ https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemac
 `pyim-create-word-from-selection', 选择一个词条，运行这个命令后，就可以将这个词条添加到个人词库。
 
 `pyim-delete-word' 从个人词库中删除当前高亮选择的词条。
+*** color-rg
+挨吗，太用了！
+https://github.com/manateelazycat/color-rg
 
+(add-to-list 'load-path "<path-to-color-rg>") ; add color-rg to your load-path
+(require 'color-rg)
 
+color-rg-search-input 谁用谁知道。
+    
 ** 安装各种包遇到的坑
 *** ess
 这个包遇到的坑何其多，所以记录详细配置过程。
@@ -312,4 +342,5 @@ ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉
   sessionInfo()
   #+END_SRC
 
+  
   
