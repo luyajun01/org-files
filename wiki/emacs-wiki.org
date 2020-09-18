@@ -28,6 +28,7 @@
   - [[#helm][helm]]
   - [[#evil][evil]]
   - [[#lispyville][lispyville]]
+  - [[#treemacs][treemacs]]
   - [[#org][org]]
     - [[#配置][配置]]
     - [[#evil-org-mode][evil-org-mode]]
@@ -227,8 +228,10 @@ ctrl + r
 
 
 Spacemacs
+** treemacs
+这个包类似于.
 
-
+   
 ** org
 喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
 *** 配置

@@ -1594,7 +1594,6 @@ df=pd.DataFrame(np.random.randn(4,3),columns=list('bde'),index=['utah','ohio','t
 import pandas as pd
 #+end_src
 
-
 数据列名重命名。
     #+begin_src python
 import pandas as pd
@@ -1649,7 +1648,7 @@ s = pd.Series(["a", "b"], dtype="category")
 s 
 #+end_src
 
-在 dataframe 是也可以将变量转换为 因子型。
+在 dataframe 是也可以将变量转换为因子型。
 
 #+begin_src python
  df = pd.DataFrame({"A":["a","b"]})

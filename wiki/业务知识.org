@@ -35,6 +35,8 @@
     - [[#止付][止付]]
     - [[#用户导流][用户导流]]
     - [[#融资租赁][融资租赁]]
+    - [[#收益率][收益率]]
+    - [[#年月日利率][年/月/日利率]]
   - [[#小米金融][小米金融]]
     - [[#商业模式][商业模式]]
     - [[#业务种类][业务种类]]
@@ -394,11 +396,27 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 出租人与用户订立一项租赁合同，将设备出租给用户，并向用户收取一定的租金。
 
 说白了就是，在所有资金到位前，用户只拥有商品的使用权，没有商品的所有权。
+*** 收益率
+100 天的年化收益率为 12%.其实并不是投入 10 万,100 天后就能得到 11.2 万.
+
+这里的 trick 在于年化收益率,我们只享受了 100 天,只占了一年 365 天的 27.4%.所以一
+年年享受的 12000 收益,也只能计算 27.4%的那部分:
+12000 * 27.4% = 3288 元
+
+和年华收益相关的指标是 "近*年收益"或 "成立以来收益". 每个月定投 1000 元,一年投了
+12 期,12000 元, 定投结束连本带利赎回了 15000 元,那么定投这只基金的 "近一年定投收
+益"就是 :
+
+(15000-12000)/12000 = 25%.
+
+年化收益率就是一整年的收益率，年化 4.6%就是存一万一年利息 460 元人民币，7天的收益＝460÷365x7.
+
+
+*** 年/月/日利率  
 
 ** 小米金融
 *** 商业模式
-助贷，联合贷等
-对于网络贷款业务而言，资金\流量\风控三者是有机组成。像银行等传统金融机构本身具有资金和放贷业务资质，但是缺乏线上获客渠道\能力，资金利用率不高。
+助贷，联合贷等对于网络贷款业务而言，资金\流量\风控三者是有机组成。像银行等传统金融机构本身具有资金和放贷业务资质，但是缺乏线上获客渠道\能力，资金利用率不高。
 
 对互联网平台而言，为资金方发放贷款进行导流是其实实现自身流量变现的一条有效渠道。
 一方面，部分导流方本身并不具备放贷业务资质，只能选择向具备放贷资质的机构输出流量。
@@ -634,7 +652,7 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
      distinct(xiaomi_id, credited_time, credit_date, creditStatus, model_version)
  
  sdf_pass <- sdf_id %>% left_join(sdf_credit_composite_model %>% group_by(xiaomi_id,credit_date) %>% arrange(desc(credited_time)) %>%
-   filter(row_number()==1) %>% ungroup() %>% select(-credited_time) %>% distinct(),by = c("xiaomi_id","create_date"="credit_date"))
+                                  filter(row_number()==1) %>% ungroup() %>% select(-credited_time) %>% distinct(),by = c("xiaomi_id","create_date"="credit_date"))
  
  sdf_credit_composite_model %>% group_by(creditStatus) %>% tally() 
 #+end_src
@@ -648,11 +666,11 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
                                             path = "/user/h_data_platform/platform/mifi/ods_mifidw_lm_user_register",
                                             memory = F
                                           ) %>%
-                                            filter(date == "20190901") %>%
-                                            mutate(credit_time = from_unixtime(as.numeric(credit_time)/1000,"yyyyMMdd")) %>%
-                                            filter(credit_time >= "20190401" & credit_time < "20190901") %>%
-                                            select(xiaomi_id, status, credit_time) %>%
-                                            distinct() %>% my_sdf_collect()  
+                                             filter(date == "20190901") %>%
+                                             mutate(credit_time = from_unixtime(as.numeric(credit_time)/1000,"yyyyMMdd")) %>%
+                                             filter(credit_time >= "20190401" & credit_time < "20190901") %>%
+                                             select(xiaomi_id, status, credit_time) %>%
+                                             distinct() %>% my_sdf_collect()  
  #+end_src
 
 ** 业务相关内容
@@ -698,9 +716,9 @@ mf_dm_data_library()
                              amount_source="character",credit_action="character",refuse_reason="character",high_risk_score="double")) %>% 
   mutate(credit_time = from_unixtime(as.numeric(credited_time) / 1000, "yyyyMMdd"))
 
-sdf_V6_36_duotoupass %>% 
-  inner_join(sdf_credit_composite_model %>% select(xiaomi_id, credit_time, creditStatus) %>% 
-               filter(creditStatus == "1"), by = c("xiaomi_id", "credit_time")) %>% 
+      sdf_V6_36_duotoupass %>% 
+          inner_join(sdf_credit_composite_model %>% select(xiaomi_id, credit_time, creditStatus) %>% 
+                     filter(creditStatus == "1"), by = c("xiaomi_id", "credit_time")) %>% 
   spark_write_csv(path = "/user/h_mifi/user/luyajun/temp/V6_36_duotoupass_sx.csv")     
     #+end_src
 
@@ -718,7 +736,7 @@ sdf_V6_36_duotoupass %>%
 *此外，在建模过程中，需要对 provider 也要进行过滤筛选！*
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))
+sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))
 #+end_src
 
 1 期 label 地址
@@ -765,8 +783,7 @@ sdf_V6_36_duotoupass %>%
       select(xiaomi_id, credit_time, basicinfo_provider,label, tag),
       sdf_label_dc %>% mutate(basicinfo_provider="dc",tag = "dc") %>%
       filter(credit_time > "20191031") %>%
-      select(xiaomi_id, credit_time, label,basicinfo_provider ,tag)
-  ) %>% distinct() # %>% my_sdf_collect()  
+      select(xiaomi_id, credit_time, label,basicinfo_provider ,tag)) %>% distinct() # %>% my_sdf_collect()  
 #+end_src
 
 ***** 多头拦截相关问题 
@@ -794,9 +811,9 @@ sdf_cp_credit_instruction =
                              "cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12",
                              "instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source",
                              "credit_scene","nominal_cash_rate","nominal_rate_version","component_name")) %>% 
-  mutate(credit_date = from_unixtime(credit_time/1000, 'yyyyMMdd')) %>% 
-  filter(credit_date == schedule_date) %>% 
-  distinct(xiaomi_id, credit_date) %>% 
+    mutate(credit_date = from_unixtime(credit_time/1000, 'yyyyMMdd')) %>% 
+    filter(credit_date == schedule_date) %>% 
+    distinct(xiaomi_id, credit_date) %>% 
   mutate(credit_date = as.numeric(credit_date))
   
 #credit_scene ==1,预授信，==2，申请制
@@ -883,7 +900,7 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
 
 2.数据初步筛选
 
-    信息值 IV(>=0.02)
+信息值 IV(>=0.02)
     覆盖率与数据质量（极大值极小值平均值众数等）
     *单变量分析：坏账率随变量值变化是否单调*
 
@@ -1021,19 +1038,19 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
 ***** 建模之前，需要检查 label 是否有缺失值？
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  model_data %>% group_by(label) %>% group_keys()
+model_data %>% group_by(label) %>% group_keys()
 #+end_src
 
 *如果有缺失值，那么就需要将缺失值给删除掉* 。
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
- model_data %>% filter(!is.na(data))
+model_data %>% filter(!is.na(data))
 #+end_src
 
 ***** 过滤掉 provider/basicinfo_provider 为 1 的人群
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  sdf_data %>% filter(basicinfo_provider!=1)
+sdf_data %>% filter(basicinfo_provider!=1)
 #+end_src
 
 为啥要过滤掉这部分人群，因为这部人人群是预授信人群，需要将其过滤掉。
@@ -1042,10 +1059,10 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
 
 ***** 互金，自有数据有缺失的情况，哪些天需要 check! 自有数据需要跟庆荣确认，互金数据的 check 逻辑是
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  hj_ignore =spark_read_parquet(sc, "hujin_ign",path = "/user/h_mifi/user/mifi_pub/mifi_score/hj_v1.0", memory = F) %>% 
-      filter(date>=20191101 & date<=20200223) %>% my_sdf_collect()
+hj_ignore =spark_read_parquet(sc, "hujin_ign",path = "/user/h_mifi/user/mifi_pub/mifi_score/hj_v1.0", memory = F) %>% 
+    filter(date>=20191101 & date<=20200223) %>% my_sdf_collect()
 
-  hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>% filter(ovd>0.1 & credit_date %>% between(20191101,20191226)) %>% View()
+hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>% filter(ovd>0.1 & credit_date %>% between(20191101,20191226)) %>% View()
 #+end_src
 
 ***** 需要将 province 定义为 char，这样才能将其定义为 catgory
