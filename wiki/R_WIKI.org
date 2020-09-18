@@ -3762,6 +3762,32 @@ super assignment, <<-.The ancestors of an environment have an important relation
 
 #+end_src
 
+*** tryCatch
+These functions provide a mechanism for handling unusual conditions, including errors and warnings. 这些函数在 debug 时会显得非常有用。
+
+#+begin_src R :results output graphics :file fig_1.png :exports both 
+  e <- simpleError("test error")
+  stop(e)
+                                        #> Error: test error
+  tryCatch(stop(e), finally = print("Hello"))
+                                        #> Error: test error
+                                        #> [1] "Hello"
+#+end_src
+
+类似的函数还有 tryCatch(expr, ..., finally)
+withCallingHandlers(expr, ...)
+globalCallingHandlers(...)
+
+signalCondition(cond)
+
+simpleCondition(message, call = NULL)
+simpleError    (message, call = NULL)
+simpleWarning  (message, call = NULL)
+simpleMessage  (message, call = NULL)
+
+errorCondition(message, ..., class = NULL, call = NULL)
+warningCondition(message, ..., class = NULL, call = NULL)
+
 ** dplyr
 这个包主要包括 5 个核心函数，分别是:
 *** filter
@@ -8423,8 +8449,7 @@ The level of response that will be considered a success, as a string. Needed for
 #+end_src
 
 *** expr 
-此节开始的地方，需要明确下概念，即 expr 和 enexpr 之间的区别。 
-expr 和 sym 一样均属于 quote 范畴，unquote 需要就借助于!!,!!!。
+此节开始的地方，需要明确下概念，即 expr 和 enexpr 之间的区别。expr 和 sym 一样均属于 quote 范畴，unquote 需要就借助于!!,!!!。
 
 |      | developer | user      |
 | one  | expr()    | enexpr()  |
@@ -8634,7 +8659,6 @@ Quotation is a mechanism by which an expression supplied as argument is captured
      #+end_src
 *** sym
 sym 和 quote 命令类似。差异如下。
-
 #+begin_src R :results output graphics :file fig_1.png :exports both 
   sym("cyl") %>% str()
                                         #>  symbol cyl

@@ -21,9 +21,10 @@
     - [[#counsel-google][counsel-google]]
     - [[#counsel-bookmark][counsel-bookmark]]
   - [[#swiper][swiper]]
-      - [[#swiper-all-thing-at-point][swiper-all-thing-at-point.]]
-      - [[#swiper-isearch-thing-at-point][swiper-isearch-thing-at-point.]]
-      - [[#swiper-thing-at-point][swiper-thing-at-point.]]
+    - [[#my-swiper-search][my-swiper-search]]
+    - [[#swiper-all-thing-at-point][swiper-all-thing-at-point.]]
+    - [[#swiper-isearch-thing-at-point][swiper-isearch-thing-at-point.]]
+    - [[#swiper-thing-at-point][swiper-thing-at-point.]]
   - [[#helm][helm]]
   - [[#evil][evil]]
   - [[#lispyville][lispyville]]
@@ -32,6 +33,7 @@
     - [[#evil-org-mode][evil-org-mode]]
     - [[#toc-org][toc-org]]
     - [[#org-agenda][org-agenda]]
+    - [[#org-download][org-download]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
   - [[#shell][shell]]
@@ -142,9 +144,11 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 还没弄懂!
 
 ** swiper 
-**** swiper-all-thing-at-point.
-**** swiper-isearch-thing-at-point.
-**** swiper-thing-at-point.
+*** my-swiper-search
+快速返回上一次搜索结果.好用!
+*** swiper-all-thing-at-point.
+*** swiper-isearch-thing-at-point.
+*** swiper-thing-at-point.
 
 ** helm
 
@@ -163,7 +167,7 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 | p    | 粘贴   |
 | d    | 剪切   |
 | y    | 复制   |
-|      |        |  
+| v    | 快速跳转到 visual state |
 
 以行/列为单位移动，h,j,k,l
 y =i
@@ -210,11 +214,19 @@ ctrl + r
 ;; before (cursor at |)
 (foo  ; bar baz)
 
+在 vi 的世界里，yank 是 copy 的意思，save-to-kill-ring 是复制。
+
 | 功能 | 快捷键                               | states |
 | J    | evil-join (将下行内容直接拉倒同一行) | normal |
 | ;    | comment                              | normal |
-|      |                                      |        |
+| y    | yank (copy)                          | normal |
+| dd   | delete                               | normal |
+| cc   | delete the line, then insert         | normal |
+| c    | change                               | normal    |
 
+
+
+Spacemacs
 
 
 ** org
@@ -279,7 +291,10 @@ https://www.zhihu.com/topic/19649552/hot
 - 任务计时
 
 我们将光标移动到想要进行时间记录的任务上，然后按 Ctrl c + Ctrl x + Ctrl i 就能够进行任务开始时间的记录了
-
+*** org-download
+abo 大神还有多少好东西!
+可以下载图片,以后有空研究.
+https://github.com/abo-abo/org-download
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
 bm-remove-all-buffers 可以删除所有标记的 bookmark,真的很方便！
