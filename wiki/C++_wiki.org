@@ -1,8 +1,126 @@
-* C/C++_wiki
+* C/C++_wiki                                                            :toc:
+  - [[#常见问题][常见问题]]
+  - [[#注释][注释]]
+  - [[#一个典型-c-语言程序][一个典型 C 语言程序]]
+  - [[#clion][clion]]
+  - [[#存储类][存储类]]
+  - [[#标识符][标识符]]
+  - [[#关键字][关键字]]
+  - [[#空格][空格]]
+  - [[#运算符][运算符]]
+  - [[#判断][判断]]
+    - [[#switch][switch]]
+  - [[#struct][struct]]
+  - [[#union][union]]
+  - [[#typedef][typedef]]
+  - [[#循环][循环]]
+    - [[#while][while]]
+    - [[#for][for]]
+  - [[#函数][函数]]
+  - [[#getchar][getchar]]
+  - [[#gets][gets]]
+  - [[#scanf][scanf]]
+  - [[#类型变换][类型变换]]
+  - [[#错误处理][错误处理]]
+  - [[#c-数据类型][C 数据类型]]
+  - [[#作用域规则][作用域规则]]
+  - [[#变量][变量]]
+  - [[#常量][常量]]
+  - [[#数组][数组]]
+  - [[#字符串][字符串]]
+  - [[#enum枚举][enum(枚举)]]
+  - [[#指针][指针]]
+    - [[#什么是指针][什么是指针？]]
+    - [[#如何使用指针][如何使用指针？]]
+    - [[#函数指针][函数指针]]
+    - [[#回调函数][回调函数]]
+  - [[#includestdioh][#include<stdio.h>]]
+  - [[#int-mainvoid][int main(void)]]
+    -  [[#printf][printf]]
+    - [[#算术运算符][算术运算符]]
+  - [[#c-11][C++ 11]]
+    - [[#auto][auto]]
+  - [[#变量与常量数据][变量与常量数据]]
+  - [[#数组-1][数组]]
+  - [[#sizeof][sizeof]]
+  - [[#基本输入与输出][基本输入与输出]]
+  - [[#c-语言特点][C++ 语言特点]]
+  - [[#命名空间][命名空间]]
+  - [[#常用数据类型][常用数据类型]]
+    - [[#const][const]]
+    - [[#vector][Vector]]
+      - [[#size][size]]
+    - [[#matrix][Matrix]]
+    - [[#multidimensional-array][Multidimensional Array]]
+    - [[#list][List]]
+    - [[#dataframe][DataFrame]]
+    - [[#for-循环][for 循环]]
+    - [[#while-1][while]]
+  - [[#rcpp][Rcpp]]
+    - [[#mac-配置坑][Mac 配置坑]]
+    - [[#rcpparmadillo][RcppArmadillo]]
+      - [[#asarma][as<arma::>]]
+      - [[#matrix-1][matrix]]
+        - [[#randu-生成][randu 生成]]
+      - [[#转置][转置]]
+      - [[#as_colas_row][as_col/as_row]]
+      - [[#求解方程][求解方程]]
+      - [[#求内积][求内积]]
+      - [[#qr-分解][QR 分解]]
+      - [[#eigen-value][eigen value]]
+      - [[#cholesky-分解][cholesky 分解]]
+      - [[#矩阵计算][矩阵计算]]
+      - [[#i][(i)]]
+      - [[#fillk][fill(k)]]
+      - [[#abs][abs]]
+      - [[#resize][resize]]
+        -  [[#reshape][reshape]]
+        -  [[#oneszeros][ones/zeros]]
+        -  [[#index][index]]
+        -  [[#index-entire-rows][index entire rows]]
+        -  [[#行列式][行列式]]
+      - [[#set_size][set_size]]
+      - [[#向量操作][向量操作]]
+        - [[#headtail][head/tail]]
+        - [[#向量表示][向量表示]]
+        - [[#row][Row]]
+        - [[#linspace][linspace]]
+        - [[#regspace][regspace]]
+        - [[#rbindcbind][rbind/cbind]]
+        - [[#which][which]]
+      - [[#member-function--variable][member function & variable]]
+      - [[#for-loop][for loop]]
+      - [[#for_each][for_each]]
+      - [[#while-2][while]]
+      - [[#eye][eye]]
+    - [[#rcpp-1][Rcpp]]
+      - [[#attributes][attributes]]
+      - [[#na][NA]]
+      - [[#map][map]]
+      - [[#list-1][List]]
+        - [[#list2dataframe][list2data.frame]]
+      - [[#surgar][surgar]]
+        - [[#pow][pow]]
+        - [[#is_true][is_true]]
+        - [[#all][all]]
+        - [[#is_na][is_na]]
+        - [[#seq_len][seq_len]]
+        - [[#ifelse][ifelse]]
+        - [[#sign][sign]]
+        - [[#diff][diff]]
+      - [[#sexp][SEXP]]
+      - [[#date][date]]
+      - [[#transformlambda][transform/lambda]]
+      - [[#call-r-function][call R function]]
+      - [[#rmath][Rmath]]
+      - [[#rcount][Rcount]]
+      - [[#rprintf][Rprintf]]
+      - [[#dataframe-1][DataFrame]]
+    - [[#rcppeign][RcppEign]]
+  - [[#print][print]]
+      - [[#lm-估计][lm 估计]]
 
-c 语言有个特点就是每行代码都需要加个分号。
-发现 c 程序里也能运行 c++ 程序。
-** 常见问题 
+** 常见问题
 
 - fatal error: RcppEigen.h: No such file or directory
 
@@ -13,17 +131,17 @@ https://stackoverflow.com/questions/22596370/fatal-error-rcppeigen-h-no-such-fil
 // [[Rcpp::depends(RcppEigen)]]
    #+end_src
 
-** 注释 
+** 注释
 C++包含两种注释，注释界定符/**/通常用于多行注释，而双斜杠//通常用于单行或半行注释。
 
 clion 里面注释的快捷键是 shift+command+/.
 
-** 一个典型 C 语言程序 
+** 一个典型 C 语言程序
    #+begin_src c :includes <stdio.h>
      #include <stdio.h> //包含标准库的信息
      int main() //定义名为main 的函数，它不接受参数值，main 函数的语句都被括在花括号里
 {
-    printf("hello, world\n"); //main 函数调用库函数printf 以显示字符序列；\n 代表换行符  
+    printf("hello, world\n"); //main 函数调用库函数printf 以显示字符序列；\n 代表换行符
 }
    #+end_src
 
@@ -31,6 +149,9 @@ clion 里面注释的快捷键是 shift+command+/.
 程序的第一行 #include <stdio.h> 是预处理器指令，告诉 C 编译器在实际编译之前要包含 stdio.h 文件。下一行 int main() 是主函数，程序从这里开始执行。下一行 /*...*/ 将会被编译器忽略，这里放置程序的注释内容。它们被称为程序的注释。下一行 printf(...) 是 C 中另一个可用的函数，会在屏幕上显示消息 "Hello, World!"。下一行 return 0; 终止 main() 函数，并返回值 0。
 
 在 C 程序中，分号是语句结束符。也就是说，每个语句必须以分号结束。它表明一个逻辑实体的结束。C 语言有两种注释方式：以 // 开始的单行注释，这种注释可以单独占一行。/* */ 这种格式的注释可以单行或多行。
+
+** clion
+windows 里使用 clion, new project -> c  executable, 然后就可以愉快编程了。
 
 ** 存储类
 https://www.runoob.com/cprogramming/c-storage-classes.html
@@ -44,9 +165,22 @@ auto 存储类是所有局部变量默认的存储类。
 
 register 存储类用于定义存储在寄存器中而不是 RAM 中的局部变量。这意味着变量的最大尺寸等于寄存器的大小（通常是一个词），且不能对它应用一元的 '&' 运算符（因为它没有内存位置）。
 
+
+
 - static
 
 static 存储类指示编译器在程序的生命周期内保持局部变量的存在，而不需要在每次它进入和离开作用域时进行创建和销毁。因此，使用 static 修饰局部变量可以在函数调用之间保持局部变量的值。
+
+#+begin_src python
+import numpy as np
+import pandas
+import
+
+
+#+end_src
+
+
+
 
 - extern
 
@@ -103,7 +237,7 @@ int age;
 
 - 算术运算符
 
-+\-\*\/\%\++\-- 
++\-\*\/\%\++\--
 
 - 关系运算符
 
@@ -116,7 +250,7 @@ int age;
 
 |运算符	| 描述 |	实例 |
 |&&|	称为逻辑与运算符。如果两个操作数都非零，则条件为真。 |	(A && B) 为假。 |
-|||| 	称为逻辑或运算符。如果两个操作数中有任意一个非零，则条件为真。 |
+||||    称为逻辑或运算符。如果两个操作数中有任意一个非零，则条件为真。 |
 |!|	称为逻辑非运算符。用来逆转操作数的逻辑状态。如果条件为真则逻辑非运算符将使其为假。| (A || B) 为真。|
 
 
@@ -127,14 +261,14 @@ int age;
 
 |运算符 |	描述 |	实例 |
 |+ |	把两个操作数相加 |	A + B 将得到 30 |
-|-10 | 	从第一个操作数中减去第二个操作数 |	A - B 将得到 -10| 
+|-10 |  从第一个操作数中减去第二个操作数 |	A - B 将得到 -10|
 |*|	把两个操作数相乘 |	A * B 将得到 200|
 |/|	分子除以分母|	B / A 将得到 2|
 |%|	取模运算符，整除后的余数|	B % A 将得到 0|
 |++|	自增运算符，整数值增加 1|	A++ 将得到 11|
 |--|	自减运算符，整数值减少 1|	A-- 将得到 9|
 
-** 判断 
+** 判断
 1.if 语句。一个 if 语句 由一个布尔表达式后跟一个或多个语句组成。
 
 2.if...else 语句。一个 if 语句 后可跟一个可选的 else 语句，else 语句在布尔表达式为假时执行。
@@ -152,10 +286,10 @@ int age;
     printf("输入一个数字 ： ");
     scanf("%d", &num);
     (num%2==0)?printf("偶数"):printf("奇数");
-} 
+}
 #+end_src
 
-*** switch 
+*** switch
 意思是先计算表达式的值，再逐个和 case 后的常量表达式比较，若不等则继续往下比较，若一直不等，则执行 default 后的语句；若等于某一个常量表达式，则从这个表达式后的语句开始执行，并执行后面所有 case 后的语句。
 
 与 if 语句的不同：if 语句中若判断为真则只执行这个判断后的语句，执行完就跳出 if 语句，不会执行其他 if 语句；而 switch 语句不会在执行判断为真后的语句之后跳出循环，而是继续执行后面所有 case 语句。在每一 case 语句之后增加 break 语句，使每一次执行之后均可跳出 switch 语句，从而避免输出不应有的结果。
@@ -184,7 +318,7 @@ int main()
         break;
     default:printf("error\n");
     }
-}     
+}
     #+end_src
 
 ** struct
@@ -194,10 +328,10 @@ C 数组允许定义可存储相同类型数据项的变量,结构是 c 编程�
 为了定义结构，您必须使用 struct 语句。struct 语句定义了一个包含多个成员的新的数据类型，struct 语句的格式如下：
 
 #+begin_src c :includes <stdio.h>
-struct tag { 
+struct tag {
     member-list
-    member-list 
-    member-list  
+    member-list
+    member-list
     ...
 } variable-list ;
 #+end_src
@@ -247,7 +381,7 @@ width:位域中位的数量。宽度必须小于或等于指定类型的位宽�
 
 带有预定义宽度的变量被称为位域。位域可以存储多于 1 位的数，例如，需要一个变量来存储从 0 到 7 的值，您可以定义一个宽度为 3 位的位域，如下：
 
-#+begin_src c 
+#+begin_src c
 struct
 {
   unsigned int age : 3;
@@ -393,7 +527,7 @@ int main()
          num2 = num2 + 2;
      }
      printf("偶数和为：%d\n",sum2);
- } 
+ }
  #+end_src
 
 *** for
@@ -411,7 +545,7 @@ int main()
         }
         printf("偶数和为：%d\n",sum2);
     }
- 
+
   #+end_src
 
 ** 函数
@@ -425,17 +559,17 @@ C 语言函数形式如下：
   return_type function_name( parameter list )
 {
    body of the function
-} 
+}
 #+end_src
 
 在 C 语言中，函数由一个函数头和一个函数主体组成。下面列出一个函数的所有组成部分：
 
 - 返回类型：一个函数可以返回一个值。return_type 是函数返回的值的数据类型。有些函数执行所需的操作而不返回值，在这种情况下，return_type 是关键字 void。
-    
+
 - 函数名称：这是函数的实际名称。函数名和参数列表一起构成了函数签名。
-   
+
 - 参数：参数就像是占位符。当函数被调用时，您向参数传递一个值，这个值被称为实际参数。参数列表包括函数参数的类型、顺序、数量。参数是可选的，也就是说，函数可能不包含参数。
-    
+
 - 函数主体：函数主体包含一组定义函数执行任务的语句。
 
 #+begin_src c :includes <stdio.h>
@@ -447,7 +581,7 @@ int main()
     int a = 100;
     int b = 200;
     int  ret;
-    
+
     /*调用函数来获取最大值*/
     ret = max(a, b);
     printf("Max value is : %d\n", ret);
@@ -495,7 +629,7 @@ int main()
 }
 #+end_src
 
-** gets 
+** gets
 char *gets(char *s) 函数从 stdin 读取一行到 s 所指向的缓冲区，直到一个终止符或 EOF。int puts(const char *s) 函数把字符串 s 和一个尾随的换行符写入到 stdout。
 
 #+begin_src c :includes <stdio.h>
@@ -514,7 +648,7 @@ int main()
 
 #+end_src
 
-** scanf 
+** scanf
 int scanf(const char *format, ...) 函数从标准输入流 stdin 读取输入，并根据提供的 format 来浏览输入。int printf(const char *format, ...) 函数把输出写入到标准输出流 stdout ，并根据提供的格式产。format 可以是一个简单的常量字符串，但是您可以分别指定 %s、%d、%c、%f 等来输出或读取字符串、整数、字符或浮点数。还有许多其他可用的格式选项，可以根据需要使用。如需了解完整的细节，可以查看这些函数的参考手册。现在让我们通过下面这个简单的实例来加深理解：
 
 #+begin_src c :includes <stdio.h>
@@ -538,8 +672,56 @@ int main(){
 #include<stdio.h>
 #+end_src
 
+** 类型变换
+在 c 中，可以很方便地强制类型转换运算符号。
+语法是 (type_name) expression.
+
+   #+begin_src c
+     int main()
+{
+    int sum = 17, count = 5;
+    double mean;
+
+    mean = (double) sum / count;
+    printf("Value of mean : %f\n", mean );
+
+}
+   #+end_src
+
+** 错误处理
+   C 语言提供了 perror() 和 strerror() 函数来显示与 errno 相关的文本消息。perror()
+   函数显示您传给它的字符串，后跟一个冒号、一个空格和当前 errno 值的文本表示形式。strerror() 函数，返回一个指针，指针指向当前 errno 值的文本表示形式。让我们来模拟一种错误情况，尝试打开一个不存在的文件。您可以使用多种方式来输出错误消息，在这里我们使用函数来演示用法。另外有一点需要注意，您应该使用 stderr 文件流来输出所有的错误。
+
+   #+begin_src c :includes <stdio.h>
+     #include <stdio.h>
+#include <errno.h>
+#include <string.h>
+
+extern int errno ;
+
+int main ()
+{
+    FILE * pf;
+    int errnum;
+    pf = fopen ("unexist.txt", "rb");
+    if (pf == NULL)
+    {
+        errnum = errno;
+        fprintf(stderr, "错误号: %d\n", errno);
+        perror("通过 perror 输出错误");
+        fprintf(stderr, "打开文件错误: %s\n", strerror( errnum ));
+    }
+    else
+    {
+        fclose (pf);
+    }
+    return 0;
+}
+   #+end_src
+
+
 ** C 数据类型
-   
+
 1.基本类型：它们是算术类型，包括两种类型：整数类型和浮点类型。
 
 2.枚举类型：它们也是算术类型，被用来定义在程序中只能赋予其一定的离散整数值的变量。
@@ -583,9 +765,9 @@ void 类型指定没有可用的值。它通常用于以下三种情况下：
 任何一种编程中，作用域是程序中定义的变量所存在的区域，超过该区域变量就不能被访问。C 语言中有三个地方可以声明变量：
 
 1.在函数或块内部的局部变量
-    
+
 2.在所有函数外部的全局变量
-    
+
 3.在形式参数的函数参数定义中
 
 在程序中，局部变量和全局变量的名称可以相同，但是在函数内， *如果两个名字相同，会使用局部变量值，全局变量不会被使用。*
@@ -637,7 +819,7 @@ int sum(int a, int b)
 
     return a + b;
 }
- 
+
 #+end_src
 
 #+begin_src python
@@ -658,7 +840,7 @@ int test(int a,int b) // 形参
 }
 #+end_src
 
-** 变量 
+** 变量
 变量其实只不过是程序可操作的存储区的名称。C 中每个变量都有特定的类型，类型决定了变量存储的大小和布局，该范围内的值都可以存储在内存中，运算符可应用于变量上。
 
 变量定义就是告诉编译器在何处创建变量的存储，以及如何创建变量的存储。变量定义指定一个数据类型，并包含了该类型的一个或多个变量的列表，如下所示：
@@ -714,7 +896,7 @@ int main(){
     result = addtwosum();
     printf("result 为：%d", result);
     return 0;
-} 
+}
 #+end_src
 
 ** 常量
@@ -827,7 +1009,7 @@ int main()
     char greeting[6] = {'h', 'e', '\0'};
     printf("greeting message: %s\n", greeting);
     return 0;
-} 
+}
 #+end_src
 
 
@@ -862,19 +1044,19 @@ int main()
     len = strlen(str1);
     printf("strlen(str1) : %d\n", len);
     return 0;
-} 
+}
 #+end_src
 
 ** enum(枚举)
 
    #+begin_src python
- 
+
 #include <stdio.h>
 enum DAY
 {
       MON=1, TUE, WED, THU, FRI, SAT, SUN
 };
- 
+
 int main()
 {
     enum DAY day;
@@ -897,7 +1079,7 @@ int main(){
     printf("var2 变量的地址：%p\n", &var2);
 }
 // var1 变量的地址：0x7ffee2361818
-//var2 变量的地址：0x7ffee236181e 
+//var2 变量的地址：0x7ffee236181e
 #+end_src
 
 *** 什么是指针？
@@ -931,7 +1113,7 @@ int main()
     /*使用指针访问值*/
  /* 使用指针访问值 *ip代表的是定义到这个内存单元之后，内存单元中所存储的数据的值也就是将20赋值给var中20这个值 */
     printf("value of *ip variable: %d\n",*ip);
-} 
+}
 /* address of var variable: 0x7ffee973584c */
 /* address stored in ip variable:0x7ffee973584c  */
 /* value of *ip variable: 20 */
@@ -958,10 +1140,10 @@ int main()
 
 - 从函数返回指针：C 允许函数返回指针到局部变量、静态变量和动态内存分配。
 
-指针是一个变量，其值为另一个变量的地址，即，内存位置的直接地址。就像其他变量或常量一样，您必须在使用指针存储其他变量地址之前，对其进行声明。要理解指针就要先理解计算机的内存。计算机内存会被划分为按顺序编号的内存单元。每个变量都是存储在内存单元中的，称之为地址。 
+指针是一个变量，其值为另一个变量的地址，即，内存位置的直接地址。就像其他变量或常量一样，您必须在使用指针存储其他变量地址之前，对其进行声明。要理解指针就要先理解计算机的内存。计算机内存会被划分为按顺序编号的内存单元。每个变量都是存储在内存单元中的，称之为地址。
 
 
-*** 函数指针 
+*** 函数指针
 函数指针是指向函数的指针变量。通常我们说的指针变量是指向一个整型、字符型或数组等变量，而函数指针是指向函数。函数指针可以像一般函数一样，用于调用函数、传递参数。函数指针变量的声明：
 
 #+begin_quote
@@ -985,10 +1167,10 @@ int main(void)
     d = p(p(a, b), c);
     printf("最大的数字是:%d\n",d);
     return 0;
-} 
+}
 #+end_src
 
-*** 回调函数 
+*** 回调函数
 函数指针作为某个函数的参数函数指针变量可以作为某个函数的参数来使用的，回调函数就是一个通过函数指针调用的函数。
 
 简单讲：回调函数是由别人的函数执行时调用你实现的函数。
@@ -1016,7 +1198,7 @@ int main(void){
     }
     printf("\n");
     return 0;
-} 
+}
 #+end_src
 
 ** #include<stdio.h>
@@ -1025,7 +1207,7 @@ int main(void){
 
 stdio.h 的含义是 standard input/output header.
 
-** int main(void) 
+** int main(void)
 主函数，c 程序规定一个程序中有一个或多个函数，他们是 c 程序的基本模块。但必须有
 且只有一个 main 函数。因为 c 程序的执行将从 main 函数开始，到 main 函数结束而停止。
 
@@ -1060,7 +1242,7 @@ int main()
     printf("%c\n",c);
     getchar();
     return 0;
-}        
+}
     #+end_src
 
 *** 算术运算符
@@ -1072,11 +1254,11 @@ int main()
           printf("%d is a leap year \n", year);
       else
           printf("%d is not a leap year \n", year);
-    
+
   }
 #+end_src
 
-在 c 语言中，运算符&& 的优先级比||的优先级高。 
+在 c 语言中，运算符&& 的优先级比||的优先级高。
 
 ** C++ 11
 *** auto
@@ -1104,17 +1286,17 @@ int main()
 
 ** 数组
    #+begin_src c
-     
+
    #+end_src
 
-** sizeof 
+** sizeof
 内存大小。
 #+begin_src c :includes <stdio.h>
   int main(){
     printf("hello, world! \n");
     printf("int 存储大小：%lu \n", sizeof(int));
     return 0;
-} 
+}
 #+end_src
 
 ** 基本输入与输出
@@ -1124,7 +1306,7 @@ int main()
     //char c;
     //c = getchar()
     putchar('A');
-}     
+}
    #+end_src
 
 ** C++ 语言特点
@@ -1166,9 +1348,9 @@ ANSI C 语言中的全部转义字符序列如下：
 \n 换行符 \" 双引号
 \r 回车符 \ooo 八进制数
 \t 横向制表符 \xhh 十六进制数
-\v 纵向制表符 \0 值为 0 的字符 
+\v 纵向制表符 \0 值为 0 的字符
 
-*** const 
+*** const
 限定符。任何变量的声明都可以使用 const 限定符限定，该限定符指定变量的值不能被修
 改。对数组而言，const 限定符指定数组所有元素的值都不能被修改。
 
@@ -1185,7 +1367,7 @@ const 变量必须被初始化。
  NumericVector V2=NumericVector::create(1, 2, 3); //创立了一个数值型向量V2，并初始化使其含有三个数1，2，3。
  LogicalVector V3=LogicalVector::create(true,false,R_NaN);//创立了一个逻辑型变量V3。如果将其转化为R Object，则其含有三个值TRUE, FALSE, NA。
 #+end_src
- 
+
 **** size
 
 向量的大小用 a.size() 来表达。
@@ -1198,12 +1380,12 @@ NumericVector convolveCpp(NumericVector a, NumericVector b){
     int na = a.size(),nb = b.size();
     int nab = na + nb - 1;
     NumericVector xab(nab);
-  
+
     for(int i=0; i< na; i++)
         for(int j=0; j < nb; j++)
             xab[i+j] += a[i] * b[j];
     return xab;
-}       
+}
      #+end_src
 
 *** Matrix
@@ -1243,7 +1425,7 @@ List a8(int n, int r, double v){
 
 
 *** DataFrame
-    #+begin_src R :results output graphics :file fig_1.png :exports both 
+    #+begin_src R :results output graphics :file fig_1.png :exports both
       NumericVector a=NumericVector::create(1,2,3);
       CharacterVector b=CharacterVector::create("a","b","c");
       std::vector<std::string> c(3);
@@ -1263,7 +1445,7 @@ NumericVector convolveCpp(NumericVector a, NumericVector b){
   int na = a.size(), nb = b.size();
   int nab = na + nb - 1;
   NumericVector xab(nab);
-  
+
   for(int i=0; i< na; i++)
     for(int j=0; j < nb; j++)
       xab[i+j] += a[i] * b[j];
@@ -1303,8 +1485,8 @@ while 循环语句的执行方式是这样的：首先测试圆括号中的条�
 之前，mac 一直编译不通，通过 google，发现~/R/ 目录下没有 Makevars 文件，通过寻
 找，可以在 RcppArmadillo 文件下找到类似的文件，然后在增加如下文件。
 
-#+begin_src 
- VER=-7 
+#+begin_src
+ VER=-7
 CC=gcc$(VER)
 CXX=g++$(VER)
 CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
@@ -1313,10 +1495,10 @@ FLIBS=-L/usr/local/Cellar/gcc/7.3.0/lib/gcc/5
 CXX1X=g++${VER}
 FC=gfortran${VER}
 F77=gfortran${VER}
-MAKE=make -j4 
+MAKE=make -j4
 #+end_src
 
-*** RcppArmadillo 
+*** RcppArmadillo
 这个包的程序和 matlab 很像。如何将 Rcpp 语法转换为 RcppArmadillo?
 
 | 数据类型  | name   |
@@ -1326,7 +1508,7 @@ MAKE=make -j4
 |           |        |
 
 
-**** as<arma::> 
+**** as<arma::>
      #+begin_src c
        arma::mat M1(NumericMatrix x, NumericVector y){
            arma::mat x_ = as<arma::mat>(x);
@@ -1336,7 +1518,7 @@ MAKE=make -j4
        }
      #+end_src
 
-**** matrix 
+**** matrix
 矩阵的表示。
 #+begin_src C++
   arma::mat betahat = {{1, 3},
@@ -1358,11 +1540,11 @@ MAKE=make -j4
     arma::mat X(2,2,arma::fill::randu);
     Rcpp::Rcout << X << "\n";
     //Rcpp::Rcout << R << "\n";
-} 
+}
 #+end_src
 
 类似地有，arma::mat Y(2,2,arma::fill::randn);
-**** 转置 
+**** 转置
 #+begin_src C++
   arma::mat betahat = {{1, 3},
                        {2, 4}};
@@ -1391,7 +1573,7 @@ MAKE=make -j4
     // B.randu(3,4);
     // B.randn(3,4);
     // double y = B.is_empty();
-    // double y = B.is_finite();// 
+    // double y = B.is_finite();//
       // double y = B.is_square();
       // double y = B.is_vec();
     // double y = B.is_sorted();
@@ -1401,13 +1583,13 @@ MAKE=make -j4
     //A.for_each([](mat::elem_type& val)
     //   {val += 123.0});
     // arma::vec v = arma::linspace<arma::vec>(10, 15, 6);
-    // val.each_col() +=v; 
+    // val.each_col() +=v;
     // A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
     Rcpp::Rcout << v << "\n";
     //Rcpp::Rcout << R << "\n";
-} 
+}
 #+end_src
-**** 求解方程 
+**** 求解方程
 如果需要求解 AX=B，
 #+begin_src C++
   void test(){
@@ -1415,13 +1597,13 @@ MAKE=make -j4
     arma::mat B = {1, 3};
     arma::mat C = arma::solve(A, B.t());
     Rcpp::Rcout << v << "\n";
-} 
+}
 #+end_src
 
 **** 求内积
 #+begin_src C++
  double g(arma::vec x, arma::vec y) {
-  arma::mat d = x.t()*y;   
+  arma::mat d = x.t()*y;
    return d(0);
  }
 #+end_src
@@ -1435,7 +1617,7 @@ QR 分解数学表达式为：$A=QR$, Q 是正交矩阵，R是上三角矩阵。
 void test(){
   arma::mat A = {{2,3},{2,4}};
   arma::mat B={{1,2,3},{4,5,6}};
-  //arma::mat X = randu<mat>(5,5); 
+  //arma::mat X = randu<mat>(5,5);
   arma::mat R;
   arma::mat Q;
   arma::qr(Q,R,A);
@@ -1449,7 +1631,7 @@ void test(){
   // B.randu(3,4);
   // B.randn(3,4);
   // double y = B.is_empty();
-  // double y = B.is_finite();// 
+  // double y = B.is_finite();//
   // double y = B.is_square();
   // double y = B.is_vec();
   // double y = B.is_sorted();
@@ -1459,11 +1641,11 @@ void test(){
 //A.for_each([](mat::elem_type& val)
 //   {val += 123.0});
   // arma::vec v = arma::linspace<arma::vec>(10, 15, 6);
-  // val.each_col() +=v; 
+  // val.each_col() +=v;
   // A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
  Rcpp::Rcout << Q << "\n";
  Rcpp::Rcout << R << "\n";
-} 
+}
 #+end_src
 **** eigen value
 
@@ -1511,7 +1693,7 @@ access the i-th element, assuming a column-by-column layout.
   arma::vec a = A.diag();
   double b = a(2);
   Rcpp::Rcout << b << "\n";
-} 
+}
      #+end_src
 
 **** fill(k)
@@ -1522,7 +1704,7 @@ void test_randu(){
   arma::vec a = A.diag();
   arma::mat b = A.fill(2);
   Rcpp::Rcout << b << "\n";
-} 
+}
      #+end_src
 
 **** abs
@@ -1538,7 +1720,7 @@ arma::mat z = {-1,2};
 //  change++;
 //}
 Rcpp::Rcout << "a 的值：" << arma::abs(z) << "\n";
-  } 
+  }
 #+end_src
 
 **** resize
@@ -1549,7 +1731,7 @@ void test_randu(){
   arma::vec a = A.diag();
   A.resize(1,4);
   Rcpp::Rcout << A << "\n";
-} 
+}
      #+end_src
 *****  reshape
 
@@ -1587,7 +1769,7 @@ return(y(i, j));
 
 
 #+begin_src C++
-  arma::rowvec matrix_locs(arma::mat M, 
+  arma::rowvec matrix_locs(arma::mat M,
                            arma::umat locs){
     arma::uvec eids = sub2ind(size(M), locs);
     arma::vec v = M.elem(eids);
@@ -1595,7 +1777,7 @@ return(y(i, j));
 }
 #+end_src
 
-*****  index entire rows 
+*****  index entire rows
 这块内容比较容易错误的是输出的类型是 matrix，而不是 vec。
 #+begin_src C++
 arma::mat a1 (arma::mat x, int i, int j){
@@ -1603,7 +1785,7 @@ arma::mat y = x.ones();
 return(y.row(i);
 #+end_src
 
-- index entire columns 
+- index entire columns
 这块内容比较容易错误的是输出的类型是 matrix，而不是 vec。
 #+begin_src C++
 arma::mat a1 (arma::mat x, int i, int j){
@@ -1682,9 +1864,9 @@ arma::mat a1 (arma::mat x){
   double lma(arma::mat X,
              arma::mat y){
     arma::mat betahat;
-    double z=arma::det(X); //matrix 
+    double z=arma::det(X); //matrix
                                double x_norm = norm(X);
-                               betahat = (X.t()*X).i()*X.t() *y; 
+                               betahat = (X.t()*X).i()*X.t() *y;
                                return(x_norm);
 }
 #+end_src
@@ -1701,7 +1883,7 @@ void test_randu(){
   B.set_size(1,4);
   A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
   Rcpp::Rcout << B << "\n";
-} 
+}
      #+end_src
 
 **** 向量操作
@@ -1727,26 +1909,26 @@ vec a(5); a.fill(123);
 上面两行代码含义完全不同，第一行的意思只是填充一个值，而第二行代码可以实现 5 个数值均为 123.
 
 #+begin_src C++
-  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5);
   arma::vec a = arma::linspace(0, 5, 6);
 #+end_src
 
-***** linspace      
+***** linspace
 这个函数类似于 python 中的 range, 生成一个向量。
 linspace(start, end) #如果不指定 N，默认值为 100
 linspace(start, end, N)
 
 #+begin_src C++
-  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5);
   arma::vec a = arma::linspace(0, 5, 6);
 #+end_src
 
 c++ 真是太严格了，数据的类型必须是严格定义。
 linspace 默认输出列向量，可以通过以下代码将其转成行向量。
 #+begin_src C++
-  arma::vec a = arma::linspace(0, 5); 
+  arma::vec a = arma::linspace(0, 5);
   arma::vec a = arma::linspace(0, 5, 6);
-  arma::rowvec a2 = arma::linspace<arma::rowvec>(0, 5, 6); //转换为行向量 
+  arma::rowvec a2 = arma::linspace<arma::rowvec>(0, 5, 6); //转换为行向量
 #+end_src
 ***** regspace
 比 linspace 生成更加“标准的”数据。
@@ -1777,14 +1959,14 @@ which(x>2) 相当于 find(x>2).finite(x) 相当于 find_finite(x)
 //    double replace_val = 1.5,
 //             double find_val = 3){
 //arma::uvec idx = find(y >= find_val);
-//y.elem(idx).fill(replace_val);  
+//y.elem(idx).fill(replace_val);
 //arma::mat betahat;
 //arma::mat bind_row=arma::join_vert(y, y); //bind_rows操作
-//double z=arma::det(X); // 矩阵   
+//double z=arma::det(X); // 矩阵
                             //double x_norm = norm(X);//
 //int rank_x =arma::rank(X);
 //arma::mat min_x = arma::min(X, 1);
-  //betahat = (X.t()*X).i()*X.t() *y; 
+  //betahat = (X.t()*X).i()*X.t() *y;
 //return(y);
   //}
 #+end_src
@@ -1804,12 +1986,12 @@ for(const auto& val : A)
   }
      #+end_src
 
-     #+begin_src 
+     #+begin_src
 double sum3(NumericVector x){
   double total = 0;
   NumericVector::iterator it;
   for(it = x.begin(); it != x.end(); ++it){
-   total += *it; 
+   total += *it;
   }
   return total;
 }
@@ -1837,13 +2019,13 @@ for (i = 0; i < N; i++){
   }
   else{
     double b = z(0, i);
-    r(0, i) = abs(b) + a; 
-  }    
+    r(0, i) = abs(b) + a;
+  }
   Rcpp::Rcout <<  r << "\n";
   }
 Rcpp::Rcout <<  N << "\n";
 //Rcpp::Rcout << "a 的值：" << arma::abs(z) -a << "\n";
-} 
+}
      #+end_src
 
 C11 标准。
@@ -1869,7 +2051,7 @@ void test_randu(){
   B.copy_size(A);
   A.for_each( [](arma::mat::elem_type& val) { std::cout << val << std::endl; } );
   Rcpp::Rcout << B << "\n";
-} 
+}
      #+end_src
 **** while
 
@@ -1891,7 +2073,7 @@ void test_randu(){
      #+end_src
 
 *** Rcpp
-**** attributes 
+**** attributes
 可以生成属性信息。
 
 #+begin_src c :includes <stdio.h>
@@ -1920,7 +2102,7 @@ Rcpp::NumericVector attribs(){
 map 类似于 python 中的 set,有一个 value,对应一个 key.
 
 A map is similar to a set, but instead of storing presence or absence, it can
-store additional data. It’s useful for functions like table() or match() that need to look up a value. 
+store additional data. It’s useful for functions like table() or match() that need to look up a value.
 
 #+begin_src c :includes <stdio.h>
   #include <RcppArmadillo.h>
@@ -1937,9 +2119,9 @@ std::map<double, int> tableC(arma::vec x){
   }
 
 #+end_src
-**** List 
+**** List
 
-     #+begin_src R :results output graphics :file fig_1.png :exports both 
+     #+begin_src R :results output graphics :file fig_1.png :exports both
        List fx(List input){
            std::vector<double> x = input["x"];
            return List::create(_["front"] = x.front(),
@@ -1952,13 +2134,13 @@ std::map<double, int> tableC(arma::vec x){
        ## $back
        ## [1] 10
      #+end_src
-***** list2data.frame 
+***** list2data.frame
 下面的代码可以很快地实现 as.data.frame
       #+begin_src c :includes <stdio.h>
         List CheapDataFrameBuilder(List a) {
   List returned_frame = clone(a);
   GenericVector sample_row = returned_frame(0);
-  
+
   StringVector row_names(sample_row.length());
   for (int i = 0; i < sample_row.length(); ++i) {
     char name[5];
@@ -1966,7 +2148,7 @@ std::map<double, int> tableC(arma::vec x){
     row_names(i) = name;
   }
   returned_frame.attr("row.names") = row_names;
-  
+
   StringVector col_names(returned_frame.length());
   for (int j = 0; j < returned_frame.length(); ++j) {
     char name[6];
@@ -1975,23 +2157,23 @@ std::map<double, int> tableC(arma::vec x){
   }
   returned_frame.attr("names") = col_names;
   returned_frame.attr("class") = "data.frame";
-  
+
   return returned_frame;
 }
       #+end_src
 
-**** surgar 
+**** surgar
 可以让 R 中现成的函数应用在 C 中。可以用 R 风格编写 C++ 代码。
 ***** pow
 surgar 可以让很多复杂的事情简单化。
 
- #+begin_src R :results output graphics :file fig_1.png :exports both 
+ #+begin_src R :results output graphics :file fig_1.png :exports both
    arma::vec res_c(arma::vec x, arma::vec y){
        return pow(x - y, 2);
    }
  #+end_src
 
- #+begin_src R :results output graphics :file fig_1.png :exports both 
+ #+begin_src R :results output graphics :file fig_1.png :exports both
    arma::vec res_c(arma::vec x, arma::vec y){
        int i;
        int n = x.size();
@@ -2016,9 +2198,9 @@ bool all_sug(Rcpp::LogicalVector x){
 
       #+end_src
 
-***** all 
+***** all
 
-      #+begin_src R :results output graphics :file fig_1.png :exports both 
+      #+begin_src R :results output graphics :file fig_1.png :exports both
         #include <RcppArmadillo.h>
                                         #include <Rcpp.h>
         // [[Rcpp::depends(RcppArmadillo)]]
@@ -2040,7 +2222,7 @@ bool all_sug(Rcpp::LogicalVector x){
 
 ***** is_na
 
-      #+begin_src R :results output graphics :file fig_1.png :exports both 
+      #+begin_src R :results output graphics :file fig_1.png :exports both
         bool check_na(Rcpp::NumericVector x){
             //Rcpp::NumericVector x = seq_len(10);
             return Rcpp::is_na(any(x<2));
@@ -2054,7 +2236,7 @@ bool all_sug(Rcpp::LogicalVector x){
   return Rcpp::seq_len(x);
 }
       #+end_src
-***** ifelse 
+***** ifelse
       #+begin_src c :includes <stdio.h>
         Rcpp::IntegerVector if_else_plus(Rcpp::IntegerVector x,
                                  Rcpp::IntegerVector y){
@@ -2072,7 +2254,7 @@ bool all_sug(Rcpp::LogicalVector x){
   return Rcpp::sign(x);
 }
       #+end_src
-***** diff 
+***** diff
 插值。
       #+begin_src c :includes <stdio.h>
         Rcpp::IntegerVector diff_plus(Rcpp::IntegerVector x){
@@ -2084,7 +2266,7 @@ bool all_sug(Rcpp::LogicalVector x){
 **** SEXP
 将一个 C++ 对象转换为 R 对象。
 
-#+begin_src R :results output graphics :file fig_1.png :exports both 
+#+begin_src R :results output graphics :file fig_1.png :exports both
   SEXP M2(arma::mat x){
       arma::mat z = chol(x);
       int n = x.n_rows;
@@ -2104,23 +2286,23 @@ using namespace Rcpp;
 Datetime rcpp_datetime(){
   // Creating Datetime object by specifying date and time to
   Datetime dt("2000-01-01 00:00:00");
-  
+
   // Displaying parts of the Datetime object in Coordinated Universal Time
   Rcout << "getYear " << dt.getYear() << "\n";
   Rcout << "getMonth " << dt.getMonth() << "\n";
   Rcout << "getDay " << dt.getDay() << "\n";
-  
+
   Rcout << "getHours " << dt.getHours() << "\n";
   Rcout << "getMinutes " << dt.getMinutes() << "\n";
   Rcout << "getSeconds " << dt.getSeconds() << "\n";
-  
+
   Rcout << "getMicroSeconds " << dt.getMicroSeconds() << "\n";
   Rcout << "getWeekday " << dt.getWeekday() << "\n";
   Rcout << "getYearday " << dt.getYearday() << "\n";
   Rcout << "getFractionalTimestamp " << dt.getFractionalTimestamp() << "\n";
-  
+
   return dt;
-}      
+}
      #+end_src
 
      #+begin_src c :includes <stdio.h>
@@ -2130,7 +2312,7 @@ Datetime rcpp_datetime(){
   IntegerVector a = DF["a"];
   DateVector c = DF["b"];
   return c;
-}      
+}
      #+end_src
 
 
@@ -2138,7 +2320,7 @@ Datetime rcpp_datetime(){
 C++ 里面也有 lambda 函数，想不到吧？？
 
 #+begin_src c :includes <stdio.h>
-  
+
 arma::vec transformEx(const arma::vec x){
   arma::vec y(x.size());
   std::transform(x.begin(), x.end(), y.begin(),
@@ -2174,7 +2356,7 @@ Rcpp::NumericMatrix matrixSqrt(Rcpp::NumericMatrix orig) {
 /* matrixSqrt(m) */
 #+end_src
 
-**** call R function 
+**** call R function
 可以从 C++ 调用 R 函数。
      #+begin_src c :includes <stdio.h>
        NumericVector callFunction(NumericVector x, Function f){
@@ -2182,22 +2364,22 @@ Rcpp::NumericMatrix matrixSqrt(Rcpp::NumericMatrix orig) {
   return res;
 }
        set.seed(42)
-x <- rnorm(1e5) 
+x <- rnorm(1e5)
 callFunction(x, fivenum)
      #+end_src
 
-**** Rmath 
+**** Rmath
 可以从这个函数直接调用 R 中的统计分布函数。
 #+begin_src c :includes <stdio.h>
   #include <Rcpp.h>
 
 // [[Rcpp::export]]
 Rcpp::NumericVector mypnorm(Rcpp::NumericVector x) {
-    
+
    int n = x.size();
    Rcpp::NumericVector y(n);
 
-   for (int i=0; i<n; i++) 
+   for (int i=0; i<n; i++)
       y[i] = R::pnorm(x[i], 0.0, 1.0, 1, 0);
 
    return y;
@@ -2209,16 +2391,16 @@ head(res)
   /* [1] 0.5000 0.5004 0.5008 0.5012 0.5016 0.5020 */
 #+end_src
 
-**** Rcount 
+**** Rcount
 The way of using Rcout and Rcerr is the same as std::cout and std::cerr. Connecting messages or variables with << in the order you want. When you give a vector object to <<, it will print all the elements of the vector.
 
-C++ 连接信息（message）和变量通过 <<,当你给一个向量对象给<<,那么它将打印所有元素。 
+C++ 连接信息（message）和变量通过 <<,当你给一个向量对象给<<,那么它将打印所有元素。
 
 #+begin_src c :includes <stdio.h>
   void rcpp_rcount(arma::vec v) {
   Rcout << "the value of v:" << v << "\n";
   Rcerr << "error message\n";
-} 
+}
 #+end_src
 
 **** Rprintf
@@ -2231,7 +2413,7 @@ The way of using Rprintf() and REprintf() is the same as std::printf(), it print
 for(int i = 0; i < v.length(); ++i){
   Rprintf("the value of v[%i] : %f \n", i, v[i]);
 }
-} 
+}
 #+end_src
 
 **** DataFrame
@@ -2242,7 +2424,7 @@ DataFrame rcpp_dataframe(NumericVector Dsexp){
   DataFrame DF = DataFrame(Dsexp);
   // Displaying parts of the Datetime object in Coordinated Universal Time
   return DF;
-}       
+}
      #+end_src
 
      #+begin_src c :includes <stdio.h>
@@ -2252,10 +2434,10 @@ DataFrame rcpp_dataframe(NumericVector Dsexp){
   IntegerVector a = DF["a"];
   DateVector c = DF["b"];
   return c;
-}      
+}
      #+end_src
 
-*** RcppEign 
+*** RcppEign
 
     #+begin_src c :includes <stdio.h>
       #include <Rcpp.h>
@@ -2264,7 +2446,7 @@ DataFrame rcpp_dataframe(NumericVector Dsexp){
 // [[Rcpp::export]]
 SEXP eigenMapMatMult(const Eigen::Map<Eigen::MatrixXd> A, Eigen::Map<Eigen::MatrixXd> B){
   Eigen::MatrixXd C = A * B;
-  
+
   return Rcpp::wrap(C);
 }
     #+end_src
@@ -2272,7 +2454,7 @@ SEXP eigenMapMatMult(const Eigen::Map<Eigen::MatrixXd> A, Eigen::Map<Eigen::Matr
 ** print
 以下代码类似于 print(A).
 #+begin_src C++
- 	Rcpp::Rcout << A << std::endl;
+    Rcpp::Rcout << A << std::endl;
 #+end_src
 
 **** lm 估计
@@ -2280,9 +2462,7 @@ SEXP eigenMapMatMult(const Eigen::Map<Eigen::MatrixXd> A, Eigen::Map<Eigen::Matr
 arma::mat lma(arma::mat X,
               arma::mat y){
 arma::mat betahat;
-betahat = (X.t()*X).i()*X.t() *y; 
+betahat = (X.t()*X).i()*X.t() *y;
 return(betahat);
 }
 #+end_src
-
-

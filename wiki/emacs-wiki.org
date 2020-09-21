@@ -2,6 +2,7 @@
   - [[#实用技能][实用技能]]
     - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
   - [[#常用快捷键][常用快捷键]]
+  - [[#spacemacs][spacemacs]]
   - [[#emacs-mode][emacs mode]]
   - [[#company][company]]
     - [[#company-diag][company-diag]]
@@ -39,10 +40,11 @@
   - [[#hydra][hydra]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
-  - [[#little-packages][little packages]]
+  - [[#others-packages][others packages]]
     - [[#pyim][pyim]]
       - [[#手动加词和删词][手动加词和删词]]
     - [[#color-rg][color-rg]]
+    - [[#awesome-tab][awesome-tab]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
     - [[#ess][ess]]
 
@@ -83,6 +85,17 @@
 | ido-find-file                                     | C-x C-f/SPC f f        |
 | evil-insert-new-line                              | SPC i j                |
 | 括号之间的跳转                                    | % evil-matchit         |
+
+** spacemacs
+
+在 additional install packages.
+#+begin_export lisp
+  dotspacemacs-additional-packages
+'(
+  (nox :location (recipe :fetcher github :repo "manateelazycat/nox"))
+  )
+#+end_export
+
 ** emacs mode
 ** company
 *** company-diag
@@ -128,7 +141,7 @@
 功能类似于 counsel-rg, 也可以进行搜索词汇.
 *** counsel-descbind
 describe-function.可以快速了解当前可以还绑定哪些快捷键.
-*** counsel-mark-ring 
+*** counsel-mark-ring
 添加标记,可以实现快速跳转!非常方便!
 如何删除 mark-ring?
 *** counsel-swith-buffer
@@ -138,13 +151,13 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 *** counsel-packages
 可以方便地删除你安装的 packgage.
 *** counsel-imenu
-可以充当文档目录,快捷键 spc-j-i 
-*** counsel-google 
+可以充当文档目录,快捷键 spc-j-i
+*** counsel-google
 可以方便地 google.
 *** counsel-bookmark
 还没弄懂!
 
-** swiper 
+** swiper
 *** my-swiper-search
 快速返回上一次搜索结果.好用!
 *** swiper-all-thing-at-point.
@@ -231,12 +244,12 @@ Spacemacs
 ** treemacs
 这个包类似于.
 
-   
+
 ** org
 喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
 *** 配置
     #+begin_src lisp
-      (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-, 
+      (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-,
     #+end_src
 
  | 功能                                                 | 快捷键                     |
@@ -312,7 +325,7 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 |       |            |
 ** yas-nippet
 
-要使用某个 snippet 很简单,只需要输入缩写然后按下 M-/ or tab 就行了. 
+要使用某个 snippet 很简单,只需要输入缩写然后按下 M-/ or tab 就行了.
 
 | 功能              | 快捷键                      |
 | yas-expand        | M-/                         |
@@ -321,7 +334,7 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 
 参考文献：
 https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
-** little packages
+** others packages
 *** pyim
 **** 手动加词和删词
 
@@ -340,7 +353,27 @@ https://github.com/manateelazycat/color-rg
 (require 'color-rg)
 
 color-rg-search-input 谁用谁知道。
-    
+*** awesome-tab
+lazycat 又一作品，优秀！
+
+
+命令	解释
+awesome-tab-forward-tab	切换到左边的标签
+awesome-tab-backward-tab	切换到右边的标签
+awesome-tab-forward-group	切换到前一个分组
+awesome-tab-backward-group	切换到后一个分组
+awesome-tab-select-beg-tab	选择第一个标签
+awesome-tab-select-end-tab	选择最后一个标签
+awesome-tab-forward-tab-other-window	切换到其他窗口的下一个标签
+awesome-tab-backward-tab-other-window	切换到其他窗口的上一个标签
+awesome-tab-kill-all-buffers-in-current-group	删除当前分组的所有标签
+awesome-tab-kill-match-buffers-in-current-group	删除当前分组的匹配的标签
+awesome-tab-keep-match-buffers-in-current-group	保留当前分组的匹配的标签
+awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
+
+
+
+
 ** 安装各种包遇到的坑
 *** ess
 这个包遇到的坑何其多，所以记录详细配置过程。
@@ -359,6 +392,3 @@ ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉
   Sys.getenv()
   sessionInfo()
   #+END_SRC
-
-  
-  
