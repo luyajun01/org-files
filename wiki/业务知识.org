@@ -146,7 +146,7 @@
 只要有一次没还，就判定为违约？
 *** 帐户迁移率怎么计算？
 ** 名词解释
-*** label 定义 
+*** label 定义
 
 名词标签定义可参考：https://wiki.n.miui.com/pages/viewpage.action?pageId=142333201
 #+caption: 名词定义
@@ -233,7 +233,7 @@ M2-M3=当月进入 M3 的贷款余额/上月末 M2 的贷款余额
 特点：需要抵押！信用卡是典型的循环贷产品。
 循环贷是指客户将商品住房（或信用免担保）抵押给银行、小贷机构，就可获得一定的贷款额度，在房产抵押期限内客户可分次提款、循环使用，不超过可用额度单笔用款时，只需客户填写提款申请表，不用专门再次审批，一般 1 小时便可提取现金，等于随身有了一个安全又方便的流动大“金库”。
 **** 循环额度下分账户
-循环额度下分账户用于循环授信额度下逐笔管理的贷款， *逐笔意为需要针对每一笔借款分开归还,循环贷用于循环额度下还款统一管理的贷款，即每月根据当前累计借款余额计算出的还款金额，需借款人统一归还.* 
+循环额度下分账户用于循环授信额度下逐笔管理的贷款， *逐笔意为需要针对每一笔借款分开归还,循环贷用于循环额度下还款统一管理的贷款，即每月根据当前累计借款余额计算出的还款金额，需借款人统一归还.*
 **** 非循环贷款
 针对的是循环贷款，不能分次提款和循环使用。
 **** 大额专项分期
@@ -356,7 +356,7 @@ C)为 81%，有 7%会恶化(从 M1+ 变成 M2 以上)，13%会保持 M1 状态�
 
 M0-M1 = 当月进入 M1 的贷款余额/上月末 M0 的贷款余额
 
-M2-M3 = 当月进入 M3 的贷款余额/上月末 M2 的贷款余额 
+M2-M3 = 当月进入 M3 的贷款余额/上月末 M2 的贷款余额
 
 迁移率分析的具体步骤：
 
@@ -411,8 +411,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 
 年化收益率就是一整年的收益率，年化 4.6%就是存一万一年利息 460 元人民币，7天的收益＝460÷365x7.
 
-*** 年/月/日利率  
-
+*** 年/月/日利率
 ** 小米金融
 *** 商业模式
 助贷，联合贷等对于网络贷款业务而言，资金\流量\风控三者是有机组成。像银行等传统金融机构本身具有资金和放贷业务资质，但是缺乏线上获客渠道\能力，资金利用率不高。
@@ -424,7 +423,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 有一定的资金杠杆限制，因此选择对外输出多余的流量。
 
 国家有关部门在出台小额贷款公司政策时，规定小额贷款公司为一般工商企业，只能向两家
-金融机构融资，且融资额不超过净资本的 50%.(这杠杆不到 1 倍？) 
+金融机构融资，且融资额不超过净资本的 50%.(这杠杆不到 1 倍？)
 
 *根据目前北京市的政策，小贷公司的杠杆放宽至 3 倍。*
 
@@ -443,7 +442,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 *** 模型组业务
 模型组业务主要分为 2 类：*风险模型和营销模型*
 
-**** 风险模型 
+**** 风险模型
 预授信风险模型
 
 利率敏感度模型
@@ -500,9 +499,9 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 
 - 用户来源
 
-一、小米金融 app 预装 
+一、小米金融 app 预装
 
-二、营销触达 
+二、营销触达
 
 - 年度 kpi
 
@@ -515,7 +514,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 - 业务模式
 
 3 期\9 期\12 期
-    
+
 - 使用场景
 
 - 开通场景
@@ -545,7 +544,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
     资金模式：
 联合贷模式——双方按放款比例兜底。参加的银行有：新网银行、苏州银行、百信银行、民生银行。需要注意的是在联合贷中，在支用环节，需要依据资金方要求补充信息。
 
-    *银行助贷[fn:3]——资金方兜底：民生银行、新网银行* 说白了就是由这些民生银行、新网银行进行资金兜底，然后由小米提供风险控制，而且承担损失风险。 
+    *银行助贷[fn:3]——资金方兜底：民生银行、新网银行* 说白了就是由这些民生银行、新网银行进行资金兜底，然后由小米提供风险控制，而且承担损失风险。
 
    自营模式（注册资本，借款，ABS)——自己兜底，自有资金：中航信托，ABS：航海信托等
    导流资金：南京银行（说白了就是，当自营资金不足时，需要将人员导流到其他资金渠道。）
@@ -562,7 +561,7 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 额度：小米建议最低 30 万；50\1000\2000;1000~20w
 期数：12\24\36 个月；1、3个月；6、9、12 个月
 定价：0.05，差异化利率(这个差异化的利率应该是指如果你的信用分越高，你的利率就越低)；0.065%,差异化利率；0.05%,差异化利率（这里的利率是日息，万 5,意思就是借 10000,每天需要还 5 元，转化为年利率就是 5％×360=18%，月息就是 5%*30=1.5%）
-还款方式：等额本息；等额本息；小米贷款全量用户还款方式有两种，一是等额本息，另外一种是先息后本[fn:4]。 
+还款方式：等额本息；等额本息；小米贷款全量用户还款方式有两种，一是等额本息，另外一种是先息后本[fn:4]。
 逾期罚息:利率上浮 50%,真实年化不超过 24%.
 
 ** 基本的信贷逻辑
@@ -592,7 +591,7 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
 
 不同特征在哪个环节调用一定要牢记清楚！比如说，有盟数据在反欺诈、多头未通过的人群上就不能使用！！！
 
-** 参与项目 
+** 参与项目
 所参与的所有项目均需要用到了哪些特征，在哪些数据表里。*基本所有特征表均在这里* https://wiki.n.miui.com/pages/viewpage.action?pageId=47097651.
 
 **** 相关策略
@@ -649,11 +648,11 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
      filter(credit_date == date & credit_date >= "20190401" & credit_date < "20190901") %>%
      filter(model_version != "0") %>%
      distinct(xiaomi_id, credited_time, credit_date, creditStatus, model_version)
- 
+
  sdf_pass <- sdf_id %>% left_join(sdf_credit_composite_model %>% group_by(xiaomi_id,credit_date) %>% arrange(desc(credited_time)) %>%
                                   filter(row_number()==1) %>% ungroup() %>% select(-credited_time) %>% distinct(),by = c("xiaomi_id","create_date"="credit_date"))
- 
- sdf_credit_composite_model %>% group_by(creditStatus) %>% tally() 
+
+ sdf_credit_composite_model %>% group_by(creditStatus) %>% tally()
 #+end_src
 
 **** 贷超申请表
@@ -669,18 +668,18 @@ PBC_ZHNEXING(18, "人行征信-振兴消金"),
                                              mutate(credit_time = from_unixtime(as.numeric(credit_time)/1000,"yyyyMMdd")) %>%
                                              filter(credit_time >= "20190401" & credit_time < "20190901") %>%
                                              select(xiaomi_id, status, credit_time) %>%
-                                             distinct() %>% my_sdf_collect()  
+                                             distinct() %>% my_sdf_collect()
  #+end_src
 
 ** 业务相关内容
 需要对所使用的表的内容掌握清楚！（多动脑，勤思考！）在提问之前，需要认真地思考整个建模流程，包括业务背景，所使用数据来源等。
-*** 常见建模数据库表地址 
+*** 常见建模数据库表地址
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
 mf_dm_data_library()
 #+end_src
 
-百融表： 
+百融表：
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
   sdf_bairong = spark_read_parquet(sc, "sdf_bairong", "/user/h_mifi/user/yepeng3/bairong_job_parquet", memory = F, overwrite = T)   # 增量表
@@ -695,16 +694,16 @@ mf_dm_data_library()
 | 贷前模型 score 地址 | /user/h_data_platform/platform/mifi/mifi_model_prm_risk_score/data | version == "6.37",意味着模型版本号是 6.37      |
 |                     |                                                                    |                                                |
 
-*** 授信通过人群\进入多头\多头拦截\主政策\主模型通过 
+*** 授信通过人群\进入多头\多头拦截\主政策\主模型通过
 
-**** 授信通过人群 
+**** 授信通过人群
 
-在 credit_composite_model 表里，取 creditstatus == "1",就是授信通过人群。 
+在 credit_composite_model 表里，取 creditstatus == "1",就是授信通过人群。
 
     #+begin_src R ::results output graphics :file fig_1.png :exports both
-      sdf_credit_composite_model = 
+      sdf_credit_composite_model =
   spark_read_csv(sc, name = "sdf_credit_composite_model",
-                 path = "/user/h_data_platform/platform/mifi/credit_composite_model", 
+                 path = "/user/h_data_platform/platform/mifi/credit_composite_model",
                  delimiter = "\t", memory = F, overwrite = T, header = F, infer_schema=F,
                  columns = c(xiaomi_id="character",risk_score="character",risk_level="character",income_score="character",income_level="character",
                              creditStatus="character",cash_amount="double",instalment_amount="character",credited_time="double",create_time="character",
@@ -712,13 +711,13 @@ mf_dm_data_library()
                              provider="character",cash_rate="character",cash_rate_version="character",instalment_rate="character",
                              instalment_rate_version="character",pre_risk_score="character",instruction="character",user_level="character",
                              user_level_version="character",credit_scene="character",user_channel="character",amount_status="character",
-                             amount_source="character",credit_action="character",refuse_reason="character",high_risk_score="double")) %>% 
+                             amount_source="character",credit_action="character",refuse_reason="character",high_risk_score="double")) %>%
   mutate(credit_time = from_unixtime(as.numeric(credited_time) / 1000, "yyyyMMdd"))
 
-      sdf_V6_36_duotoupass %>% 
-          inner_join(sdf_credit_composite_model %>% select(xiaomi_id, credit_time, creditStatus) %>% 
-                     filter(creditStatus == "1"), by = c("xiaomi_id", "credit_time")) %>% 
-  spark_write_csv(path = "/user/h_mifi/user/luyajun/temp/V6_36_duotoupass_sx.csv")     
+      sdf_V6_36_duotoupass %>%
+          inner_join(sdf_credit_composite_model %>% select(xiaomi_id, credit_time, creditStatus) %>%
+                     filter(creditStatus == "1"), by = c("xiaomi_id", "credit_time")) %>%
+  spark_write_csv(path = "/user/h_mifi/user/luyajun/temp/V6_36_duotoupass_sx.csv")
     #+end_src
 
      #+begin_src R ::results output graphics :file fig_1.png :exports both
@@ -727,7 +726,7 @@ mf_dm_data_library()
 
 可以从这里面取到多头环节、多头拦截、到主政策环节、主模型拒绝的用户.
 
-*** label 相关问题 
+*** label 相关问题
 ***** 常见 1 期，3期 自营&贷超 label 地址
 
 *需要注意的是，贷超 label 中，会经常出现一个人一天有 2 个 label 的情况！* 所以需要对其作如下处理。
@@ -745,7 +744,7 @@ sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_
        ##1期30+自营
        sdf_label_zy <- mf_load_labels("prm",repay_month="1",pay_diff_days="30",ovd_days="30")
        ##1期30+贷超
-       sdf_label_dc <- mf_load_labels("loan_market",repay_month="1",pay_diff_days="30",ovd_days="30")       
+       sdf_label_dc <- mf_load_labels("loan_market",repay_month="1",pay_diff_days="30",ovd_days="30")
      #+end_src
 
 3 期 30+ label 地址
@@ -755,16 +754,16 @@ sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_
   ##3期30+自营
   sdf_label_zy <- mf_load_labels("prm",repay_month="3",pay_diff_days="30",ovd_days="30")
   ##3期30+贷超
-  sdf_label_dc <- mf_load_labels("loan_market",repay_month="3",pay_diff_days="30",ovd_days="30")       
+  sdf_label_dc <- mf_load_labels("loan_market",repay_month="3",pay_diff_days="30",ovd_days="30")
 #+end_src
 
 6 期 30+ label 地址
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  ## 
+  ##
   sdf_label6 = spark_read_parquet(sc, "sdf_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/prm_label_users_v4_30_6_30", memory = F) %>% select(xiaomi_id, credit_time, label)
   ###贷超label,
-  sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))  
+  sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_pub/mifi_labels/new_loan_market_v2_30_6_30", memory = F) %>% group_by(xiaomi_id, credit_time) %>% summarise(label = max(label))
 #+end_src
 
 一般常见的 label 处理逻辑是
@@ -782,21 +781,21 @@ sdf_lm_label6 = spark_read_parquet(sc, "sdf_lm_label6", "/user/h_mifi/user/mifi_
       select(xiaomi_id, credit_time, basicinfo_provider,label, tag),
       sdf_label_dc %>% mutate(basicinfo_provider="dc",tag = "dc") %>%
       filter(credit_time > "20191031") %>%
-      select(xiaomi_id, credit_time, label,basicinfo_provider ,tag)) %>% distinct() # %>% my_sdf_collect()  
+      select(xiaomi_id, credit_time, label,basicinfo_provider ,tag)) %>% distinct() # %>% my_sdf_collect()
 #+end_src
 
-***** 多头拦截相关问题 
+***** 多头拦截相关问题
 
 目前，cp 表中包括来多头通过\高多头捞回的人群。注意 cp 表是全量表，所以需要加上 filter(date == 20200309), 日期就取当天。
 
 *只要牵涉到外部数据，必须要对 cp 表进行过滤，过滤的条件就是从 cp 表中选出 credit_scene == 1 就是预授信， ==2 是申请制* 。amount_version 是筛选了高多头中的回捞用户，只保留了多头通过用户。
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  ## sdf_cp_credit_instruction = 
+  ## sdf_cp_credit_instruction =
   ##     spark_read_csv(sc, name = "sdf_cp_credit_instruction",
   ##                    path = "/user/h_data_platform/platform/mifi/mifidw_cp_credit_instruction",
   ##                    delimiter = "\t", memory = F, ovspark_diserwrite = T, header = F,
-  ##                    columns = c("id","instruction","xiaomi_id","device","internal_risk_score_pdc","mifi_allowed","apply_allowed","anti_fraud_pass","small_amount_anti_fraud_pass","apply_anti_fraud_pass","process_id","income_model_id","risk_model_id","workflow_policy_id","amount_policy_id","provider","channel","risk_score","income_score","risk_level","income_level","cash_amount","instalment_amount","amount_version","amount_status","cash_rate","cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12","instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source","credit_scene","date")) %>% 
+  ##                    columns = c("id","instruction","xiaomi_id","device","internal_risk_score_pdc","mifi_allowed","apply_allowed","anti_fraud_pass","small_amount_anti_fraud_pass","apply_anti_fraud_pass","process_id","income_model_id","risk_model_id","workflow_policy_id","amount_policy_id","provider","channel","risk_score","income_score","risk_level","income_level","cash_amount","instalment_amount","amount_version","amount_status","cash_rate","cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12","instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source","credit_scene","date")) %>%
   ##     filter(date == 20200309)
 
 sdf_cp_credit_instruction =
@@ -809,12 +808,12 @@ sdf_cp_credit_instruction =
                              "risk_level","income_level","cash_amount","instalment_amount","amount_version","amount_status","cash_rate",
                              "cash_rate_version","instalment_rate","fee_rate_1","fee_rate_3","fee_rate_6","fee_rate_12",
                              "instalment_rate_version","user_level","user_level_version","credit_status","credit_time","amount_source",
-                             "credit_scene","nominal_cash_rate","nominal_rate_version","component_name")) %>% 
-    mutate(credit_date = from_unixtime(credit_time/1000, 'yyyyMMdd')) %>% 
-    filter(credit_date == schedule_date) %>% 
-    distinct(xiaomi_id, credit_date) %>% 
+                             "credit_scene","nominal_cash_rate","nominal_rate_version","component_name")) %>%
+    mutate(credit_date = from_unixtime(credit_time/1000, 'yyyyMMdd')) %>%
+    filter(credit_date == schedule_date) %>%
+    distinct(xiaomi_id, credit_date) %>%
   mutate(credit_date = as.numeric(credit_date))
-  
+
 #credit_scene ==1,预授信，==2，申请制
   sdf_cp_users <- sdf_cp_credit_instruction %>%
       select(xiaomi_id, credit_time, amount_version,credit_scene) %>%
@@ -836,7 +835,7 @@ sdf_cp_credit_instruction =
 **** 如何查看不同渠道用户？
 
      #+begin_src R ::results output graphics :file fig_1.png :exports both
-       
+
      #+end_src
 
 *** 人群风险分档
@@ -874,7 +873,7 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
 
 取样本一定注意数据缺失问题。
 
-*没查、查了未返回、查了返回缺失值是完全不同的含义。* 
+*没查、查了未返回、查了返回缺失值是完全不同的含义。*
 
 这句话的意思就是什么时候用 left_join,什么时候用 inner_join,甚至会要用到 full_join.
 
@@ -1021,7 +1020,7 @@ step4: 将各分箱的 index 进行求和，即得到最终的 PSI。
   if(length(list.files(sprintf("%s/",modelpath),pattern = "onehot_encode.RData"))>0)
       warning("The model path has onehot_encode.RData file,Please check, don't converge it!!") else{
                                                                                                    cat("The model path has not onehot_encode.RData file :)")
-                                                                                               }  
+                                                                                               }
 #+end_src
 
 **** 业务不熟导致的错误
@@ -1058,7 +1057,7 @@ sdf_data %>% filter(basicinfo_provider!=1)
 
 ***** 互金，自有数据有缺失的情况，哪些天需要 check! 自有数据需要跟庆荣确认，互金数据的 check 逻辑是
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-hj_ignore =spark_read_parquet(sc, "hujin_ign",path = "/user/h_mifi/user/mifi_pub/mifi_score/hj_v1.0", memory = F) %>% 
+hj_ignore =spark_read_parquet(sc, "hujin_ign",path = "/user/h_mifi/user/mifi_pub/mifi_score/hj_v1.0", memory = F) %>%
     filter(date>=20191101 & date<=20200223) %>% my_sdf_collect()
 
 hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>% filter(ovd>0.1 & credit_date %>% between(20191101,20191226)) %>% View()
@@ -1068,7 +1067,7 @@ hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>%
 ***** 建模时，vars_ignore 变量中一定有 xiaomi_id,label,tag,credit_time,basicinfo_provider,province,mifi_user_date 等变量。
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  vars_ignore = c("label","tag","credit_time","basicinfo_provider","xiaomi_id","mifi_user_date","create_time", "update_time", "totalorg", "queryatotalorg", "infoquerybean", "update_date","create_date","key_id","province")  
+  vars_ignore = c("label","tag","credit_time","basicinfo_provider","xiaomi_id","mifi_user_date","create_time", "update_time", "totalorg", "queryatotalorg", "infoquerybean", "update_date","create_date","key_id","province")
 #+end_src
 
 ***** 一定要重视错误，不管是 sparklyr 还是其他 R 包错误均要高度重视！*
@@ -1084,83 +1083,83 @@ hj_ignore %>% group_by(credit_date) %>% dplyr::summarise(ovd=mean(hujin_na)) %>%
 ***** 需要检查是否有一人有多个 label 的现象！
 
 #+begin_src R ::results output graphics :file fig_1.png :exports both
-  model_data %>% group_by(xiaomi_id,credit_time) %>% 
+  model_data %>% group_by(xiaomi_id,credit_time) %>%
       select(xiaomi_id,credit_time,label) %>% summarise(n=n()) %>% arrange(desc(n))
   n 大于2说明有问题!
 #+end_src
 
 ***** 检查各 bin 系数是否满足单调性
 
-      #+begin_src R :results output graphics :file fig_1.png :exports both 
+      #+begin_src R :results output graphics :file fig_1.png :exports both
         ##检查变量各bin系数是否满足单调性
-        fit_lr_step_V4 %>% coef() %>% 
-            as.data.frame() %>% 
-            rownames_to_column() %>% 
-            set_names(c("var_bin_name","value")) %>% 
-            tail(-1) %>% mutate(var_names=var_bin_name) %>% 
-            mutate_at("var_names",~str_sub(.,1,str_length(.)-4)) %>% 
-            mutate(num=var_bin_name) %>% mutate_at("num",~str_sub(.,str_length(.)-1,str_length(.))) %>% 
-            mutate(num_sort_d=num,num_sort=num) %>% group_by(var_names) %>% arrange(var_names,value) %>% 
-            mutate_at("num_sort",~sort(.,decreasing = T)) %>% 
-            mutate_at("num_sort_d",~sort(.)) %>% summarise(equal_ratio= (mean(num==num_sort_d|num==num_sort))) %>% 
+        fit_lr_step_V4 %>% coef() %>%
+            as.data.frame() %>%
+            rownames_to_column() %>%
+            set_names(c("var_bin_name","value")) %>%
+            tail(-1) %>% mutate(var_names=var_bin_name) %>%
+            mutate_at("var_names",~str_sub(.,1,str_length(.)-4)) %>%
+            mutate(num=var_bin_name) %>% mutate_at("num",~str_sub(.,str_length(.)-1,str_length(.))) %>%
+            mutate(num_sort_d=num,num_sort=num) %>% group_by(var_names) %>% arrange(var_names,value) %>%
+            mutate_at("num_sort",~sort(.,decreasing = T)) %>%
+            mutate_at("num_sort_d",~sort(.)) %>% summarise(equal_ratio= (mean(num==num_sort_d|num==num_sort))) %>%
             filter(equal_ratio!=1)
       #+end_src
 
-      #+begin_src R :results output graphics :file fig_1.png :exports both 
-var_names <- df %>% 
-  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
-  add_column(var_bin=df1$var) %>% 
-  mutate(num=var_bin) %>% 
-  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
-  group_by(var) %>% 
-  arrange(var,desc(value)) %>% 
+      #+begin_src R :results output graphics :file fig_1.png :exports both
+var_names <- df %>%
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>%
+  add_column(var_bin=df1$var) %>%
+  mutate(num=var_bin) %>%
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>%
+  group_by(var) %>%
+  arrange(var,desc(value)) %>%
   mutate(num2=num) %>%
-  filter(num %ni% c("01")) %>% 
-  mutate_at("num2",~sort(.,decreasing = T)) %>% 
-  mutate(num3=num) %>% 
-  mutate_at("num3",~sort(.,decreasing = F)) %>% 
-  dplyr::summarise(equal_ratio=(mean(num==num2|num==num3))) %>% 
-  filter(equal_ratio!=1) %>% 
-  mutate(var_match=var) %>% 
+  filter(num %ni% c("01")) %>%
+  mutate_at("num2",~sort(.,decreasing = T)) %>%
+  mutate(num3=num) %>%
+  mutate_at("num3",~sort(.,decreasing = F)) %>%
+  dplyr::summarise(equal_ratio=(mean(num==num2|num==num3))) %>%
+  filter(equal_ratio!=1) %>%
+  mutate(var_match=var) %>%
   map_at("var_match",~str_subset(.,"_id.*allnum$"))
 
-var_dis <- df %>% 
-  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
-  add_column(var_bin=df1$var) %>% 
-  mutate(num=var_bin) %>% 
-  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
-  group_by(var) %>% 
-  arrange(var,desc(value)) %>% 
+var_dis <- df %>%
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>%
+  add_column(var_bin=df1$var) %>%
+  mutate(num=var_bin) %>%
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>%
+  group_by(var) %>%
+  arrange(var,desc(value)) %>%
   mutate(num2=num) %>%
-  mutate_at("num2",~sort(.,decreasing = T)) %>% 
-  mutate(num3=num) %>% 
-  mutate_at("num3",~sort(.,decreasing = F)) %>% 
-  filter(var %in% var_names$var_match) %>% arrange(var,num) %>% 
-  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>% 
+  mutate_at("num2",~sort(.,decreasing = T)) %>%
+  mutate(num3=num) %>%
+  mutate_at("num3",~sort(.,decreasing = F)) %>%
+  filter(var %in% var_names$var_match) %>% arrange(var,num) %>%
+  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>%
   mutate(tag=if_else(value_new>0,"单调递减",
-                     if_else(value_new<0,"单调递增","1 group"))) %>% dplyr::count(var) %>% 
-  group_by(var) %>% 
+                     if_else(value_new<0,"单调递增","1 group"))) %>% dplyr::count(var) %>%
+  group_by(var) %>%
   mutate(var_dis=seq(n_distinct(var)))
-  
+
 id <- map2(var_dis$var_dis,var_dis$n,~rep(.x,.y)) %>% flatten_int()
 
-df %>% 
-  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>% 
-  add_column(var_bin=df1$var) %>% 
-  mutate(num=var_bin) %>% 
-  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>% 
-  group_by(var) %>% 
-  arrange(var,desc(value)) %>% 
+df %>%
+  mutate_at(1,~str_sub(.,1,str_length(.)-4)) %>%
+  add_column(var_bin=df1$var) %>%
+  mutate(num=var_bin) %>%
+  mutate_at("num",~str_split(.,"_X") %>% map_chr(2)) %>%
+  group_by(var) %>%
+  arrange(var,desc(value)) %>%
   mutate(num2=num) %>%
-  filter(num %ni% c("01")) %>% 
-  mutate_at("num2",~sort(.,decreasing = T)) %>% 
-  mutate(num3=num) %>% 
-  mutate_at("num3",~sort(.,decreasing = F)) %>% 
-  filter(var %in% var_names$var_match) %>% arrange(var,num) %>% 
-  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>% 
+  filter(num %ni% c("01")) %>%
+  mutate_at("num2",~sort(.,decreasing = T)) %>%
+  mutate(num3=num) %>%
+  mutate_at("num3",~sort(.,decreasing = F)) %>%
+  filter(var %in% var_names$var_match) %>% arrange(var,num) %>%
+  mutate(value_new=value) %>% mutate_at("value_new",~head(.,1)-tail(.,1)) %>%
   mutate(tag=if_else(value_new>0,"单调递减",
-                     if_else(value_new<0,"单调递增","1 group"))) %>% add_column(id=id) %>% select(id,var,var_bin,value,tag) %>% 
-  View()        
+                     if_else(value_new<0,"单调递增","1 group"))) %>% add_column(id=id) %>% select(id,var,var_bin,value,tag) %>%
+  View()
       #+end_src
 
 ***** 缺失值不能写成 if_else(y==NA,1,0),而要写成 if_else(is.na(y),1,0)！！
@@ -1170,8 +1169,8 @@ df %>%
 ***** 字符串大小写问题一定要注意，字符串一律定义为小写！！！
 
       #+begin_src R ::results output graphics :file fig_1.png :exports both
-        data <- train_data %>% 
-            mutate(province = as.character(province)) %>% 
+        data <- train_data %>%
+            mutate(province = as.character(province)) %>%
             mutate_if(is.character,tolower) #将province定义为char,将所有char型改成小写.
       #+end_src
 ***** 建模的缺失值需要检查是否有“--”，"" 等不规则的字符串！
@@ -1179,19 +1178,19 @@ df %>%
 可以通过以下代码 check 是否有“--”，"" 等不规则字符串。
       #+begin_src R ::results output graphics :file fig_1.png :exports both
         df <- tibble(x1 = c("","--",1), x2 = c(2,"",2),x3=c(1,3,4))
-        df %>% filter_all(any_vars(. == "--"))        
+        df %>% filter_all(any_vars(. == "--"))
       #+end_src
 
 如果有的话，需要利用以下代码将缺失值进行填充！
 
-train_test$train = train_test$train %>% 
+train_test$train = train_test$train %>%
   mutate_at(vars(feat_cate),
-            funs(ifelse(. %in% c("--",NA,""),-99999,.)) 
-  ) 
-train_test$validate = train_test$validate %>% 
+            funs(ifelse(. %in% c("--",NA,""),-99999,.))
+  )
+train_test$validate = train_test$validate %>%
   mutate_at(vars(feat_cate),
-            funs(ifelse(. %in% c("--",NA,""),-99999,.)) 
-  ) 
+            funs(ifelse(. %in% c("--",NA,""),-99999,.))
+  )
 ***** provider/basicinfo_provider 都不能入模！
 
 *** 良好的编程习惯
@@ -1204,9 +1203,9 @@ train_test$validate = train_test$validate %>%
 3. 每次编程时只开一个确保只有一个页面窗口。
 
 4.一旦识别出表的主键，最好验证一下，看看它们能否真正唯一标识每个观测。一种验证方法是对主键进行 count() 操作，然后查看是否有 n 大于 1 的记录.
-#+begin_src R :results output graphics :file fig_1.png :exports both 
-  df1 %>% count(xiaomi_id,credit_time) %>% 
-      filter(n>1)    
+#+begin_src R :results output graphics :file fig_1.png :exports both
+  df1 %>% count(xiaomi_id,credit_time) %>%
+      filter(n>1)
 #+end_src
 
 5. 每写一行代码必须确保准确无误，不能抱着过后重复看的习惯。
@@ -1215,7 +1214,7 @@ train_test$validate = train_test$validate %>%
 
 7.代码业务问题必须要熟知，简明扼要地介绍取数逻辑。
 ** 编程规范
-*** 上传代码 
+*** 上传代码
 
     #+begin_src R ::results output graphics :file fig_1.png :exports both
       setwd("/home/work/rstudio-home/luyajun/git_code/mifi_model_prm")
@@ -1227,11 +1226,11 @@ train_test$validate = train_test$validate %>%
 
       system("git clone gitlab.luyajun:mengfangui/mifi_model_config")
       system("git clone gitlab.luyajun:mengfangui/mifi_model_prm")
-      system("git clone gitlab.luyajun:mengfangui/mifi_model_pricing")      
+      system("git clone gitlab.luyajun:mengfangui/mifi_model_pricing")
     #+end_src
 
-    #+begin_src R ::results output graphics :file fig_1.png :exports both 
-      
+    #+begin_src R ::results output graphics :file fig_1.png :exports both
+
       system("git branch -a")
       system("git branch luyajun")
       system("git checkout luyajun")
@@ -1243,7 +1242,7 @@ train_test$validate = train_test$validate %>%
 
       system("git checkout master")
       system("git merge luyajun")
-      system("git push origin luyajun")      
+      system("git push origin luyajun")
     #+end_src
 
 如何删除文件？
@@ -1261,13 +1260,13 @@ train_test$validate = train_test$validate %>%
 #+begin_src R ::results output graphics :file fig_1.png :exports both
   git rm --cached file_path
   git commit -m 'delete remote somefile'
-  git push  
+  git push
 #+end_src
 
 ** 组外项目
 *** early mob
-通过 7 天的支用与多头数据预测其 30 天的逾期概率。     
-对于所有授信通过的用户，通过其授信后一周内的支用、外部多头、端内数据，预测其第 1 期 30 天逾期概率。 
+通过 7 天的支用与多头数据预测其 30 天的逾期概率。
+对于所有授信通过的用户，通过其授信后一周内的支用、外部多头、端内数据，预测其第 1 期 30 天逾期概率。
 有何作用？ 用于提高对授信通过后第 1 期还款逾期 30 天样本的识别能力。
 *** 实时模型 label 标注模型
 应用于实时风险模型未成熟样本的 Label 标注.(什么是未成熟样本？猜是没有预期信息?)
@@ -1290,10 +1289,7 @@ M(monetary):客户在最近一段时间内交易的金额。M值越大，表示�
 
 [fn:3]该模式不仅通过表外融资为小额贷款公司提供持续的资金支持，而且扩大了银行微贷款业务规模，开辟了新的盈利增长点，实现了银行、微贷机构和小企业、低收入人群的多方共赢。金融中介机构（主要银行）提供资金，助贷机构负责获客、风控等环节，金融中介机构与助贷机构的风险与收益划分由双方协商决定。
 
-[fn:2]信托是委托人基于对受托人的信任，将其财产权委托给受托人，由受托人按委托人的意愿以自己的名义，为受益人的利益或特定目的，进行管理和处分的行为。 
+[fn:2]信托是委托人基于对受托人的信任，将其财产权委托给受托人，由受托人按委托人的意愿以自己的名义，为受益人的利益或特定目的，进行管理和处分的行为。
 
-[fn:1] 
+[fn:1]
 保理（Factoring），全称保付代理，又称托收保付，是一个金融术语，指卖方将其现在或将来的基于其与买方订立的货物销售/服务合同所产生的应收账款转让给保理商（提供保理服务的金融机构），由保理商向其提供资金融通、买方资信评估、销售账户管理、信用风险担保、账款催收等一系列服务的综合金融服务方式。
-
-
-
