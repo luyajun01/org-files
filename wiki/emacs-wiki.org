@@ -1,6 +1,7 @@
 * emacs wiki                                                            :toc:
   - [[#实用技能][实用技能]]
     - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
+  - [[#推荐安装包][推荐安装包]]
   - [[#常用快捷键][常用快捷键]]
   - [[#spacemacs][spacemacs]]
   - [[#emacs-mode][emacs mode]]
@@ -28,11 +29,14 @@
     - [[#swiper-thing-at-point][swiper-thing-at-point.]]
   - [[#helm][helm]]
   - [[#evil][evil]]
+    - [[#evil-escape][evil-escape]]
+  - [[#evil-lispy][evil-lispy]]
   - [[#lispyville][lispyville]]
   - [[#treemacs][treemacs]]
   - [[#org][org]]
     - [[#配置][配置]]
     - [[#evil-org-mode][evil-org-mode]]
+    - [[#olivetti][olivetti]]
     - [[#toc-org][toc-org]]
     - [[#org-agenda][org-agenda]]
     - [[#org-download][org-download]]
@@ -54,6 +58,13 @@
 (2) 选择一个 region , M-x eval-region
 (3) M-x load-file ~/.emacs
 (4) M-x eval-buffer
+
+emacs 配置坑巨多，那么就需要 debug, 需要执行 toggle-debug-on-error.
+
+
+** 推荐安装包
+
+evil,evil-escape,org,.
 
 ** 常用快捷键
    需要注意的是在 emacs shift 的键是 s.
@@ -176,12 +187,19 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 ** evil
    vim 模式谁用谁知道啊！！！！太爽了！需要学习 vim 的按键快捷键。
 
-| 功能 | 快捷键 |
-|------+--------|
-| p    | 粘贴   |
-| d    | 剪切   |
-| y    | 复制   |
-| v    | 快速跳转到 visual state |
+| 功能 | 快捷键                       |
+|------+------------------------------|
+| p    | 粘贴                         |
+| d    | 剪切                         |
+| y    | 复制                         |
+| v    | 快速跳转到 visual state      |
+| gU   | 小写变大写                   |
+| kj   | 实现 ese 功能（evil-escape） |
+| .    | 实现 repeat 功能             |
+| e    | 可以实现一行文字间快速跳转   |
+|      |                              |
+
+
 
 以行/列为单位移动，h,j,k,l
 y =i
@@ -222,6 +240,11 @@ visual mode
 复原
 重复上一操作
 ctrl + r
+*** evil-escape
+可以用 evil-escape，按 kj 或者 fd 就等价于按 esc.
+** evil-lispy
+爽！
+
 ** lispyville
 这个插件我一直想学会！ motion normal visual 三种状态，快捷键不一样！
 
@@ -289,6 +312,9 @@ Spacemacs
 <leader>c	org-archive-subtree
 <leader>l	evil-org-open-links
 <leader>o	evil-org-recompute-clocks
+
+*** olivetti
+这个包可以将文字居中。
 
 *** toc-org
 org-set-tags-command(c-c c-q) 放在第一个标题后面输入这个命令,即可生成 toc.

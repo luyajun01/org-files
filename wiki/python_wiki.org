@@ -1,6 +1,6 @@
 # -*- org-confirm-babel-evaluate: nil; -*-
 #+PROPERTY: header-args :eval never-export
-
+            
 * Python_wiki                                                           :toc:
   - [[#常见问题][常见问题]]
     - [[#语法错误][语法错误]]
@@ -13,6 +13,7 @@
     - [[#关键字参数][关键字参数]]
     - [[#可变参数][可变参数]]
     - [[#return][return]]
+    - [[#命名空间和作用域][命名空间和作用域]]
     - [[#][*/**]]
     - [[#set][set]]
     - [[#help][help]]
@@ -287,8 +288,17 @@ os.chcwd('D:/work') #改变工作目录
 os.mkdir('work') #建立新目录
 os.rmdir('work') #删除目录
 os.rename('fff.txt','fool.txt') #重命名
-     os.remove('h.txt') #删除文件
+os.remove('h.txt') #删除文件
+import numpy
+import numpy
+import numpy
+import numpy as np
+import numpy
+
+print("hello")
    #+end_src
+
+ 
 
 ** pip install
 谁用谁知道。
@@ -405,6 +415,13 @@ return 语句用于从函数中返回，也就是中断函数。
 
     print(maximun(2, 3))
     #+end_src
+
+*** 命名空间和作用域
+命名空间（namespace）
+
+
+
+
 
 *** */**
 为了能让一个函数接受任意数量的位置参数，可以使用一个*参数。例如：
@@ -603,7 +620,6 @@ f.get_n()
 #+end_src
 
 为了说明清楚它如何工作的，有两点需要解释一下。首先，nonlocal 声明可以让我们编写函数来修改内部变量的值。其次，函数属性允许我们用一种很简单的方式将访问方法绑定到闭包函数上，这个跟实例方法很像(尽管并没有定义任何类)。
-
 
 
 
@@ -1221,13 +1237,15 @@ print(boston.keys())
 **** row
 
      #+begin_src python
- A = [[1, 4, 5],
-     [-5, 8, 9]]
-column = [];
-for row in A:
-    column.append(row[2])
-row
+        A = [[1, 4, 5],
+            [-5, 8, 9]]
+       column = [];
+       for row in A:
+           column.append(row[2])
+       row
+
      #+end_src
+
 **** np.transpose
 转置。
 #+begin_src python
@@ -1405,11 +1423,11 @@ float('3.14')
 *** 生成数据
   随机生成一组 2*3 维度数据。
   #+begin_src python
-import numpy as np
-data = np.random.randn(2, 3) #生成2*3 维float 型数据
-print(data.shape) #数据维度
-print(data.dtype) #显示数据类型
-print(data) #打印数据
+    import numpy as np
+    data = np.random.randn(2, 3) #生成2*3 维float 型数据
+    print(data.shape) #数据维度
+    print(data.dtype) #显示数据类型
+    print(data) #打印数据
   #+end_src
 
   #+begin_src python
@@ -1739,9 +1757,10 @@ retrieve multiple elements using a list of index label values
 create a series from ndarray.
 
 #+begin_src python
-  import pandas as pd
-  from pandas import Series, DataFrame
-  pd.Series([4, 7, -5, 3])
+import numpy as np
+import pandas as pd
+from pandas import Series, DataFrame
+pd.Series([4, 7, -5, 3])
   import pandas as pd
   import numpy as np
   data = np.array(['a', 'b', 'c', 'd'])
@@ -1750,7 +1769,18 @@ create a series from ndarray.
   s = pd.Series(data)
   print(s)
   print(s.dtype)
+
+import nump
+import numpy
+import
+import numpy as
+import numpy as np
+
+imp
+
 #+end_src
+
+
 
 pd.series 中的 index
 
@@ -2843,9 +2873,6 @@ b(10)
 
 从上面例子可以知道 lambda 表达式中的 x 是一个自由变量，在运行时绑定值，而不是定义时就绑定，这跟函数的默认值参数定义是不同的。
 
-
-
-
 ** class
 类与对象是面向对象编程的两个主要方面。一个类（class）能够创建一种新的类型（type），其中对象（object）就是类的实例（instance）。python 中的 self 相当于 c++ 中的 this 指针及 java 与 C# 中的 this 引用。面向对象编程，在编写类时，定义一大类对象都有通用的行为。
 
@@ -2855,14 +2882,14 @@ b(10)
 
 如果类的定义是这样：
 
- #+begin_src python
+#+begin_src python
    class MyClass:
        """A simple example class"""
        i = 12345
 
      def f(self):
          return 'hello world'
- #+end_src
+#+end_src
 
  那么 MyClass.i 和 MyClass.f 就是有效的属性引用，将分别返回一个整数和一个函数对象。
  类属性也可以被赋值，因此可以通过赋值来更改 MyClass.i 的值。__doc__ 也是一个有效

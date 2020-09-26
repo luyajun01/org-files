@@ -2,9 +2,9 @@
 #+PROPERTY: header-args :eval never-export
 #+TITLE: 统计 wiki
 
-- [[wiki:index][Index]]
+  - [[wiki:index][Index]]
 
-- Related: [[wiki:R_WIKi][R]] 
+  - Related: [[wiki:R_WIKi][R]] 
 
 知识需要定期复习！
 

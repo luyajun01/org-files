@@ -14025,7 +14025,10 @@ dt1 %[]o[]% dt2
        x[!is.na(x)] # 过滤掉 NA 的同时也把数据类型转换为 double
        typeof(x[!is.na(x)])
      #+end_src
+** hdfs
+ruhe
 
+   
 ** 向量化计算
 对应在 purrr 包中的 map，map_*,map2 等函数。 
 | func   | descriptions                      |

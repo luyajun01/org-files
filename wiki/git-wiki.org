@@ -202,7 +202,13 @@ rmdir ~/.spacemacs.d
    #+end_src
 
 
+   #+begin_src 
+ps -aux #查看进程信息
+ps -aux | grep mysql #查看具体某个进程
+kill -9 pid #kill process
 
+     
+   #+end_src
 
 
 

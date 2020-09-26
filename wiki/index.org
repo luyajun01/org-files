@@ -18,3 +18,5 @@
 *** R
 - [[wiki:R_WIKI][wiki:R_WIKI]]
 *** python
+*** SQL 
+- [[wiki:sql_wiki][SQL]]
