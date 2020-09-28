@@ -732,6 +732,9 @@ for i in reversed([2, 5, 3, 9, 6]):
   magicians = ['alice', 'david', 'carolina']
   magicians.sort()
   magicians
+
+import
+
 #+end_src
 
 *** sorted
@@ -2869,6 +2872,7 @@ a(10)
 #> 30
 b(10)
 #> 30
+
 #+end_src
 
 从上面例子可以知道 lambda 表达式中的 x 是一个自由变量，在运行时绑定值，而不是定义时就绑定，这跟函数的默认值参数定义是不同的。

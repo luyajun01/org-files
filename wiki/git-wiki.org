@@ -10,25 +10,26 @@
   - [[#打开-terminial][打开 terminial]]
   - [[#打开文件夹][打开文件夹]]
   - [[#删除文件夹][删除文件夹]]
+  - [[#下载-git-pository-加速][下载 git pository 加速]]
 
 ** 基本命令
-*** 利用 git 上传本地文件、文件夹到 GitHub 
+*** 利用 git 上传本地文件、文件夹到 GitHub
 
 - 1.输入自己的用户名和邮箱（为注册 GITHUB 账号时的用户名和邮箱）
- 
+
 #+begin_src git
 $ git config --global user.name "luyajun01@gmail.com"
-  $ git config --global user.email "luyajun01@gmail.com"
+$ git config --global user.email "luyajun01@gmail.com"
 #+end_src
 
 - 2.设置 SSH key
 #+begin_src git
    $ cd ~/.ssh
-   $ ls 
+   $ ls
 #+end_src
 如果没有密钥，则执行以下命令来生成密钥：
 #+begin_src git
- $ ssh-keygen -t rsa -C "luyajun01@gmail.com" 
+ $ ssh-keygen -t rsa -C "luyajun01@gmail.com"
 #+end_src
 生成过程中按 3 次回车键就好（默认路径，默认没有密码登录），生成成功后，去对应默认路径里用记事本打开 id_rsa.pub，得到 ssh key 公钥。
 
@@ -49,12 +50,12 @@ $ cd d:\layout //假如需要上传的文件是d 盘文件
 （3）执行指令将文件添加到本地仓库：
 #+begin_src git
      $ git add .         //添加当前文件夹下的所有文件
-    $ git add **.cpp    //添加当前文件夹下的**.cpp这个文件 
+    $ git add **.cpp    //添加当前文件夹下的**.cpp这个文件
 #+end_src
 
 （4）输入本次的提交说明，准备提交暂存区中的更改的已跟踪文件，单引号内为说明内容：
 #+begin_src git
-    $ git commit -m "layout"  //引号中的内容为对该文件的描述 
+    $ git commit -m "layout"  //引号中的内容为对该文件的描述
 #+end_src
 
 - 4.关联 github 仓库
@@ -64,22 +65,22 @@ $ cd d:\layout //假如需要上传的文件是d 盘文件
 执行命令：
 #+begin_src git
    //新建一个repository时会出现下面的代码，直接复制即可
-   $ git remote add origin https://github.com/CongliYin/CSS.git 
+   $ git remote add origin https://github.com/CongliYin/CSS.git
 #+end_src
 
 如果出现错误：fatal: remote origin already exists，则执行以下语句：
 #+begin_src git
- $ git remote rm origin 
+ $ git remote rm origin
 #+end_src
 再重新执行：
 #+begin_src git
- $ git remote add origin https://github.com/CongliYin/CSS.git 
+ $ git remote add origin https://github.com/CongliYin/CSS.git
 #+end_src
 即可成功。
 最后执行命令：
 
 #+begin_src git
-     $ git push origin master 
+     $ git push origin master
 #+end_src
 
 ** 如何在 GitHub.com 上删除某个 Repository 中的某个文件夹？
@@ -116,7 +117,7 @@ u 	Unstage 	git reset HEAD filename 	从 staged 变成 Unstaged
 可以通过 cc 来创建 git commit,通过 push 来 push git。
 ** magit
 参考连接:https://www.jianshu.com/p/990e69407b44
-文件管理神器 magit. 
+文件管理神器 magit.
 
 傻瓜流程:
 
@@ -171,8 +172,16 @@ rollback：git reset --soft <commit>，保持当前文件修改的状态，版�
 丢弃本地改动及提交，同步最新远程仓库版本：git reset --hard <origin/branch_name> 或 git fetch orgin
 
 
+常用命令：
 
-* linux 
+#+begin_quote
+git add .
+git commit "sth"
+# git commit -a -m 'Initial commit' #遇到问题，可以试试它！
+git push -f origin master #强列推荐
+#+end_quote
+
+* linux
 ** 常用文件夹
 | 文件名       | 命令                    |
 | .spacemacs.d | nautilus ~/.spacemacs.d |
@@ -182,7 +191,7 @@ rollback：git reset --soft <commit>，保持当前文件修改的状态，版�
 ** 打开 terminial
 ctrl + alt + t 打开终端
 
-   #+begin_src 
+   #+begin_src
     创建文件： touch a.txt
     创建文件夹： mkdir NewFolder
     删除文件： rm a.txt
@@ -192,24 +201,30 @@ ctrl + alt + t 打开终端
 
 ** 打开文件夹
 以下代码可以在 ubuntu 的 terminal 里方便地打开文件夹。
-#+begin_src  
+#+begin_src
 nautilus ~/.emacs.d
 #+end_src
 
 ** 删除文件夹
-   #+begin_src 
+   #+begin_src
 rmdir ~/.spacemacs.d
    #+end_src
 
 
-   #+begin_src 
+   #+begin_src
 ps -aux #查看进程信息
 ps -aux | grep mysql #查看具体某个进程
 kill -9 pid #kill process
 
-     
+
    #+end_src
 
 
+** 下载 git pository 加速
 
+#+begin_src
+github.com.cnpmjs.org
 
+git clone https://github.com.cnpmjs.org/luyajun01/.spacemacs.d.git
+
+#+end_src
