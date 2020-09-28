@@ -313,6 +313,33 @@ Spacemacs
 <leader>l	evil-org-open-links
 <leader>o	evil-org-recompute-clocks
 
+在 org-mode 里面运行 python 真是不容易！可以对 python 代码进行补全，但是必须先运行 run-python!
+
+#+begin_export lisp
+  ;;这个函数很重要！
+(add-hook 'ipython-mode-hook
+          (lambda ()
+            (setq-local completion-at-point-functions
+                        '(pcomplete-completions-at-point python-completion-at-point))))
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (setq-local completion-at-point-functions
+;;                         '(pcomplete-completions-at-point python-completion-at-point))))
+
+(define-key evil-insert-state-map (kbd "C-S-l") 'completion-at-point)
+
+(defun ob-ipython-eldoc-function ()
+  (when (org-babel-where-is-src-block-head)
+    (python-eldoc-function)))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq-default eldoc-documentation-function 'ob-ipython-eldoc-function)))
+
+#+end_export
+
+
+
 *** olivetti
 这个包可以将文字居中。
 
@@ -396,7 +423,6 @@ awesome-tab-kill-all-buffers-in-current-group	删除当前分组的所有标签
 awesome-tab-kill-match-buffers-in-current-group	删除当前分组的匹配的标签
 awesome-tab-keep-match-buffers-in-current-group	保留当前分组的匹配的标签
 awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
-
 
 
 
