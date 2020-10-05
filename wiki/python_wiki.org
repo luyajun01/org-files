@@ -1,6 +1,6 @@
 # -*- org-confirm-babel-evaluate: nil; -*-
 #+PROPERTY: header-args :eval never-export
-            
+
 * Python_wiki                                                           :toc:
   - [[#常见问题][常见问题]]
     - [[#语法错误][语法错误]]
@@ -298,7 +298,7 @@ import numpy
 print("hello")
    #+end_src
 
- 
+
 
 ** pip install
 谁用谁知道。
@@ -2177,6 +2177,20 @@ pd.merge(left, right, on = ["subject_id"], how="inner")
        str = 'this is string'
        print(str.replace("is", "was"))
      #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+ str = 'this is string'
+ print(str.replace("is", "was"))
+#+end_src
+
+#+RESULTS:
+:results:
+# Out [2]:
+# output
+thwas was string
+
+:end:
+
 **** 大小写
      #+begin_src python
        import pandas as pd
