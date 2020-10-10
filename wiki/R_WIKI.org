@@ -14,7 +14,6 @@
 这个文档专门用于记录 R 语言在使用过程中的心得体会，避免今后 coding 的重复劳动。
 #+end_quote
 
-
 * 问题
 ** 如何快速地删除确定的行？
 ** 如何对两个不同长度的向量作 map2?
@@ -9255,6 +9254,12 @@ Address in RAM of a variable.
   x = 1
   address(x)
                                         #> [1] "0x7f93e030f528"  
+#+end_src
+
+*** setDT
+可以把 data.table 类型数据转化为 data.frame.
+#+begin_src R
+library(data.table)
 #+end_src
 
 *** %between%

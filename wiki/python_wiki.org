@@ -277,11 +277,10 @@
     SyntaxError: invalid syntax
     #+end_quote
 语法错误又称解析错误，简单来说是基本语法结构写错了，如：多任务写成一行、for 循环没加‘:’等。上面示例可以看到，针对语法错误，python 解析器会输出错误的那一行，并且在最先找到的错误的位置标记了一个箭头。
-
 ** 工作目录
 类似于 R 的 getwd(),setwd().
-   #+begin_src python
-     ##引入模块，获得工作目录
+#+begin_src python
+##引入模块，获得工作目录
 import os
 os.getcwd() #获得当前工作目录
 os.chcwd('D:/work') #改变工作目录
@@ -289,16 +288,10 @@ os.mkdir('work') #建立新目录
 os.rmdir('work') #删除目录
 os.rename('fff.txt','fool.txt') #重命名
 os.remove('h.txt') #删除文件
-import numpy
-import numpy
-import numpy
 import numpy as np
-import numpy
-
 print("hello")
+# => hello
    #+end_src
-
-
 
 ** pip install
 谁用谁知道。
@@ -309,8 +302,9 @@ print("hello")
 ** 常见函数
 *** def
 自定义函数可以通过关键字 def 来定义。
+
 #+begin_src python
- def test(x, y = 10):
+def test(x, y = 10):
     x += 100
     print(x, y)
 test
@@ -318,20 +312,23 @@ test
 test.__code__
 # <code object test at 0x11d9b15d0, file "<ipython-input-43-3d74f8241943>", line 1>
 test.__code__.co_varnames # 参数及变量量名列列表。
+# => ('x', 'y')
 test.__code__.co_consts # 指令常量
+# => (None, 100)
 test.__defaults__ # 参数默认值
 # (10,)
 test(1)
 # 101 10
 #+end_src
-在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称
-作“实参”（arguments）。
+
+在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称作“实参”（arguments）。
+
     #+begin_src python
       def say_hello():
           print('hello world')
-
-          say_hello()
+    say_hello()
     #+end_src
+
     #+begin_src python
       def print_max(a, b):
     if a > b:
@@ -341,16 +338,14 @@ test(1)
     else:
         print(b, 'is maximum')
 
-        print_max(3,4)
+    print_max(3,4)
     #+end_src
 
 *** 局部变量
-当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的
-变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作
-用域（scope）。
+当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的 变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作用域（scope）。
 
     #+begin_src python
-      x = 50
+x = 50
 def func(x):
     print("x is", x)
     x = 2
@@ -365,8 +360,8 @@ func(x)
 类），那么你必须告诉 python 这一变量并非局部，而是全局（global）。因为在不使用
 global 语句的情况下，不可能为一个定义于函数之外的变量赋值。
 
-    #+begin_src python
-      x = 50
+    #+begin_src ipython
+x = 50
 def func():
     global x
 
@@ -380,21 +375,25 @@ func()
 
 下面 times = 1,就是默认的参数值。
 
-    #+begin_src python
-      def say(message, times=1):
+    #+begin_src ipython
+def say(message, times=1):
           print(message * times)
 
 say('hello')
-      say('world',5)
+# => hello
+
+say('world',5)
+# => worldworldworldworldworld
     #+end_src
 
 *** 关键字参数
 
-    #+begin_src python
-      def func(a,b=5,c=10):
-          print("a is", a, "and b is", b, "and c is", c)
+#+begin_src python
+def func(a,b=5,c=10):
+    print("a is", a, "and b is", b, "and c is", c)
 
 func(3,7)
+# => a is 3 and b is 7 and c is 10
 func(25,c=7)
       func(c=50, a=100)
     #+end_src
@@ -419,21 +418,20 @@ return 语句用于从函数中返回，也就是中断函数。
 *** 命名空间和作用域
 命名空间（namespace）
 
-
-
-
-
 *** */**
-为了能让一个函数接受任意数量的位置参数，可以使用一个*参数。例如：
-    #+begin_src python
- def avg(first, *rest):
+为了能让一个函数接受任意数量的位置参数，可以使用一个*参数。例如
+
+#+begin_src python
+def avg(first, *rest):
     return (first + sum(rest)) / (1 + len(rest))
 
 # Sample use
 avg(1, 2) # 1.5
 avg(1, 2, 3, 4) # 2.5
     #+end_src
+
 为了接受任意数量的关键字参数，使用一个以**开头的参数。比如：
+
 #+begin_src python
  import html
 
@@ -454,10 +452,7 @@ make_element('item', 'Albatross', size='large', quantity=6)
 make_element('p', '<spam>')
 #+end_src
 
-从上面两个例子可以看出 * 对应的是任意数量的位置参数,而 ** 对应的是任意数量的关键
-字参数.
-
-还有一种情况是只接受关键字参数的函数.将强制关键字参数放到某个*参数或者单个*后面就能达到这种效果。
+从上面两个例子可以看出 * 对应的是任意数量的位置参数,而 ** 对应的是任意数量的关键字参数.还有一种情况是只接受关键字参数的函数.将强制关键字参数放到某个 * 参数或者单个 * 后面就能达到这种效果。
 
 #+begin_src python
  def recv(maxsize, *, block):
@@ -482,9 +477,7 @@ minimum(1, 5, 2, -5, 10, clip=0) # Returns 0
 
 - 给函数参数增加元信息
 
-写好了一个函数，然后想为这个函数的参数增加一些额外的信息，这样的话其他使用者就能清楚的知道这个函数应该怎么使用。
-
-函数注解只存储在函数的 __annotations__ 属性中。
+写好了一个函数，然后想为这个函数的参数增加一些额外的信息，这样的话其他使用者就能清楚的知道这个函数应该怎么使用。函数注解只存储在函数的 __annotations__ 属性中。
 
 #+begin_src python
 def add(x:int, y:int) -> int:
@@ -504,9 +497,11 @@ add.__annotations__
 #+end_src
 
 - 返回多个值的函数
+
 为了能返回多个值,函数直接 return 一个元组即可.
+
 #+begin_src python
- def myfun():
+def myfun():
     return 1,2,3
 
 a, b, c = myfun()
@@ -529,7 +524,9 @@ def spam(a, b = 42):
     print(a, b)
 
 spam(1)
+# => 1 42
 spam(1, 2)
+# => 1 2
 #+end_src
 
 #+begin_src python
@@ -563,6 +560,7 @@ def spam(a, b, c, d):
 s1 = partial(spam, 1)
 s1
 s1(2, 3, 4)
+# => 1 2 3 4
 s2 = partial(spam, d = 42)
 s2(1, 2, 3)
 s2(4, 5, 5)
@@ -572,12 +570,12 @@ s3(4)
 s3(5)
 #+end_src
 
-partial() 函数允许你给一个或多个参数设置固定的值，减少接下来被调用时的参数个数。
-
+partial 函数允许你给一个或多个参数设置固定的值，减少接下来被调用时的参数个数。
 
 - 带额外状态信息的回调函数
 
 你的代码中需要依赖到回调函数的使用(比如事件处理器、等待后台任务完成后的回调等)， 并且你还需要让回调函数拥有额外的状态值，以便在它的内部使用到。
+
 #+begin_src python
 def apply_async(func, args, *, callback):
     result = func(*args)
@@ -621,12 +619,12 @@ f.get_n()
 
 为了说明清楚它如何工作的，有两点需要解释一下。首先，nonlocal 声明可以让我们编写函数来修改内部变量的值。其次，函数属性允许我们用一种很简单的方式将访问方法绑定到闭包函数上，这个跟实例方法很像(尽管并没有定义任何类)。
 
-
-
 *** set
 集合，是 python 一种数据类型，可以去重。
 #+begin_src python
 basket = ['apple', 'orange', 'apple']
+# => ['apple', 'orange', 'apple']
+
 set(basket)
 #> {'apple', 'orange'}
 #+end_src
@@ -643,6 +641,8 @@ python 中的 list 转变为 array.
       items = [1, 2, 3, 4, 5]
       type(items)
       l = np.array(items)
+l
+# => array([1, 2, 3, 4, 5])
       type(l)
     #+end_src
 *** print
@@ -657,24 +657,30 @@ python 中的 list 转变为 array.
 array 转变成 list.
 
 #+begin_src python
-  import array as arr
-  a = arr.array("i", [10, -20, 30])
-  print("type of a:", type(a))
-  print("a is:", a)
-  list1 = list()
-  a.tolist()
+import array as arr
+a = arr.array("i", [10, -20, 30])
+# => array('i', [10, -20, 30])
+print("type of a:", type(a))
+# => type of a: <class 'array.array'>
+print("a is:", a)
+# => a is: array('i', [10, -20, 30])
+list1 = list()
+a.tolist()
 #+end_src
 
 *** title
 Python title() 方法返回"标题化"的字符串,就是说所有单词都是以大写开始，其余字母均为小写(见 istitle())。
     #+begin_src python
-      a = []
-      a.append("df")
-      a.append("sd")
-      a.insert(0,"sa")
-      a
-      b = a.pop(0)
-      b.title()
+a = []
+a.append("df")
+# =>
+a.append("sd")
+# =>
+a.insert(0,"sa")
+a
+# => ['sd']
+b = a.pop(0)
+b.title()
     #+end_src
 
 *** Any/All
@@ -689,17 +695,20 @@ all([False, True])
 这个函数类似于 seq.
 
     #+begin_src python
-      numbers = list(range(1, 6))
-      print(numbers)
+numbers = list(range(1, 6))
+print(numbers)
       # [1, 2, 3, 4, 5]
     #+end_src
 
 *** for 循环
 for 循环中的 print 需要缩进。
     #+begin_src python
-      magicians = ['alice', 'david', 'carolina']
+magicians = ['alice', 'david', 'carolina']
 for magician in magicians:
-print(magician)
+    print(magician)
+    # => alice
+    #    david
+    #    carolina
     #+end_src
 *** len
 可以列表的长度。
@@ -728,24 +737,23 @@ for i in reversed([2, 5, 3, 9, 6]):
 
 *** sort
 对列表进行永久性排序。
+
 #+begin_src python
-  magicians = ['alice', 'david', 'carolina']
-  magicians.sort()
-  magicians
-
-import
-
+magicians = ['alice', 'david', 'carolina']
+magicians.sort()
+magicians
+# => ['alice', 'carolina', 'david']
 #+end_src
 
 *** sorted
-使用 sorted() 对列表进行 *临时排序* 。要保留列表元素原来的列表的顺序，同时以特定的顺序呈现它们。除此之外，sorted()函数还有两个参数：key 和 reverse.
 
-key 指定带有单个参数的函数，用于从 iterable 的每个元素中提取用于比较的键 (例如 key=str.lower)。默认值为 None (直接比较元素)
-reverse 为一个布尔值。如果设为 True，则每个列表元素将按反向顺序比较进行排序。
+使用 sorted() 对列表进行 *临时排序* 。要保留列表元素原来的列表的顺序，同时以特定的顺序呈现它们。除此之外，sorted()函数还有两个参数：key 和 reverse.
+key 指定带有单个参数的函数，用于从 iterable 的每个元素中提取用于比较的键 (例如 key=str.lower)。默认值为 None (直接比较元素), reverse 为一个布尔值。如果设为 True，则每个列表元素将按反向顺序比较进行排序。
 
 #+begin_src python
-  magicians = ['alice', 'david', 'carolina']
-  sorted(magicians)
+magicians = ['alice', 'david', 'carolina']
+sorted(magicians)
+# => ['alice', 'carolina', 'david']
 a = sorted([2, 4, 3, 7], reverse=True)
 print(a)
 #> [7, 4, 3, 2]
@@ -765,25 +773,31 @@ for f in sorted(set(basket)):
 *** append
 在列表中添加元素。该方法在其末尾添加新元素“ducati”。在列表末尾添加元素。
 #+begin_src python
-  a = []
-  a.append("df")
-  a
+a = []
+a.append("df")
+a
+# => ['df']
 #+end_src
 
 *** insert
 在任意位置添加新元素。
 
 #+begin_src python
-  a = []
-  a.append("df")
-  a.append("sd")
-  a.insert(0,"sa")
-  a
+a = []
+a.append("df")
+a
+# => ['df']
+a.append("sd")
+a
+# => ['df', 'sd']
+a.insert(0,"sa")
+a
+# => ['sa', 'df', 'sd']
 #+end_src
 
 *** item
-这个函数一般用在字典类型数据。遍历字典时，如果直接遍历字典对象，只能得到字典中的键。
-使用字典 items() 方法，便可以同时输出键和对应值：
+这个函数一般用在字典类型数据。遍历字典时，如果直接遍历字典对象，只能得到字典中的键.使用字典 items() 方法，便可以同时输出键和对应值：
+
 #+begin_src python
 sample = {'a':1, 'b':2, 'c':3}
 for i in sample:
@@ -804,6 +818,7 @@ for i in sample.items():
 
 *** zip
 zip 函数接收一个或多个可迭代对象，并将各个迭代对象对应的元素聚合，返回一个元组的迭代器。
+
 #+begin_src python
 x = [1, 2, 3]
 y = [4, 5, 6]
@@ -823,136 +838,141 @@ for i in zip(color, animal):
 从列表中删除元素。可以删除任意位置的元素。
 
 #+begin_src python
-  a = ['honda', "bmw"]
-  del a[0]
-  a
+a = ['honda', "bmw"]
+del a[0]
+a
+# => ['bmw']
 #+end_src
 
 *** pop
 可以使用 pop() 可以删除末尾元素。
 #+begin_src python
-  a = ['honda', "bmw"]
-  del a[0]
-  a.append("dff")
-  a
-  a.pop()
-  a
+a = ['honda', "bmw"]
+del a[0]
+a.append("dff")
+a
+# => ['bmw', 'dff']
+a.pop()
+a
+# => ['bmw']
 #+end_src
 
-如果要从列表中删除一个元素，且不再以任何方式使用它，那就用 del 语句；如果要在删除
-元素后还能继续使用它，就使用方法 pop().
+如果要从列表中删除一个元素，且不再以任何方式使用它，那就用 del 语句；如果要在删除元素后还能继续使用它，就使用方法 pop().
 
 *** remove
 根据值删除元素。
-
+a.remove("df")
 #+begin_src python
-  a = []
-  a.append("df")
-  a.append("sd")
-  a.insert(0,"sa")
-  a
-  b = a.pop(0)
-  a.remove("df")
-  a
-
-  c = "df"
-  a.remove(c)
-  a
+a = []
+a.append("df")
+a
+# => ['df']
+a.append("sd")
+a
+# => ['df', 'sd']
+a.insert(0,"sa")
+a
+# => ['sa', 'df', 'sd']
+b = a.pop(0)
+a.remove("df")
+a
+# => ['sd']
+c = "df"
+a.remove(c)
+a
 #+end_src
 
 *** 列表解析
-列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。
+列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。squres = [value**2 for value in range(1, 11)]
 #+begin_src python
-  squres = [value**2 for value in range(1, 11)]
-  print(squres)
+squres = [value**2 for value in range(1, 11)]
+print(squres)
   #[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 #+end_src
 
 *** if
     #+begin_src python
-      cars = ['audi', 'bmw']
+cars = ['audi', 'bmw']
 for car in cars:
     if car == 'bmw':
         print(car.upper())
     else:
         print(car.title())
     #+end_src
-
-    #+begin_src python
-      c = "haha"
-if c != "sd":
-    print("hold the anchovies!")
-    #+end_src
-
 *** boolen
 
     #+begin_src python
-      cars = ['audi', 'bmw']
-      car == "bmw"
-      #True
-      car = "Audi"
-      car.lower() == "audi"
+cars = ['audi', 'bmw']
+car == "bmw"
+#True
+car = "Audi"
+car.lower() == "audi"
+# => True
     #+end_src
 
 *** 检查多个条件
-and/or
-
-and 等价于 R 中的&.
+and/or. and 等价于 R 中的&.
 
 #+begin_src python
-  age_0 = 22
-  age_1 = 18
-  age_0 >= 21 and age_1 >=21
-  age_0 >= 21 or age_1 >=21
+age_0 = 22
+age_1 = 18
+age_0 >= 21 and age_1 >=21
+# => False
+age_0 >= 21 or age_1 >=21
+# => True
 #+end_src
 
 *** in
     #+begin_src python
-      df = ['a', 'b', 'c']
-      "a" in df
+df = ['a', 'b', 'c']
+"a" in df
+# => True
     #+end_src
 
 *** not in
 检查特点之
     #+begin_src python
-      df = ['a', 'b', 'c']
-      "a" not in df
+df = ['a', 'b', 'c']
+"a" not in df
+# => False
     #+end_src
 
     #+begin_src python
-      df = ['a', 'b', 'c']
-      a = "d"
-      "a" not in df
+df = ['a', 'b', 'c']
+a = "d"
+"a" not in df
+# => False
 if a not in df:
     print(a.title() + ", you can post a response if you wish.")
     #+end_src
 
 *** else
     #+begin_src python
-      age = 17
+age = 17
 if age >= 18:
     print("you are old enough to vote!")
     print("Have you registered to vote yet?")
 else:
     print("Sorry, you are too young to vote")
+    # => Sorry, you are too young to vote
     #+end_src
 
 *** elif
-
     #+begin_src python
-      age = 12
+age = 12
 if age < 4:
     print("Your admission cost is $0.")
 elif age < 18:
     print("Your admission cost is $5.")
 else:
     print("your admission cost is $10.")
+    # => Your admission cost is $5.
     #+end_src
 
 使用多个 elif 代码块。
 
 #+begin_src python
-  age = 12
+age = 12
 if age < 4:
     price = 0
 elif age < 18:
@@ -961,8 +981,8 @@ elif age < 65:
     price = 10
 else:
     price = 5
-
-    print("Your admission cost is $" + str(price) + ".")
+price
+print("Your admission cost is $" + str(price) + ".")
 #+end_src
 
 也可以省略 else 代码块。
@@ -2173,10 +2193,6 @@ pd.merge(left, right, on = ["subject_id"], how="inner")
     #+end_src
 *** string
 **** str.replace
-     #+begin_src python
-       str = 'this is string'
-       print(str.replace("is", "was"))
-     #+end_src
 
 #+begin_src ipython :session :exports both :results raw drawer
  str = 'this is string'
@@ -2192,61 +2208,148 @@ thwas was string
 :end:
 
 **** 大小写
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.lower()) #小写
-       print(s.str.upper()) #大写
-     #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.lower()) #小写
+print(s.str.upper()) #大写
+#+end_src
+
+#+RESULTS:
+:results:
+# Out [3]:
+# output
+0             tom
+1    william rick
+2            john
+3         alber@t
+4             NaN
+5            1234
+6      stevesmith
+dtype: object
+0             TOM
+1    WILLIAM RICK
+2            JOHN
+3         ALBER@T
+4             NaN
+5            1234
+6      STEVESMITH
+dtype: object
+
+:end:
+
 **** str.len
 字符长度
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.len())
-     #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.len())
+#+end_src
+
+#+RESULTS:
+:results:
+# Out [4]:
+# output
+0     3.0
+1    12.0
+2     4.0
+3     7.0
+4     NaN
+5     4.0
+6    10.0
+dtype: float64
+
+:end:
+
 **** str.cat
 类似于 R 中的 str_c.
-#+begin_src python
-  import pandas as pd
-  import numpy as np
-  s = pd.Series(['Tom ', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-  print(s.str.cat(sep='_'))
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom ', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.cat(sep='_'))
 #+end_src
+
+#+RESULTS:
+:results:
+# Out [5]:
+# output
+Tom _William Rick_John_Alber@t_1234_SteveSmith
+
+:end:
+
 **** str.contains
 类似于 str_detect.
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.contains(' '))
-     #+end_src
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.contains(' '))
+#+end_src
+
+#+RESULTS:
+:results:
+# Out [6]:
+# output
+0    False
+1     True
+2    False
+3    False
+4      NaN
+5    False
+6    False
+dtype: object
+
+:end:
+
 **** str.repeat
 重复字符串。
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.repeat(2))
-     #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.repeat(2))
+#+end_src
+
+#+RESULTS:
+:results:
+# Out [7]:
+# output
+0                      TomTom
+1    William RickWilliam Rick
+2                    JohnJohn
+3              Alber@tAlber@t
+4                         NaN
+5                    12341234
+6        SteveSmithSteveSmith
+dtype: object
+
+:end:
+
 **** str.count
 字符串计数。
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.count('m'))
-     #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.count('m'))
+#+end_src
 **** startswith
 检查字符串是否以固定字符开头。
-     #+begin_src python
-       import pandas as pd
-       import numpy as np
-       s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
-       print(s.str.startswith('T'))
-     #+end_src
+
+#+begin_src ipython :session :exports both :results raw drawer
+import pandas as pd
+import numpy as np
+s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
+print(s.str.startswith('T'))
+#+end_src
+
 **** endswith
 检查字符串是否以固定字符结尾。
      #+begin_src python
