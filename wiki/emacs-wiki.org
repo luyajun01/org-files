@@ -1,6 +1,7 @@
 * emacs wiki                                                            :toc:
   - [[#实用技能][实用技能]]
     - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
+    - [[#key-map][key map]]
   - [[#推荐安装包][推荐安装包]]
   - [[#常用快捷键][常用快捷键]]
   - [[#spacemacs][spacemacs]]
@@ -30,12 +31,16 @@
   - [[#helm][helm]]
   - [[#evil][evil]]
     - [[#evil-escape][evil-escape]]
+  - [[#lazy-set-key][lazy-set-key]]
+  - [[#lispy][lispy]]
   - [[#evil-lispy][evil-lispy]]
   - [[#lispyville][lispyville]]
+  - [[#multiple-cursor][multiple-cursor]]
   - [[#treemacs][treemacs]]
   - [[#org][org]]
     - [[#配置][配置]]
     - [[#evil-org-mode][evil-org-mode]]
+    - [[#smartparens][smartparens]]
     - [[#olivetti][olivetti]]
     - [[#toc-org][toc-org]]
     - [[#org-agenda][org-agenda]]
@@ -44,11 +49,14 @@
   - [[#hydra][hydra]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
+    - [[#creat-new-yasnippet][creat new yasnippet]]
   - [[#others-packages][others packages]]
     - [[#pyim][pyim]]
       - [[#手动加词和删词][手动加词和删词]]
     - [[#color-rg][color-rg]]
     - [[#awesome-tab][awesome-tab]]
+    - [[#pdf-tools][pdf-tools]]
+    - [[#python][python]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
     - [[#ess][ess]]
 
@@ -60,7 +68,10 @@
 (4) M-x eval-buffer
 
 emacs 配置坑巨多，那么就需要 debug, 需要执行 toggle-debug-on-error.
-
+*** key map
+可以方便地将key unset.
+(global-unset-key (kbd "M-<down-mouse-1>"))
+(global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 
 ** 推荐安装包
 
@@ -96,6 +107,8 @@ evil,evil-escape,org,.
 | ido-find-file                                     | C-x C-f/SPC f f        |
 | evil-insert-new-line                              | SPC i j                |
 | 括号之间的跳转                                    | % evil-matchit         |
+
+在 emacs 中，enter 键对应的 key map 是 c-m.
 
 ** spacemacs
 
@@ -242,6 +255,17 @@ visual mode
 ctrl + r
 *** evil-escape
 可以用 evil-escape，按 kj 或者 fd 就等价于按 esc.
+** lazy-set-key
+这个插件可以很方便地将 emacs 中所以 key 全部清除，然后可以方便地添加新的 key。
+** lispy
+这个插件做的事情就是insert 状态下文本编辑状态。
+
+| key   | behavior            |
+| m-d   | lispy-kill-words    |
+| C-e   | lispy-move-end-line |
+| c-m-b | lispy-back-word     |
+
+
 ** evil-lispy
 爽！
 
@@ -264,6 +288,9 @@ ctrl + r
 
 
 Spacemacs
+** multiple-cursor
+这个包可以很方便地删除多行操作。
+
 ** treemacs
 这个包类似于.
 
@@ -338,6 +365,9 @@ Spacemacs
 
 #+end_export
 
+*** smartparens
+这个插件可以快速实现括号内容的直接的跳转。
+
 
 
 *** olivetti
@@ -384,6 +414,13 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 | yas-expand        | M-/                         |
 | yas-insert-sippet | M-x yas-insert-sippet       |
 | 查看 Yasnippet       | helm-yas-visit-snippet-file |
+*** creat new yasnippet
+
+| 功能      | key       |
+| org-title | org-title |
+|           |           |
+
+
 
 参考文献：
 https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
@@ -424,6 +461,18 @@ awesome-tab-kill-match-buffers-in-current-group	删除当前分组的匹配的�
 awesome-tab-keep-match-buffers-in-current-group	保留当前分组的匹配的标签
 awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
 
+*** pdf-tools
+
+看 pdf 神器！
+
+| 快捷键 | 功能   |
+| J      | 下一页 |
+| +      | 放大   |
+| -      | 缩小   |
+|        |        |
+
+*** python
+在 py 文件中，一定要先运行 pyvenv-workon, run-python 命令否则 emacs 就散退。
 
 
 ** 安装各种包遇到的坑
