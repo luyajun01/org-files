@@ -351,8 +351,8 @@ def func(x):
     x = 2
     print('Changed local x to', x)
 
-func(x)
-      print("x is still", x)
+    func(x)
+    print("x is still", x)
     #+end_src
 
 *** global 语句
@@ -373,7 +373,7 @@ func()
       print('Value of x is', x)
     #+end_src
 
-下面 times = 1,就是默认的参数值。
+    下面 times = 1,就是默认的参数值。
 
     #+begin_src ipython
 def say(message, times=1):
@@ -395,11 +395,14 @@ def func(a,b=5,c=10):
 func(3,7)
 # => a is 3 and b is 7 and c is 10
 func(25,c=7)
-      func(c=50, a=100)
+# => a is 25 and b is 5 and c is 7
+func(c=50, a=100)
+# => a is 100 and b is 5 and c is 50
     #+end_src
 
 *** 可变参数
-有时你可能想定义的函数里面能够有任意数量的变量，也就是参数数量是可变的，这可以通过使用星号来实现。
+
+    有时你可能想定义的函数里面能够有任意数量的变量，也就是参数数量是可变的，这可以通过使用星号来实现。
 
 *** return
 return 语句用于从函数中返回，也就是中断函数。

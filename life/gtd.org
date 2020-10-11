@@ -8,7 +8,7 @@
       - State "DONE"       from              [2020-09-17 Thu 11:14]
       - State "进行中"     from              [2020-09-16 Wed 14:21]
       :END:
-***** DONE 跟踪模型上线进度 
+***** DONE 跟踪模型上线进度
       CLOSED: [2020-09-17 Thu 11:14] SCHEDULED: <2020-09-16 Wed>
       :LOGBOOK:
       - State "DONE"       from "STARTED"    [2020-09-17 Thu 11:14]
@@ -16,19 +16,20 @@
       :END:
 ***** STARTED 继续学习 spline
       SCHEDULED: <2020-09-16 Wed>
-***** SOMEDAY 继续学习 org-mode(实在是太优秀了) 
+***** SOMEDAY 继续学习 org-mode(实在是太优秀了)
       SCHEDULED: <2020-09-16 Wed>
 ***** DONE 了解 color-rg
       CLOSED: [2020-09-17 Thu 11:15]
       :LOGBOOK:
       - State "DONE"       from "SOMEDAY"    [2020-09-17 Thu 11:15]
       :END:
-***** STARTED 了解 lispy,lispyville 
+***** STARTED 了解 lispy,lispyville
       SCHEDULED: <2020-09-17 Thu>
 ***** STARTED 业务方面
       SCHEDULED: <2020-09-17 Thu>
 ***** STARTED 读一本关于金融类的书籍
       SCHEDULED: <2020-09-17 Thu>
-***** STARTED 不看斗音
+***** STARTED 不看斗音(一定要认真执行！)
       SCHEDULED: <2020-09-17 Thu>
-***** TODO 补充 v656 2020-09-01-0916 模型分, 补充 20200807  
+***** TODO 补充 v656 2020-09-01-0916 模型分, 补充 20200807
+***** 了解定价模型 
