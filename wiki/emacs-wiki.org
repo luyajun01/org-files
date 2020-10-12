@@ -45,6 +45,7 @@
     - [[#toc-org][toc-org]]
     - [[#org-agenda][org-agenda]]
     - [[#org-download][org-download]]
+    - [[#cdlatex][cdlatex]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
   - [[#shell][shell]]
@@ -69,7 +70,7 @@
 
 emacs 配置坑巨多，那么就需要 debug, 需要执行 toggle-debug-on-error.
 *** key map
-可以方便地将key unset.
+可以方便地将 key unset.
 (global-unset-key (kbd "M-<down-mouse-1>"))
 (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 
@@ -151,6 +152,15 @@ evil,evil-escape,org,.
 | avy-goto-word-1 | spc-w 实现单词跳转,很实用!           |
 |               |                                   |
 
+
+以行/列为单位移动 hjkl
+以词为单位移动 ewb
+以段落为单位移动
+行首/行尾 $^
+前进/后退至下一个特定字符 tf
+至特定行 :
+翻页
+
 ** counsel
 项目地址:https://github.com/abo-abo/swiper
 
@@ -212,7 +222,13 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 | e    | 可以实现一行文字间快速跳转   |
 |      |                              |
 
-
+以行/列为单位移动 hjkl
+以词为单位移动 ewb
+以段落为单位移动 ]] [[
+行首/行尾 $^
+前进/后退至下一个特定字符 tf
+至特定行 :
+翻页 c-f (向前) c-b(向后)
 
 以行/列为单位移动，h,j,k,l
 y =i
@@ -258,12 +274,18 @@ ctrl + r
 ** lazy-set-key
 这个插件可以很方便地将 emacs 中所以 key 全部清除，然后可以方便地添加新的 key。
 ** lispy
-这个插件做的事情就是insert 状态下文本编辑状态。
+这个插件做的事情就是 insert 状态下文本编辑状态。
 
 | key   | behavior            |
 | m-d   | lispy-kill-words    |
 | C-e   | lispy-move-end-line |
 | c-m-b | lispy-back-word     |
+| (     | a string ()         |
+| )     | a string )          |
+| {     | a string {}         |
+| }     | a string []         |
+|       |                     |
+
 
 
 ** evil-lispy
@@ -293,7 +315,6 @@ Spacemacs
 
 ** treemacs
 这个包类似于.
-
 
 ** org
 喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
@@ -369,7 +390,6 @@ Spacemacs
 这个插件可以快速实现括号内容的直接的跳转。
 
 
-
 *** olivetti
 这个包可以将文字居中。
 
@@ -394,6 +414,17 @@ https://www.zhihu.com/topic/19649552/hot
 abo 大神还有多少好东西!
 可以下载图片,以后有空研究.
 https://github.com/abo-abo/org-download
+*** cdlatex
+在 org-mode 中使用 cdlatex.
+(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+
+| C-c { | Insert an environment template |
+|       |                                |
+
+
+
+
+
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
 bm-remove-all-buffers 可以删除所有标记的 bookmark,真的很方便！

@@ -256,7 +256,10 @@
     - [[#lasso][lasso]]
   - [[#数据清理][数据清理]]
     - [[#数字型变量][数字型变量]]
-    - [[#文本型变量][文本型变量]]
+    - [[#字符串和文本][字符串和文本]]
+      - [[#使用多个界定符分割字符串][使用多个界定符分割字符串]]
+      - [[#字符串开头或结尾匹配][字符串开头或结尾匹配]]
+      - [[#用-shell-通配符匹配字符串][用 shell 通配符匹配字符串]]
   - [[#类][类]]
   - [[#转义][转义]]
   - [[#packages][Packages]]
@@ -669,6 +672,7 @@ print("a is:", a)
 # => a is: array('i', [10, -20, 30])
 list1 = list()
 a.tolist()
+# => [10, -20, 30]
 #+end_src
 
 *** title
@@ -694,8 +698,7 @@ all([False, True])
     #+end_src
 
 *** range
-使用 range() 创建数字列表，可以使用函数 list() 将 range() 的结果直接转换为列表。
-这个函数类似于 seq.
+使用 range() 创建数字列表，可以使用函数 list() 将 range() 的结果直接转换为列表。这个函数类似于 seq.
 
     #+begin_src python
 numbers = list(range(1, 6))
@@ -722,11 +725,12 @@ for magician in magicians:
 
 *** reverse
 倒着打印列表。
-    #+begin_src python
-      cars = ['bmw', 'audi']
-      cars.reverse()
-      print(cars)
-    #+end_src
+#+begin_src python
+cars = ['bmw', 'audi']
+cars.reverse()
+print(cars)
+# => ['audi', 'bmw']
+#+end_src
 
     #+begin_src python
 for i in reversed([2, 5, 3, 9, 6]):
@@ -827,6 +831,7 @@ x = [1, 2, 3]
 y = [4, 5, 6]
 zipped = zip(x, y)
 list(zipped)
+# => []
 #> [(1, 4), (2, 5), (3, 6)]
 color = ['white', 'blue', 'black']
 animal = ['cat', 'dog', 'pig']
@@ -3699,7 +3704,56 @@ x_new = [[22587]]
    median = housing['total_bedrooms'].median()
    housing['total_bedrooms'].fillna(median)
  #+end_src
-*** 文本型变量
+*** 字符串和文本
+**** 使用多个界定符分割字符串
+#+begin_src ipython :session :exports both :results raw drawer
+line ='asdf fjjdk; afed, fjek'
+import re
+fields = re.split(r'[;,\s]\s*', line)
+# => ['asdf', 'fjjdk', 'afed', 'fjek']
+values = fields[::2]
+# => ['asdf', 'afed']
+delimiters = fields[1::2] + ['']
+# => ['fjjdk', 'fjek', '']
+#+end_src
+**** 字符串开头或结尾匹配
+检查字符串开头或结尾的一个简单方法是使用 str.startswith() 或者是 str.endswith() 方法。比如：
+
+#+begin_src ipython :session :exports both :results raw drawer
+filename = 'spam.txt'
+filename.endswith('.txt')
+# => True
+filename.startswith('file:')
+# => False
+url = 'http://www.python.org'
+url.startswith('http')
+# => True
+#+end_src
+
+如果想检查多种匹配可能，只需要将所有的匹配项放入到一个元组中去，然后传给 startswith() 或者 endswith() 方法：
+
+#+begin_src ipython :session :exports both :results raw drawer
+import os
+filenames = os.listdir(".")
+filenames[0:2]
+[name for name in filenames if name.endswith(('.org'))] #展示以 org 结尾的文件名称
+any(name.endswith('.py') for name in filenames) #判断目录下是否有py 文件
+# => False
+#+end_src
+**** 用 shell 通配符匹配字符串
+
+#+begin_src ipython :session :exports both :results raw drawer
+from fnmatch import fnmatch,  fnmatchcase
+fnmatch('foo.txt', '*.txt')
+# => True
+fnmatch('foo.txt', '?oo.txt')
+# => True
+fnmatch('Dat45.csv', 'Dat[0-9]*')
+# => True
+#+end_src
+
+
+
     #+begin_src python
       ##LabelBinarizer 类可以一次性完成两个转换
 from sklearn.preprocessing import LabelBinarizer

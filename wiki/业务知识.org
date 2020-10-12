@@ -39,6 +39,7 @@
     - [[#融资租赁][融资租赁]]
     - [[#收益率][收益率]]
     - [[#年月日利率][年/月/日利率]]
+    - [[#复利][复利]]
   - [[#信贷理论][信贷理论]]
     - [[#反欺诈][反欺诈]]
     - [[#风险定价][风险定价]]
@@ -419,6 +420,12 @@ https://pic2.zhimg.com/80/v2-b5b4256a397202940da4bcef790aec87_1440w.jpg
 
 *** 年/月/日利率
 
+*** 复利
+
+复利的计算是对本金及其产生的利息一并计算，也就是利上有利。复利的计算特点是：把上期末的本利和作为下一期的本金，在计算时每一期本金的数额是不同的，复利的计算公式是 $S=p (1+i)^n)$.
+例如：本金为 50000 元，利率或者投资回报率为 3%，投资年限为 30 年，那么，30 年后所获得的利息收入，按复利计算公式来计算本利和（终值）是：50000×（1+3%）^30
+
+
 ** 信贷理论
 *** 反欺诈
 https://zhuanlan.zhihu.com/p/130743681
@@ -677,13 +684,21 @@ https://pic4.zhimg.com/v2-bb9d85757be46eae066820b12961c974_b.jpg
 如果通过多头，那么看看是否会接入人行征信，如果是多头拒绝，那么会回捞一批高多头的用户
 
 *** 人行征信
-授信时，小米自身没有强制要求人行征信授权，而在联合贷时，则会要求进人行征信。新版的人行征信的信息更新速度为 T+1 上报。说是 T+1 其实更多的是自己定，一般为 2 周 到一个月不等。
+    授信时，小米自身没有强制要求人行征信授权，而在联合贷时，则会要求进人行征信。新版的人行征信的信息更新速度为 T+1 上报。说是 T+1 其实更多的是自己定，一般为 2 周 到一个月不等。
+
+    二代征信报告新增内容：
+
+个人增加 “共同借款” “循环贷款” “信用卡大额专项分期” “授信协议信息”等信息。
+
+*共同借款是指一笔贷款由 2 个或 2 个 以上借款人共同承担连带偿还责任的借款。*
+
 **** 小米征信策略
 **** 常见问题
 ***** 如何对不同的人群进行查验 auc？
 去 loaning_fact 表中，去察看 basicinfo_source(授信来源),也可以去看看 basicinfo_business_channel,basicinfo_cash_strategy_provider,basicinfo_group_provider.
  #+begin_src R ::results output graphics :file fig_1.png :exports both
- loaning_fact=spark_read_parquet(sc, "loaning_fact",path = "/user/h_data_platform/platform/mifi/mifidw_loaning_fact", memory = F) %>% filter(date=20190227)
+   loaning_fact=spark_read_parquet(sc, "loaning_fact",path = "/user/h_data_platform/platform/mifi/mifidw_loaning_fact", memory = F) %>
+% filter(date=20190227)
  #+end_src
 
 **** 聚信力多头规则替换反欺诈

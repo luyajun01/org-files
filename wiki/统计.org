@@ -3,6 +3,7 @@
 #+TITLE: 统计 wiki
 #+OPTIONS: num:3 H:4 ^:nil pri:t
 #+HTML_HEAD: <link  href="https://rawgithub.com/luyajun01/code/master/css/org-css.css" rel="stylesheet" type="text/css">
+#+LATEX_HEADER: \bibliography{references.bib}
 
   - [[wiki:index][Index]]
 
@@ -120,7 +121,9 @@ F 分布是两个服从卡方分布的随机变量各自除以他们的自由度
 根据自变量因子的性质，可以将线性模型分为三类：
 
 1、凡自变量因子都是数量因子， **就称为这个模型是回归分析模型**;
+
 2、如果自变量因子均为属性变量， **则称为模型是方差分析模型**;
+
 3、倘若自变量因子中，既有属性因子，也有数量因子, **就称为协方差分析模型**.
 
 **** 标准化处理
@@ -314,6 +317,14 @@ https://blog.csdn.net/Mbx8X9u/article/details/78824216
 
 CCA 算法广泛的应用于数据相关度的分析，同时还是偏最小二乘法的基础。但是由于它依赖于数据的线性表示，当我们的数据无法线性表示时，CCA 就无法使用，此时我们可以利用核函数的思想，将数据映射到高维后，再利用 CCA 的思想降维到 1 维，求对应的相关系数和线性关系，这个算法一般称为 KCCA。
 
+#+begin_src ipython :session :exports both :results raw drawer
+from sklearn.cross_decomposition import CCA
+X = [[0, 0, 1], [1, 0, 0], [2, 2, 2], [3, 5, 4]]
+Y = [[0.1, -0.2], [0.9, 1.1], [6.2, 5.9], [11.9, 12.3]]
+cca = CCA(n_components=1)
+X_c, Y_c =  cca.transform(X, Y)
+#+end_src
+
 *** 点估计
 
 假设用 $\hat{\theta}(X)$ 估计 $\theta$, 评价该估计好坏的标准是 MSE 均方误差：
@@ -325,13 +336,11 @@ $$
 
 - 渐近无偏性
 
-\section{渐近无偏估计}
-
 设 $\hat{g}_{n}=\hat{g}_{n}\left(X_{1},\ldots,X_{n}\right)$ 是 $g\left(\theta\right)$ 的估计量，若
 
-$$
+\[
 \text{\ensuremath{\lim_{n\rightarrow\infty}E_{\theta}\left(\hat{g}_{n}\right)=g\left(\theta\right),\forall\theta\in\Theta}}
-$$
+\]
 
 则称 $\hat{g}_{n}$ 为 $g\left(\theta\right)$ 的渐近无偏估计。
 
@@ -379,15 +388,15 @@ $$
 g\left(y_{k}\right)dy_{k}=\frac{n!}{\left(k-1\right)!1!\left(n-k\right)!}\times\left[F\left(y_{k}\right)\right]^{k-1}p\left(y_{k}\right)dy_{k}\left[1-F\left(y_{k}+dy_{k}\right)\right]^{n-k}+o\left(dy_{k}\right)
 $$
 
-上面的计算公式真的是很像可测集上的函数计算，$g\left(y_{k}\right)dy_{k}$ 的含义是$g\left(y_{k}\right)$是概率，
-$dy_{k}$是区间长度。
+上面的计算公式真的是很像可测集上的函数计算，$g\left(y_{k}\right)dy_{k}$ 的含义是 $g\left(y_{k}\right)$ 是概率，
+$dy_{k}$ 是区间长度。
 
-两边约去$dy_{k}$后，再让$dy_{k}\rightarrow0$，即得$X_{\{k\}}$的密度函数为
+两边约去 $dy_{k}$ 后，再让 $dy_{k}\rightarrow0,$ 即得 $X_{\{k\}}$ 的密度函数为
 
 \[
 g\left(y_{k}\right)=\frac{n!}{\left(k-1\right)!\left(n-k\right)!}\times\left[F\left(y_{k}\right)\right]^{k-1}\left[1-F\left(y_{k}\right)\right]^{n-k}p\left(y_{k}\right)
 \]
- 那么，$X_{\{1\}}$与$X_{\{n\}}$的密度函数分布为
+那么，$X_{\{1\}}$ 与 $X_{\{n\}}$ 的密度函数分布为
 
 \[
 g\left(y_{1}\right)=n\left[1-F\left(y_{1}\right)\right]^{n-1}p\left(y_{1}\right)
@@ -396,30 +405,28 @@ g\left(y_{1}\right)=n\left[1-F\left(y_{1}\right)\right]^{n-1}p\left(y_{1}\right)
 g\left(y_{n}\right)=n\left[F\left(y_{n}\right)\right]^{n-1}p\left(y_{n}\right)
 \]
 
-所以，设$X_{1},\cdots,X_{n}$是来自$U\left(0,\theta\right)$的一个样本，最大次序统计量$X_{\{n\}}$是$\theta$的常用估计，所谓的次序统计量是指
+所以，设 $X_{1},\cdots,X_{n}$ 是来自 $U\left(0,\theta\right)$ 的一个样本，最大次序统计量 $X_{\{n\}}$ 是 $\theta$ 的常用估计，所谓的次序统计量是指
 
 \[
 X_{\{1\}}\leq\cdots\leq X_{\{n\}}
 \]
 
-它们的观察值依次记为为$y_{1}\leq\cdots\leq y_{n}$，容易知道$X_{\{n\}}$的密度函数为
+它们的观察值依次记为为 $y_{1}\leq\cdots\leq y_{n},$ 容易知道 $X_{\{n\}}$ 的密度函数为
 
 \[
 p\left(t;\theta\right)=nt^{n-1}\theta^{-n},0<t<\theta
 \]
 
-容易求出$E\left(X_{\text{\{n\}}}\right)=n\theta/(n+1)$,因此$X_{\{n\}}$不是$\text{\ensuremath{\theta}}$的无偏估计，但是它是$\text{\ensuremath{\theta}}$的渐近无偏估计，另外，由于对任意的$\varepsilon\text{>0,}$
+容易求出$E\left(X_{\text{\{n\}}}\right)=n\theta/(n+1)$,因此 $X_{\{n\}}$ 不是 $\text{\ensuremath{\theta}}$ 的无偏估计，但是它是 $\text{\ensuremath{\theta}}$ 的渐近无偏估计，另外，由于对任意的 $\varepsilon\text{>0,}$
 
 \[
 P_{\theta}\left(\left|X_{\{n\}}-\theta\right|\geqq\varepsilon\right)=P_{\theta}\left(X_{\{n\}}\leqq\theta-\varepsilon\right)=\intop_{0}^{\theta-\epsilon}\frac{nt^{n-1}}{\theta^{n}}dt=\left(\frac{\theta-\epsilon}{\theta}\right)^{n}\rightarrow0\left(n\rightarrow\infty\right)
 \]
 
-因此，$X_{\{n\}}$是$\text{\ensuremath{\theta}}$的相合估计。
+因此, $X_{\{n\}}$ 是 $\text{\ensuremath{\theta}}$ 的相合估计。
 
 *** MLE
-极大似然估计 MLE 有一个很好的性质：如果 $\theta$ 是 $\theta$ 的 MLE, $g(\dot)$
-是可测函数（什么是可测函数？），则 $g(\hat{\theta})$ 也是 $g(\theta)$ 的 MLE.该
-性质称为 MLE 的不变性。
+极大似然估计 MLE 有一个很好的性质：如果 $\theta$ 是 $\theta$ 的 MLE, $g(\dot)$ 是可测函数（什么是可测函数？），则 $g(\hat{\theta})$ 也是 $g(\theta)$ 的 MLE.该性质称为 MLE 的不变性。
 *** stepwise regression
 
 包括 2 个步骤：一是从回归模型中剔出经检验不显著的变量，二是引入新变量到回归模型中。
@@ -2831,6 +2838,11 @@ b #特征向量
 c
 #+end_src
 
+** 因子分解机
+
+
+
+
 ** svm
 概述：svm 是一种二分类模型，定义在特征空间上的间隔最大的线性分类器，核技巧使它成
 为实质上的非线性分类器。支持向量机的学习策略就是间隔最大化，等价于求解凸二次规划
@@ -3318,9 +3330,6 @@ F(x)=\sum_{j=1}^{p} f_{j}\left(x_{j}\right)
 
 stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用 LR 进行回归组合），从而得到完整的 stacking 模型。
 
-
- bibliographystyle:natbib
- bibliography:~/Documents/坚果云/我的坚果云/学习/bibliography/ref.bib
 **** XGBoost
 参数估计方法：XGBoost 在函数空间中用牛顿法进行优化。
 
@@ -3636,7 +3645,7 @@ M 步很显然，就是最大化那一步，E 步是那一步呢？根据上一�
 
 其实，E 步就是求给定 $X$ 下的条件期望，也就是后验期望，使得 jenson 不等式能够取等号，是对 Jenson 不等式中小的那一端进行放大，使其等于大的那一端，这是一次放大；M步最大化联合分布，通过 0 梯度，拉格朗日等方法求极值点，又是一次放大。只要似然函数是有界的，只要 M 步中的 0 梯度点是极大值点，一直放大下去就能找到最终所求了。
 
-总结下，EM 算法思想：
+总结下，EM 算法思想citet:yuan2006model
 
 Deﬁne the complete data log likelihood to be
 
@@ -3662,10 +3671,10 @@ $$
 再次总结：
 1.先估计隐变量 z 的分布，然后利用 Z 的分布去估计目标参数的概率值。
 
-
 辅助资料：https://www.jianshu.com/p/1121509ac1dc ; https://www.zhihu.com/question/27976634
 
 
+* References
 
-import(ceil()))
-
+ bibliographystyle:natbib
+ bibliography:~/Documents/坚果云/我的坚果云/学习/bibliography/ref.bib
