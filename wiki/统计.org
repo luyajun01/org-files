@@ -3645,7 +3645,7 @@ M 步很显然，就是最大化那一步，E 步是那一步呢？根据上一�
 
 其实，E 步就是求给定 $X$ 下的条件期望，也就是后验期望，使得 jenson 不等式能够取等号，是对 Jenson 不等式中小的那一端进行放大，使其等于大的那一端，这是一次放大；M步最大化联合分布，通过 0 梯度，拉格朗日等方法求极值点，又是一次放大。只要似然函数是有界的，只要 M 步中的 0 梯度点是极大值点，一直放大下去就能找到最终所求了。
 
-总结下，EM 算法思想citet:yuan2006model
+总结下，EM 算法思想:
 
 Deﬁne the complete data log likelihood to be
 
@@ -3678,3 +3678,10 @@ $$
 
  bibliographystyle:natbib
  bibliography:~/Documents/坚果云/我的坚果云/学习/bibliography/ref.bib
+
+* 统计
+:PROPERTIES:
+:NOTER_DOCUMENT: 统计.pdf
+:END:
+
+所以什么是因子分解机？

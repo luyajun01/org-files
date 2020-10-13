@@ -830,6 +830,7 @@ zip 函数接收一个或多个可迭代对象，并将各个迭代对象对应�
 x = [1, 2, 3]
 y = [4, 5, 6]
 zipped = zip(x, y)
+print(zipped)
 list(zipped)
 # => []
 #> [(1, 4), (2, 5), (3, 6)]
@@ -938,7 +939,8 @@ df = ['a', 'b', 'c']
     #+end_src
 
 *** not in
-检查特点之
+in 反义词。
+
     #+begin_src python
 df = ['a', 'b', 'c']
 "a" not in df
@@ -975,28 +977,31 @@ elif age < 18:
 else:
     print("your admission cost is $10.")
     # => Your admission cost is $5.
-    #+end_src
+#+end_src
 
 使用多个 elif 代码块。
 
 #+begin_src python
 age = 12
+
 if age < 4:
     price = 0
 elif age < 18:
-    price = 5
+    price = 6
 elif age < 65:
     price = 10
 else:
     price = 5
-price
+
+    price
 print("Your admission cost is $" + str(price) + ".")
+# => Your admission cost is $6.
 #+end_src
 
 也可以省略 else 代码块。
 
 #+begin_src python
-  age = 12
+age = 12
 if age < 4:
     price = 0
 elif age < 18:
@@ -1007,30 +1012,35 @@ elif age >= 65:
     price = 4
 
 print("Your admission cost is $" + str(price) + ".")
+# => Your admission cost is $5.
 #+end_src
 
 *** for,if
 
     #+begin_src python
-      s = ['a', 'b', 'c']
+s = ['a', 'b', 'c']
 for s in s:
     if s == 'b':
         print("sorry, we are out.")
     else:
         print("adding " + s + ".")
         print("\nfinished!")
+        # => adding c.
+        #
+        #    finished!
     #+end_src
 
 在运行 for 循环前确定列表是否为空很重要！
 
 #+begin_src python
-  a = []
+a = []
 if a:
     for b in a:
         print("sd")
         print("\nfinishing")
 else:
     print("c")
+    # => c
 #+end_src
 
 *** 引号
@@ -1052,9 +1062,10 @@ He said "Bond, James Bond."
 *** append
 添加元素。
 #+begin_src python
-  x = [1,2,3]
-  x.append(4)
-  x
+x = [1,2,3]
+x.append(4)
+x
+# => [1, 2, 3, 4]
 #+end_src
 
 *** map
@@ -1063,15 +1074,16 @@ map()方法会将一个函数映射到序列的每一个元素上，生成新序
 Map applies a function to all the items in an input_list. Here is the blueprint:
 map(function_to_apply, list_of_inputs).
 Most of the times we want to pass all the list elements to a function one-by-one and then collect the output.
-    #+begin_src python
-     items=[1,2,3,4,5]
-      squared=list(map(lambda x:x**2,items))
-      squared
-    #+end_src
+
+#+begin_src python
+items=[1,2,3,4,5]
+squared=list(map(lambda x:x**2,items))
+squared
+# => [1, 4, 9, 16, 25]
+#+end_src
 
 *** enumerate
-当遍历一个非数值序列时，有时候会需要将元素和索引一起取出，这时候便可以用到 enumerate()函数。enumerate()函数接受一个序列或者迭代器，返回一个元组，里面包含元素及其索引数值。
-
+当遍历一个非数值序列时，有时候会需要将元素和索引一起取出，这时候便可以到 enumerate()函数。enumerate()函数接受一个序列或者迭代器，返回一个元组，里面包含元素及其索引数值。
 #+begin_src python
 seasons = ['spring', 'summer', 'Fall', 'Winter']
 list(enumerate(seasons))
@@ -3504,12 +3516,18 @@ eval('[1,2,3]')
      min(L),max(L)
    #+end_src
 
-   #+begin_src python
-     M = np.random.random((2, 2))
-     M.sum()
-     #指定axis=0 找到每一列的最小值
-     M.min(axis = 0)
-   #+end_src
+#+begin_src ipython :session :exports both :results raw drawer
+import numpy as np
+M = np.random.random((2, 2))
+# =>
+# array([[0.7399892 , 0.46706614],
+#        [0.72124413, 0.44891724]])
+M.sum()
+# => 2.377216704949462
+#指定axis=0 找到每一列的最小值
+M.min(axis = 0)
+# => array([0.72124413, 0.44891724])
+#+end_src
 
    #+begin_src python
      from sklearn.preprocessing import MinMaxScaler
@@ -3538,9 +3556,25 @@ array 变成矩阵
 *** kronecker 积
 
     #+begin_src python
-      A = np.eye(3)
-      B = np.array([[1,2], [3, 4]])
-      np.kron(A, B)
+import numpy as np
+A = np.eye(3)
+# =>
+# array([[1., 0., 0.],
+#        [0., 1., 0.],
+#        [0., 0., 1.]])
+B = np.array([[1,2], [3, 4]])
+# =>
+# array([[1, 2],
+#        [3, 4]])
+np.kron(A, B)
+# =>
+#
+# array([[1., 2., 0., 0., 0., 0.],
+#        [3., 4., 0., 0., 0., 0.],
+#        [0., 0., 1., 2., 0., 0.],
+#        [0., 0., 3., 4., 0., 0.],
+#        [0., 0., 0., 0., 1., 2.],
+#        [0., 0., 0., 0., 3., 4.]])
     #+end_src
 
 *** 舍入运算

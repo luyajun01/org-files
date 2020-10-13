@@ -46,6 +46,7 @@
     - [[#org-agenda][org-agenda]]
     - [[#org-download][org-download]]
     - [[#cdlatex][cdlatex]]
+    - [[#org-ref][org-ref]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
   - [[#shell][shell]]
@@ -420,9 +421,8 @@ https://github.com/abo-abo/org-download
 
 | C-c { | Insert an environment template |
 |       |                                |
-
-
-
+*** org-ref
+可以直接把 pdf 拖到 .bib 文件生成 bib 词条，很方便！
 
 
 ** bm
