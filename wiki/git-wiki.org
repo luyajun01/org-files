@@ -11,7 +11,7 @@
   - [[#rg][rg]]
   - [[#打开-terminial][打开 terminial]]
   - [[#打开文件夹][打开文件夹]]
-  - [[#删除文件夹][删除文件夹]]
+- [[#删除文件夹][删除文件夹]]
   - [[#下载-git-pository-加速][下载 git pository 加速]]
 
 ** 基本命令
@@ -218,7 +218,7 @@ ctrl + alt + t 打开终端
 nautilus ~/.emacs.d
 #+end_src
 
-** 删除文件夹
+* 删除文件夹
    #+begin_src
 rmdir ~/.spacemacs.d
    #+end_src
@@ -226,6 +226,8 @@ rmdir ~/.spacemacs.d
 #+begin_src
 rm -rf some_dir
 #+end_src
+
+笑死我了
 
    #+begin_src
 ps -aux #查看进程信息
