@@ -47,7 +47,6 @@
     - [[#引号][引号]]
       - [[#单引号双引号][单引号、双引号]]
       - [[#三引号][三引号]]
-    - [[#append-1][append]]
     - [[#enumerate][enumerate]]
     - [[#map][map]]
     - [[#filter][filter]]
@@ -139,6 +138,7 @@
       - [[#element-wise-function-application][element wise function application]]
     - [[#docstrings][DocStrings]]
     - [[#indexvalue][index/value]]
+    - [[#value][value]]
     - [[#ilocloc][iloc,loc]]
       - [[#regex][regex]]
     - [[#arrange][arrange]]
@@ -195,6 +195,7 @@
     - [[#嵌套][嵌套]]
     - [[#在字典中存储列表][在字典中存储列表]]
     - [[#字典中还有字典][字典中还有字典]]
+    - [[#字典推导][字典推导]]
   - [[#正则表达式][正则表达式]]
     - [[#rematch][re.match]]
     - [[#匹配任何单个字符][匹配任何单个字符]]
@@ -230,7 +231,7 @@
   - [[#推导式][推导式]]
     - [[#字典-1][字典]]
     - [[#集合][集合]]
-  - [[#对序列使用和][对序列使用＋和*]]
+  - [[#-2][*]]
     - [[#建立由列表组成的列表][建立由列表组成的列表]]
   - [[#聚合][聚合]]
   - [[#外积][外积]]
@@ -470,7 +471,6 @@ make_element('item', 'Albatross', size='large', quantity=6)
 # Creates '<p>&lt;spam&gt;</p>'
 make_element('p', '<spam>')
 #+end_src
-
 
 #+begin_src python
 def minimum(*values, clip=None):
@@ -753,7 +753,6 @@ for i in reversed([2, 5, 3, 9, 6]):
 
 *** sort
 对列表进行永久性排序。
-
 #+begin_src python
 magicians = ['alice', 'david', 'carolina']
 magicians.sort()
@@ -762,7 +761,6 @@ magicians
 #+end_src
 
 *** sorted
-
 使用 sorted() 对列表进行 *临时排序* 。要保留列表元素原来的列表的顺序，同时以特定的顺序呈现它们。除此之外，sorted()函数还有两个参数：key 和 reverse.
 key 指定带有单个参数的函数，用于从 iterable 的每个元素中提取用于比较的键 (例如 key=str.lower)。默认值为 None (直接比较元素), reverse 为一个布尔值。如果设为 True，则每个列表元素将按反向顺序比较进行排序。
 
@@ -797,7 +795,6 @@ a
 
 *** insert
 在任意位置添加新元素。
-
 #+begin_src python
 a = []
 a.append("df")
@@ -813,7 +810,6 @@ a
 
 *** item
 这个函数一般用在字典类型数据。遍历字典时，如果直接遍历字典对象，只能得到字典中的键.使用字典 items() 方法，便可以同时输出键和对应值：
-
 #+begin_src python
 sample = {'a':1, 'b':2, 'c':3}
 for i in sample:
@@ -834,14 +830,12 @@ for i in sample.items():
 
 *** zip
 zip 函数接收一个或多个可迭代对象，并将各个迭代对象对应的元素聚合，返回一个元组的迭代器。
-
 #+begin_src python
 x = [1, 2, 3]
 y = [4, 5, 6]
 zipped = zip(x, y)
-print(zipped)
+# => [(1, 4), (2, 5), (3, 6)]
 list(zipped)
-# => []
 #> [(1, 4), (2, 5), (3, 6)]
 color = ['white', 'blue', 'black']
 animal = ['cat', 'dog', 'pig']
@@ -854,7 +848,6 @@ for i in zip(color, animal):
 
 *** del
 从列表中删除元素。可以删除任意位置的元素。
-
 #+begin_src python
 a = ['honda', "bmw"]
 del a[0]
@@ -880,7 +873,6 @@ a
 *** remove
 根据值删除元素。
 a.remove("df")
-
 #+begin_src python
 a = []
 a.append("df")
@@ -902,13 +894,12 @@ a
 #+end_src
 
 *** 列表解析
-列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。squres = [value**2 for value in range(1, 11)]
+列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。
 #+begin_src python
 squres = [value**2 for value in range(1, 11)]
 print(squres)
   #[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 #+end_src
-
 *** if
     #+begin_src python
 cars = ['audi', 'bmw']
@@ -919,10 +910,9 @@ for car in cars:
         print(car.title())
     #+end_src
 *** boolen
-
     #+begin_src python
 cars = ['audi', 'bmw']
-car == "bmw"
+cars == "bmw"
 #True
 car = "Audi"
 car.lower() == "audi"
@@ -931,7 +921,6 @@ car.lower() == "audi"
 
 *** 检查多个条件
 and/or. and 等价于 R 中的&.
-
 #+begin_src python
 age_0 = 22
 age_1 = 18
@@ -947,10 +936,8 @@ df = ['a', 'b', 'c']
 "a" in df
 # => True
     #+end_src
-
 *** not in
 in 反义词。
-
     #+begin_src python
 df = ['a', 'b', 'c']
 "a" not in df
@@ -1026,7 +1013,6 @@ print("Your admission cost is $" + str(price) + ".")
 #+end_src
 
 *** for,if
-
     #+begin_src python
 s = ['a', 'b', 'c']
 for s in s:
@@ -1056,7 +1042,6 @@ else:
 *** 引号
 **** 单引号、双引号
 单引号和双引号工作机制完全相同.可以通过单引号、双引号指定字符串。
-
 #+begin_src python
   '''
   这是一段多行字符串。这是它的第一行。
@@ -1069,17 +1054,9 @@ He said "Bond, James Bond."
 #+end_src
 
 **** 三引号
-*** append
-添加元素。
-#+begin_src python
-x = [1,2,3]
-x.append(4)
-x
-# => [1, 2, 3, 4]
-#+end_src
-
 *** enumerate
 当遍历一个非数值序列时，有时候会需要将元素和索引一起取出，这时候便可以到 enumerate()函数。enumerate()函数接受一个序列或者迭代器，返回一个元组，里面包含元素及其索引数值。
+
 #+begin_src python
 seasons = ['spring', 'summer', 'Fall', 'Winter']
 list(enumerate(seasons))
@@ -1087,7 +1064,6 @@ list(enumerate(seasons))
 #+end_src
 
 还可以通过调整 start 参数，规定序列数值的起始值。
-
 #+begin_src python
 seasons = ['spring', 'summer', 'Fall', 'Winter']
 list(enumerate(seasons, start=1))
@@ -1108,7 +1084,6 @@ map()方法会将一个函数映射到序列的每一个元素上，生成新序
 Map applies a function to all the items in an input_list. Here is the blueprint:
 map(function_to_apply, list_of_inputs).
 Most of the times we want to pass all the list elements to a function one-by-one and then collect the output.
-
 #+begin_src python
 items=[1,2,3,4,5]
 squared=list(map(lambda x:x**2,items))
@@ -1117,8 +1092,9 @@ squared
 #+end_src
 
 *** filter
-As the name suggests, filter creates a list of elements for which a function returns true.filter()函数轻松完成了任务，它用于过滤序列，过滤掉不符合条件的元素，返回一个迭代器对象。filter()函数和 map()、reduce()函数类似，都是将序列里的每个元素映射到函数，最终返回结果。
+As the name suggests, filter creates a list of elements for which a function returns true.
 
+filter()函数轻松完成了任务，它用于过滤序列，过滤掉不符合条件的元素，返回一个迭代器对象。filter()函数和 map()、reduce()函数类似，都是将序列里的每个元素映射到函数，最终返回结果。
 #+begin_src python
 nums = [1, 2, 3, 4, 5]
 list(filter(lambda x:x%2!=0, nums))
@@ -1146,15 +1122,14 @@ python 中 format 方法所做的事情便是将每个参数值替换至格式�
 更详细的格式。
 
 #+begin_src python
-  print('{0:.3f}'.format(1.0/3))
-  print('{0:_^11}'.format('hello'))
-  print('{name} wrote {book}'.format(name='swaroop',book='python'))
+print('{0:.3f}'.format(1.0/3))
+print('{0:_^11}'.format('hello'))
+print('{name} wrote {book}'.format(name='swaroop',book='python'))
 #+end_src
 *** while
-
     #+begin_src python
-      number = 23
-      running = True
+number = 23
+running = True
 while running:
     guess = int(input('Enter an integer : '))
 
@@ -1195,7 +1170,7 @@ else:
 python 版的 do.call 可以用以下代码实现，可以看出 python 的编程思想和 r 还是有些区别的。
 
 #+begin_src python
-  import builtins
+import builtins
 def do_call(what, *args, **kwargs):
     return getattr(builtins, what)(*args, **kwargs)
 
@@ -1205,26 +1180,24 @@ functions = {
     "sum": sum,
     "mean":lambda v:sum(v)/len(v)
 }
-  functions['sum'](range(1,11))
+functions['sum'](range(1,11))
 
 #+end_src
 
 *** break 语句
-break 语句用以中断（break）循环语句，也就是中断循环语句的执行，即使循环条件没有
-变更为 False,或队列中的项目尚未完全迭代依旧如此。
+break 语句用以中断（break）循环语句，也就是中断循环语句的执行，即使循环条件没有变更为 False,或队列中的项目尚未完全迭代依旧如此。
 
 #+begin_src python
-  while True:
-      s = input('Enter something:')
-    if s == 'quit':
-        break
-    print('Length of the string is', len(s))
-    print('Done')
+while True:
+    s = input('Enter something:')
+  if s == 'quit':
+      break
+  print('Length of the string is', len(s))
+  print('Done')
 #+end_src
 
 *** 基本数学运算
 **** sqrt
-
     #+begin_src python
       from math import sqrt
       print('square root of 16 is', sqrt(16))
@@ -1267,7 +1240,6 @@ for tshirt in ('%s %s' % (c, s) for c in colors for s in sizes):
 其实，我想从 tidyverse 对应的 Python 学起。
 ** numpy
 *** 查看版本
-
 #+begin_src ipython :session :exports both :results raw drawer
 import numpy
 numpy.__version
@@ -1310,6 +1282,7 @@ print(df.head())
 from sklearn.datasets import load_boston
 boston = load_boston()
 print(boston.keys())
+# => dict_keys(['data', 'target', 'feature_names', 'DESCR', 'filename'])
 #+end_src
 *** matrix
 矩阵表示法。和 R 不同，这里面有 list 可以表示 matrix.
@@ -1346,11 +1319,11 @@ B = [[1,2],[2,3]]
 np.matmul(np.transpose(A),B)
 #+end_src
 **** np.type
-     #+begin_src python
- A = [[1, 4, 5],
+#+begin_src python
+A = [[1, 4, 5],
      [-5, 8, 9]]
 A.dtype #数据类型
- type(A.dtype)
+type(A.dtype)
      #+end_src
 
 *** unique
@@ -1554,17 +1527,31 @@ data1.__rmul__(2)
 
 #+end_src
 
-
-
 **** np.zeros/np.empty
 
  生成全为 0 的向量和空值矩阵。
 
-     #+begin_src python
-       np.zeros(10)
-       np.zeros((3,6))
-       np.empty((2,3,2)) #空矩阵
-     #+end_src
+#+begin_src python
+import numpy as np
+np.zeros(10)
+# => array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+np.zeros((3,6))
+# =>
+#
+# array([[0., 0., 0., 0., 0., 0.],
+#        [0., 0., 0., 0., 0., 0.],
+#        [0., 0., 0., 0., 0., 0.]])
+np.empty((2,3,2)) #空矩阵
+# =>
+#
+# array([[[-1.49166815e-154, -1.49166815e-154],
+#         [ 2.16794172e-314,  2.16914569e-314],
+#         [ 2.16930984e-314,  2.17053628e-314]],
+#
+#        [[ 2.17265422e-314,  2.16800380e-314],
+#         [ 2.16844380e-314,  2.16787246e-314],
+#         [ 2.16837278e-314,  8.34402697e-309]]])
+#+end_src
 **** np.arange
 类似于 R 中的 seq().
 
@@ -1573,7 +1560,6 @@ data1.__rmul__(2)
 #+end_src
 
 **** np.random
-
 随机生成数。
 
     #+begin_src python
@@ -1695,6 +1681,7 @@ numpy 函数命名方式很像 matlab.
     #+begin_src python
       u,d,v = np.linalg.svd(x) #奇异值分解
     #+end_src
+
 *** cholesky 分解
     #+begin_src python
       Z = np.array([[1, -2j], [2j, 5]])
@@ -1711,8 +1698,7 @@ L
 np.allclose(np.dot(L, L.T) , a)
     #+end_src
 *** LU 分解
-这里的 L 是下三角矩阵（lower triangular matrix）, U 是一个上三角矩阵（upper
-triangular matrix） 的乘积。
+这里的 L 是下三角矩阵（lower triangular matrix）, U 是一个上三角矩阵（upper triangular matrix） 的乘积。
 
 LU 分解是利用消去法进行矩阵分解。具体请见。
 
@@ -1731,14 +1717,27 @@ https://zhuanlan.zhihu.com/p/55056353
 *** 查看一列的基本信息
 data.columnname.describe()
     #+begin_src python
+import pandas as pd
 data = pd.read_csv("/Users/luyajun/Documents/坚果云/我的坚果云/学习/信用评分卡/score_card/cs-training.csv")
 data.age.describe()
+# =>
+#    count    150000.000000
+#    mean         52.295207
+#    std          14.771866
+#    min           0.000000
+#    25%          41.000000
+#    50%          52.000000
+#    75%          63.000000
+#    max         109.000000
+#    Name: age, dtype: float64
     #+end_src
 
 *** 选择一列
-data['columnname']
+
 #+begin_src python
 data = pd.read_csv("/Users/luyajun/Documents/坚果云/我的坚果云/学习/信用评分卡/score_card/cs-training.csv")
+
+data.columnname.describe()
 data['age']
 #+end_src
 
@@ -1753,6 +1752,11 @@ data['columnsname'][:n]
 
 *** 选择多列
 data [[[[ 'column1', 'column2' ]]]]
+
+#+begin_src python :results output
+import pandas as pd
+data[[]]
+#+end_src
 
 *** filter
 类似于 dplyr 中的 filter.data[data['columnname'] > condition]
@@ -1805,7 +1809,6 @@ data.head()
 data['price'] = boston.target
 data.info()
 data.describe()
-
 #+end_src
 
 *** T
@@ -1817,13 +1820,23 @@ data.describe()
 
 *** columns
 生成数据的样例可以用下列代码生成。
+从以下的代码可以看出，columns 可以确定列名，index 可以确定行名。
 #+begin_src python
-df=pd.DataFrame(np.random.randn(4,3),columns=list('bde'),index=['utah','ohio','texas','oregon'])
 import pandas as pd
+df=pd.DataFrame(np.random.randn(4,3),columns=list('bde'),index=['utah','ohio','texas','oregon'])
+df
+# =>
+#                b  ...         e
+# utah    0.036464  ...  0.361278
+# ohio   -0.697201  ... -0.281434
+# texas   1.600947  ... -0.612873
+# oregon -1.003407  ...  1.305064
+#
+# [4 rows x 3 columns]
 #+end_src
 
 数据列名重命名。
-    #+begin_src python
+#+begin_src python
 import pandas as pd
 data = pd.DataFrame(boston.data)
 data.columns = boston.feature_names
@@ -1978,13 +1991,7 @@ import numpy
 import
 import numpy as
 import numpy as np
-
-imp
-
 #+end_src
-
-
-
 pd.series 中的 index
 
 #+begin_src python
@@ -2015,25 +2022,35 @@ pd.Series([['a', 'A'], ['b', 'B'], ['c', 'C']],columns = ['小写', '大写'],in
 
 **** create a dataframe from lists
      #+begin_src python
- data = [1,2,3,4,5]
-       df = pd.DataFrame(data)
-       print(df)
+data = [1,2,3,4,5]
+df = pd.DataFrame(data)
+print(df)
+# =>    0
+#    0  1
+#    1  2
+#    2  3
+#    3  4
+#    4  5
      #+end_src
 
-     #+begin_src python
-       data = [['Alex',10],['Bob',12]]
-       df = pd.DataFrame(data, columns=['Name','Age'])
-       df = pd.DataFrame(data, columns=['Name','Age'], dtype=float)
-       print(df)
-     #+end_src
+#+begin_src python
+data = [['Alex',10],['Bob',12]]
+df = pd.DataFrame(data, columns=['Name','Age'])
+df = pd.DataFrame(data, columns=['Name','Age'], dtype=float)
+df.keys()
+# => Index(['Name', 'Age'], dtype='object')
+print(df)
+#+end_src
 
 **** create a dataframe from dict of ndarrays/lists
 
-     #+begin_src python
-       data = {'Name':['Tom'],'Age':[28]}
-       df = pd.DataFrame(data)
-       print(df)
-     #+end_src
+#+begin_src python
+data = {'Name':['Tom'],'Age':[28]}
+df = pd.DataFrame(data)
+# =>   Name  Age
+#    0  Tom   28
+print(df)
+#+end_src
 
      #+begin_src python
        data = {'Name':['Tom'],'Age':[28]}
@@ -2202,7 +2219,6 @@ print(print_max.__doc__) #获取注释
 
 *** index/value
 index 更像 R 中的行元素名称。可以进行筛选。
-value 是返回数值。
     #+begin_src python
 import pandas as pd
 obj = pd.Series([4, 7, -5, 3])
@@ -2220,6 +2236,17 @@ obj1[obj1 > 0]
 #+begin_src python
   "b" in obj1
 #+end_src
+
+*** value
+value 是返回数值。
+#+begin_src python :results output
+import pandas as pd
+obj = pd.Series([4, 7, -5, 3])
+obj.values
+# => array([ 4,  7, -5,  3])
+#+end_src
+
+
 
 *** iloc,loc
 iloc,loc 两个操作类似于 dplyr 中的 select。
@@ -2648,31 +2675,27 @@ str(age)
 #+end_src
 
 ** 转换
-   #+begin_src python
-     motorcycles = ['honda', 'yamaha', 'suzuki']
-     print(motorcycles)
-     motorcycles[0] = 'dycati'
-     print(motorcycles)
-   #+end_src
-
-给我的感觉，python 在数据类型转换方面显得很笨拙。
-
-list 型转 string.在 R 中，只需要 as.str(L) 即可。
 #+begin_src python
-  L = list(range(10))
-  type(L[0])
-  L2 = [str(c) for c in L]
-  L2
+motorcycles = ['honda', 'yamaha', 'suzuki']
+print(motorcycles)
+motorcycles[0] = 'dycati'
+print(motorcycles)
 #+end_src
-
-从这个 L2 中，可以看出 L2 第一个 str(c) 显然是 L2 的数据类型，后面 string
-是一个 for 循环。
+给我的感觉，python 在数据类型转换方面显得很笨拙。list 型转 string.在 R 中，只需要 as.str(L) 即可。
+type() 可以确定数据类型。
+#+begin_src python
+L = list(range(10))
+type(L[0])
+L2 = [str(c) for c in L]
+L2
+#+end_src
+从这个 L2 中，可以看出 L2 第一个 str(c) 显然是 L2 的数据类型，后面 strin 是一个 for 循环。
 
 #+begin_src python
-  L3 = [True, "2", 3, 4]
-  [type(item) for item in L3]
-
+L3 = [True, "2", 3, 4]
+[type(item) for item in L3]
 #+end_src
+
 ** 列表中添加元素
 在列表末尾添加元素，使用 append 的方法。任意位置插入元素使用 insert 的方法。
 #+begin_src python
@@ -2691,7 +2714,7 @@ motorcycles
 #+begin_src python
 del motorcycles[0]
 motorcycles
-
+im
 poped_motorcycles=motorcycles.pop()
 motorcycles
 poped_motorcycles
@@ -2707,7 +2730,6 @@ motorcycles
 #+end_src
 
 ** 根据值删除元素
-
 可以使用 remove 将元素移除，但是也可以接着使用它的值。
 
 #+begin_src python
@@ -2718,7 +2740,6 @@ motorcycles.remove('suzuki') #把suzuki 从元素列表中移除
 ** 组织列表
 *** sort
 可以使用 sort() 对字符串进行排序，参数 reverse=T 可以倒序显示。利用 sorted() 对列表进行临时排序。
-
 *** reverse
 注意 reverse() 不是指按与字母顺序相反的顺序排列列表元素，而只是反转表元素顺序。
 *** len
@@ -2749,6 +2770,7 @@ cars
 print(cars[-1])
 # => toyota
 #+end_src
+
 ** 循环
 *** 遍历整个列表
 #+begin_src python
@@ -2766,13 +2788,11 @@ for magician in magicians:
 
 ** 创建数字列表
 *** 使用函数 range()
-
 #+begin_src python
 for value in range(1,5):
     print(value)
 #+end_src
 *** 使用 range() 创建数字列表
-
 #+begin_src python
 numbers=list(range(1,6))
 print(numbers)
@@ -2808,7 +2828,6 @@ print(squres)
   # 'green'
 #+end_src
 *** 添加键－值对
-
     #+begin_src python
       alien_0 = {'color':'green','points':5}
       alien_0['x_pos'] = 0
@@ -2818,7 +2837,6 @@ print(squres)
     #+end_src
 
 *** 创建空字典
-
     #+begin_src python
       alien_0 = {}
       alien_0['color'] = "green"
@@ -2856,19 +2874,19 @@ print(squres)
 
 *** 遍历字典
 
-    #+begin_src python
-      import pandas as pd
-      import numpy as np
-      user_0 = {
-          'username':'eferni',
-          'first':'enrico',
-          'last':'fermi'
-      }
+#+begin_src python
+  import pandas as pd
+  import numpy as np
+  user_0 = {
+      'username':'eferni',
+      'first':'enrico',
+      'last':'fermi'
+  }
 
 for key,value in user_0.items():
     print('\nKey:' + key)
     print('Value:' + value)
-    #+end_src
+#+end_src
 
 for 语句的第二部分包含字典名和方法 items()，它返回一个键-值对列表。
 
@@ -2876,18 +2894,17 @@ for 语句的第二部分包含字典名和方法 items()，它返回一个键-�
 .keys
 
 #+begin_src python
-  user_0 = {
-      'username':'eferni',
-      'first':'enrico',
-      'last':'fermi'
-  }
-
+user_0 = {
+    'username':'eferni',
+    'first':'enrico',
+    'last':'fermi'
+}
+user_0.keys
 for name in user_0.keys():
     print(name.title())
 #+end_src
 
 *** 按顺序遍历字典中的所有键
-
     #+begin_src python
       favorite_lang = {
           'jen':'python',
@@ -2967,9 +2984,7 @@ for name, languages in favorite_lang.items():
         print('\t' + languages.title())
     #+end_src
 
-
 *** 字典中还有字典
-
     #+begin_src python
       users = {
           'aeinstein':{
@@ -2991,6 +3006,21 @@ for username, user_info in users.items():
     print("\tFull name: " + full_name.title())
     print("\tLocation: " + location.title())
     #+end_src
+
+*** 字典推导
+
+#+begin_src python
+Dial_codes = [
+    (86, 'china'),
+(91, 'india'),
+]
+
+Dial_codes
+country_code = {country:code for code, country in Dial_codes}
+country_code
+#+end_src
+
+
 
 ** 正则表达式
 在 python 中 re 模块可以完成对文本的正则化处理。匹配对象的两种方法：group() 和 groups().
@@ -3170,14 +3200,6 @@ lambda 与 def 的区别：
 
 4）lambda 表达式” : “后面，只能有一个表达式，def 则可以有多个。
 
-5）像 if 或 for 或 print 等语句不能用于 lambda 中，def 可以。
-
-6）lambda 一般用来定义简单的函数，而 def 可以定义复杂的函数。
-
-#+begin_src python
-add = lambda x,y: x + y
-add(2, 3)
-
 names = ['tony',  'bob']
 sorted(names, key = lambda name:name.split()[-1].lower())
 #+end_src
@@ -3272,21 +3294,20 @@ data = ['a', 50, 10, {2012,12,30}]
       date
     #+end_src
 
-实际上不仅仅是元组或列表，只要对象恰好是可迭代的，那么就可以执行分解操作。这包括
-字符串\文件\迭代器及生成器。
+实际上不仅仅是元组或列表，只要对象恰好是可迭代的，那么就可以执行分解操作。这包括字符串\文件\迭代器及生成器。
 
 *** 从任意长度的可迭代对象中分解元素
 
 如果需要从某个可迭代对象中分解出 N 个元素，但是这个可迭代对象的长度可能超过 N.
 
 #+begin_src python
-  import pandas as pd
-  import numpy as np
+import pandas as pd
+import numpy as np
 def drop_first_last(grades):
     first, *middle, last = grades
     return np.mean(middle)
 
-  drop_first_last((1,2,3,4))
+drop_first_last((1,2,3,4))
 #+end_src
 
 可以利用*表达式解决这个问题，这个表达式有点类似于 R 中的 everything。
@@ -3302,10 +3323,10 @@ def drop_first_last(grades):
 *** 找到最大或最小的 N 个元素
 heapq 模块中有两个函数－nlargest() 和 nsmallest().
 #+begin_src python
-  import heapq
-  nums = [1, 8, 2, 23, 7, -4]
-  print(heapq.nlargest(3, nums))
-  print(heapq.nsmallest(3, nums))
+import heapq
+nums = [1, 8, 2, 23, 7, -4]
+print(heapq.nlargest(3, nums))
+print(heapq.nsmallest(3, nums))
 #+end_src
 *** set
 当需要对一个列表进行去重操作的时候，set()函数就派上用场了。
@@ -3538,25 +3559,24 @@ test({x for x in range(3)})
 #> {'a', 'b', 'c'}
     #+end_src
 
-** 对序列使用＋和*
+** *
 
-   #+begin_src python
-     l = [1, 2, 3]
-     l * 2
-     # [1, 2, 3, 1, 2, 3]
-     2 * 'abc'
-     # 'abcabc'
-   #+end_src
+#+begin_src python
+l = [1, 2, 3]
+l * 2
+# => [1, 2, 3, 1, 2, 3]
+2 * 'abc'
+# 'abcabc'
+#+end_src
 
 *** 建立由列表组成的列表
 
     #+begin_src python
 
     #+end_src
-** 聚合
-reduce,类似于 R 中的函数。如果需要存储每次计算的中间结果，那么可以使用 accumulate.
 
-.sum,np.prod,np.cumsum,np.cumprod 这些函数都可以实现 reduce 的功能。
+** 聚合
+reduce,类似于 R 中的函数。如果需要存储每次计算的中间结果，那么可以使用 accumulate. .sum,np.prod,np.cumsum,np.cumprod 这些函数都可以实现 reduce 的功能。
 #+begin_src python
 x = np.arange(1, 6)
 x
@@ -3570,9 +3590,16 @@ np.multiply.accumulate(x)
 #+end_src
 ** 外积
 
-   #+begin_src python
-     np.multiply.outer(x, x)
-   #+end_src
+ #+begin_src python
+np.multiply.outer(x, x)
+# =>
+#
+# array([[ 1,  2,  3,  4,  5],
+#        [ 2,  4,  6,  8, 10],
+#        [ 3,  6,  9, 12, 15],
+#        [ 4,  8, 12, 16, 20],
+#        [ 5, 10, 15, 20, 25]])
+ #+end_src
 ** 广播
 对于同样大小的数组，二进制操作是对相应元素逐个计算：
 #+begin_src python
@@ -3582,28 +3609,31 @@ a + b
 # => array([5, 6, 7])
 a = np.array([0, 1, 2])
 a + 5
+# => array([5, 6, 7])
 #+end_src
 
 ** 统计记录个数
 如果需要统计布尔数组中 True 记录的个数，可以使用 np.count_nonzero 函数。
-   #+begin_src python
-     X = np.random.random((10, 3))
-     X.mean(0)
-     X < 0.2
-     np.count_nonzero(X<0.2)
-   #+end_src
+#+begin_src python
+X = np.random.random((10, 3))
+X.mean(0) #对列进行统计
+X.mean(1) #对行进行统计
+X < 0.2 #对所有元素进行判断
+np.count_nonzero(X<0.2) #统计True 的个数
+#+end_src
 
 ** value_counts()
-value_counts() 相当于 dplyr 包中的 count(). 相当于 R 中的 table.
-
-具体用法是 df.colName.value_counts().
-    #+begin_src python
-      housing['income_cat'].value_counts()
-    #+end_src
+value_counts() 相当于 dplyr 包中的 count(). 相当于 R 中的 table.具体用法是 df.colName.value_counts().
+#+begin_src python
+X = np.random.random((10, 3))
+X.value_counts()
+housing['income_cat'].value_counts()
+#+end_src
 
 ** 处理缺失值
 *** 发现缺失值
     #+begin_src python
+import pandas as pd
 df1 = pd.Series([1, np.nan, 2, None])
 df1.isnull()
 df1[df1.notnull()]
@@ -3620,8 +3650,13 @@ df.fillna(0)
 *** 剔除缺失值
 分别是 dropna() (剔除缺失值) 和 fillna() (填充缺失值).可以按着行或者列筛选 NA 值。
 #+begin_src python
+import pandas as pd
 df1 = pd.Series([1, np.nan, 2, None])
 df1.dropna()
+# =>
+#    0    1.0
+#    2    2.0
+#    dtype: float64
 #+end_src
 默认情况下，dropna() 会剔除任何包含缺失值的整行数据。
 #+begin_src python
@@ -3662,11 +3697,10 @@ numpy 中可以用 np.concatenate 函数将 numpy 数组进行合并。
       np.hstack((x, y)) #np.concatenate((x, y), axis = 1)
     #+end_src
 *** pd.concat
-这个函数不能将 list 型数据进行合并。
-pd.concat(objs, axis=0, join='outer')
+这个函数不能将 list 型数据进行合并。 pd.concat(objs, axis=0, join='outer')
 
 #+begin_src python
-  pd.concat([pd.Series(x),pd.Series(y)],axis=1)
+pd.concat([pd.Series(x),pd.Series(y)],axis=1)
 #+end_src
 
 *** 伪随机数
@@ -3832,7 +3866,6 @@ np.shape(y)
 #+end_src
 
 转置
-
 #+begin_src python
 x = [[2,3],[7,5]]
 z = np.asmatrix(x)
@@ -3943,10 +3976,10 @@ x_new = [[22587]]
 *** 数字型变量
 删除缺失值，删除一个特征，将缺失值填充为一个固定值。
  #+begin_src python
-   housing.dropna(subset=['total_bedrooms']) #option 1 可以理解为删除缺失值
-   housing.drop('total_bedrooms', axis=1)  #删除一个特征
-   median = housing['total_bedrooms'].median()
-   housing['total_bedrooms'].fillna(median)
+housing.dropna(subset=['total_bedrooms']) #option 1 可以理解为删除缺失值
+housing.drop('total_bedrooms', axis=1)  #删除一个特征
+median = housing['total_bedrooms'].median()
+housing['total_bedrooms'].fillna(median)
  #+end_src
 *** 字符串和文本
 **** 使用多个界定符分割字符串
@@ -4048,7 +4081,7 @@ print("RMSE: %f" % (rmse))
 这个包类似于 dplyr.
 **** select
      #+begin_src python
- import pandas
+import pandas
 from dplython import (DplyFrame, X, diamonds, select, sift, sample_n,
     sample_frac, head, arrange, mutate, group_by, summarize, DelayFunction)
 
@@ -4197,6 +4230,46 @@ import torch
 import numpy as np
 torch.tensor([[1, -1], [1, -1]])
 torch.tensor(np.array([[1, 2, 3], [4, 5, 6]]))
+#+end_src
 
+#+begin_src python
+  from __future__ import print_function
+    import torch
+    x = torch.Tensor(5, 3)
+    x = torch.rand(5, 3)
+    x
+    x.size()
+    y = torch.rand(5, 3)
+  x + y
+  torch.add(x, y)
+  x[:, 1]
 
+  #Numpy 桥
+  a = torch.ones(5)
+  # => tensor([1., 1., 1., 1., 1.])
+    b = a.numpy()
+    # => array([1., 1., 1., 1., 1.], dtype=float32)
+    a.add_(1)
+    # => tensor([2., 2., 2., 2., 2.])
+    b
+    # => array([3., 3., 3., 3., 3.], dtype=float32)
+
+    #将numpy 的array 转换为torch的tensor
+    import numpy as np
+    a = np.ones(5)
+    # => array([1., 1., 1., 1., 1.])
+    b = torch.from_numpy(a)
+    # => tensor([1., 1., 1., 1., 1.], dtype=torch.float64)
+    np.add(a, 1, out=a)
+    # => array([2., 2., 2., 2., 2.])
+    b
+    # => tensor([2., 2., 2., 2., 2.], dtype=torch.float64)
+
+    if torch.cuda.is_available():
+    x = x.cuda()
+    y = y.cuda()
+    x + y
+
+  from torch.autograd import Variable
+  x = Variable(torch.ones(2, 2), requires_grad = True)
 #+end_src
