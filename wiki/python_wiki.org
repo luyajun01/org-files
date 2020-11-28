@@ -4,20 +4,31 @@
 * Python_wiki                                                           :toc:
   - [[#常见问题][常见问题]]
     - [[#语法错误][语法错误]]
+    - [[#数据类型][数据类型]]
+      - [[#基本数据类型][基本数据类型]]
+      - [[#容器数据类型][容器数据类型]]
   - [[#工作目录][工作目录]]
   - [[#pip-install][pip install]]
+  - [[#python-编辑语法][python 编辑语法]]
+    - [[#][\]]
   - [[#常见函数][常见函数]]
     - [[#def][def]]
+      - [[#递归函数][递归函数]]
+      - [[#空函数][空函数]]
     - [[#局部变量][局部变量]]
     - [[#global-语句][global 语句]]
     - [[#关键字参数][关键字参数]]
     - [[#可变参数][可变参数]]
     - [[#return][return]]
     - [[#命名空间和作用域][命名空间和作用域]]
-    - [[#][*/**]]
+    - [[#-1][*/**]]
+      - [[#异常处理][异常处理]]
     - [[#set][set]]
     - [[#help][help]]
     - [[#list][list]]
+      - [[#count][count]]
+      - [[#deque][deque]]
+      - [[#嵌套列表解析][嵌套列表解析]]
     - [[#print][print]]
     - [[#tolist][tolist]]
     - [[#title][title]]
@@ -117,6 +128,8 @@
     - [[#isnullnotnull][isnull/notnull]]
       - [[#isnullany][isnull().any()]]
       - [[#isnullall][isnull().all()]]
+    - [[#isna][isna]]
+    - [[#insert-na][insert na]]
     - [[#scalar][scalar]]
     - [[#ndarray][ndarray]]
     - [[#dataframe][DataFrame]]
@@ -164,6 +177,10 @@
       - [[#strislower][str.islower]]
       - [[#strisupper][str.isupper]]
       - [[#strisnumeric][str.isnumeric]]
+      - [[#capitalize][capitalize]]
+      - [[#split][split]]
+      - [[#find][find]]
+      - [[#replace][replace]]
     - [[#apply][apply]]
     - [[#统计函数][统计函数]]
       - [[#方差][方差]]
@@ -203,12 +220,13 @@
   - [[#用户输入和-while-循环][用户输入和 while 循环]]
     - [[#函数-input][函数 input]]
     - [[#int-获取数值输入][int() 获取数值输入]]
-    - [[#-1][%]]
+    - [[#-2][%]]
     - [[#while-1][while]]
     - [[#def-1][def]]
-    - [[#向函数传递信息][向函数传递信息]]
-    - [[#传递列表][传递列表]]
-    - [[#传递任意数量的实参][传递任意数量的实参]]
+      - [[#向函数传递信息][向函数传递信息]]
+      - [[#传递列表][传递列表]]
+      - [[#传递任意数量的实参][传递任意数量的实参]]
+      - [[#可更改mutable与不可更改immutable对象][可更改（mutable）与不可更改（immutable）对象]]
     - [[#导入整个模块][导入整个模块]]
     - [[#导入特定的函数][导入特定的函数]]
     - [[#使用-as-给模块指定别名][使用 as 给模块指定别名]]
@@ -231,7 +249,7 @@
   - [[#推导式][推导式]]
     - [[#字典-1][字典]]
     - [[#集合][集合]]
-  - [[#-2][*]]
+  - [[#-3][*]]
     - [[#建立由列表组成的列表][建立由列表组成的列表]]
   - [[#聚合][聚合]]
   - [[#外积][外积]]
@@ -264,6 +282,7 @@
       - [[#用-shell-通配符匹配字符串][用 shell 通配符匹配字符串]]
       - [[#字符串搜索和替换][字符串搜索和替换]]
   - [[#类][类]]
+  - [[#面向对象技术简介][面向对象技术简介]]
   - [[#转义][转义]]
   - [[#packages][Packages]]
     - [[#dplython][dplython]]
@@ -284,6 +303,35 @@
     SyntaxError: invalid syntax
     #+end_quote
 语法错误又称解析错误，简单来说是基本语法结构写错了，如：多任务写成一行、for 循环没加‘:’等。上面示例可以看到，针对语法错误，python 解析器会输出错误的那一行，并且在最先找到的错误的位置标记了一个箭头。
+*** 数据类型
+**** 基本数据类型
+整数、浮点数、布尔
+
+可以通过dir() 查看对象的可用的属性，help 可以看到方法。
+#+begin_src python
+dir(int)
+# =>
+#
+# ['__abs__',
+#  '__add__',
+#  '__and__',
+#  '__xor__',
+#  'bit_length',
+#  'conjugate',
+#  'denominator',
+#  'imag',
+#  'numerator',
+#  'real',
+#  'to_bytes']
+#+end_src
+
+前面的__and__是可用的方法，后面的bit_length 是可用属性。
+
+**** 容器数据类型
+字符、元组、列表、字典、集合
+
+
+
 ** 工作目录
 类似于 R 的 getwd(),setwd().
 #+begin_src python
@@ -320,10 +368,20 @@ test(1)
 # 101 10
 #+end_src
 
+** python 编辑语法
+*** \
+如果代码太长写成一行不便于阅读 可以使用\对代码进行折行.
+#+begin_src python
+year = int(input('请输入年份: '))
+# 如果代码太长写成一行不便于阅读 可以使用\对代码进行折行
+is_leap = year % 4 == 0 and year % 100 != 0 or \
+          year % 400 == 0
+print(is_leap)
+#+end_src
+
 ** 常见函数
 *** def
 自定义函数可以通过关键字 def 来定义。
-
 在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称作“实参”（arguments）。
 
     #+begin_src python
@@ -337,7 +395,27 @@ test(1)
 
     print_max(3,4)
     #+end_src
+**** 递归函数
+     
+在函数内部，可以调用其他函数。如果一个函数在内部调用自身本身，这个函数就是递归函数。
+    #+begin_src python
+      def fact(n):
+    if n == 1:
+        return 1
+    return n * fact(n-1)
+    #+end_src
+**** 空函数
 
+如果想定义一个什么事也不做的空函数，可以用pass语句：
+
+    #+begin_src python
+if age >=18:
+    pass
+    #+end_src
+
+pass 可以用来作为占位符，比如现在还没想好怎么写函数的代码，可以先写一个pass，让代码能运行起来。
+
+     
 *** 局部变量
 当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的 变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作用域（scope）。
 
@@ -409,10 +487,8 @@ return 语句用于从函数中返回，也就是中断函数。
 命名空间（namespace）
 
 *** 命名空间和作用域
-如果想给一个在程序顶层的变量赋值（也就是说不存在于任何作用域中，无论是函数还是
-类），那么你必须告诉 python 这一变量并非局部，而是全局（global）。因为在不使用
-global 语句的情况下，不可能为一个定义于函数之外的变量赋值。
 
+如果想给一个在程序顶层的变量赋值（也就是说不存在于任何作用域中，无论是函数还是类），那么你必须告诉 python 这一变量并非局部，而是全局（global）。因为在不使用 global 语句的情况下，不可能为一个定义于函数之外的变量赋值。
 
 *** */**
 为了能让一个函数接受任意数量的位置参数，可以使用一个*参数。例如
@@ -440,7 +516,6 @@ print(maximun(2, 3))
   # => 3
 #+end_src
 
-
 从上面两个例子可以看出 * 对应的是任意数量的位置参数,而 ** 对应的是任意数量的关键字参数.还有一种情况是只接受关键字参数的函数.将强制关键字参数放到某个 * 参数或者单个 * 后面就能达到这种效果。
 
 #+begin_src python
@@ -451,7 +526,9 @@ print(maximun(2, 3))
 recv(1024, True) # TypeError
 recv(1024, block=True) # Ok
 #+end_src
+
 利用这种技术，我们还能在接受任意多个位置参数的函数中指定关键字参数。比如：
+
 #+begin_src python
 import html
 
@@ -635,6 +712,55 @@ f.get_n()
 
 为了说明清楚它如何工作的，有两点需要解释一下。首先，nonlocal 声明可以让我们编写函数来修改内部变量的值。其次，函数属性允许我们用一种很简单的方式将访问方法绑定到闭包函数上，这个跟实例方法很像(尽管并没有定义任何类)。
 
+**** 异常处理
+到目前为止，在python 程序中遇到错误，或“异常”，意味着整个程序崩溃。我们不希望这发生在真实世界中，相反希望程序能检测到错误，处理它们，然后继续运行。
+
+#+begin_src python
+def spam(divideBy):
+    return 42/ divideBy
+
+print(spam(2))
+# => 21.0
+print(spam(0))
+# =>
+#    ZeroDivisionErrorTraceback (most recent call last)
+#    <ipython-input-15-737e559b2995> in <module>
+#    ----> 1 print(spam(0))
+#
+#    ~/Documents/坚果云/我的坚果云/github/wiki/python_wiki.org in spam(divideBy)
+#          1 # -*- org-confirm-babel-evaluate: nil; -*-
+#    ----> 2 #+PROPERTY: header-args :eval never-export
+#          3
+#          4 * Python_wiki                                                           :toc:
+#          5   - [[#常见问题][常见问题]]
+#
+#    ZeroDivisionError: division by zero
+#+end_src
+
+当试图一个数除以0时，就会发生 ZeroDivisionError. 根据错误信息中给出的行号，我们知道spam() 中的return 语句导致了一个错误。
+
+错误可以由try 和 except 语句处理，那些可能出错的语句被放在try 子句中。如果错误发生，程序执行就转到接下来的except 子句开始处。
+
+#+begin_src python
+def spam(divideBy):
+    try:
+        return 42/ divideBy
+    except ZeroDivisionError:
+        print('Error:Invalid argument.')
+
+print(spam(0))
+#+end_src
+
+或者
+
+#+begin_src python
+try:
+    print(spam(2))
+    print(spam(0))
+except ZeroDivisionError:
+    print('Error:Invalid argument.')
+#+end_src
+
 *** set
 集合，是 python 一种数据类型，可以去重。
 #+begin_src python
@@ -651,6 +777,7 @@ set(basket)
 #比如:
    help(re.match)
    #+end_src
+
 *** list
 python 中的 list 转变为 array.
     #+begin_src python
@@ -661,6 +788,47 @@ l
 # => array([1, 2, 3, 4, 5])
       type(l)
     #+end_src
+**** count
+
+#+begin_src python
+a = [66.25, 333, 333, 1, 1234]
+print(a.count(333), a.count(66.25), a.count('x'))
+# => 2 1 0
+#+end_src
+
+**** deque
+
+也可以把列表当做队列用，只是在队列里第一加入的元素，第一个取出来；但是拿列表用作这样的目的效率不高。在列表的最后添加或者弹出元素速度快，然而在列表里插入或者从头部弹出速度却不快（因为所有其他的元素都得一个一个地移动）。
+
+#+begin_src python
+from collections import deque
+queue = deque(['eric', 'john', 'michael'])
+queue.append('terry')
+# =>
+queue.append('graham')
+# =>
+queue.popleft() ##the first to arrive now leaves
+# => 'john'
+queue
+# => deque(['michael', 'terry', 'terry', 'graham'])
+queue.popleft()
+# => 'michael'
+queue
+# => deque(['terry', 'terry', 'graham'])
+#+end_src
+**** 嵌套列表解析
+
+可以将3*4的矩阵列表转换为4*3列表。
+#+begin_src python
+matrix = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12]
+]
+
+[[row[i] for row in matrix] for i in range(4)]
+#+end_src
+
 *** print
 在 python 中，print 的功能要比 R 要丰富的多。类似于是 glue。
 
@@ -725,6 +893,7 @@ for magician in magicians:
     #    david
     #    carolina
     #+end_src
+
 *** len
 可以列表的长度。
 #+begin_src python
@@ -1157,8 +1326,8 @@ else:
     #+end_src
 
 *** dir
-内置的 dir() 函数能够返回由对象所定义的名称列表。
-有点像 R 中的 ls().
+
+内置的 dir() 函数能够返回由对象所定义的名称列表。有点像 R 中的 ls()。
 #+begin_src python
   dir(pandas)
   dir()
@@ -1705,14 +1874,16 @@ LU 分解是利用消去法进行矩阵分解。具体请见。
 https://zhuanlan.zhihu.com/p/55056353
 
 ** pandas
-| 函数     | dplyr     | pandas      |
-| 创建列   | mutate    | assign      |
-| 选择列   | select    | filter      |
-| rename   | rename    | rename      |
-| 过滤行   | filter    | query       |
-| 排序     | arrange   | sort_values |
-| 分组     | group_by  | groupby     |
-| 摘要统计 | summarize | agg         |
+| 函数       | dplyr     | pandas      |
+| 创建列     | mutate    | assign      |
+| 选择列     | select    | filter      |
+| rename     | rename    | rename      |
+| 过滤行     | filter    | query       |
+| 排序       | arrange   | sort_values |
+| 分组       | group_by  | groupby     |
+| 摘要统计   | summarize | agg         |
+| 判定是否na | is.na     | isna            |
+
 
 *** 查看一列的基本信息
 data.columnname.describe()
@@ -1949,6 +2120,37 @@ data.isnull().any()
 data = pd.read_csv("/Users/luyajun/Documents/坚果云/我的坚果云/学习/信用评分卡/score_card/cs-training.csv")
 data.isnull().all()
 #+end_src
+
+*** isna
+pd.isna() 可以用来判定该序列是否存在na值。pd.notna() 评定序列值是否不为na.
+#+begin_src python
+df = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'],
+                      columns=['one', 'two', 'three'])
+df
+df['four'] = 'bar'
+df
+df['five'] = df['one'] > 0
+df
+df2 = df.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+df2
+df2['one']
+pd.isna(df2['one'])
+pd.notna(df2['one'])
+#+end_src
+
+*** insert na
+python 中缺失值也是None.
+#+begin_src python
+import pandas as pd
+s = pd.Series([1,2,3])
+s.loc[0] = None
+s
+s[0] = None
+s
+#+end_src
+
+
+
 
 *** scalar
 If data is a scalar value, an index must be provided. The value will be repeated to match the length of index.
@@ -2219,6 +2421,15 @@ print(print_max.__doc__) #获取注释
 
 *** index/value
 index 更像 R 中的行元素名称。可以进行筛选。
+
+#+begin_src python
+spam = ['hello', 'hi']
+spam.index('hello')
+# => 0
+spam.index('hi')
+# => 1
+#+end_src
+
     #+begin_src python
 import pandas as pd
 obj = pd.Series([4, 7, -5, 3])
@@ -2331,9 +2542,9 @@ df.assign(
     #+end_src
 
 *** group_by
-    #+begin_src python
-      import pandas as pd
- df = pd.DataFrame({'Animal':['Falcon','Falcon','Parrot','Parrot'],'Max Speed':[380.,370.,24.,26.]})
+#+begin_src python
+import pandas as pd
+df = pd.DataFrame({'Animal':['Falcon','Falcon','Parrot','Parrot'],'Max Speed':[380.,370.,24.,26.]})
 df.groupby(['Animal']).mean #对animal 进行分组然后求mean()
 
 arrays = [['Falcon','Falcon','Parrot', 'Parrot'],
@@ -2343,7 +2554,20 @@ index = pd.MultiIndex.from_arrays(arrays, names=('Animal', 'Type'))
 df = pd.DataFrame({'Max Speed':[390., 350., 30., 20.]}, index=index)
 df.groupby(level=0).mean()
 df.groupby(level=1).mean()
-    #+end_src
+#+end_src
+
+select a group. 用get_group 选择一个组。
+
+#+begin_src python :results output
+import pandas as pd
+df = pd.DataFrame({'Animal':['Falcon','Falcon','Parrot','Parrot'],'Max Speed':[380.,370.,24.,26.]})
+df.groupby(['Animal']).mean #对animal 进行分组然后求mean()
+df.groupby(['Animal']).get_group("Falcon") #对animal 进行分组然后求mean()
+#+end_src
+
+
+
+
 *** select
 
     #+begin_src python
@@ -2354,7 +2578,7 @@ df.groupby(level=1).mean()
 *** agg
 等价于 R 中的 summarize 函数.
 #+begin_src python
- import pandas as pd
+import pandas as pd
 df = pd.DataFrame({'Alphabet': ['a', 'b', 'c', 'd','e', 'f', 'g', 'h','i'],
                    'A': [4, 3, 5, 2, 1, 7, 7, 5, 9],
                    'B': [0, 4, 3, 6, 7, 10,11, 9, 13],
@@ -2363,6 +2587,27 @@ df = pd.DataFrame({'Alphabet': ['a', 'b', 'c', 'd','e', 'f', 'g', 'h','i'],
 df.groupby("Alphabet")\
     .agg({'A':['mean']})
 #+end_src
+
+可以apply different functions to dataframe columns.
+
+#+begin_src python
+df.groupby("Alphabet")\
+    .agg({'A':'sum',
+          'B':'mean'})
+#+End_src
+
+#+begin_src python
+animals = pd.DataFrame({'kind': ['cat', 'dog', 'cat', 'dog'],
+                            'height': [9.1, 6.0, 9.5, 34.0],
+                            'weight': [7.9, 7.5, 9.9, 198.0]})
+
+animals.groupby("kind").agg(
+    min_height = pd.NamedAgg(column='height', aggfunc='min')
+)
+#+end_src
+
+
+
 
 *** join
     #+begin_src python
@@ -2490,6 +2735,7 @@ Tom _William Rick_John_Alber@t_1234_SteveSmith
 :end:
 
 **** str.contains
+
 类似于 str_detect.
 #+begin_src ipython :session :exports both :results raw drawer
 import pandas as pd
@@ -2514,6 +2760,7 @@ dtype: object
 :end:
 
 **** str.repeat
+
 重复字符串。
 
 #+begin_src ipython :session :exports both :results raw drawer
@@ -2539,6 +2786,7 @@ dtype: object
 :end:
 
 **** str.count
+
 字符串计数。
 
 #+begin_src ipython :session :exports both :results raw drawer
@@ -2547,6 +2795,7 @@ import numpy as np
 s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
 print(s.str.count('m'))
 #+end_src
+
 **** startswith
 检查字符串是否以固定字符开头。
 
@@ -2606,6 +2855,7 @@ print(s.str.startswith('T'))
        s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
        print(s.str.isupper())
      #+end_src
+
 **** str.isnumeric
 判断字符是否为数字型。
      #+begin_src python
@@ -2614,6 +2864,38 @@ print(s.str.startswith('T'))
        s = pd.Series(['Tom', 'William Rick', 'John', 'Alber@t', np.nan, '1234','SteveSmith'])
        print(s.str.isnumeric())
      #+end_src
+
+**** capitalize
+
+大写句首字母。
+     #+begin_src python
+     t1 = "i love Python"
+     t1.capitalize()
+     #+end_src
+
+**** split
+
+把句子分成单词。
+
+     #+begin_src python
+     t1 = "i love Python"
+     t1.split()
+     #+end_src
+
+**** find
+
+     #+begin_src python
+     t1 = "i love Python"
+     t1.find("love")
+     #+end_src
+
+**** replace
+
+     #+begin_src python
+     t1 = "i love Python"
+     t1.replace("love Python", "hate R")
+     #+end_src
+
 *** apply
 Python 中 apply 函数的格式为：apply(func,*args,**kwargs).apply 的返回值就是函数 func 函数的返回值。用途：当一个函数的参数存在于一个元组或者一个字典中时，用来间接的调用这个函数，并将元组或者字典中的参数按照顺序传递给参数。
 
@@ -3091,7 +3373,7 @@ current_num
 *** def
 定义函数：
 
-*** 向函数传递信息
+**** 向函数传递信息
     #+begin_src python
       def greet_user(usename):
           print("Hello, " + usename.title() + "!")
@@ -3121,8 +3403,7 @@ print(musician)
 # {'first': 'jimi', 'last': 'hendrix'}
 #+end_src
 
-*** 传递列表
-
+**** 传递列表
     #+begin_src python
       def greet_user(names):
     for name in names:
@@ -3133,7 +3414,7 @@ usernames = ['hannah', 'ty', 'margot']
       greet_user(usernames)
     #+end_src
 
-*** 传递任意数量的实参
+**** 传递任意数量的实参
     #+begin_src python
       def make_pizza(*toppings):
           print(toppings)
@@ -3143,9 +3424,55 @@ make_pizza('pepperoni')
     #+end_src
 
 形参名*toppings 中的星号让 python 创建一个名为 toppings 的空元组，并将收到的所有
-值都封装到这个元组中。
+值都封装到这个元组中。这点跟 R 不一样。
 
-这点跟 R 不一样。
+**** 可更改（mutable）与不可更改（immutable）对象
+
+在python 中，strings,tuples 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
+
+不可变类型：变量赋值 a = 5 后再赋值 a = 10，这里实际是新生成一个int 值对象10，再让a 指向它，而 5 被丢弃，不是改变 a 的值，相当于新生成了 a.
+
+可变类型：变量赋值 la =［1，2，3，4］后再赋值 la[2] = 5 则是将list la 的第三个元素值更改，本身la 没有动，只是其内部的一部分值被修改了。
+
+python 函数的参数传递：
+
+不可变类型：类似 C++ 的值传递，如 整数、字符串、元组。如 fun(a)，传递的只是 a 的值，没有影响 a 对象本身。如果在 fun(a)内部修改 a 的值，则是新生成来一个 a。
+
+可变类型：类似 C++ 的引用传递，如 列表，字典。如 fun(la)，则是将 la 真正的传过去，修改后 fun 外部的 la 也会受影响
+
+python 传不可变对象实例
+
+#+begin_src python
+def change(a):
+    print(id(a))
+    a=10
+    print(id(a))
+
+a=1
+print(id(a))
+# => 4534199408
+change(a)
+# => 4534199408
+#    4534199696
+#+end_src
+
+传可变对象实例
+
+#+begin_src python
+def changeme(mylist):
+    ""
+    mylist.append([1, 2, 3, 4])
+    print("函数内取值：", mylist)
+    return
+
+#调用changeme 函数
+mylist = [10, 20, 30]
+changeme(mylist)
+# => 函数内取值： [10, 20, 30, [1, 2, 3, 4]]
+print("函数外取值：", mylist)
+# => 函数外取值： [10, 20, 30, [1, 2, 3, 4]]
+#+end_src
+
 
 *** 导入整个模块
 这块类似于 R 中的.R 执行文件，文件中可以包含 function 函数。
@@ -3394,10 +3721,13 @@ func(1,2)
 tuple 和 list 非常类似（一个用圆括号，一个用方括号），主要区别在于 tuple 不能增减
 或更改其元素，而 dict 则是有索引的多元组（用花括号表示），有其方便的地方。
 
+tuple 和 list 之间可以相互切换，list(tup)
 #+begin_src python
-  tup = 4, 5, 6
-  tup
-  # (4, 5, 6)
+tup = 4, 5, 6
+tup
+# (4, 5, 6)
+list(tup)
+# => [4, 5, 6]
 #+end_src
 
 #+begin_src python
@@ -3437,8 +3767,120 @@ tuple 和 list 非常类似（一个用圆括号，一个用方括号），主�
   ('foo', 'bar')*4
   # ('foo', 'bar', 'foo', 'bar', 'foo', 'bar', 'foo', 'bar')
 #+end_src
+
+创建元组可以用小括号（），也可以什么也不用，为了可读性，建议还是用（）。此外对于含单个元素的元组，务必记住要多加一个逗号。
+#+begin_src python
+print(type(('ok')))
+# => <class 'str'>
+print(type(('ok', )))
+# => <class 'tuple'>
+#+end_src
+
+元组也可以创建二维元组
+
+#+begin_src python
+nested = ((1,10,'python'),('data'))
+nested
+type(nested)
+#+end_src
+
+索引和切片
+
+元组中可以用整数来对它进行索引和切片。
+
+#+begin_src python
+nested = ((1,10,'python'),('data'))
+nested
+type(nested)
+nested[0]
+print(nested[0][0], nested[0][1], nested[0][2])
+#+end_src
+
+不可更改
+
+元组具有不可更改性。
+
+#+begin_src python
+t = ('ok',[1,2],True)
+t[2] = False
+# =>
+#    TypeErrorTraceback (most recent call last)
+#    <ipython-input-12-2fc061411a28> in <module>
+#    ----> 1 import codecs, os;__pyfile = codecs.open('''/var/folders/mz/m838mtr975g17gftlv5331xh0000gn/T/pywpcE1y''', encoding='''utf-8''');__code = __pyfile.read().encode('''utf-8''');__pyfile.close();os.remove('''/var/folders/mz/m838mtr975g17gftlv5331xh0000gn/T/pywpcE1y''');exec(compile(__code, '''/Users/luyajun/Documents/坚果云/我的坚果云/github/wiki/python_wiki.org''', 'exec'));
+#
+#    ~/Documents/坚果云/我的坚果云/github/wiki/python_wiki.org in <module>
+#    ----> 1 # -*- org-confirm-babel-evaluate: nil; -*-
+#          2 #+PROPERTY: header-args :eval never-export
+#          3
+#          4 * Python_wiki                                                           :toc:
+#          5   - [[#常见问题][常见问题]]
+#
+#    TypeError: 'tuple' object does not support item assignment
+#+end_src
+
+但是只要元组中的元素可更改（mutable），那么我们可直接更改其元素。
+
+#+begin_src python
+t[1].append(3)
+t
+# => ('ok', [1, 2, 3, 3], True)
+#+end_src
+
+元组大小和内容都不可更改，因此只有count 和index 两种方法。
+
+#+begin_src python
+t = (1,10.31,'python')
+t.count('python')
+# => 1
+t.index(10.31)
+# => 1
+#+end_src
+
+这两个方法返回值都是 1，但意思完全不同。index(10.31) 是找到该元素在元组的索引。
+
+元组拼接
+
+元组拼接有2种方式，用 + 和 *，前者首尾拼接，后者复制拼接。
+
+#+begin_src python
+(1,10,'python') + ('data',11) + ('ok',)
+# => (1, 10, 'python', 'data', 11, 'ok')
+(1,10,'python') * 2
+# => (1, 10, 'python', 1, 10, 'python')
+#+end_src
+
+解压元组
+
+解压（unpack）一堆元组（有几个元素左边括号定义几个变量）
+
+#+begin_src python
+t = (1,10,'python')
+(a, b, c) = t
+print(a,b,c)
+# => 1 10 python
+#+end_src
+
+解压二维元组（按照元组里的元组结构来定义变量）
+
+#+begin_src python
+t = (1,10,('ok', 'python'))
+(a,b,(c,d)) = t
+print(a,b,c,d)
+#+end_src
+
+如果你只想要元组其中几个元素，用通配符*，在计算机语言中代表一个或多个元素，下例就是把多个元素给了reset 变量。
+
+#+begin_src python
+t = 1,2,3,4,5
+a,b,*rest,c = t
+print(a,b,c)
+# => 1 2 5
+print(rest)
+# => [3, 4]
+#+end_src
+
 ** 列表（list）
-与元组对比，列表的长度可变，内容可以被修改。
+与元组对比，列表的长度可变，内容可以被修改。属于mutable.
 #+begin_src python
   tup = ('foo', 'bar')
   b_list = list(tup)
@@ -3446,20 +3888,36 @@ tuple 和 list 非常类似（一个用圆括号，一个用方括号），主�
   b_list[1] = 'peekaboo'
   b_list
 #+end_src
-** 列表长度
-   #+begin_src python
-   len([1,2,3])
-   #+end_src
 
+附加（append，extend），插入（insert），删除（remove,pop）这些操作都可以用在它身上。
+
+#+begin_src python
+l = [1,10,'python']
+l.append([4,3])
+l
+# => [1, 10, 'python', [4, 3]]
+l.extend([1,2,'ok'])
+l
+# => [1, 10, 'python', [4, 3], 1, 2, 'ok']
+#+end_src
+
+严格来说 append 是追加，把一个东西整体添加在列表后，而 extend 是扩展，把一个东西里的所有元素添加在列表后。对着上面结果感受一下区别。
+
+** 列表长度
+
+#+begin_src python
+len([1,2,3])
+#+end_src
 
 *** 笛卡尔积
 python 真的很喜欢用 for 循环。
+
 #+begin_src python
-  colors = ['black', 'white']
-  sizes = ['S', 'M', 'L']
-  tshirts = [(color, size) for color in colors for size in sizes]
-  tshirts
-  # [('black', 'S'), ('black', 'M'), ('black', 'L'), ('white', 'S'), ('white', 'M'), ('white', 'L')]
+colors = ['black', 'white']
+sizes = ['S', 'M', 'L']
+tshirts = [(color, size) for color in colors for size in sizes]
+tshirts
+# [('black', 'S'), ('black', 'M'), ('black', 'L'), ('white', 'S'), ('white', 'M'), ('white', 'L')]
 #+end_src
 
 ** 切片操作
@@ -3473,8 +3931,7 @@ python 真的很喜欢用 for 循环。
   # [10, 20, 30]
 #+end_src
 
-还可以对对象进行切片。可以用 s[a:b:c]的形式对 s 在 a 和 b 之间
-以 c 为间隔取值。c 的值还可以为负，负值意味着可以反向取值。
+还可以对对象进行切片。可以用 s[a:b:c] 的形式对 s 在 a 和 b 之间以 c 为间隔取值。c 的值还可以为负，负值意味着可以反向取值。
 
 #+begin_src python
   s = 'bicycle'
@@ -3600,6 +4057,7 @@ np.multiply.outer(x, x)
 #        [ 4,  8, 12, 16, 20],
 #        [ 5, 10, 15, 20, 25]])
  #+end_src
+
 ** 广播
 对于同样大小的数组，二进制操作是对相应元素逐个计算：
 #+begin_src python
@@ -3718,13 +4176,13 @@ pd.concat([pd.Series(x),pd.Series(y)],axis=1)
 基本模块的集合运算不能直接用于 list，但可以用于通过函数 set()转换的 list,这些计算包括集合的差（difference），并（union），交（intersection）。
 
 #+begin_src python
-  set(['I', 'you', 'he', 'I'])
+set(['I', 'you', 'he', 'I'])
 #+end_src
 
 #+begin_src python
-  set.difference(set(['a',2,'5']),set(['a',7]))
-  set.union(set(['a',2,'5']),set(['a',7]))
-  set.intersection(set(['a',2,'5']),set(['a',7]))
+set.difference(set(['a',2,'5']),set(['a',7]))
+set.union(set(['a',2,'5']),set(['a',7]))
+set.intersection(set(['a',2,'5']),set(['a',7]))
 #+end_src
 
 ** eval
@@ -3753,21 +4211,21 @@ M.min(axis = 0)
 # => array([0.72124413, 0.44891724])
 #+end_src
 
-   #+begin_src python
-     from sklearn.preprocessing import MinMaxScaler
+#+begin_src python
+from sklearn.preprocessing import MinMaxScaler
      #区间缩放，返回值为缩放到[0, 1]区间的数据
 minMaxScaler = MinMaxScaler().fit(X_train)
-     minMaxScaler.transform(X_train)
+minMaxScaler.transform(X_train)
    #+end_src
 
 *** 数组值求和\累积\乘积\差分
-   #+begin_src python
-     import numpy as np
-     L = np.random.random(100)
-     sum(L)
-     np.prod(x)
-     np.cumsum(x)
-   #+end_src
+#+begin_src python
+import numpy as np
+L = np.random.random(100)
+sum(L)
+np.prod(x)
+np.cumsum(x)
+#+end_src
 
 array 变成矩阵
 #+begin_src python
@@ -3779,7 +4237,7 @@ array 变成矩阵
 
 *** kronecker 积
 
-    #+begin_src python
+#+begin_src python
 import numpy as np
 A = np.eye(3)
 # =>
@@ -3799,7 +4257,7 @@ np.kron(A, B)
 #        [0., 0., 3., 4., 0., 0.],
 #        [0., 0., 0., 0., 1., 2.],
 #        [0., 0., 0., 0., 3., 4.]])
-    #+end_src
+#+end_src
 
 *** 舍入运算
 在 R 里面是 round(x,6).
@@ -3921,7 +4379,6 @@ country_stats.plot(kind='scatter', x="GDP per capita", y='Life satisfaction')
 plt.show()
 #+end_src
 
-
 *** 线性模型
 
     #+begin_src python
@@ -4008,7 +4465,6 @@ url.startswith('http')
 #+end_src
 
 如果想检查多种匹配可能，只需要将所有的匹配项放入到一个元组中去，然后传给 startswith() 或者 endswith() 方法：
-
 #+begin_src ipython :session :exports both :results raw drawer
 import os
 filenames = os.listdir(".")
@@ -4029,7 +4485,6 @@ fnmatch('Dat45.csv', 'Dat[0-9]*')
 # => True
 #+end_src
 **** 字符串搜索和替换
-
 #+begin_src ipython :session :exports both :results raw drawer
 text = 'yeah, but no'
 text.replace('yeah', 'yep')
@@ -4037,19 +4492,17 @@ text.replace('yeah', 'yep')
 #+end_src
 
 对于复杂的模式，需要使用 re 模块中的 sub() 函数。
-
-    #+begin_src python
-      ##LabelBinarizer 类可以一次性完成两个转换
+#+begin_src python
+##LabelBinarizer 类可以一次性完成两个转换
 from sklearn.preprocessing import LabelBinarizer
 encoder = LabelBinarizer()
 housing_cat_1hot = encoder.fit_transform(housing_cat)
-      housing_cat_1hot
-    #+end_src
+housing_cat_1hot
+#+end_src
 
 ** 类
-
-根据类来创建对象被称为实例化。一个简单的样例如下：使用类几乎可以模拟任何东西。下面一个简单的例子是模拟小狗，对于多数小狗，都会有名
-字和年龄，那么创造一个类就会包含这两个信息。
+Python从设计之初就已经是一门面向对象的语言，正因为如此，在Python中创建一个类和对象是很容易的。
+根据类来创建对象被称为实例化。一个简单的样例如下：使用类几乎可以模拟任何东西。下面一个简单的例子是模拟小狗，对于多数小狗，都会有名字和年龄，那么创造一个类就会包含这两个信息。
     #+begin_src python
 class Dog():
     """一次模拟小狗的简单尝试"""
@@ -4068,12 +4521,221 @@ class Dog():
         print(self.name.title() + " rolled over!")
     #+end_src
 
-
 在 python 中，首字母大写的名称就是类。这个类定义中的括号是空的。
 
    #+begin_src python
 print("RMSE: %f" % (rmse))
    #+end_src
+
+** 面向对象技术简介
+
+*类(Class):* 用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
+
+*方法：* 类中定义的函数。
+
+类变量：类变量在整个实例化的对象中是公用的。类变量定义在类中且在函数体之外。类变量通常不作为实例变量使用。
+
+数据成员：类变量或者实例变量用于处理类及其实例对象的相关的数据。
+
+方法重写：如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写。
+
+局部变量：定义在方法中的变量，只作用于当前实例的类。
+
+实例变量：在类的声明中，属性是用变量来表示的，这种变量就称为实例变量，实例变量就是一个用 self 修饰的变量。
+
+继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待。例如，有这样一个设计：一个Dog类型的对象派生自Animal类，这是模拟"是一个（is-a）"关系（例图，Dog是一个Animal）。
+
+实例化：创建一个类的实例，类的具体对象。
+
+对象：通过类定义的数据结构实例。对象包括两个数据成员（类变量和实例变量）和方法。
+
+类的定义：
+
+#+begin_src python
+class ClassName:
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+#+end_src
+
+实例化类其他编程语言中一般用关键字new，但是在 python 中并没有这个关键字，类的实例化类似函数调用方式。
+
+类实例化后，可以使用其属性，实际上，创建一个类之后，可以通过类名访问其属性。
+
+类对象：
+
+类对象支持两种操作：属性引用和实例化。属性引用使用和python 中所有的属性引用一样的标准语法：obj.name.类对象创建后，类命名空间中所有的命名都是有效属性名。所有如果类定义是这样
+
+类的方法与普通函数只有一个特别的区别，它们必须有一个额外的第一个参数名称，按照惯例它的名称为self。
+
+在 python 中，可以使用点 . 来访问对象的属性，也可以使用以下函数的方式来访问属性：
+
+- getattr(obj, name) 访问对象的属性
+
+- hasattr(obj, name) 检查是否存在一个属性
+
+- setattr(obj, name, value) 设置一个属性，如果属性不存在，会创建一个新属性
+
+- delattr(obj, name) 删除属性
+
+python内置类属性：
+
+__dict__：类的属性（包含一个字典，由类的数据属性组成）
+
+__doc__：类的文档字符串
+
+__name__：类名
+
+__module__：类定义所在的模块
+
+__bases__：类的所有父类构成的元素（包含了一个由所有父类组成的元组）。
+
+#+begin_src python
+class MyClass:
+    i = 12345
+    def f(self):
+        return 'hello world'
+
+#实例化
+x = MyClass()
+# => <__repl__.MyClass object at 0x11fcfb4a8>
+
+##访问类的属性和方法
+print('MyClass 类的属性 i 为：', x.i)
+# => MyClass 类的属性 i 为： 12345
+print('MyClass 类的方法 f 输出为：', x.f())
+# => MyClass 类的方法 f 输出为： hello world
+#+end_src
+
+python 对象销毁（垃圾回收）：
+
+python 使用了引用计数这一简单技术来跟踪和回收垃圾。在python内部记录着所有使用中的对象各自有多少引用。
+
+一个完整的python类例子是：
+#+begin_src python
+class Employee:
+    '所有员工的基类'
+    empCount = 0
+
+    def __init__(self, name, salary):
+        self.name = name
+        self.salary = salary
+        Employee.empCount += 1
+
+    def displaycount(self):
+        print("Total Employee %d" % Employee.empCount)
+
+    def displayEmployee(self):
+        print("Name:", self.name, ", Salary:", self.salary)
+
+print("Employee.__doc__:", Employee.__doc__)
+print("Employee.__name__:", Employee.__name__)
+print("Employee.__module__:", Employee.__module__)
+print("Employee.__bases__:", Employee.__bases__)
+print("Employee.__dict__:", Employee.__dict__)
+#+end_src
+
+类定义了__init__() 方法可以有参数，参数通过__init__()传递到类的实例化操作上的。
+
+#+begin_src python
+class Complex:
+    def __init__(self, realpart, imagpart):
+        self.r = realpart
+        self.i = imagpart
+
+x = Complex(3, -4.5)
+# => <__repl__.Complex object at 0x11fcf1ac8>
+print(x.r, x.i)
+# => 3 -4.5
+#+end_src
+
+self 代表类的实例，而非类
+
+#+begin_src python
+class Test:
+    def prt(self):
+        print(self)
+        print(self.__class__)
+
+t = Test()
+# => <__repl__.Test object at 0x11fcf1a90>
+t.prt()
+# => <__repl__.Test object at 0x11fcf1a90>
+#    <class '__repl__.Test'>
+#+end_src
+
+类的方法：
+
+#+begin_src python
+#类定义
+class people:
+    #定义基本属性
+    name = ''
+    age = 0
+    #定义私有属性,私有属性在类外部无法直接进行访问
+    __weight = 0
+    #定义构造方法
+    def __init__(self,n,a,w):
+        self.name = n
+        self.age = a
+        self.__weight = w
+    def speak(self):
+        print("%s 说: 我 %d 岁。" %(self.name,self.age))
+
+# 实例化类
+p = people('runoob',10,30)
+# => <__repl__.people object at 0x11e378b00>
+p.speak()
+# => runoob 说: 我 10 岁。
+#+end_src
+
+继承
+
+python 同样支持类的继承，如果一种语言不支持继承，类就没有什么意义。派生类的定义如下：
+
+#+begin_src python
+class DerivedClassName(BaseClassName1):
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+#+end_src
+
+BaseClassName(示例中的基类名)必须与派生类定义在一个作用域内。除了类，还可以用表达式，基类定义在另一个模块中时非常有用。
+
+#+begin_src c
+#类定义
+class people:
+    #定义基本属性
+    name = ''
+    age = 0
+    #定义私有属性,私有属性在类外部无法直接进行访问
+    __weight = 0
+    #定义构造方法
+    def __init__(self,n,a,w):
+        self.name = n
+        self.age = a
+        self.__weight = w
+    def speak(self):
+        print("%s 说: 我 %d 岁。" %(self.name,self.age))
+
+#单继承示例
+class student(people):
+    grade = ''
+    def __init__(self,n,a,w,g):
+        #调用父类的构函
+        people.__init__(self,n,a,w)
+        self.grade = g
+    #覆写父类的方法
+    def speak(self):
+        print("%s 说: 我 %d 岁了，我在读 %d 年级"%(self.name,self.age,self.grade))
+
+s = student('ken',10,60,3)
+s.speak()
+#+end_src
 
 ** 转义
 ** Packages

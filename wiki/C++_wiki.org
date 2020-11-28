@@ -24,6 +24,9 @@
   - [[#错误处理][错误处理]]
   - [[#c-数据类型][C 数据类型]]
   - [[#作用域规则][作用域规则]]
+  - [[#类][类]]
+  - [[#继承][继承]]
+  - [[#重载运算符和重载函数][重载运算符和重载函数]]
   - [[#变量][变量]]
   - [[#常量][常量]]
   - [[#数组][数组]]
@@ -375,9 +378,7 @@ struct
 #+end_src
 type:只能为 int(整型)，unsigned int(无符号整型)，signed int(有符号整型) 三种类型，决定了如何解释位域的值。
 
-member_name:位域的名称。
-
-width:位域中位的数量。宽度必须小于或等于指定类型的位宽度。
+member_name:位域的名称。width:位域中位的数量。宽度必须小于或等于指定类型的位宽度。
 
 带有预定义宽度的变量被称为位域。位域可以存储多于 1 位的数，例如，需要一个变量来存储从 0 到 7 的值，您可以定义一个宽度为 3 位的位域，如下：
 
@@ -608,6 +609,18 @@ int max(int num1, int num2){
 
 2.引用调用。通过指针传递方式，形参为指向实参地址的指针，当对形参的指向操作时，就相当于对实参本身进行的操作。
 
+c++11 提供了匿名函数的支持，称为lambda 函数（也叫Lambda 表达式）。
+
+Lambda 表达式具体形式如下：
+
+[capture](parameterw)->return-type{body}
+
+例如：
+
+[](int x, int y){return x < y ;}
+
+
+
 ** getchar
 int getchar(void) 函数从屏幕读取下一个可用的字符，并把它返回为一个整数。这个函数在同一个时间内只会读取一个单一的字符。您可以在循环内使用这个方法，以便从屏幕上读取多个字符。
 
@@ -742,15 +755,13 @@ int main ()
 | unsigned short | 2 字节             | 0 到 65,535                                          |
 | long           | 4 字节             | -2,147,483,648 到 2,147,483,647                      |
 | unsigned long  | 4 字节             | 0 到 4,294,967,295                                   |
-|                |                    |                                                      |
 
 - 浮点类型
 
-
-|类型	| 存储大小 |	值范围 |	精度 |
-|float	| 4 字节 |	1.2E-38 到 3.4E+38 |	6 位小数 |
-|ddouble |	8 字节	| 2.3E-308 到 1.7E+308 |	15 位小数 |
-|long double |	16 字节	| 3.4E-4932 到 1.1E+4932 |	19 位小数 |
+| 类型        |         | 存储大小               | 值范围    | 精度 |
+| float       | 4 字节  | 1.2E-38 到 3.4E+38     | 6 位小数  |      |
+| ddouble     | 8 字节  | 2.3E-308 到 1.7E+308   | 15 位小数 |      |
+| long double | 16 字节 | 3.4E-4932 到 1.1E+4932 | 19 位小数 |      |
 
 - void
 
@@ -839,6 +850,447 @@ int test(int a,int b) // 形参
     return a;
 }
 #+end_src
+
+** 类
+
+自己对类的理解：其实就是一些已经封装好的函数。
+
+关键字public 确定了类成员的访问属性，在类对象作用域内，公共成员在类的外部是可访问的，您也可以指定类的成员为private 或 protected.
+
+#+begin_src c
+  #include <iostream>
+using namespace std;
+
+class Box
+{
+ public:
+  double length;   // 长度
+  double breadth;  // 宽度
+  double height;   // 高度
+};
+
+int main( )
+{
+  Box Box1;        // 声明 Box1，类型为 Box
+  Box Box2;        // 声明 Box2，类型为 Box
+  double volume = 0.0;     // 用于存储体积
+
+  // box 1 详述
+  Box1.height = 5.0;
+  Box1.length = 6.0;
+  Box1.breadth = 7.0;
+
+  // box 2 详述
+  Box2.height = 10.0;
+  Box2.length = 12.0;
+  Box2.breadth = 13.0;
+
+  // box 1 的体积
+  volume = Box1.height * Box1.length * Box1.breadth;
+  cout << "Box1 的体积：" << volume <<endl;
+
+  // box 2 的体积
+  volume = Box2.height * Box2.length * Box2.breadth;
+  cout << "Box2 的体积：" << volume <<endl;
+  return 0;
+}
+#+end_src
+
+概念	描述
+
+类成员函数	类的成员函数是指那些把定义和原型写在类定义内部的函数，就像类定义中的其他变量一样。
+
+类访问修饰符	类成员可以被定义为 public、private 或 protected。默认情况下是定义为 private。
+
+构造函数 & 析构函数	类的构造函数是一种特殊的函数，在创建一个新的对象时调用。类的析构函数也是一种特殊的函数，在删除所创建的对象时调用。
+
+C++ 拷贝构造函数	拷贝构造函数，是一种特殊的构造函数，它在创建对象时，是使用同一类中之前创建的对象来初始化新创建的对象。
+
+C++ 友元函数	友元函数可以访问类的 private 和 protected 成员。
+
+C++ 内联函数	通过内联函数，编译器试图在调用函数的地方扩展函数体中的代码。
+
+C++ 中的 this 指针	每个对象都有一个特殊的指针 this，它指向对象本身。
+
+C++ 中指向类的指针	指向类的指针方式如同指向结构的指针。实际上，类可以看成是一个带有函数的结构。
+
+C++ 类的静态成员	类的数据成员和函数成员都可以被声明为静态的。
+
+** 继承
+
+面向对象程序设计中最重要的一个概念是继承。继承允许我们依据另一个类来定义一个类，这使得创建和维护一个应用程序变得更容易。这样做，也达到了重用代码功能和提高执行效率的效果。
+
+当创建一个类时，您不需要重新编写新的数据成员和成员函数，只需指定新建的类继承了一个已有的类的成员即可。
+
+*这个已有的类称为基类，新建的类称为派生类。*
+
+继承代表了 is a 关系。例如，哺乳动物是动物，狗是哺乳动物，因此，狗是动物，等等。
+
+一个类可以派生自多个类，这意味着，它可以从多个基类继承数据和函数。定义一个派生类，我们使用一个类派生列表来指定基类。类派生列表以一个或多个基类命名，形式如下：
+class derived-class: access-specifier base-class.
+
+#+begin_src c
+  #include <iostream>
+
+using namespace std;
+
+// 基类
+class Shape
+{
+ public:
+  void setWidth(int w)
+  {
+    width = w;
+  }
+  void setHeight(int h)
+  {
+    height = h;
+  }
+ protected:
+  int width;
+  int height;
+};
+
+// 派生类
+class Rectangle: public Shape
+{
+ public:
+  int getArea()
+  {
+    return (width * height);
+  }
+};
+
+int main(void)
+{
+  Rectangle Rect;
+
+  Rect.setWidth(5);
+  Rect.setHeight(7);
+
+  // 输出对象的面积
+  cout << "Total area: " << Rect.getArea() << endl;
+
+  return 0;
+}
+#+end_src
+
+
+访问控制和继承
+
+派生类可以访问基类中所有的非私有成员。因此基类成员如果不想被派生类的成员函数访问，则应在基类中声明为 private。我们可以根据访问权限总结出不同的访问类型，如下所示：
+
+访问	public	protected	private
+
+同一个类	yes	yes	yes
+
+派生类	yes	yes	no
+
+外部的类	yes	no	no
+
+一个派生类继承了所有的基类方法，但下列情况除外：
+
+- 基类的构造函数、析构函数和拷贝构造函数。
+- 基类的重载运算符。
+- 基类的友元函数。
+
+继承类型
+
+当一个类派生自基类，该基类可以被继承为 public、protected 或 private 几种类型。继承类型是通过上面讲解的访问修饰符 access-specifier 来指定的。
+
+我们几乎不使用 protected 或 private 继承，通常使用 public 继承。当使用不同类型的继承时，遵循以下几个规则：
+
+- 公有继承（public）：当一个类派生自公有基类时，基类的公有成员也是派生类的公有成员，基类的保护成员也是派生类的保护成员，基类的私有成员不能直接被派生类访问，但是可以通过调用基类的公有和保护成员来访问。
+
+- 保护继承（protected）： 当一个类派生自保护基类时，基类的公有和保护成员将成为派生类的保护成员。
+
+- 私有继承（private）：当一个类派生自私有基类时，基类的公有和保护成员将成为派生类的私有成员。
+
+多继承
+
+多继承即一个子类可以有多个父类，它继承了多个父类的特性。C++ 类可以从多个类继承成员，语法如下：
+
+#+begin_src python
+class <派生类名>:<继承方式1><基类名1>,<继承方式2><基类名2>,…
+{
+<派生类类体>
+};
+#+end_src
+
+其中，访问修饰符继承方式是 public、protected 或 private 其中的一个，用来修饰每个基类，各个基类之间用逗号分隔，如上所示。现在让我们一起看看下面的实例。
+
+#+begin_src c
+  #include <iostream>
+
+using namespace std;
+
+// 基类 Shape
+class Shape
+{
+ public:
+  void setWidth(int w)
+  {
+    width = w;
+  }
+  void setHeight(int h)
+  {
+    height = h;
+  }
+ protected:
+  int width;
+  int height;
+};
+
+// 基类 PaintCost
+class PaintCost
+{
+ public:
+  int getCost(int area)
+  {
+    return area * 70;
+  }
+};
+
+// 派生类
+class Rectangle: public Shape, public PaintCost
+{
+ public:
+  int getArea()
+  {
+    return (width * height);
+  }
+};
+
+int main(void)
+{
+  Rectangle Rect;
+  int area;
+
+  Rect.setWidth(5);
+  Rect.setHeight(7);
+
+  area = Rect.getArea();
+
+  // 输出对象的面积
+  cout << "Total area: " << Rect.getArea() << endl;
+
+  // 输出总花费
+  cout << "Total paint cost: $" << Rect.getCost(area) << endl;
+
+  return 0;
+}
+#+end_src
+
+另外多继承(环状继承),A->D, B->D, C->(A，B)，例如：
+
+#+begin_src c
+class D{......};
+class B: public D{......};
+class A: public D{......};
+class C: public B, public A{.....};
+#+end_src
+
+这个继承会使D创建两个对象,要解决上面问题就要用虚拟继承格式
+格式：class 类名: virtual 继承方式 父类名
+
+#+begin_src c
+class D{......};
+class B: virtual public D{......};
+class A: virtual public D{......};
+class C: public B, public A{.....};
+#+end_src
+
+虚继承--（在创建对象的时候会创建一个虚表）在创建父类对象的时候
+#+begin_src c
+A:virtual public D
+B:virtual public D
+#+end_src
+
+#+begin_src c
+  #include <iostream>
+
+using namespace std;
+//基类
+
+class D
+{
+ public:
+  D(){cout<<"D()"<<endl;}
+  ~D(){cout<<"~D()"<<endl;}
+ protected:
+  int d;
+};
+
+class B:virtual public D
+{
+ public:
+  B(){cout<<"B()"<<endl;}
+  ~B(){cout<<"~B()"<<endl;}
+ protected:
+  int b;
+};
+
+class A:virtual public D
+{
+ public:
+  A(){cout<<"A()"<<endl;}
+  ~A(){cout<<"~A()"<<endl;}
+ protected:
+  int a;
+};
+
+class C:public B, public A
+{
+ public:
+  C(){cout<<"C()"<<endl;}
+  ~C(){cout<<"~C()"<<endl;}
+ protected:
+  int c;
+};
+
+int main()
+{
+  cout << "Hello World!" << endl;
+  C c;   //D, B, A ,C
+  cout<<sizeof(c)<<endl;
+  return 0;
+}
+#+end_src
+
+** 重载运算符和重载函数
+
+C++ 允许在同一作用域中的某个函数和运算符指定多个定义，分别称为 *函数重载和运算符重载。*
+
+重载声明是指一个与之前已经在该作用域内声明过的函数或方法具有相同名称的声明，但是它们的参数列表和定义（实现）不相同。
+
+当您调用一个重载函数或重载运算符时，编译器通过把您所使用的参数类型与定义中的参数类型进行比较，决定选用最合适的定义。选择最合适的重载函数或重载运算符的过程，称为重载决策。
+
+#+begin_src c
+#include <iostream>
+using namespace std;
+
+class printData
+{
+public:
+void print(int i) {
+cout << "整数为: " << i << endl;
+}
+
+void print(double  f) {
+cout << "浮点数为: " << f << endl;
+}
+
+void print(char c[]) {
+cout << "字符串为: " << c << endl;
+}
+};
+
+int main(void)
+{
+printData pd;
+
+// 输出整数
+pd.print(5);
+// 输出浮点数
+pd.print(500.263);
+// 输出字符串
+char c[] = "Hello C++";
+pd.print(c);
+
+return 0;
+}
+#+end_src
+
+C++ 中的运算符重载
+
+您可以重定义或重载大部分 C++ 内置的运算符。这样，您就能使用自定义类型的运算符。重载的运算符是带有特殊名称的函数，函数名是由关键字 operator 和其后要重载的运算符符号构成的。与其他函数一样，重载运算符有一个返回类型和一个参数列表。
+
+#+begin_src c
+Box operator+(const Box&);
+#+end_src
+
+#+begin_src c
+#include <iostream>
+using namespace std;
+
+class Box
+{
+public:
+
+    double getVolume(void)
+    {
+        return length * breadth * height;
+    }
+    void setLength( double len )
+    {
+        length = len;
+    }
+
+    void setBreadth( double bre )
+    {
+        breadth = bre;
+    }
+
+    void setHeight( double hei )
+    {
+        height = hei;
+    }
+    // 重载 + 运算符，用于把两个 Box 对象相加
+    Box operator+(const Box& b)
+    {
+        Box box;
+        box.length = this->length + b.length;
+        box.breadth = this->breadth + b.breadth;
+        box.height = this->height + b.height;
+        return box;
+    }
+private:
+    double length;      // 长度
+    double breadth;     // 宽度
+    double height;      // 高度
+};
+// 程序的主函数
+int main( )
+{
+    Box Box1;                // 声明 Box1，类型为 Box
+    Box Box2;                // 声明 Box2，类型为 Box
+    Box Box3;                // 声明 Box3，类型为 Box
+    double volume = 0.0;     // 把体积存储在该变量中
+
+    // Box1 详述
+    Box1.setLength(6.0);
+    Box1.setBreadth(7.0);
+    Box1.setHeight(5.0);
+
+    // Box2 详述
+    Box2.setLength(12.0);
+    Box2.setBreadth(13.0);
+    Box2.setHeight(10.0);
+
+    // Box1 的体积
+    volume = Box1.getVolume();
+    cout << "Volume of Box1 : " << volume <<endl;
+
+    // Box2 的体积
+    volume = Box2.getVolume();
+    cout << "Volume of Box2 : " << volume <<endl;
+
+    // 把两个对象相加，得到 Box3
+    Box3 = Box1 + Box2;
+
+    // Box3 的体积
+    volume = Box3.getVolume();
+    cout << "Volume of Box3 : " << volume <<endl;
+
+    return 0;
+}
+#+end_src
+
+
+
+
+
+
 
 ** 变量
 变量其实只不过是程序可操作的存储区的名称。C 中每个变量都有特定的类型，类型决定了变量存储的大小和布局，该范围内的值都可以存储在内存中，运算符可应用于变量上。
@@ -1356,10 +1808,6 @@ ANSI C 语言中的全部转义字符序列如下：
 
 const 变量必须被初始化。
 
-
-
-
-
 *** Vector
 
 #+begin_src C++
@@ -1369,7 +1817,6 @@ const 变量必须被初始化。
 #+end_src
 
 **** size
-
 向量的大小用 a.size() 来表达。
 
      #+begin_src C++

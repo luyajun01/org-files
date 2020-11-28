@@ -153,7 +153,6 @@ xp now works for shells started with run-python
 
 快捷键 xp 可以选择 run-python shell 真的太爽了！
 
-
 ** avy
 这个函数可以实现快速跳转！
 | 命令          | 快捷键                            |
@@ -295,8 +294,6 @@ ctrl + r
 | }     | a string []         |
 |       |                     |
 
-
-
 ** evil-lispy
 爽！
 
@@ -396,8 +393,8 @@ Spacemacs
 #+end_export
 
 *** smartparens
-这个插件可以快速实现括号内容的直接的跳转。
 
+*这个插件* 可以快速实现括号内容的直接的跳转。
 
 *** olivetti
 这个包可以将文字居中。
@@ -539,7 +536,7 @@ ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉
   sessionInfo()
   #+END_SRC
 
-#  ov-highlight-data: ((14487 14533 (face (:background "LightBlue") ov-highlight t)))
+#  ov-highlight-data: ((14488 14534 (ov-highlight t face (:background "LightBlue"))) (14488 14534 (ov-highlight t face (:background "LightBlue"))))
 
 # Local Variables:
 # eval: (ov-highlight-load)

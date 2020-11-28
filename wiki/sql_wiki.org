@@ -12,8 +12,15 @@
 * sql_wiki                                                              :toc:
   - [[#常见错误][常见错误]]
   - [[#创建数据库][创建数据库]]
-  - [[#建表][建表]]
+  - [[#选择数据库][选择数据库]]
+  - [[#数据类型][数据类型]]
+    - [[#数值类型][数值类型]]
+    - [[#日期和时间][日期和时间]]
+    - [[#字符串][字符串]]
+  - [[#创建数据表][创建数据表]]
   - [[#删除数据库][删除数据库]]
+  - [[#插入数据][插入数据]]
+  - [[#查询数据][查询数据]]
   - [[#head][head]]
   - [[#where][where]]
     - [[#like][like]]
@@ -52,8 +59,65 @@ No Database Selected.
      describe
    #+end_src
 
-** 建表
+   
+   #+begin_src sql
+  CREATE DATABASE IF NOT EXISTS RUNOOB DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+   #+end_src
+   
+创建数据库，该命令的作用：
 
+ 1. 如果数据库不存在则创建，存在则不创建。
+ 2. 创建RUNOOB数据库，并设定编码集为utf8
+ 
+** 选择数据库
+
+   #+begin_src sql
+     use course; -- course是数据库名
+   #+end_src
+
+** 数据类型
+*** 数值类型
+
+| 类型         | 用途           |
+| TINYINT      | 小整数值       |
+| SMALLINT     | 大整数值       |
+| MEDIUMINT    | 大整数值       |
+| INT或INTEGER | 大整数值       |
+| BIGINT       | 极大整数值     |
+| FLOAT        | 单精度浮点数值 |
+| DOUBLE       | 双精度浮点数值 |
+| DECIMAL      | 小数值         |
+
+*** 日期和时间
+
+| 类型      | 用途                     |
+| DATE      | 日期值                   |
+| TIME      | 时间值或持续时间         |
+| YEAR      | 年份值                   |
+| DATETIME  | 混合日期和时间值         |
+| TIMESTAMP | 混合日期和时间值，时间戳 |
+    
+*** 字符串
+
+| 类型     | 用途         |
+| CHAR     | 定长字符串   |
+| VARCHAR  | 变长字符串   |
+| TEXT     | 长文本数据   |
+| LONGTEXT | 极大文本数据 |
+
+char(n) 和 varchar(n) 中括号里n 代表字符的个数，并不代表字节的个数，比如CHAR(30) 就可以存储30个字符。
+
+** 创建数据表
+
+   创建数据表需要包括以下信息：表名，表字段名，定义每个表字段。
+
+   创建mysql 数据表的SQL 通用语法是：
+
+
+   #+begin_src sql
+   create table table_name (column_name column_type);
+   #+end_src
+   
    #+begin_src sql
      CREATE TABLE STUDENT
      (SNO VARCHAR(3) NOT NULL,
@@ -63,6 +127,24 @@ No Database Selected.
      CLASS VARCHAR(5));
    #+end_src
 
+   #+begin_src sql
+CREATE TABLE IF NOT EXISTS `runoob_tbl`(
+   `runoob_id` INT UNSIGNED AUTO_INCREMENT,
+   `runoob_title` VARCHAR(100) NOT NULL,
+   `runoob_author` VARCHAR(40) NOT NULL,
+   `submission_date` DATE,
+   PRIMARY KEY ( `runoob_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+   #+end_src
+
+- 如果不想字段为 NULL 可以设置字段的属性为NOT NULL，在操作数据库时如果输入该字段的数据为NULL，就会报错。
+
+- AUTO_INCREMENT定义列为自增的属性，一般用于主键，数值会自动加1。
+
+- PRIMARY KEY关键字用于定义列为主键。 您可以使用多列来定义主键，列间以逗号分隔。
+
+- ENGINE 设置存储引擎，CHARSET 设置编码。
+ 
    #+begin_src
 insert into grade values(90,100,'A')
 
@@ -76,11 +158,33 @@ insert into grade values(0,59,'E')
    #+end_src
 
 ** 删除数据库
-
+在删除数据库过程中，务必要十分谨慎，因为在执行删除命令后，所有数据将会消失。
+   
    #+begin_src sql
      drop database samp_db; --删除库名为samp_db
    #+end_src
 
+** 插入数据
+   
+   #+begin_src sql
+     insert into table_name (field1, field2,...,fieldN)
+                            Values
+                            (value1, value2,...,valueN);
+   #+end_src
+
+** 查询数据
+   
+   #+begin_src sql
+   SELECT column_name,column_name
+   FROM table_name
+   [WHERE Clause]
+   [LIMIT N][ OFFSET M]
+   #+end_src
+
+查询语句中你可以使用一个或者多个表，表之间使用逗号(,)分割，并使用WHERE语句来设定查询条件。 SELECT 命令可以读取一条或者多条记录。
+你可以使用星号（*）来代替其他字段，SELECT语句会返回表的所有字段数据。你可以使用 WHERE 语句来包含任何条件。
+你可以使用 LIMIT 属性来设定返回的记录数。你可以通过OFFSET指定SELECT语句开始查询的数据偏移量。默认情况下偏移量为0。
+   
 ** head
 R 中 head 一般是展示 6 行数据的功能。sql 语句可以写成如下：
 
