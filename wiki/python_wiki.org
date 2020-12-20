@@ -14,7 +14,7 @@
   - [[#常见函数][常见函数]]
     - [[#def][def]]
       - [[#递归函数][递归函数]]
-      - [[#空函数][空函数]]
+    - [[#空函数][空函数]]
     - [[#局部变量][局部变量]]
     - [[#global-语句][global 语句]]
     - [[#关键字参数][关键字参数]]
@@ -142,6 +142,7 @@
       - [[#删除某一列][删除某一列]]
       - [[#loc][loc]]
       - [[#iloc][iloc]]
+      - [[#at][at]]
       - [[#slice-rows][slice rows]]
       - [[#addition-of-rows][addition of rows]]
       - [[#deletion-of-rows][deletion of rows]]
@@ -283,6 +284,7 @@
       - [[#字符串搜索和替换][字符串搜索和替换]]
   - [[#类][类]]
   - [[#面向对象技术简介][面向对象技术简介]]
+    - [[#继承][继承]]
   - [[#转义][转义]]
   - [[#packages][Packages]]
     - [[#dplython][dplython]]
@@ -303,11 +305,12 @@
     SyntaxError: invalid syntax
     #+end_quote
 语法错误又称解析错误，简单来说是基本语法结构写错了，如：多任务写成一行、for 循环没加‘:’等。上面示例可以看到，针对语法错误，python 解析器会输出错误的那一行，并且在最先找到的错误的位置标记了一个箭头。
+
 *** 数据类型
 **** 基本数据类型
 整数、浮点数、布尔
 
-可以通过dir() 查看对象的可用的属性，help 可以看到方法。
+可以通过 dir() 查看对象的可用的属性，help 可以看到方法。
 #+begin_src python
 dir(int)
 # =>
@@ -325,7 +328,7 @@ dir(int)
 #  'to_bytes']
 #+end_src
 
-前面的__and__是可用的方法，后面的bit_length 是可用属性。
+前面的__and__是可用的方法，后面的 bit_length 是可用属性。
 
 **** 容器数据类型
 字符、元组、列表、字典、集合
@@ -381,41 +384,41 @@ print(is_leap)
 
 ** 常见函数
 *** def
-自定义函数可以通过关键字 def 来定义。
-在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称作“实参”（arguments）。
+自定义函数可以通过关键字 def 来定义。在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称作“实参”（arguments）。
 
-    #+begin_src python
-      def print_max(a, b):
+#+begin_src python
+def print_max(a, b):
     if a > b:
-        print(a, 'is maximum')
-    elif a == b:
-        print(a, 'is equal to', b)
-    else:
-        print(b, 'is maximum')
+    print(a, 'is maximum')
+elif a == b:
+    print(a, 'is equal to', b)
+else:
+    print(b, 'is maximum')
 
-    print_max(3,4)
-    #+end_src
+print_max(3,4)
+#+end_src
+
 **** 递归函数
-     
-在函数内部，可以调用其他函数。如果一个函数在内部调用自身本身，这个函数就是递归函数。
-    #+begin_src python
-      def fact(n):
-    if n == 1:
-        return 1
-    return n * fact(n-1)
-    #+end_src
-**** 空函数
 
-如果想定义一个什么事也不做的空函数，可以用pass语句：
+在函数内部，可以调用其他函数。如果一个函数在内部调用自身本身，这个函数就是递归函数。
+
+ #+begin_src python
+ def fact(n):
+     if n == 1:
+     return 1
+ return n * fact(n-1)
+ #+end_src
+*** 空函数
+
+如果想定义一个什么事也不做的空函数，可以用 pass 语句：
 
     #+begin_src python
 if age >=18:
     pass
     #+end_src
 
-pass 可以用来作为占位符，比如现在还没想好怎么写函数的代码，可以先写一个pass，让代码能运行起来。
+pass 可以用来作为占位符，比如现在还没想好怎么写函数的代码，可以先写一个 pass，让代码能运行起来。
 
-     
 *** 局部变量
 当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的 变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作用域（scope）。
 
@@ -713,7 +716,7 @@ f.get_n()
 为了说明清楚它如何工作的，有两点需要解释一下。首先，nonlocal 声明可以让我们编写函数来修改内部变量的值。其次，函数属性允许我们用一种很简单的方式将访问方法绑定到闭包函数上，这个跟实例方法很像(尽管并没有定义任何类)。
 
 **** 异常处理
-到目前为止，在python 程序中遇到错误，或“异常”，意味着整个程序崩溃。我们不希望这发生在真实世界中，相反希望程序能检测到错误，处理它们，然后继续运行。
+到目前为止，在 python 程序中遇到错误，或“异常”，意味着整个程序崩溃。我们不希望这发生在真实世界中，相反希望程序能检测到错误，处理它们，然后继续运行。
 
 #+begin_src python
 def spam(divideBy):
@@ -737,9 +740,9 @@ print(spam(0))
 #    ZeroDivisionError: division by zero
 #+end_src
 
-当试图一个数除以0时，就会发生 ZeroDivisionError. 根据错误信息中给出的行号，我们知道spam() 中的return 语句导致了一个错误。
+当试图一个数除以 0 时，就会发生 ZeroDivisionError. 根据错误信息中给出的行号，我们知道 spam() 中的 return 语句导致了一个错误。
 
-错误可以由try 和 except 语句处理，那些可能出错的语句被放在try 子句中。如果错误发生，程序执行就转到接下来的except 子句开始处。
+错误可以由 try 和 except 语句处理，那些可能出错的语句被放在 try 子句中。如果错误发生，程序执行就转到接下来的 except 子句开始处。
 
 #+begin_src python
 def spam(divideBy):
@@ -818,7 +821,7 @@ queue
 #+end_src
 **** 嵌套列表解析
 
-可以将3*4的矩阵列表转换为4*3列表。
+可以将 3*4 的矩阵列表转换为 4*3 列表。
 #+begin_src python
 matrix = [
     [1, 2, 3, 4],
@@ -896,6 +899,7 @@ for magician in magicians:
 
 *** len
 可以列表的长度。
+
 #+begin_src python
 cars = ['bmw', 'audi']
 len(cars)
@@ -979,6 +983,7 @@ a
 
 *** item
 这个函数一般用在字典类型数据。遍历字典时，如果直接遍历字典对象，只能得到字典中的键.使用字典 items() 方法，便可以同时输出键和对应值：
+
 #+begin_src python
 sample = {'a':1, 'b':2, 'c':3}
 for i in sample:
@@ -986,10 +991,6 @@ for i in sample:
 #> a
 #> b
 #> c
-#+end_src
-
-#+begin_src python
-sample = {'a':1, 'b':2, 'c':3}
 for i in sample.items():
     print(i)
 #> ('a', 1)
@@ -1026,6 +1027,7 @@ a
 
 *** pop
 可以使用 pop() 可以删除末尾元素。
+
 #+begin_src python
 a = ['honda', "bmw"]
 del a[0]
@@ -1066,30 +1068,35 @@ a
 列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。
 #+begin_src python
 squres = [value**2 for value in range(1, 11)]
-print(squres)
-  #[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+# => [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 #+end_src
+
 *** if
-    #+begin_src python
+#+begin_src python
 cars = ['audi', 'bmw']
 for car in cars:
     if car == 'bmw':
         print(car.upper())
     else:
         print(car.title())
-    #+end_src
+        # => Audi
+        #    BMW
+#+end_src
+
 *** boolen
-    #+begin_src python
+
+#+begin_src python
 cars = ['audi', 'bmw']
 cars == "bmw"
 #True
 car = "Audi"
 car.lower() == "audi"
 # => True
-    #+end_src
+#+end_src
 
 *** 检查多个条件
 and/or. and 等价于 R 中的&.
+
 #+begin_src python
 age_0 = 22
 age_1 = 18
@@ -1296,7 +1303,57 @@ print('{0:_^11}'.format('hello'))
 print('{name} wrote {book}'.format(name='swaroop',book='python'))
 #+end_src
 *** while
-    #+begin_src python
+
+while 语句同其他编程中 while 的使用方式大同小异。
+
+#+begin_src python
+while condition:
+    expressions
+#+end_src
+
+在使用 while 句法的时候一定要注意在循环内部一定要判断条件的值，否则程序会一直执行下去。
+#+begin_src python
+condition = 0
+while condition < 10:
+    print(condition)
+    condition += 1
+#+end_src
+
+整数和浮点数也能进行 Boolean 数据操作, 具体规则，如果该值等于 0 或者 0.0 将会返回 False 其余的返回 True。在 Python 中集合类型有 list、 tuple 、dict 和 set 等，如果该集合对象作为 while 判断语句， 如果集合中的元素数量为 0，那么将会返回 False, 否则返回 True。
+
+#+begin_src python
+condition = 10
+while condition:
+    print(condition)
+    condition -= 1
+    # => 10
+    #    9
+    #    8
+    #    7
+    #    6
+    #    5
+    #    4
+    #    3
+    #    2
+    #    1
+a = range(10)
+while a:
+    print(a[-1])
+    a = a[:len(a)-1]
+    # => 9
+    #    8
+    #    7
+    #    6
+    #    5
+    #    4
+    #    3
+    #    2
+    #    1
+    #    0
+#+end_src
+
+
+#+begin_src python
 number = 23
 running = True
 while running:
@@ -1379,7 +1436,7 @@ listtwo
 #+end_src
 
 **** 笛卡尔积
-双重for 可以实现笛卡尔积。
+双重 for 可以实现笛卡尔积。
 #+begin_src python
 colors = ['black', 'white']
 sizes = ['s', 'M', 'L']
@@ -1616,6 +1673,8 @@ data1
 - __contains__
 是否包含。
 
+需要从新确认! 为啥下面结果返回的是 false。
+
 #+begin_src python
 import numpy as np
 data1 = ["1", "2"]
@@ -1625,6 +1684,7 @@ data1.__contains__(data2)
 
 - copy
 复制。
+python 里面复制需要用到 copy，而不能直接 df1 = df2 这样操作！
 #+begin_src python
 import numpy as np
 data1 = ["1", "2"]
@@ -1682,11 +1742,12 @@ import numpy as np
 data1 = ["1", "2"]
 data1.__mul__(2)
 # => ['1', '2', '1', '2']
+data1 * 2 #更快速
 #+end_src
 
 - rmul
 
-反向拼接。
+反向拼接。没懂啥意思？
 
 #+begin_src python
 import numpy as np
@@ -1697,8 +1758,7 @@ data1.__rmul__(2)
 #+end_src
 
 **** np.zeros/np.empty
-
- 生成全为 0 的向量和空值矩阵。
+生成全为 0 的向量和空值矩阵。
 
 #+begin_src python
 import numpy as np
@@ -1738,18 +1798,21 @@ np.empty((2,3,2)) #空矩阵
     #+end_src
 **** np.linspace
 在指定的间隔内返回均匀间隔的数字。
+这个 c 语言里也有。
 #+begin_src python
   np.linspace(start = 0, stop = 19, num = 20)
 #+end_src
 
 *** 数据维度
-
+需要注意 list 是没有 shape 的。
     #+begin_src python
 data.shape
     #+end_src
 
 相当于 r 中的 dim(data)
+
 *** data type
+list 型也无法使用这个命令。
     #+begin_src python
 data.dtype  #typeof()
     #+end_src
@@ -1882,12 +1945,13 @@ https://zhuanlan.zhihu.com/p/55056353
 | 排序       | arrange   | sort_values |
 | 分组       | group_by  | groupby     |
 | 摘要统计   | summarize | agg         |
-| 判定是否na | is.na     | isna            |
+| 判定是否 na | is.na     | isna            |
 
 
 *** 查看一列的基本信息
 data.columnname.describe()
-    #+begin_src python
+
+#+begin_src python
 import pandas as pd
 data = pd.read_csv("/Users/luyajun/Documents/坚果云/我的坚果云/学习/信用评分卡/score_card/cs-training.csv")
 data.age.describe()
@@ -1901,7 +1965,7 @@ data.age.describe()
 #    75%          63.000000
 #    max         109.000000
 #    Name: age, dtype: float64
-    #+end_src
+#+end_src
 
 *** 选择一列
 
@@ -1937,6 +2001,7 @@ data[[]]
     #+end_src
 
 *** slice & select
+
 loc 函数充当 slice, if slicing only one row, use df.loc[[3],:].
     #+begin_src python
 df.loc[3:4,]
@@ -1952,11 +2017,20 @@ df.loc[:,"A":"B"] #选择列
 
 *** read_csv
 这个类似 fread 函数。
-    #+begin_src python
- import pandas as pd
+
+当要你所读取的数据量特别大时，试着加上这个参数 nrows=100，就可以在载入全部数据前先读取一小部分数据。
+
+此外，还可以加上 usecols = [‘c1’, ‘c2’, … ]来载入所需要的指定列。另外，如果你知道某些列的类型，你可以加上 dtype = {‘c1’: str, ‘c2’: int, …} ，这样会加快载入的速度。
+
+加入这些参数的另一大好处是，如果这一列中同时含有字符串和数值类型，而你提前声明把这一列看作是字符串，那么这一列作为主键来融合多个表时，就不会报错了。
+
+#+begin_src python
+import pandas as pd
 df = pd.read_csv('myfile.csv', sep=',')
 print(df)
-    #+end_src
+
+df = pd.read_csv('data.csv', nrows=100, usecols=['c1', 'c2'], dtype = {‘c1’: str, ‘c2’: int})
+#+end_src
 
 *** info
 这个函数类似于 glimpse.
@@ -2071,6 +2145,13 @@ df["A"].astype("category")
 Create a series from dict.A dict can be passed as input and if no index is specified, then the dictionary keys are taken in a sorted order to construct index. If index is passed, the values in data corresponding to the labels in the index will be pulled out.
 
 #+begin_src python
+a = dict(one = 1, two = 2, three = 3)
+a
+# => {'one': 1, 'two': 2, 'three': 3}
+#+end_src
+
+
+#+begin_src python
 import pandas as pd
 import numpy as np
 data = {'a' : 0., 'b' : 1., 'c' : 2.}
@@ -2122,7 +2203,7 @@ data.isnull().all()
 #+end_src
 
 *** isna
-pd.isna() 可以用来判定该序列是否存在na值。pd.notna() 评定序列值是否不为na.
+pd.isna() 可以用来判定该序列是否存在 na 值。pd.notna() 评定序列值是否不为 na.
 #+begin_src python
 df = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'],
                       columns=['one', 'two', 'three'])
@@ -2139,7 +2220,7 @@ pd.notna(df2['one'])
 #+end_src
 
 *** insert na
-python 中缺失值也是None.
+python 中缺失值也是 None.
 #+begin_src python
 import pandas as pd
 s = pd.Series([1,2,3])
@@ -2148,7 +2229,6 @@ s
 s[0] = None
 s
 #+end_src
-
 
 
 
@@ -2319,6 +2399,15 @@ rows can be selected by passing integer location to an iloc fucntion.
        print(df.iloc[2])
      #+end_src
 
+**** at
+
+#+begin_src python
+ df = pd.DataFrame(np.random.randn(5, 3),
+                  index=['a', 'c', 'e', 'f', 'h'],
+                  columns=['one', 'two', 'three'])
+df.at["a", "one"]
+#+end_src
+
 **** slice rows
 multiple rows can be selected using ":" operator.
 
@@ -2458,7 +2547,6 @@ obj.values
 #+end_src
 
 
-
 *** iloc,loc
 iloc,loc 两个操作类似于 dplyr 中的 select。
 
@@ -2556,7 +2644,7 @@ df.groupby(level=0).mean()
 df.groupby(level=1).mean()
 #+end_src
 
-select a group. 用get_group 选择一个组。
+select a group. 用 get_group 选择一个组。
 
 #+begin_src python :results output
 import pandas as pd
@@ -2565,16 +2653,21 @@ df.groupby(['Animal']).mean #对animal 进行分组然后求mean()
 df.groupby(['Animal']).get_group("Falcon") #对animal 进行分组然后求mean()
 #+end_src
 
-
-
-
 *** select
+select_dtypes
 
+如果已经在 Python 中完成了数据的预处理，这个命令可以帮你节省一定的时间。在读取了表格之后，每一列的默认数据类型将会是 bool，int64，float64，object，category，timedelta64，或者 datetime64。首先你可以观察一下大致情况，使用：
+
+#+begin_src python
+df.dtypes.value_counts()
+#+end_src
+
+来了解你的 dataframe 的每项数据类型，然后再使用：
     #+begin_src python
-
-
-
+df.select_dtypes(include=['float64', 'int64'])
     #+end_src
+获取一个仅由数值类型组成的 sub-dataframe。
+
 *** agg
 等价于 R 中的 summarize 函数.
 #+begin_src python
@@ -2588,7 +2681,7 @@ df.groupby("Alphabet")\
     .agg({'A':['mean']})
 #+end_src
 
-可以apply different functions to dataframe columns.
+可以 apply different functions to dataframe columns.
 
 #+begin_src python
 df.groupby("Alphabet")\
@@ -2605,7 +2698,6 @@ animals.groupby("kind").agg(
     min_height = pd.NamedAgg(column='height', aggfunc='min')
 )
 #+end_src
-
 
 
 
@@ -2633,6 +2725,13 @@ pd.merge(left, right, on = ["subject_id"], how="inner")
 
     #+end_src
 *** date
+python 中可以将 char 型转换成 date 型。
+
+#+begin_src python
+import pandas as pd
+today = pd.to_datetime('2020-12-11')
+# => Timestamp('2020-12-11 00:00:00')
+#+end_src
 
     #+begin_src python
       import pandas as pd
@@ -3119,13 +3218,13 @@ print(squres)
     #+end_src
 
 *** 创建空字典
-    #+begin_src python
-      alien_0 = {}
-      alien_0['color'] = "green"
-      alien_0['points'] = 5
-      alien_0
-      # {'color': 'green', 'points': 5}
-    #+end_src
+#+begin_src python
+alien_0 = {}
+alien_0['color'] = "green"
+alien_0['points'] = 5
+alien_0
+# {'color': 'green', 'points': 5}
+#+end_src
 
 *** 修改字典中的值
 下面这个示例可以看出 python 在打印时没有 R 那么的灵活方便。
@@ -3302,8 +3401,6 @@ country_code = {country:code for code, country in Dial_codes}
 country_code
 #+end_src
 
-
-
 ** 正则表达式
 在 python 中 re 模块可以完成对文本的正则化处理。匹配对象的两种方法：group() 和 groups().
 *** re.match
@@ -3373,6 +3470,12 @@ current_num
 *** def
 定义函数：
 
+#+begin_src python
+def function_name(para_1,...,para_n=defau_n,..., para_m=defau_m):
+    expressions
+#+end_src
+函数声明只需要在需要默认参数的地方用 = 号给定即可, 但是要注意所有的默认参数都不能出现在非默认参数的前面。
+
 **** 向函数传递信息
     #+begin_src python
       def greet_user(usename):
@@ -3428,11 +3531,11 @@ make_pizza('pepperoni')
 
 **** 可更改（mutable）与不可更改（immutable）对象
 
-在python 中，strings,tuples 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
+在 python 中，strings,tuples 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
 
-不可变类型：变量赋值 a = 5 后再赋值 a = 10，这里实际是新生成一个int 值对象10，再让a 指向它，而 5 被丢弃，不是改变 a 的值，相当于新生成了 a.
+不可变类型：变量赋值 a = 5 后再赋值 a = 10，这里实际是新生成一个 int 值对象 10，再让 a 指向它，而 5 被丢弃，不是改变 a 的值，相当于新生成了 a.
 
-可变类型：变量赋值 la =［1，2，3，4］后再赋值 la[2] = 5 则是将list la 的第三个元素值更改，本身la 没有动，只是其内部的一部分值被修改了。
+可变类型：变量赋值 la =［1，2，3，4］后再赋值 la[2] = 5 则是将 list la 的第三个元素值更改，本身 la 没有动，只是其内部的一部分值被修改了。
 
 python 函数的参数传递：
 
@@ -3514,9 +3617,9 @@ import numpy as np
       from pizza import *
       make_pizza(16, 'pepperoni')
     #+end_src
+
 ** lambda
 lambda 函数也叫匿名函数或内联函数，即没有具体名称的函数，它允许快速定义单行函数，可以用在任何需要函数的地方。这区别于 def 定义的函数。
-
 lambda 与 def 的区别：
 
 1）def 创建的方法是有名称的，而 lambda 没有。
@@ -3527,12 +3630,12 @@ lambda 与 def 的区别：
 
 4）lambda 表达式” : “后面，只能有一个表达式，def 则可以有多个。
 
+#+begin_src python
 names = ['tony',  'bob']
 sorted(names, key = lambda name:name.split()[-1].lower())
 #+end_src
 
 匿名函数需要注意的地方是:
-
 你用 lambda 定义了一个匿名函数，并想在定义时捕获到某些变量的值。
 
 #+begin_src python
@@ -3544,7 +3647,6 @@ a(10)
 #> 30
 b(10)
 #> 30
-
 #+end_src
 
 从上面例子可以知道 lambda 表达式中的 x 是一个自由变量，在运行时绑定值，而不是定义时就绑定，这跟函数的默认值参数定义是不同的。
@@ -3653,15 +3755,17 @@ heapq 模块中有两个函数－nlargest() 和 nsmallest().
 import heapq
 nums = [1, 8, 2, 23, 7, -4]
 print(heapq.nlargest(3, nums))
+# => [23, 8, 7]
 print(heapq.nsmallest(3, nums))
+# => [-4, 1, 2]
 #+end_src
 *** set
 当需要对一个列表进行去重操作的时候，set()函数就派上用场了。
-    #+begin_src python
+#+begin_src python
       a = [1, 5, 2, 1, 9]
       set(a)
       # {1, 2, 5, 9}
-    #+end_src
+#+end_src
 
 
 
@@ -3709,11 +3813,13 @@ func(1,2)
 - 语法结构简单，不用使用 def 函数名(参数名):这种方式定义，直接使用 lambda 参数:返回值 定义即可
 
 *** 全为 0/1 的数组
-    #+begin_src python
-      np.ones((2, 2, 3))
-      np.zeros((2, 2, 3))
-      np.empty((2, 2, 3) )
-    #+end_src
+
+#+begin_src python
+import numpy as np
+np.ones((2, 2, 3))
+np.zeros((2, 2, 3))
+np.empty((2, 2, 3) )
+#+end_src
 ** 元组
 元组是一个固定长度，不可改变的 python 序列对象。创建元组的最简单方式，用用逗号分
 隔一列值：
@@ -3731,18 +3837,17 @@ list(tup)
 #+end_src
 
 #+begin_src python
-  nested_tup = (4,5,6),(7,8)
-  nested_tup
-  # ((4, 5, 6), (7, 8))
+nested_tup = (4,5,6),(7,8)
+nested_tup
+# ((4, 5, 6), (7, 8))
 #+end_src
 
 用 tuple 可以将任意序列或迭代器转换成元组：
-
 #+begin_src python
-  tuple([4,0,2])
-  # (4, 0, 2)
-  tuple('string')
-  # ('s', 't', 'r', 'i', 'n', 'g')
+tuple([4,0,2])
+# (4, 0, 2)
+tuple('string')
+# ('s', 't', 'r', 'i', 'n', 'g')
 #+end_src
 
 如果元组中的某个对象是可变的，比如列表，可以在原位进行修改。
@@ -3755,10 +3860,9 @@ list(tup)
 #+end_src
 
 可以用加号运算符将远组串联起来。
-
 #+begin_src python
-  (4,None,'foo') + (6,0) + ('bar',)
-  # (4, None, 'foo', 6, 0, 'bar')
+(4,None,'foo') + (6,0) + ('bar',)
+# (4, None, 'foo', 6, 0, 'bar')
 #+end_src
 
 元组乘以一个整数，像列表一样，会将几个元组的复制串联起来：
@@ -3790,16 +3894,17 @@ type(nested)
 
 #+begin_src python
 nested = ((1,10,'python'),('data'))
-nested
+# => ((1, 10, 'python'), 'data')
 type(nested)
+# => tuple
 nested[0]
+# => (1, 10, 'python')
 print(nested[0][0], nested[0][1], nested[0][2])
 #+end_src
 
 不可更改
 
 元组具有不可更改性。
-
 #+begin_src python
 t = ('ok',[1,2],True)
 t[2] = False
@@ -3826,7 +3931,7 @@ t
 # => ('ok', [1, 2, 3, 3], True)
 #+end_src
 
-元组大小和内容都不可更改，因此只有count 和index 两种方法。
+元组大小和内容都不可更改，因此只有 count 和 index 两种方法。
 
 #+begin_src python
 t = (1,10.31,'python')
@@ -3840,7 +3945,7 @@ t.index(10.31)
 
 元组拼接
 
-元组拼接有2种方式，用 + 和 *，前者首尾拼接，后者复制拼接。
+元组拼接有 2 种方式，用 + 和 *，前者首尾拼接，后者复制拼接。
 
 #+begin_src python
 (1,10,'python') + ('data',11) + ('ok',)
@@ -3868,7 +3973,7 @@ t = (1,10,('ok', 'python'))
 print(a,b,c,d)
 #+end_src
 
-如果你只想要元组其中几个元素，用通配符*，在计算机语言中代表一个或多个元素，下例就是把多个元素给了reset 变量。
+如果你只想要元组其中几个元素，用通配符*，在计算机语言中代表一个或多个元素，下例就是把多个元素给了 reset 变量。
 
 #+begin_src python
 t = 1,2,3,4,5
@@ -3880,7 +3985,7 @@ print(rest)
 #+end_src
 
 ** 列表（list）
-与元组对比，列表的长度可变，内容可以被修改。属于mutable.
+与元组对比，列表的长度可变，内容可以被修改。属于 mutable.
 #+begin_src python
   tup = ('foo', 'bar')
   b_list = list(tup)
@@ -3962,16 +4067,19 @@ tshirts
   l
 #+end_src
 
-第一种索引器是 loc 属性，表示取值和切片都是显式。
-
-python 代码的设计原则是“显式优于隐式”。
+第一种索引器是 loc 属性，表示取值和切片都是显式。 python 代码的设计原则是“显式优于隐式”。
 #+begin_src python
-  data = pd.Series(['a', 'b', 'c'], index=[1, 3, 5])
-  data
-  data[1]
-  data[1:3]
-  data.loc[1]
-  data.loc[1:3]
+import pandas as pd
+data = pd.Series(['a', 'b', 'c'], index=[1, 3, 5])
+data
+# => 1    a
+#    3    b
+#    5    c
+#    dtype: object
+data[1]
+data[1:3]
+data.loc[1]
+data.loc[1:3]
 #+end_src
 
 ** 推导式
@@ -4005,16 +4113,18 @@ test({x for x in range(3)})
 #+end_src
 
 *** 字典
-    #+begin_src python
+
+#+begin_src python
 {k:v for k,v in zip("abc", range(10, 13))}
 #> {'a': 10, 'b': 11, 'c': 12}
-    #+end_src
+#+end_src
 
 *** 集合
-    #+begin_src python
+
+#+begin_src python
 {x for x in "abc"}
 #> {'a', 'b', 'c'}
-    #+end_src
+#+end_src
 
 ** *
 
@@ -4135,7 +4245,7 @@ df.dropna(axis='columns', how='all')
 还可以设置 how = 'all',这样就只会剔除全部是缺失值的行或列了。
 
 #+begin_src python
-  df.dropna(axis='rows', thresh=3)
+df.dropna(axis='rows', thresh=3)
 #+end_src
 
 ** 合并数据集
@@ -4501,7 +4611,7 @@ housing_cat_1hot
 #+end_src
 
 ** 类
-Python从设计之初就已经是一门面向对象的语言，正因为如此，在Python中创建一个类和对象是很容易的。
+Python 从设计之初就已经是一门面向对象的语言，正因为如此，在 Python 中创建一个类和对象是很容易的。
 根据类来创建对象被称为实例化。一个简单的样例如下：使用类几乎可以模拟任何东西。下面一个简单的例子是模拟小狗，对于多数小狗，都会有名字和年龄，那么创造一个类就会包含这两个信息。
     #+begin_src python
 class Dog():
@@ -4528,9 +4638,7 @@ print("RMSE: %f" % (rmse))
    #+end_src
 
 ** 面向对象技术简介
-
 *类(Class):* 用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
-
 *方法：* 类中定义的函数。
 
 类变量：类变量在整个实例化的对象中是公用的。类变量定义在类中且在函数体之外。类变量通常不作为实例变量使用。
@@ -4543,14 +4651,13 @@ print("RMSE: %f" % (rmse))
 
 实例变量：在类的声明中，属性是用变量来表示的，这种变量就称为实例变量，实例变量就是一个用 self 修饰的变量。
 
-继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待。例如，有这样一个设计：一个Dog类型的对象派生自Animal类，这是模拟"是一个（is-a）"关系（例图，Dog是一个Animal）。
+继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待。例如，有这样一个设计：一个 Dog 类型的对象派生自 Animal 类，这是模拟"是一个（is-a）"关系（例图，Dog 是一个 Animal）。
 
 实例化：创建一个类的实例，类的具体对象。
 
 对象：通过类定义的数据结构实例。对象包括两个数据成员（类变量和实例变量）和方法。
 
 类的定义：
-
 #+begin_src python
 class ClassName:
     <statement-1>
@@ -4560,15 +4667,15 @@ class ClassName:
     <statement-N>
 #+end_src
 
-实例化类其他编程语言中一般用关键字new，但是在 python 中并没有这个关键字，类的实例化类似函数调用方式。
+实例化类其他编程语言中一般用关键字 new，但是在 python 中并没有这个关键字，类的实例化类似函数调用方式。
 
 类实例化后，可以使用其属性，实际上，创建一个类之后，可以通过类名访问其属性。
 
 类对象：
 
-类对象支持两种操作：属性引用和实例化。属性引用使用和python 中所有的属性引用一样的标准语法：obj.name.类对象创建后，类命名空间中所有的命名都是有效属性名。所有如果类定义是这样
+类对象支持两种操作：属性引用和实例化。属性引用使用和 python 中所有的属性引用一样的标准语法：obj.name.类对象创建后，类命名空间中所有的命名都是有效属性名。所有如果类定义是这样
 
-类的方法与普通函数只有一个特别的区别，它们必须有一个额外的第一个参数名称，按照惯例它的名称为self。
+类的方法与普通函数只有一个特别的区别，它们必须有一个额外的第一个参数名称，按照惯例它的名称为 self。
 
 在 python 中，可以使用点 . 来访问对象的属性，也可以使用以下函数的方式来访问属性：
 
@@ -4580,7 +4687,7 @@ class ClassName:
 
 - delattr(obj, name) 删除属性
 
-python内置类属性：
+python 内置类属性：
 
 __dict__：类的属性（包含一个字典，由类的数据属性组成）
 
@@ -4609,11 +4716,10 @@ print('MyClass 类的方法 f 输出为：', x.f())
 # => MyClass 类的方法 f 输出为： hello world
 #+end_src
 
-python 对象销毁（垃圾回收）：
+python 对象销毁（垃圾回收）：python 使用了引用计数这一简单技术来跟踪和回收垃圾。在 python 内部记录着所有使用中的对象各自有多少引用。
 
-python 使用了引用计数这一简单技术来跟踪和回收垃圾。在python内部记录着所有使用中的对象各自有多少引用。
+一个完整的 python 类例子是：
 
-一个完整的python类例子是：
 #+begin_src python
 class Employee:
     '所有员工的基类'
@@ -4631,10 +4737,32 @@ class Employee:
         print("Name:", self.name, ", Salary:", self.salary)
 
 print("Employee.__doc__:", Employee.__doc__)
+# => Employee.__doc__: 所有员工的基类
 print("Employee.__name__:", Employee.__name__)
+# => Employee.__name__: Employee
 print("Employee.__module__:", Employee.__module__)
+# => Employee.__module__: __repl__
 print("Employee.__bases__:", Employee.__bases__)
+# => Employee.__bases__: (<class 'object'>,)
 print("Employee.__dict__:", Employee.__dict__)
+# =>
+# Employee.__dict__: {'__module__':
+#                     '__repl__', '__doc__':
+#                     '所有员工的基类', 'empCount':
+#                     0, '__init__': <
+#                     function Employee.
+#                     __init__ at
+#                     0x7f5d5cc81d40>, 'displaycount': <
+#                     function Employee.
+#                     displaycount at
+#                     0x7f5d5cc81dd0>, 'displayEmployee': <
+#                     function Employee.
+#                     displayEmployee at
+#                     0x7f5d5cc81e60>, '__dict__': <
+#                     attribute '__dict__'
+#                     of 'Employee'
+#                     objects>, '__weakref__':
+#                     <attribute '__weakref__' of 'Employee' objects>}
 #+end_src
 
 类定义了__init__() 方法可以有参数，参数通过__init__()传递到类的实例化操作上的。
@@ -4691,8 +4819,7 @@ p.speak()
 # => runoob 说: 我 10 岁。
 #+end_src
 
-继承
-
+*** 继承
 python 同样支持类的继承，如果一种语言不支持继承，类就没有什么意义。派生类的定义如下：
 
 #+begin_src python
@@ -4705,8 +4832,7 @@ class DerivedClassName(BaseClassName1):
 #+end_src
 
 BaseClassName(示例中的基类名)必须与派生类定义在一个作用域内。除了类，还可以用表达式，基类定义在另一个模块中时非常有用。
-
-#+begin_src c
+#+begin_src python
 #类定义
 class people:
     #定义基本属性
@@ -4742,7 +4868,8 @@ s.speak()
 *** dplython
 这个包类似于 dplyr.
 **** select
-     #+begin_src python
+
+#+begin_src python
 import pandas
 from dplython import (DplyFrame, X, diamonds, select, sift, sample_n,
     sample_frac, head, arrange, mutate, group_by, summarize, DelayFunction)
@@ -4785,7 +4912,7 @@ class ElectricCar(Car):
 
 my_tesla = ElectricCar('tesla', 'model s', 2016)
 print()
-    #+end_src
+#+end_src
 
 **** filter
 在 python 中，filter 是 sift.
@@ -4805,13 +4932,14 @@ diamonds.sample(frac=0.2)
      #+end_src
 
 **** arrange
-     #+begin_src python
+
+ #+begin_src python
  diamonds >> arrange(X.carat)
      #+end_src
 这个函数不能实现降序。可以用下面这个函数实现。
      #+begin_src python
  diamonds >> sample_n(10)
-     #+end_src
+ #+end_src
 
 **** mutate
 mutate 新建一列数据。

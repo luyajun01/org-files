@@ -7,7 +7,9 @@
   - [[#标识符][标识符]]
   - [[#关键字][关键字]]
   - [[#空格][空格]]
+  - [[#修饰符][修饰符]]
   - [[#运算符][运算符]]
+  - [[#存储类-1][存储类]]
   - [[#判断][判断]]
     - [[#switch][switch]]
   - [[#struct][struct]]
@@ -236,6 +238,42 @@ int age;
 
 在这里，int 和 age 之间必须至少有一个空格字符（通常是一个空白符），这样编译器才能够区分它们。
 
+** 修饰符
+C++ 允许在char,int 和 double 数据类型放置修饰符，修饰符用于改变基本类型的含义，所以它更能满足各种情境的需求。
+
+数据类型修饰符：
+
+- unsigned
+
+- signed
+
+- long
+
+- short
+
+修饰符 signed，unsigned，long 和 short 可应用于整型，signed 和 unsigned 可应用于字符型，long 可应用于双精度型。修饰符signed 和 unsigned 也可以作为 long 或 short 修饰符的前缀，例如，unsigned long int.
+
+在C++ 中有符号整数和无符号整数修饰符之间是有差别的。
+
+#+begin_src c :includes <stdio.h>
+  int main() {
+    short int i; //有符号短整数
+    short unsigned int j;//无符号短整数
+
+    j = 50000;
+
+    i = j;
+
+    std::cout << i << " " << j;
+
+    return 0;
+  }
+  /* -15536 50000 */
+#+end_src
+
+上述结果中，无符号短整数 50,000 的位模式被解释为有符号短整数 -15,536。
+
+
 ** 运算符
 
 - 算术运算符
@@ -270,6 +308,38 @@ int age;
 |%|	取模运算符，整除后的余数|	B % A 将得到 0|
 |++|	自增运算符，整数值增加 1|	A++ 将得到 11|
 |--|	自减运算符，整数值减少 1|	A-- 将得到 9|
+
+** 存储类
+存储类定义C++ 程序中变量/函数的范围（可见性）和生命周期，这些说明符放置在它们所修饰的类型之前。
+
+- auto
+
+#+begin_src c :includes <stdio.h>
+auto f=3.14;      //double
+auto s("hello") //const char*
+auto z = new auto(9) //int*
+#+end_src
+
+以下是错误例子：
+
+#+begin_src c :includes <stdio.h>
+  auto x1 = 5, x2 = 5.0, x3='r';//错误，必须是初始化为同一类型
+#+end_src
+
+- register
+
+- static
+
+- extern
+
+- mutable
+
+- thread_local
+
+
+
+
+
 
 ** 判断
 1.if 语句。一个 if 语句 由一个布尔表达式后跟一个或多个语句组成。
@@ -532,6 +602,7 @@ int main()
  #+end_src
 
 *** for
+
   #+begin_src c :includes <stdio.h>
     int main(){
         int sum=0;
@@ -548,6 +619,23 @@ int main()
     }
 
   #+end_src
+
+#+begin_src c
+  #include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main(){
+  int i,j;
+  for(i = 1; i < 10; i++){
+    for (int j = 1; j <= i; j++) {
+      cout << j << " x " << i << " = " << setw(2) << i * j << " ";
+    }
+    cout << endl << endl;
+  }
+}
+#+end_src
+
 
 ** 函数
 函数是一组一起执行一个任务的语句。每个 C 程序都至少有一个函数，即主函数 main() ，所有简单的程序都可以定义其他额外的函数。

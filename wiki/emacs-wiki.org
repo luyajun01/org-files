@@ -335,7 +335,7 @@ Spacemacs
  | org-structure-template-alist                         | C-c C-,                    |
  | 插入 org 脚注                                        | M-ret f r                  |
  | org-cdlatex 插入环境 template                        | C-c {                      |
- | org-toggle-latex-fragment(将 latex 公式转换为图片)   | C-c C-x C-l                |
+ | org-toggle-latex-fragment(将 latex 公式转换为图片)/org-latex-preview | C-c C-x C-l                |
  | org-table-insert-column                              |                            |
  | org-table-insert-row                                 |                            |
 

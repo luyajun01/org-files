@@ -7258,6 +7258,7 @@ stocksm %>% spread(time, price)
 #+END_SRC
 
 *** nest/unnest
+
 nest 可以处理分组数据，特别用于分组数据的建模特别有用。
 #+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
   df <- tibble(x = c(1, 1, 1, 2, 2, 3), y = 1:6, z = 6:1)
