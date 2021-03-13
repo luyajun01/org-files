@@ -49,8 +49,7 @@
 
 - xgboost
 
-首先，xgboost 是梯度提升家族一员。如果是二分类问题的话，其背后的算法思想可以等价于 additive logistic model,这个问题 Frediman 已经证明了，严格地说，xgboost 在做
-二分类问题时就相当于做 带有惩罚项的 additive logistic model。
+首先，xgboost 是梯度提升家族一员。如果是二分类问题的话，其背后的算法思想可以等价于 additive logistic model,这个问题 Frediman 已经证明了，也就是说，xgboost 在做二分类问题时就相当于做 带有惩罚项的 additive logistic model。
 
 - PCA
 
@@ -68,9 +67,11 @@
 
 - knn
 
-和 K-means 不同，KNN 是有监督学习模型，算法大体思路是一个样本与特征空间中的 K 样本最相似，那么就和这 K 个样本中大多数类一样。
+和 K-means 不同，KNN 是有监督学习模型，算法大体思路是任给一个样本，计算与他最近的特征空间中的 K 样本，统计这 K 个样本最多的分类，将这个样本标记为该分类。
 
 - kmeans
+
+无监督学习，主要利用样本间的相似性对样本集进行聚类试图使类内差距最小化，类间差距最大化。
 
 无监督学习，是聚类算法。选择 k 个样本确定初始聚类中心，针对每个样本计算到 k 个聚类中心的距离，并将这个样本分到距离最小的聚类中心对应的类中；重新计算它的聚类中心；
 重复上面操作；直到每个样本对应类结果不发生变化。
@@ -173,8 +174,8 @@ F 分布是两个服从卡方分布的随机变量各自除以他们的自由度
 3、倘若自变量因子中，既有属性因子，也有数量因子, **就称为协方差分析模型**.
 
 **** 标准化处理
-我们都知道在实际应用中，样本不同的特征的单位不同，会在求距离时造成很大的影响。比
-如：在两个样本中肿瘤大小分别为 1cm 和 5cm,发现时间分别为 100 天和 200 天，那么在求距离
+
+我们都知道在实际应用中，样本不同的特征的单位不同，会在求距离时造成很大的影响。比 如：在两个样本中肿瘤大小分别为 1cm 和 5cm,发现时间分别为 100 天和 200 天，那么在求距离
 时，时间差为 100,大小差为 4,那么其结果会被时间所主导，因为肿瘤大小的差距太小了。
 但是如果我们把时间用年做单位，0.27 年与 0.55 年的差距又远小于肿瘤的大小的差距，
 结果又会被大小所主导。
@@ -189,6 +190,7 @@ Z-score 方法的缺点是该方法需要总体的平均平均值与方差，但
 minmax 归一化方法：$x = \dfrac{x-min}{max - min}$.
 
 **** MaxAbs 归一化
+
 $x = \dfrac{x}{\abs{MAX}}$
 
 这种方法的缺点是当有新的数据加入时，可能导致 max 和 min 的变化
@@ -215,8 +217,10 @@ $$
 判定系数 $R^{2}$ 越接近于 1,模型的拟合优度越高。
 
 *** 正态分布分布化
+
 正则化的过程是将每个样本缩放到单位范数。normalization 主要思想是对每个样本计算其
 p-范数，然后对该样本中每个元素除以该范数。
+
 公式：$x = \dfrac{x}{\sqrt{\sum^{d}_{j}(x_{ij})^2}}$.
 
 在分类，聚类算法中，需要使用距离来度量相似相似性的时候，标准化表现更好。
@@ -225,6 +229,7 @@ p-范数，然后对该样本中每个元素除以该范数。
 法或其他归一化方法。
 
 *** 一般线性回归
+
 线性回归模型假设有 3 个：
 
 - 自变量非随机；
@@ -685,6 +690,7 @@ coef(md2)
 #+end_src
 
 *** Cox 模型
+
 生存分析的函数包括：生存函数，危险函数，概率密度函数，累积危险率函数，四个函数只需知道其中一个函数，就可以确定其他三个函数。
 生存函数是描绘个体（贷款）生存时间和生存概率之间的函数。设 $T$ 是研究个体生存时间，那么大于生存时间 $t$ 的生存概率函数 $S(t)$ 基本形式为：
 
@@ -1290,7 +1296,17 @@ logistic 回归来实现。
 1、数据预处理
 
 - 数据的描述统计分析，包括相关性分析，指标的正态性检验等
+
 - 数据预处理，包括时间格式、缺失值、极值
+
+数据预处理方法包括：归一化、最小最大值归一化、标准化、白化。归一化是指将数据特征转化为相同尺度的方法，比如把数据特征映射到零到一之间，或者映射为服从均值为零，方差为一的标准正态分布。
+
+标准化是指将特征映射为服从均值为，方差为一的标准正态分布，白化是指用来降低输入数据特征之间的冗余性，白化处理后，特征之间的相关性较低，并且所有特征具有相同的方差，白化主要方式是主成分分析。
+
+在深度神经网络中，也会遇到归一化问题，不过只是对隐藏层的输入进行归一化，不需要对所有层进行归一化。为啥要对隐藏层的输入进行归一化，因为如果一个神经层的输入分布发生了改变，那么其参数需要重新学习，这个现象叫做内部协变量偏移。
+
+在实践中，归一化操作一般应用在仿射变换之后，激活函数之前。
+
 - 缺失值怎么处理？如果缺失比例太高，比如高于 30%，那么就剔除这个变量，缺失比在 10%以下，那么可以采用一定的插补方法进行填充，如果缺失比例在 10%~30%，那么？极值的话有两方面的问题,①怎么发现极值？单变量可以通过画直方图的形式展现，双变量（Y~X）可以通过画散点图的形式探查极值。②怎么处理极值?主要看是否符合常识，如果觉得不符合，直接删掉。
 
 2、数据分箱
@@ -1310,8 +1326,6 @@ logistic 回归来实现。
 - 对于线性模型，表达能力受限。单变量离散化为 N 个后,每个变量有单独的权重,相当于模型引入了非线性,能够提升模型表达能力，加大拟合。
 
 - 将所有变量变换到相似的尺度上，相当于对数据做了标准化操作。
-
-
 
 包括数据分箱，woe 转换等。
 
@@ -1657,7 +1671,6 @@ plot(R~loc,data = rent,col = gray(0.7),pch = 15,cex = 0.5)
 #+RESULTS:
 [[file:3.png]]
 
-
 *** 生存分析模型
 
 生存分析共有 2 个函数，一个是生存函数，是一个人存活时间大于一定时间的概率，而风险函数是指一个人在一段时间内死亡的概率。
@@ -1677,6 +1690,16 @@ l(\boldsymbol{\beta})=\sum_{i=1}^{n} \delta_{i} \mathbf{x}_{i}^{T} \boldsymbol{\
 如果认定借款人行为是动态变化的，那么就应该考虑信用状态的变化时间。之前的问题都是确定申请者在未来一个固定时间段的违约概率，现在还想知道他在什么时候违约？后者的显然更难，因为需要估计违约概率在时间上的分布而不仅是固定时间上的违约概率。
 
 这里生存分析的目的在于分析违约发生的时间，定义 $T$ 为消费者直到违约时某个贷款已经持续的时间。
+*** 隐马尔可夫模型
+隐马尔可夫模型是关于时序的概率模型，描述由一个隐藏的马尔可夫链随机生成不可观测的状态随机序列，再由各个状态生成一个观测而产生观测随机序列的过程。
+
+隐藏的马尔可夫链随机生成的状态的序列，称为 *状态序列*;每个状态生成一个观测，而由此产生的观测的随机序列，称为 *观测序列*,序列的每一个位置又可以看作是一个时刻。
+
+隐马尔可夫模型作了2个基本假设：
+(1) 齐次马尔可夫性假设，即假设隐藏的马尔可夫链在任意时刻 $t$ 的状态只依赖于其前一刻的状态。
+
+(2) 观测独立性假设，即假设任意时刻的观测只依赖于该时刻的马尔可夫链的状态，与其他观测及状态无关。
+
 *** 模型校准
 
 一个分类模型能否用于预测垃圾邮件、一个分子的毒性状态， *我们期望估计的类概率更能代表样本真实潜在的概率。在 lyn.thomas 的消费信用模型一书中，将模型校准定义为检测违约概率($pd=p(B|s)$)的预测精度。认为分数 score 可以用来预测借款人是好人的概率。《巴塞尔协议》规定，贷款组合要被分成不同的分数组，然后预测每组借款人的违约概率。 (在小米小贷的应用场景中，由于样本自身的偏倚性，意思就是没有拒绝样本的表现，所以样本真实的拒绝概率势必需要校准。)
@@ -2089,9 +2112,7 @@ mean of x mean of y
 从单个组来看，As we can see from the output above, the difference between c vs a and c vs b found not be statistically significant although they are from different distributions. The reason for that is the “issue” with the multiple comparisons. Let’s compare them by applying the t-test
 有意思的是，如果单独使用 t 检验 c vs a，c vs b 如果忽略多个组效应却发现这两组变量是显著差异的。
 
-
 *** Pearson's correlation test
-
 *** 独立样本 T 检验
 这其实是两个独立样本 T 检验的目的是利用来自两个总体的独立样本，推断两个总体的均
 值是否存在显著差异。这个检验的前提要求是：
@@ -2452,15 +2473,13 @@ $$
 
 其中, $R_{i}$ 为自变量对其余自变量作回归分析的复相关系数。
 
+那么，怎么计算复相关系数？
+
 ** 过拟合
 
-当样本量不大时，应该避免划分测试测试集，因为建模可能需要用到每个样本。此外，测试
-测试集的样本量或许不足以提供一个合理论断所需要的信息量和精度。Hawkins(2003) 指出
-预留适当数量的数据评估模型并不比单纯使用交叉验证的方法更可靠，因此没有理由使用这
-样的方法。我们能够在训练训练集上使用交叉验证一类的重抽样方法得到恰当的模型评估。
+当样本量不大时，应该避免划分测试测试集，因为建模可能需要用到每个样本。此外，测试测试集的样本量或许不足以提供一个合理论断所需要的信息量和精度。Hawkins(2003) 指出 预留适当数量的数据评估模型并不比单纯使用交叉验证的方法更可靠，因此没有理由使用这样的方法。我们能够在训练训练集上使用交叉验证一类的重抽样方法得到恰当的模型评估。
 
 加数据、正则化、降维。
-
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
   set.seed(1056)
@@ -2642,6 +2661,7 @@ https://www.cnblogs.com/Determined22/p/5772538.html 更多的信息可以从这�
 https://zhuanlan.zhihu.com/p/53826261
 
 ** 神经网络
+
 下面这个连接可以清晰地展现神经网络知识。
 
 https://zhuanlan.zhihu.com/p/58964140
@@ -2922,6 +2942,46 @@ print("Emily: %.3f" % network.feedforward(emily)) # 0.951 - F
 print("Frank: %.3f" % network.feedforward(frank)) # 0.039 - M
 #+end_src
 
+#+begin_src python
+import numpy as np
+import math
+
+x = np.linspace(-math.pi,math.pi,2000)
+y = np.sin(x)
+
+a = np.random.randn()
+b = np.random.randn()
+c = np.random.randn()
+d = np.random.randn()
+
+learning_rate = 1e-6
+for t in range(2000):
+    y_pred = a + b*x + c*x**2 + d*x**3
+
+    loss = np.square(y_pred - y).sum()
+    if t % 100 == 99:
+        print(t,loss)
+# Backprop to compute gradients of a, b, c, d with respect to loss
+    grad_y_pred = 2.0 * (y_pred - y)
+    grad_a = grad_y_pred.sum()
+    grad_b = (grad_y_pred * x).sum()
+    grad_c = (grad_y_pred * x ** 2).sum()
+    grad_d = (grad_y_pred * x ** 3).sum()
+
+# Update weights
+    a -= learning_rate * grad_a
+    b -= learning_rate * grad_b
+    c -= learning_rate * grad_c
+    d -= learning_rate * grad_d
+
+print(f'Result: y = {a} + {b} x + {c} x^2 + {d} x^3')
+
+#+end_src
+
+
+
+
+
 *** 模型估计
  以下估计方法均是估计 NN 的算法。
 **** softmax 算法
@@ -2934,7 +2994,13 @@ S_{i}=\frac{e^{i}}{\sum_{j} e^{j}}
 $$
 
 更形象的例子请见https://www.zhihu.com/question/23765351.
+
 **** 梯度下降法
+
+低维空间的非凸优化问题主要是存在一些局部最优点。基于梯度下降的优化方法会陷入局部最优点，因此在低维空间中非凸优化的主要难点是如何选择初始化参数和逃离局部最优点。
+
+而在高维空间中，非凸优化的难点并不在于如何逃离局部最优点，而是如何逃离 *鞍点* . 鞍点的特点是一阶梯度为0,但是二阶梯度的hessian 矩阵不是半正定矩阵。
+
 梯度下降法是用来计算函数最小值，思路很简单，想象在山顶放了一个球，一松手它就会顺着山坡最陡峭的地方滚落到谷底。
 
 所以，梯度下降法适用于凸函数。
@@ -2946,6 +3012,7 @@ $$
 从上面公式可以看出梯度下降法由初始值，步长及梯度下降方向组成
 
 **** Batch graient descent
+
 此算法又称批量梯度下降算法。对于批量梯度下降算法，其 $J(\theta)$ 是在整个训练集上计算的，如果数据集比较大，可能会面临内存不足问题，而且其收敛速度一般比较慢。
 
 这个算法是遍历全部数据集算一次损失函数。
@@ -2953,12 +3020,14 @@ $$
 当数据量不大的时候可以选择批量梯度下降法，当数据量很大的时候选择小批量梯度下降法。
 
 **** Stochastic Gradient Descent
-随机梯度下降算法。随机梯度下降算法是另外一个极端， $J(\theta)$
-是针对训练集中的一个训练样本计算的，又称为在线学习，即得到了一个样本，就可以执行
-一次参数更新。
+随机梯度下降算法。随机梯度下降算法是另外一个极端， $J(\theta)$ 是针对训练集中的一个训练样本计算的，又称为在线学习，即得到了一个样本，就可以执行一次参数更新。
+
 所以其收敛速度会快一些，但是有可能出现目标函数值震荡现象，因为高频率的参数更新导致了高方差。
+
 **** Mini-batch Gradient Descent
+
 小批量梯度下降算法。小批量梯度下降算法是折中方案，选取训练集中一个小批量样本（一般是 2 的倍数，如 32，64,128 等）计算，这样可以保证训练过程更稳定，而且采用批量训练方法也可以利用矩阵计算的优势。这是目前最常用的梯度下降算法。
+
 **** Momentum optimization
 冲量梯度下降算法。理想的梯度下降算法要满足两点：收敛速度要快；而且能全局收敛。
 
@@ -2976,6 +3045,7 @@ $$
 其中 \(v(t-1)\) 是上一时刻的移动平均值，其实也可以看成历史积累量,
 一般 \(v(0)=0,\) 而 \(\beta\) 是一个系数，其在 0 1 之间, 可以看到移动平均值
 是按比例合并历史量与当前观测量。
+
 **** Nesterov Accelerated Gradient (NAG)
 NAG 算法是 Yurii Nesterov 在 1983 年提出的对冲量梯度下降算法的改进版本，其速度更快。其变化之处在于计算“超前梯度”更新冲量项，具体公式如下：
 
@@ -3012,6 +3082,11 @@ Adam 是 Kingma 等在 2015 年提出的一种新的优化算法，其结合了 
 可以看到前两项和 Momentum 和 RMSprop 是非常一致的， 由于和的初始值一般设置为 0，
 在训练初期其可能较小，第三和第四项主要是为了放大它们。最后一项是参数更新。其中超
 参数的建议值是: \(\beta_{1}=0.9, \beta_{2}=0.999, \varepsilon=1 e-8\).
+
+
+在深度神经网络中，除了梯度消失外，梯度爆炸也是影响学习效率的主要因素，在基于梯度下降的优化过程中，如果梯度突然增大，用大的梯度更新参数反而会导致其远离最优点。为了避免这种情况，当梯度的模大于一定阈值时，就对梯度进行截断，称为梯度截断。
+
+梯度截断有2种方式：按值截断，按模截断。按模截断是将梯度的模截断到一个给定的截断阈值b.
 
 ** 主成分分析 (PCA)
 PCA 最大可分思想就是通过对原始样本进行一定的线性变换（主要是基变换），如果基维度小于数据的维度可以起到降维的效果，降维后损失最小，可以理解为投影后的数据尽可能的分开，那么这种分散程度可以用数学上的方差来表示方差越大数据越分散。
@@ -3121,18 +3196,15 @@ MCMC 也称为统计模拟方法，通过从概率模型的随机抽样进行近
 
 所以，mcmc 方法的核心就是无法知道总体，但是可以构造样本总体，通过样本得到经验分布，从而估计总体分布；或者从样本计算出样本均值，从而估计总体期望。所以，蒙特卡罗法的核心是随机抽样。
 
-
-
-
-
-
 ** svm
-概述：svm 是一种二分类模型，定义在特征空间上的间隔最大的线性分类器，核技巧使它成
-为实质上的非线性分类器。支持向量机的学习策略就是间隔最大化，等价于求解凸二次规划
+
+概述：svm 是一种二分类模型，定义在特征空间上的间隔最大的线性分类器，核技巧使它成为实质上的非线性分类器。支持向量机的学习策略就是 *间隔最大化* ，等价于求解凸二次规划
 的问题。
 
-核方法的基本思想是通过一个非线性变换，把输入数据映射到高维的希尔伯特空间中，在这
-个高维空间里，那些在原始输入空间中线性不可分的问题变得更加容易解决，甚至线性可分。
+当训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。
+
+核方法的基本思想是通过一个非线性变换，把输入数据映射到高维的希尔伯特空间中，在这个高维空间里，那些在原始输入空间中线性不可分的问题变得更加容易解决，甚至线性可分。
+
 支持向量机（Support Vector Machine，SVM）[10] 是一类最典型的核方法，下面将以支持向量机为例，对核方法进行简单的介绍。
 
 支持向量机的基本思想是通过核函数将原始输入空间变换成一个高维（甚至是无穷维）的空间，在这个空间里寻找一个超平面，它可以把训练集里的正例和负例尽最大可能地分开（用更加学术的语言描述，就是正负例之间的间隔最大化）。那么如何才能通过核函数实现空间的非线性映射呢？让我们从头谈起。
@@ -3161,19 +3233,16 @@ SVM 方法缺点：
 3.遇到非线性问题时不容易找到合适的核函数。
 
 ** 决策树
-决策树的生成主要由 3 步组成：特征选择\决策树的生成\决策树的修剪。
+决策树的生成主要由 3 步组成：特征选择\决策树的生成\决策树的修剪。决策树的路径具有一个重要的性质，互斥且完备，即每一个样本均被一条路径所覆盖。
 
-决策树由结点（node）和有向边组成。结点表示一个特征或属性，叶结点表示一个类。从统计学上说，决策树表示给定特征条件下类的条件概率分布。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率组成。条件概率分布定义在特征空间的一个划分，将特征空间划分为互不相交。
+决策树由 *结点（node）和有向边* 组成。结点表示一个特征或属性，叶结点表示一个类。从统计学上说，决策树表示给定特征条件下类的条件概率分布。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率组成。条件概率分布定义在特征空间的一个划分，将特征空间划分为互不相交。
 
 与训练集不相矛盾的决策树（即能对训练数据进行正确分类的决策树）可能有多个，也可能一个也没有，我们需要的是一个与训练数据矛盾较小的决策树（如何衡量这个矛盾？主要利用的是损失函数），同时具有很好的泛化能力。
 
 决策树学习过程如下：
-开始，构建根节点，将所有训练数据都放在根结点。选择一个最优特征（如何确认是最优
-的？），按照这一特征将训练数据集分割成子集，使得各个子集有一个在当前条件下最好的
-分类。如果这些子集已经能够被基本正确分类，那么构建叶结点，并将这些子集分到所对应
-的叶结点中去；如果还有子集不能被基本正确分类，那么就对这些子集选择新的最优特征，
-继续对其进行分割，构建相应的结点，如此递归地进行下去，直至所有训练数据子集被基本
-正确分类，或者没有合适的特征为止。
+
+开始，构建根节点，将所有训练数据都放在根结点。选择一个最优特征（如何确认是最优的？），按照这一特征将训练数据集分割成子集，使得各个子集有一个在当前条件下最好的 分类。如果这些子集已经能够被基本正确分类，那么构建叶结点，并将这些子集分到所对应的叶结点中去；如果还有子集不能被基本正确分类，那么就对这些子集选择新的最优特征，
+继续对其进行分割，构建相应的结点，如此递归地进行下去，直至所有训练数据子集被基本正确分类，或者没有合适的特征为止。
 
 总结下：第一，选择最优特征（特征选择，利用信息增益或信息增益比），第二，构建叶结点（决策树生成）。第三，剪枝（相当于做变量选择），去掉过于细分的叶结点，使其回退到父结点，甚至更高的结点，然后将父结点或更高的结点改为新的叶结点。
 
@@ -3192,6 +3261,15 @@ SVM 方法缺点：
   - 对异常点鲁棒
   - 有特征选择作用
   - 可扩展性强，容易并行
+
+一个可解释性的模型主要有以下3个方面特点：
+
+- 该模型的函数表达简单，一般为logistic 回归；
+
+- 输出特征 $X$ 与预测 $Y$ 变量强相关，符合普遍认知；
+
+- 核心模型变量不需要特别多，一般不超过20个。
+
 
 - 树的缺点
   - 缺乏平滑性（回归预测时输出值只能输出有限的若干种数值）
@@ -3221,13 +3299,28 @@ $$\Omega ( f ) = \gamma T + \frac { 1 } { 2 } \lambda \| w \| ^ { 2 }.$$
 
 (3)当前结点包含的样本集合为空,不能划分。
 
-*** 如何选择最优划分属性
+- 决策树如何处理缺失值？
 
+https://blog.csdn.net/u012328159/article/details/79413610
+
+这个问题实际需要解决2个问题：
+
+1.如何在属性值缺失的情况下进行划分属性的选择？（比如“色泽”这个属性有的样本在该属性上的值是缺失的，那么该如何计算“色泽”的信息增益？）
+
+按照缺失值比例乘以信息增益来解决这个问题。
+
+2.给定划分属性，若样本在该属性上的值是缺失的，那么该如何对这个样本进行划分？（即到底把这个样本划分到哪个结点里？）
+
+若样本 $x$ 在划分属性 $a$ 上的取值未知，则将 $x$ 同时划入所有节点，当然是以一定概率划入所有子节点中，概率是和无缺失值样本在属性 $a$ 上取值 $a^v$ 的样本所占比例。直观来看，就是让同一样本以不同的概率划入到不同的子节点中去。
+
+至于第二个问题还有一种做法就是单独将缺失的样本归为一个分支。
+
+*** 如何选择最优划分属性
 指标：信息增益、信息增益率、Gini 指数。
 
 - 信息增益
 
-“信息熵”(information entropy)是度量样本集合纯度最常用的一种指标。假定当前样本集合 $D$ 中第 $k$ 类样本所占的比例为 $p _ { k } ( k = 1,2 , \ldots , | \mathcal { Y } | )$, 则 D 的信息熵定义为
+“信息熵”(information entropy)是度量样本集合纯度最常用的一种指标。假定当前样本集合 $D$ 中第 $k$ 类样本所占的比例为 $p_{k} ( k = 1,2 , \ldots , | \mathcal { Y } | )$, 则 D 的信息熵定义为
 
 $$\operatorname { Ent } ( D ) = - \sum _ { k = 1 } ^ { | \mathcal { Y | } } p _
 { k } \log _ { 2 } p _ { k }$$
@@ -3262,11 +3355,7 @@ Ent(D) 的值越小,则 D 的纯度越高. 可以从下面的例子可以看出�
 #+end_src
 
 
-假定离散属性 a 有 V 个可能的取值 $\left\{ a ^ { 1 } , a ^ { 2 } , \ldots , a ^ {
-V } \right\}$, 若使用 a 来对样本集 D 进行划分,则会产生 V 个分支结点,其中第 v 个
-分支结点包含了 D 中所有在属性 a 上取值为 $a ^ { v }$ 的样本,记为 $D^{v}$.我们可
-根据式(41)计算出 D 的信息熵,再考虑到不同的分支结点所包含的样本数不同,给分支结点
-赋予权重 $\left| D ^ { v } \right| / | D |$, 即样本数越多的分支结点的影响越大,于是可计算出用属性 a 对样本集 D 进行划分所获得的“信息增益”( information gain)
+假定离散属性 a 有 V 个可能的取值 $\left\{ a ^ { 1 } , a ^ { 2 } , \ldots , a ^ {V} \right\}$, 若使用 a 来对样本集 D 进行划分,则会产生 V 个分支结点,其中第 v 个分支结点包含了 D 中所有在属性 a 上取值为 $a ^ { v }$ 的样本,记为 $D^{v}$.我们可根据式(41)计算出 D 的信息熵,再考虑到不同的分支结点所包含的样本数不同,给分支结点赋予权重 $\left| D ^ { v } \right| / | D |$, 即样本数越多的分支结点的影响越大,于是可计算出用属性 a 对样本集 D 进行划分所获得的“信息增益”( information gain)
 
 $$
 \operatorname { Gain } ( D , a ) = \operatorname { Ent } ( D ) - \sum _ { v = 1 } ^ { V } \frac { \left| D ^ { v } \right| } { | D | } \operatorname { Ent } \left( D ^ { v } \right)
@@ -3470,7 +3559,7 @@ bind_cols(
 
 预剪枝、后剪枝
 
-预剪枝：对比训练集、验证集预测精度，如果验证集精度有提升则会剪枝，否则不会剪枝。
+预剪枝：对比训练集、验证集预测精度，如果验证集精度有提升则会剪枝，否则不会剪枝。限制树的深度，限制叶节点的最小样本权重，限制叶节点的信息增益值的阈值等。
 
 后剪枝：也是对比训练集、验证集预测精度，只不过对比的是训练完的整棵树的精度。
 
@@ -3501,8 +3590,9 @@ export_graphviz(
 连续值处理：可以通过先分箱，或者简单点直接二分法。
 
 一个简单的 python 样例。
+
 #+begin_src python
- from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree.export import export_text
 iris = load_iris()
@@ -3527,6 +3617,14 @@ print(r)
 
 总体有两类方法，一个是基于 gini 系数的方法，另外一个是基于 oob 的方法。总体从所有树中，考察一个特征的加入，能否使得 gini 系数和 oob 下降的很多。如果下降很多，说明这个特征很重要。
 
+什么是gini 系数法？
+
+如果特征X 出现在决策树 j 中的结点M,则计算节点M 分枝前后的gini 指数变化量，假设随机森林由 N 棵树，则计算 N 次的gini 系数，最后将所有的gini 系数做一个归一化处理就得到了该特征的重要性。
+
+甚么是oob？
+
+袋外数据错误率：袋外数据指的是每次随机抽取未被抽取到的数据，假设袋外的样本数为 $O$, 将这 $O$ 个数据作为测试集，代入已生成好的随机森林分类器，得到预测的分类结果，其中预测错误的样本数为 $X$,则袋外误差为X/O,这个袋外数据误差为errOOB1,下一步对袋外数据的特征 A 加入噪声干扰，再次计算袋外误差 errOOB2,假设随机森林有N 个分类器，则特征 A 的重要性为：sum(errOOB2-errOOB1)/N,其依据就是如果一个特征很重要，那么变动后会非常影响测试误差，如果测试误差没有改变，则说明特征A 不重要。
+
 - 随机森林和决策树做法不一致的地方
 
 传统决策树在选择划分属性时是在当前结点的属性集合(假定有 d 个属性)中选择一个最优属性;而在 RF 中,对基决策树的每个结点,先从该结点的属性集合中随机选择一个包含 k 个属性的子集,然后再从这个子集中选择一个最优属性用于划分.这里的参数 k 控制了随机性的引入程度:若令 k=d,则基决策树的构建与传统决策树相同;若令 k=1,则是随机选择一个属性用于划分;一般情况下,推荐值 k=log2d。
@@ -3534,7 +3632,6 @@ print(r)
 - 随机森林和 bagging 不一致的地方
 
 随机森林对 Bagging 只做了小改动,但是与 Bagging 中基学习器的“多样性”仅通过样本扰动(通过对初始训练集采样)而来不同,随机森林中基学习器的多样性不仅来自样本扰动,还来自属性扰动（这就呼应了之前的每次随机选择不同的属性集合）,这就使得最终集成的泛化性能可通过个体学习器之间差异度的增加而进一步提升。
-
 
 随机森林的泛化误差界与单个决策树的分类强度成负相关，与决策树之间的相关性成正相关，分类强度越大且相关性越小,泛化误差界越小，可以看到随机森林中的随机性可以保证越小。
 
@@ -3586,10 +3683,8 @@ https://zhuanlan.zhihu.com/p/41536315
 
 结论 2:The Real AdaBoost algorithm fits an additive logistic regression model by stagewise and approximate optimization of \(J(F)=E\left[e^{-y F(x)}\right] .\)
 
+The AdaBoost procedure trains the classiﬁers $f_{m}(x)$ on weighted versions of the training sample, giving higher weight to cases that are cur- rently misclassiﬁed. 每次更新样本权重，分类错误的样本下次给与的权重越大。
 
-The AdaBoost procedure trains the classiﬁers $f_{m}(x)$ on weighted versions of
-the training sample, giving higher weight to cases that are cur- rently
-misclassiﬁed. 每次更新样本权重，分类错误的样本下次给与的权重越大。
 This is done for a sequence of weighted samples, and then the ﬁnal classiﬁer is deﬁned to be a linear combination of the classiﬁers from each stage.
 
 Interestingly, in many examples the test error seems to consistently decrease and then level off as more classiﬁers are added, rather than ultimately increase. For some reason, it seems that AdaBoost is resistant to overﬁtting.
@@ -3607,15 +3702,19 @@ F(x)=\sum_{j=1}^{p} f_{j}\left(x_{j}\right)
 ![real adaboost](https://cdn.mathpix.com/snip/images/sysfs_rZNFyt5ICgafNllVKtuDhKfC7UG8csr1OpOTQ.original.fullsize.png)
 
 1.给定样本初始权重。
+
 2.利用基学习器判定样本分类结果，如果分错加大权重，分对就降低样本权重
-3.根据新的权重，再利用基学习器学习分类结果，再判断分错就加大样本权重，分对就降低
-样本权重，
+
+3.根据新的权重，再利用基学习器学习分类结果，再判断分错就加大样本权重，分对就降低样本权重
+
 4.然后继续迭代，直至误差损失不在降低。
 
 stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用 LR 进行回归组合），从而得到完整的 stacking 模型。
 
 **** XGBoost
+
 https://zhuanlan.zhihu.com/p/258564378
+
 与gbdt,adaboost 一样，属于提升类方法的一种.
 
 最优切分点算法有哪些？
@@ -3637,27 +3736,19 @@ https://zhuanlan.zhihu.com/p/258564378
 从上面的式子，对叶子节点个数进行惩罚，相当于在训练过程中做个剪枝。如何确定树结构？主要还是计算树分裂前后的增益？
 
 ID3 算法采用信息增益；C4.5 算法采用信息增益比; CART 采用 Gini 系数；XGBoost 还是对一个叶子节点进行分裂，分裂前后的增益，当对一个叶节点分割时，计算所有候选对应的 gain,选取 gain 最大的进行分割。
-xgboost 的 python code.
 
+xgboost 的 python code.
 
 XGBOOST 模型需要给定的参数有：
 
 1.learning_rate:用于防止过拟合的步长收缩，范围是[0,1]
-
 2.tree
-
 3.max_depth:确定在每次提升回合中允许每颗树生长的深度。
-
 4.colsample_bytree:每颗树使用的特征的百分比。
-
 5.n_estimators:构建树的个数
-
 6.min_child_weight:
-
 7.subsample,colsample_bytree 抽样比率
-
 8.gamma:根据拆分后预期的损耗减少，控制给定节点是否拆分。较高的值导致较少的分割。
-
 9.正则化
 
 lambda,alpha
@@ -3666,7 +3757,6 @@ lambda,alpha
 import pandas as pd
 import xgboost as xgb
 from sklearn.metrics import mean_squared_error
-import pandas as pd
 from sklearn.datasets import load_boston
 import numpy as np
 boston = load_boston()
@@ -3711,6 +3801,10 @@ plt.rcParams['figure.figsize'] = [5, 5]
 plt.show()
 #+end_src
 
+如何对xgboost 进行调参？
+
+https://blog.csdn.net/jh1137921986/article/details/84754868
+
 有必要对 xgboost 超参数进行整理。
 
 - （学习率）learning_rate: step size shrinkage used to prevent overfitting. Range is [0,1]
@@ -3733,16 +3827,39 @@ XGBoost also supports regularization parameters to penalize models as they becom
 \Omega(f)=\gamma T+\frac{1}{2} \lambda\|w\|^{2}
 \end{equation}
 
-gamma: controls whether a given node will split based on the expected reduction
-in loss after the split. A higher value leads to fewer splits. Supported only
-for tree-based learners. gamma 控制是否节点会分裂，如果 loss 下降的话，那么就会分
-裂，否则不分裂。
+gamma: controls whether a given node will split based on the expected reduction in loss after the split. A higher value leads to fewer splits. Supported only
+for tree-based learners. gamma 控制是否节点会分裂，如果 loss 下降的话，那么就会分裂，否则不分裂。
 
 alpha: L1 regularization on leaf weights. A large value leads to more regularization.
 
 lambda: L2 regularization on leaf weights and is smoother than L1 regularization.
 
 具体可以见 https://www.datacamp.com/community/tutorials/xgboost-in-python.
+
+https://zhuanlan.zhihu.com/p/75133195
+
+#+begin_src python
+  params = {'verbose': False,
+          'booster': 'gbtree',
+          'n_estimators': 200,
+          'max_depth': 9,  # max_depth [缺省值=6]
+          'eta': 0.08,  # learning_rate
+          'silent': 1,  # 为0打印运行信息；设置为1静默模式，不打印
+          'nthread': 20,  # 运行时占用cpu数
+          'gamma': 0.0,  # min_split_loss]（分裂最小loss）参数的值越大，算法越保守
+          'min_child_weight': 5,  # 决定最小叶子节点样本权重和,缺省值=1,避免过拟合. 值过高，会导致欠拟合
+          'max_delta_step': 0,
+          'subsample': 1,  #参数控制对于每棵树，随机采样的比例 减小避免过拟合,  典型值：0.5-1，0.5代表平均采样，防止过拟合.
+          'colsample_bytree': 0.8,  #树级列采样
+          'colsample_bylevel': 1,  #层级列采样
+          'lambda': 0.1,  # L2正则化项, 减少过拟合
+          'alpha': 0.1,  # 权重的L1正则化项
+          'objective': 'binary:logistic',
+          'scale_pos_weight': 1,  # 通常可以将其设置为负样本的数目与正样本数目的比值
+          'eval_metric': 'auc',
+          'base_score': 0.5,
+          }
+#+end_src
 
 我们可以从 importance 知道变量的重要性，但是这些因素之间的是否是正相关，还是负相关还是其他更复杂的相关性，我们无法得知，也无法解读每个特征对每个个体的预测值的影响。
 
@@ -3758,6 +3875,27 @@ lambda: L2 regularization on leaf weights and is smoother than L1 regularization
 输出：强学习器
 
 https://pic4.zhimg.com/v2-f8e7906c5ef33b2c737d30893de182eb_b.jpg
+
+最优切分点划分算法：
+
+在决策树的生长过程中，一个非常关键的问题是如何找到叶子的节点的最优切分点，xgboost 支持2种分裂节点的方法：贪心算法和近似算法。
+
+贪心算法：
+
+1.从深度为0的树开始，对每个叶节点枚举所有可用特征；
+2.针对每个特征，把属于该节点的训练样本根据该特征值进行升序排列，通过线性扫描的方式来决定该特征的最佳分裂点，并记录该特征的分裂收益；
+3.选择收益最大的特征作为分裂特征，用该特征的最佳分裂点作为分裂位置，在该节点上分裂出左右2个新的叶节点，并为每个新节点关联对应的样本集；
+4.回到第1步，递归执行到满足特定条件为止
+
+近似算法：
+
+对于每个特征，只考察分位点可以减少计算复杂度。
+
+该算法首先根据特征分布的分位数提出候选划分点，然后将连续型特征映射到由这些候选点划分的桶中，然后聚合统计信息找到所有区间的最佳分裂点。
+
+xgboost 防止过拟合参数包括：
+
+eta(学习率)，gamma（minimum loss reduction，最小的分裂损失），max_depth(最大深度，树越深越容易过拟合)，样本抽样比例（subsample），colsample_bytree, colsample_bylevel, colsample_bynode 每棵树、每层\每个节点分裂时，是否对特征进行采样，lambda,alpha。
 
 **** lightgbm
 
@@ -3790,6 +3928,8 @@ Histogram algorithm 应该翻译为直方图算法，直方图算法的基本思
 lightgbm 的计算复杂度要比 xgboost 要小，xgboost 每遍历一个特征值就需要计算一次分裂的增益，而直方图算法 lightgbm 只需要计算 k 次（k 可以认为是常数），直接将时间复杂度从 O(#data * #feature) 降低到 O(k * #feature), 而我们知道 #data >>k。
 
 **** GBDT
+GBDT 如何做分类任务：
+https://zhuanlan.zhihu.com/p/46445201
 
 参数估计方法：GBDT 在函数空间中利用梯度下降法进行优化。
 
@@ -3822,6 +3962,13 @@ clf.score(X_test, y_test)
 
 上面 code 里有 n_estimators 是 基学习器个数，learning_rate 是梯度下降的步长，
 loss 是损失函数，subsample 即在拟合一棵新的回归树时，不用完全的样本集，而仅是无放回的抽样其中的部分，通常为 50%，对于大的数据集，抽样的比例可以小于 50%。subsampling 的方式可以避免过拟合，同样地，更小的训练集也可以更快的完成训练。
+
+**** 最大熵问题
+
+https://zhuanlan.zhihu.com/p/29978153
+
+
+
 
 *** Bagging
 Bagging is purely a variance-reduction technique, and since trees tend to have high variance, bagging often produces good results.
@@ -3858,9 +4005,9 @@ y_pred
 ** CNN(convolutional neural network)
 
 https://zhuanlan.zhihu.com/p/27908027
+https://chaoge123456.github.io/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E7%8E%B0%E8%A7%A3%E6%9E%90.html/#more
 
-卷积神经网络，利用卷积运算对图片进行特征提取，再经过 Relu, pooling 等过程进一步实现图像信息的有效提取，从而达到图片特征信息提取的作用，最后经过全连接也就是通常所
-说的 NN 中的 softmax 算法实现对图片分类目的。
+卷积神经网络，利用卷积运算对图片进行特征提取，再经过 Relu, pooling 等过程进一步实现图像信息的有效提取，从而达到图片特征信息提取的作用，最后经过全连接也就是通常所说的 NN 中的 softmax 算法实现对图片分类目的。
 
 深度学习模型是一种表示学习（representation learning），能够学到数据更高层次的抽象表示，能够自动从数据中提取特征。
 
@@ -3900,17 +4047,33 @@ dropout 层：训练之后，神经网络的权重与训练样本太过匹配以
 
 全连接层一个作用，输出分类概率，检测高级特征之后，网络最后的完全连接层就更是锦上添花了。简单地说，这一层处理输入内容（该输入可能是卷积层、ReLU 层或是池化层的输出）后会输出一个 N 维向量，N 是该程序必须选择的分类数量。例如，如果你想得到一个数字分类程序，如果有 10  个数字，N 就等于 10。这个 N 维向量中的每一数字都代表某一特定类别的概率。例如，如果某一数字分类程序的结果矢量是 [0 .1 .1 .75 0 0 0 0 0 .05]，则代表该图片有 10% 的概率是 1、10% 的概率是 2、75% 的概率是 3、还有 5% 的概率是 9（注：还有其他表现输出的方式，这里只展示了 softmax 的方法）
 
+深度神经网络一般都需要大量的训练数据才能获得比较理想的效果，在数据量有限的情况下，可以通过 *数据增强* 来增加数据量，提高模型的鲁棒性，避免过拟合。
+
+图像数据的增强主要是通过算法对图像进行转变，引入噪声等方法来增加数据的多样性，增强的方法主要有以下5种：
+
+1.旋转，将图像按顺时针或逆时针方向随机旋转一定角度。
+
+2.翻转，将图像沿着水平或垂直方向随机翻转一定角度。
+
+3.缩放，将图像放大或缩小一定比例。
+
+4.平移，将图像沿着水平或垂直方法平移一定布长。
+
+5.加噪声，加入随机噪声。
+
 *** Resnet
+
 深度残差网络（deep residual network, Resnet）。深度学习模型很难训练，存在梯度消失或爆炸问题。batchnorm 可以解决这个问题。
 
 深度网络可以看作是多级信息蒸馏操作，信息穿越连续的过滤器，其纯度越来越高
-
 
 一种方法的提出，首先需要问“这个方法解决了什么问题？”
 
 ResNet 解决了深度 CNN 模型难训练的问题。如何解决？
 
 *** RNN (循环神经网络)
+
+神经网络与深度学习一书的p177。循环神经网络的净输入分布在神经网络中是动态变化的，因此无法应用批量归一化操作，这句话怎么理解？
 
 大多数RNN 中的计算可以分解成三块参数及其相关的变换：
 
@@ -3961,11 +4124,34 @@ $S_{t}$ 的值不仅仅取决于 $X_{t}$, 还取决于 $S_{t-1}$.
 
 *再了解了解基于编码－解码的序列到序列架构*
 
+#+begin_src python :results output
+class RNN:
+    def step(self,x,hidden):
+        hidden = np.tanh(np.dot(self.W_hh, hidden) + np.dot(self.W_xh, x))
+        return hidden
+
+rnn = RNN()
+x = get_data()
+seq_len = x.shape[1]
+hidden_state = np.zeros()
+for i in range(seq_len):
+    hidden_state = rnn(x[:,i,:], hidden_state)
+#+end_src
+
+https://blog.csdn.net/qq_41149269/article/details/81567364
+#+begin_src python :results output
+
+#+end_src
+
 *** LSTM
+
+相比较RNN, LSTM 多了一个记忆状态单元 $c_{t}$ ，也叫做cell state，能够控制忘记哪些信息。
 
 长短期记忆（long short-term memory,lstm） 是一种特殊的 RNN, 主要是为了解决长序列训练过程中的梯度消失和梯度爆炸问题。简单来说，就是相比普通的 RNN，LSTM 能够在更长的序列中有更好的表现。
 
 https://pic4.zhimg.com/80/v2-e4f9851cad426dfe4ab1c76209546827_720w.jpg
+
+https://pic2.zhimg.com/80/v2-556c74f0e025a47fea05dc0f76ea775d_1440w.jpg
 
 相比 RNN 只有一个传递状态 $h^{t}$, LSTM 有 2 个传递状态，一个 $c^{t}$(cell state),和一个 $h^{t}$(hidden state).
 
