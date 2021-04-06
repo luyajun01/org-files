@@ -11,6 +11,9 @@
 
 * sql_wiki                                                              :toc:
   - [[#常见错误][常见错误]]
+  - [[#名词解释][名词解释]]
+    - [[#外键][外键]]
+    - [[#索引][索引]]
   - [[#创建数据库][创建数据库]]
   - [[#选择数据库][选择数据库]]
   - [[#数据类型][数据类型]]
@@ -21,6 +24,10 @@
   - [[#删除数据库][删除数据库]]
   - [[#插入数据][插入数据]]
   - [[#查询数据][查询数据]]
+    - [[#分页查询][分页查询]]
+    - [[#聚合查询][聚合查询]]
+    - [[#多表查询][多表查询]]
+    - [[#连接查询][连接查询]]
   - [[#update][update]]
   - [[#delete][delete]]
   - [[#head][head]]
@@ -40,16 +47,73 @@
     - [[#count][count]]
     - [[#meanvar][mean/var]]
   - [[#string-截取][string 截取]]
+  - [[#练习][练习]]
+    - [[#查询-01-课程比-02-课程成绩高的学生的信息及课程分数][查询" 01 "课程比" 02 "课程成绩高的学生的信息及课程分数]]
+    - [[#查询同时存在-01-课程和-02-课程的情况][查询同时存在" 01 "课程和" 02 "课程的情况]]
 - [[#spark_wiki][Spark_wiki]]
 - [[#hive_wiki][Hive_wiki]]
 
 ** 常见错误
+数据库按照数据结构来组织，存储和管理数据，实际上，数据库一共有3种模型：
+
+1.层次模型。层次模型就是以“上下级”的层次关系来组织数据的一种方式，层次模型的数据结构看起来就像一颗树。
+
+2.网状模型。
+
+3.关系模型。
+
 No Database Selected.
 
 需要指定使用哪一个数据库。
 #+begin_src sql
-  use sys
+use sys
 #+end_src
+
+** 名词解释
+*** 外键
+外键：可以通过特定的指标，实现与其他表关联，这种列就称为外键。
+外键并不是通过列名实现的，而是通过定义外键约束实现的：
+
+#+begin_src sql
+ALTER TABLE students
+ADD CONSTRAINT fk_class_id
+FOREIGN KEY (class_id)
+REFERENCES classes (id);
+#+end_src
+
+其中，外键约束的名称fk_class_id可以任意，FOREIGN KEY (class_id)指定了class_id作为外键，REFERENCES classes (id)指定了这个外键将关联到classes表的id列（即classes表的主键）。
+
+通过定义外键约束，关系数据库可以保证无法插入无效的数据。即如果classes表不存在id=99的记录，students表就无法插入class_id=99的记录。
+
+由于外键约束会降低数据库的性能，大部分互联网应用程序为了追求速度，并不设置外键约束，而是仅靠应用程序自身来保证逻辑的正确性。这种情况下，class_id仅仅是一个普通的列，只是它起到了外键的作用而已。
+
+要删除一个外键约束，也是通过ALTER TABLE实现的：
+
+#+begin_src sql
+ALTER TABLE students
+DROP FOREIGN KEY fk_class_id;
+#+end_src
+
+*** 索引
+在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。
+
+索引是关系数据库中对某一列或多个列的值进行预排序的数据结构。通过使用索引，可以让数据库系统不必扫描整个表，而是直接定位到符合条件的记录，这样就大大加快了查询速度。
+
+如果要经常根据 score 列进行查询，就需要对score 列创建索引。
+
+#+begin_src sql
+ALTER TABLE students
+ADD INDEX idx_score (score);
+#+end_src
+
+使用ADD INDEX idx_score (score)就创建了一个名称为idx_score，使用列score的索引。索引名称是任意的，索引如果有多列，可以在括号里依次写上，例如：
+
+#+begin_src sql
+ALTER TABLE students
+ADD INDEX idx_name_score (name, score);
+#+end_src
+
+
 
 ** 创建数据库
 
@@ -147,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `runoob_tbl`(
 
 - ENGINE 设置存储引擎，CHARSET 设置编码。
 
-   #+begin_src
+#+begin_src
 insert into grade values(90,100,'A')
 
 insert into grade values(80,89,'B')
@@ -157,7 +221,7 @@ insert into grade values(70,79,'C')
 insert into grade values(60,69,'D')
 
 insert into grade values(0,59,'E')
-   #+end_src
+#+end_src
 
 ** 删除数据库
 在删除数据库过程中，务必要十分谨慎，因为在执行删除命令后，所有数据将会消失。
@@ -167,39 +231,186 @@ insert into grade values(0,59,'E')
    #+end_src
 
 ** 插入数据
+例如，我们向students表插入一条新记录，先列举出需要插入的字段名称，然后在VALUES子句中依次写出对应字段的值：
+#+begin_src sql
+insert into table_name (field1, field2,...,fieldN)
+                       Values
+                       (value1, value2,...,valueN);
+#+end_src
 
-   #+begin_src sql
-     insert into table_name (field1, field2,...,fieldN)
-                            Values
-                            (value1, value2,...,valueN);
-   #+end_src
+#+begin_src SQL
+INSERT INTO students (class_id, name, gender, score) VALUES (2, '大牛', 'M', 80);
+#+end_src
 
 ** 查询数据
 
-   #+begin_src sql
-   SELECT column_name,column_name
-   FROM table_name
-   [WHERE Clause]
-   [LIMIT N][ OFFSET M]
-   #+end_src
+#+begin_src sql
+SELECT column_name,column_name
+FROM table_name
+[WHERE Clause]
+[LIMIT N][ OFFSET M]
+#+end_src
 
 查询语句中你可以使用一个或者多个表，表之间使用逗号(,)分割，并使用WHERE语句来设定查询条件。 SELECT 命令可以读取一条或者多条记录。
 你可以使用星号（*）来代替其他字段，SELECT语句会返回表的所有字段数据。你可以使用 WHERE 语句来包含任何条件。
 你可以使用 LIMIT 属性来设定返回的记录数。你可以通过OFFSET指定SELECT语句开始查询的数据偏移量。默认情况下偏移量为0。
 
+*** 分页查询
+
+使用SELECT查询时，如果结果集数据量很大，比如几万行数据，放在一个页面显示的话数据量太大，不如分页显示，每次显示100条。
+
+要实现分页功能，实际上就是从结果集中显示第1~100条记录作为第1页，显示第101~200条记录作为第2页，以此类推。
+
+因此，分页实际上就是从结果集中“截取”出第M~N条记录。 *这个查询可以通过LIMIT <M> OFFSET <N>子句实现。* 我们先把所有学生按照成绩从高到低进行排序：
+
+#+begin_src sql
+SELECT id, name, gender, score
+FROM students
+ORDER BY score DESC
+LIMIT 3 OFFSET 0;
+#+end_src
+
+上述查询LIMIT 3 OFFSET 0表示，对结果集从0号记录开始，最多取3条。注意SQL记录集的索引从0开始。
+
+如果要查询第2页，那么我们只需要“跳过”头3条记录，也就是对结果集从3号记录开始查询，把OFFSET设定为3：
+
+#+begin_src sql
+SELECT id, name, gender, score
+FROM students
+ORDER BY score DESC
+LIMIT 3 OFFSET 3;
+#+end_src
+可见，分页查询的关键在于，首先要确定每页需要显示的结果数量pageSize（这里是3），然后根据当前页的索引pageIndex（从1开始），确定LIMIT和OFFSET应该设定的值：
+
+LIMIT总是设定为pageSize；
+OFFSET计算公式为pageSize * (pageIndex - 1)。
+这样就能正确查询出第N页的记录集。
+
+*** 聚合查询
+
+count
+
+#+begin_src sql
+SELECT COUNT(*) FROM students;
+SELECT COUNT(*) num FROM students;
+#+end_src
+
+分组
+
+#+begin_src sql
+SELECT COUNT(*) num FROM students GROUP BY class_id;
+#+end_src
+
+*** 多表查询
+
+SELECT查询不但可以从一张表查询数据，还可以从多张表同时查询数据。查询多张表的语法是：SELECT * FROM <表1> <表2>。
+
+例如，同时从students表和classes表的“乘积”，即查询数据，可以这么写：
+
+#+begin_src sql
+SELECT * FROM students, classes;
+#+end_src
+
+这种一次查询两个表的数据，查询的结果也是一个二维表，它是students表和classes表的“乘积”，即students表的每一行与classes表的每一行都两两拼在一起返回。结果集的列数是students表和classes表的列数之和，行数是students表和classes表的行数之积。
+
+这种多表查询又称笛卡尔查询，使用笛卡尔查询时要非常小心，由于结果集是目标表的行数乘积，对两个各自有100行记录的表进行笛卡尔查询将返回1万条记录，对两个各自有1万行记录的表进行笛卡尔查询将返回1亿条记录。
+
+你可能还注意到了，上述查询的结果集有两列id和两列name，两列id是因为其中一列是students表的id，而另一列是classes表的id，但是在结果集中，不好区分。两列name同理
+
+要解决这个问题，我们仍然可以利用投影查询的“设置列的别名”来给两个表各自的id和name列起别名：
+
+#+begin_src sql
+SELECT
+students.id sid,
+students.name,
+students.gender,
+students.score,
+classes.id cid,
+classes.name cname
+FROM students, classes;
+#+end_src
+
+注意，多表查询时，要使用表名.列名这样的方式来引用列和设置别名，这样就避免了结果集的列名重复问题。但是，用表名.列名这种方式列举两个表的所有列实在是很麻烦，所以SQL还允许给表设置一个别名，让我们在投影查询中引用起来稍微简洁一点：
+
+#+begin_src sql
+SELECT
+s.id sid,
+s.name,
+s.gender,
+s.score,
+c.id cid,
+c.name cname
+FROM students s, classes c;
+#+end_src
+
+*** 连接查询
+
+#+begin_src sql
+SELECT s.id, s.name, s.class_id, c.name class_name, s.gender, s.score
+FROM students s
+INNER JOIN classes c
+ON s.class_id = c.id;
+#+end_src
+
+注意INNER JOIN查询的写法是：
+
+先确定主表，仍然使用FROM <表1>的语法；
+再确定需要连接的表，使用INNER JOIN <表2>的语法；
+然后确定连接条件，使用ON <条件...>，这里的条件是s.class_id = c.id，表示students表的class_id列与classes表的id列相同的行需要连接；
+可选：加上WHERE子句、ORDER BY等子句。
+
+外连接
+
+#+begin_src sql
+SELECT s.id, s.name, s.class_id, c.name class_name, s.gender, s.score
+FROM students s
+RIGHT OUTER JOIN classes c
+ON s.class_id = c.id;
+#+end_src
+
+#+begin_src sql
+SELECT s.id, s.name, s.class_id, c.name class_name, s.gender, s.score
+FROM students s
+LEFT OUTER JOIN classes c
+ON s.class_id = c.id;
+#+end_src
+
+#+begin_src SQL
+SELECT s.id, s.name, s.class_id, c.name class_name, s.gender, s.score
+FROM students s
+FULL OUTER JOIN classes c
+ON s.class_id = c.id;
+#+end_src
+
+
 ** update
+UPDATE <表名> SET 字段1=值1, 字段2=值2, ... WHERE ...;
+
 可以用update命令更新数据库。
 
 #+begin_src sql
 update STUDENT SET SSEX = "女" where SNAME = '曾华'
 #+end_src
 
+例如，我们想更新students表id=1的记录的name和score这两个字段，先写出UPDATE students SET name='大牛', score=66，然后在WHERE子句中写出需要更新的行的筛选条件id=1：
+
+#+begin_src sql
+UPDATE students SET name='大牛', score=66 WHERE id=1;
+#+end_src
+
+最后，要特别小心的是，UPDATE语句可以没有WHERE条件，例如：
+
+#+begin_src SQL
+UPDATE students SET score=60;
+#+end_src
+
+这时，整个表的所有记录都会被更新。所以，在执行UPDATE语句时要非常小心，最好先用SELECT语句来测试WHERE条件是否筛选出了期望的记录集，然后再用UPDATE更新。
+
 ** delete
 
 #+begin_src sql
-  delete from STUDENT where  SNAME = '曾华'
+delete from STUDENT where  SNAME = '曾华'
 #+end_src
-
 
 ** head
 R 中 head 一般是展示 6 行数据的功能。sql 语句可以写成如下：
@@ -529,11 +740,10 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
 ** summarise
 *** count
 计数
-
 select count(class) as ct from STUDENT where class = "abc"
-   #+begin_src R :results output graphics :file fig_1.png :exports both
-     sqldf("select count(*) from iris")
-   #+end_src
+#+begin_src R :results output graphics :file fig_1.png :exports both
+sqldf("select count(*) from iris")
+#+end_src
 
 *** mean/var
    #+begin_src R :results output graphics :file fig_1.png :exports both
@@ -567,8 +777,22 @@ GROUP BY `year`, `month`
 从左截取字符串。
 
 #+begin_src sql
-  select left(SBIRTHDAY, 4) from STUDENT where SNO = "108"
+select left(SBIRTHDAY, 4) from STUDENT where SNO = "108"
 #+end_src
+** 练习
+*** 查询" 01 "课程比" 02 "课程成绩高的学生的信息及课程分数
+
+
+*** 查询同时存在" 01 "课程和" 02 "课程的情况
+
+#+begin_src sql
+
+#+end_src
+
+
+
+
+
 * Spark_wiki
 * Hive_wiki
 Hive 是 Hadoop 家族中一款数据仓库产品，Hive 最大的特点就是提供了类 SQL 的语法，封装了底层的 MapReduce 过程，让有 SQL 基础的业务人员，也可以直接利用 Hadoop 进行大数据的操作。就是这一个点，解决了原数据分析人员对于大数据分析的瓶颈。

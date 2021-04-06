@@ -7,9 +7,29 @@
 按照该模型的适用场景，应该先检验下两组数据的相关性结构是否不同。
 
 
+*** A tuning-free robust and efficient approach to high-dimensional regression
+
+通过阅读这篇论文知道超参数 $\lambda$ 依赖于误差分布参数 $\sigma$.
+这篇论文引用了一种损失函数，jaeckle's dispersion function,从而能够获得稳健估计.
+
+这篇论文指出，lasso 的缺点在于试图过于压缩比较大的参数，从而得到有偏估计。
+
+他们认为这样做能获得几点优势：
+
+1.新的估计量很容易实施。因为损失函数是凸优化问题。
+
+2.Theoretically, we derive a non-asymptotic L2 estimation error bound for the L1 regularized new estimator with simulated tuning parameter in ultrahigh dimensions under mild regularity conditions.
+
+3.随机误差分布关于0点对称。
 
 
+The new procedure overcomes the challenge of tuning parameter selection of Lasso and possesses several appealing properties.
 
+Computationally, it can be eﬃciently solved via linear programming. Theoretically, under weak conditions on the random error distribution, we establish a ﬁnite-sample error bound with a near-oracle rate for the new estimator with the sim- ulated tuning parameter.
+
+The square-root lasso eliminates the need to calibrate $\lambda$ for $\sigma$ but does not adjust for the design matrix.
+
+*** Nearly unbiased variable selection under minimax concave penalty
 
 
 

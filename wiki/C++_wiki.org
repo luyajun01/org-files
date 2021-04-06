@@ -130,6 +130,7 @@
 - fatal error: RcppEigen.h: No such file or directory
 
 https://stackoverflow.com/questions/22596370/fatal-error-rcppeigen-h-no-such-file-or-directory
+
    #+begin_src c
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -142,6 +143,7 @@ C++包含两种注释，注释界定符/**/通常用于多行注释，而双斜�
 clion 里面注释的快捷键是 shift+command+/.
 
 ** 一个典型 C 语言程序
+
    #+begin_src c :includes <stdio.h>
      #include <stdio.h> //包含标准库的信息
      int main() //定义名为main 的函数，它不接受参数值，main 函数的语句都被括在花括号里
@@ -170,28 +172,16 @@ auto 存储类是所有局部变量默认的存储类。
 
 register 存储类用于定义存储在寄存器中而不是 RAM 中的局部变量。这意味着变量的最大尺寸等于寄存器的大小（通常是一个词），且不能对它应用一元的 '&' 运算符（因为它没有内存位置）。
 
-
-
 - static
 
 static 存储类指示编译器在程序的生命周期内保持局部变量的存在，而不需要在每次它进入和离开作用域时进行创建和销毁。因此，使用 static 修饰局部变量可以在函数调用之间保持局部变量的值。
-
-#+begin_src python
-import numpy as np
-import pandas
-import
-
-
-#+end_src
-
-
-
 
 - extern
 
 extern 存储类用于提供一个全局变量的引用，全局变量对所有的程序文件都是可见的。当您使用 extern 时，对于无法初始化的变量，会把变量名指向一个之前定义过的存储位置。
 
 ** 标识符
+
 C 标识符内不允许出现标点字符，比如 @、$ 和 %。C 是区分大小写的编程语言。因此，在 C 中，Manpower 和 manpower 是两个不同的标识符。
 
 ** 关键字
@@ -336,11 +326,6 @@ auto z = new auto(9) //int*
 
 - thread_local
 
-
-
-
-
-
 ** 判断
 1.if 语句。一个 if 语句 由一个布尔表达式后跟一个或多个语句组成。
 
@@ -477,6 +462,7 @@ int main(){
 #+end_src
 
 ** union
+
 共同体是一种特殊的数据类型,允许可以在相同的内存位置存储不同的数据类型.
 
 #+begin_src c :includes <stdio.h>
@@ -662,7 +648,7 @@ C 语言函数形式如下：
 - 函数主体：函数主体包含一组定义函数执行任务的语句。
 
 #+begin_src c :includes <stdio.h>
-  /*函数声明*/
+/*函数声明*/
   int max(int num1, int num2);
 int main()
 {
@@ -707,8 +693,6 @@ Lambda 表达式具体形式如下：
 
 [](int x, int y){return x < y ;}
 
-
-
 ** getchar
 int getchar(void) 函数从屏幕读取下一个可用的字符，并把它返回为一个整数。这个函数在同一个时间内只会读取一个单一的字符。您可以在循环内使用这个方法，以便从屏幕上读取多个字符。
 
@@ -731,6 +715,7 @@ int main()
 #+end_src
 
 ** gets
+
 char *gets(char *s) 函数从 stdin 读取一行到 s 所指向的缓冲区，直到一个终止符或 EOF。int puts(const char *s) 函数把字符串 s 和一个尾随的换行符写入到 stdout。
 
 #+begin_src c :includes <stdio.h>
@@ -790,11 +775,13 @@ int main(){
    #+end_src
 
 ** 错误处理
+
    C 语言提供了 perror() 和 strerror() 函数来显示与 errno 相关的文本消息。perror()
+
    函数显示您传给它的字符串，后跟一个冒号、一个空格和当前 errno 值的文本表示形式。strerror() 函数，返回一个指针，指针指向当前 errno 值的文本表示形式。让我们来模拟一种错误情况，尝试打开一个不存在的文件。您可以使用多种方式来输出错误消息，在这里我们使用函数来演示用法。另外有一点需要注意，您应该使用 stderr 文件流来输出所有的错误。
 
-   #+begin_src c :includes <stdio.h>
-     #include <stdio.h>
+#+begin_src c :includes <stdio.h>
+#include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
@@ -1108,7 +1095,7 @@ class <派生类名>:<继承方式1><基类名1>,<继承方式2><基类名2>,…
 其中，访问修饰符继承方式是 public、protected 或 private 其中的一个，用来修饰每个基类，各个基类之间用逗号分隔，如上所示。现在让我们一起看看下面的实例。
 
 #+begin_src c
-  #include <iostream>
+#include <iostream>
 
 using namespace std;
 
@@ -1246,7 +1233,6 @@ int main()
 #+end_src
 
 ** 重载运算符和重载函数
-
 C++ 允许在同一作用域中的某个函数和运算符指定多个定义，分别称为 *函数重载和运算符重载。*
 
 重载声明是指一个与之前已经在该作用域内声明过的函数或方法具有相同名称的声明，但是它们的参数列表和定义（实现）不相同。
@@ -1375,11 +1361,6 @@ int main( )
 #+end_src
 
 
-
-
-
-
-
 ** 变量
 变量其实只不过是程序可操作的存储区的名称。C 中每个变量都有特定的类型，类型决定了变量存储的大小和布局，该范围内的值都可以存储在内存中，运算符可应用于变量上。
 
@@ -1481,7 +1462,7 @@ int main(){
 1.使用 #define 预处理器。2.使用 const 关键字。
 
 #+begin_src c :includes <stdio.h>
-  #include <stdio.h>//引入头文件
+#include <stdio.h>//引入头文件
 // 函数外定义变量x和y
 #define x 10
 #define y 10
@@ -1543,7 +1524,7 @@ int main()
 在 C 语言中，字符串实际上是使用 null 字符 '\0' 终止的一维字符数组。因此，一个以 null 结尾的字符串，包含了组成字符串的字符。下面的声明和初始化创建了一个 "Hello" 字符串。由于在数组的末尾存储了空字符，所以字符数组的大小比单词 "Hello" 的字符数多一个。
 
 #+begin_src c :includes <stdio.h>
-  #include <stdio.h>//引入头文件
+#include <stdio.h>//引入头文件
 int main()
 {
     char greeting[6] = {'h', 'e', '\0'};
@@ -1551,7 +1532,6 @@ int main()
     return 0;
 }
 #+end_src
-
 
 strcpy(s1, s2):复制字符串 s2 到字符串 s1。
 
@@ -1566,7 +1546,7 @@ strchr(s1, ch):返回一个指针，指向字符串 s1 中字符 ch 的第一次
 strstr(s1, s2):返回一个指针，指向字符串 s1 中字符串 s2 的第一次出现的位置。
 
 #+begin_src c :includes <stdio.h>
-  #include <string.h>
+#include <string.h>
 #include <stdio.h>//引入头文件
 int main()
 {
@@ -1604,14 +1584,19 @@ int main()
     printf("%d",day);
     return 0;
 }
-   #+end_src
+
+//2
+#+end_src
+
+输出的是2.
 
 ** 指针
-通过指针，可以简化一些 C 编程任务的执行，还有一些任务，如动态内存分配，没有指针是无法执行的。
-正如您所知道的，每一个变量都有一个内存位置，每一个内存位置都定义了可使用连字号（&）运算符访问的地址，它表示了在内存中的一个地址。
+C 语言是比较偏低层的语言，因为他的很多操作都是直接针对内存操作的。
+
+通过指针，可以简化一些 C 编程任务的执行，还有一些任务，如动态内存分配，没有指针是无法执行的。 正如您所知道的，每一个变量都有一个内存位置，每一个内存位置都定义了可使用连字号（&）运算符访问的地址，它表示了在内存中的一个地址。
 
 #+begin_src c
- #include <stdio.h>//引入头文件
+#include <stdio.h>//引入头文件
 int main(){
     int var1;
     char var2[10];
@@ -1623,6 +1608,7 @@ int main(){
 #+end_src
 
 *** 什么是指针？
+
 指针是一个变量，其值为另一个变量的地址，即，内存位置的直接地址。就像其他变量或常量一样，您必须在使用指针存储其他变量地址之前，对其进行声明。指针变量声明的一般形式为：type *var-name.
 
 在这里，type 是指针的基类型，它必须是一个有效的 C 数据类型，var-name 是指针变量的名称。用来声明指针的星号 * 与乘法中使用的星号是相同的。但是，在这个语句中，星号是用来指定一个变量是指针。以下是有效的指针声明：
@@ -1633,7 +1619,6 @@ float  *fp;    /* 一个浮点型的指针 */
 char   *ch;     /* 一个字符型的指针 */
 
 *** 如何使用指针？
-
 使用指针时会频繁进行以下几个操作：定义一个指针变量、把变量地址赋值给指针、访问指针变量中可用地址的值。这些是通过使用一元运算符 * 来返回位于操作数所指定地址的变量的值。下面的实例涉及到了这些操作：
 
 通过 *ip 返回指定地址的变量的值。
@@ -1682,7 +1667,6 @@ int main()
 
 指针是一个变量，其值为另一个变量的地址，即，内存位置的直接地址。就像其他变量或常量一样，您必须在使用指针存储其他变量地址之前，对其进行声明。要理解指针就要先理解计算机的内存。计算机内存会被划分为按顺序编号的内存单元。每个变量都是存储在内存单元中的，称之为地址。
 
-
 *** 函数指针
 函数指针是指向函数的指针变量。通常我们说的指针变量是指向一个整型、字符型或数组等变量，而函数指针是指向函数。函数指针可以像一般函数一样，用于调用函数、传递参数。函数指针变量的声明：
 
@@ -1693,7 +1677,7 @@ typedef int (*fun_ptr)(int,int); // 声明一个指向同样参数、返回值�
 以下实例声明了函数指针变量 p，指向函数 max.
 
 #+begin_src c :includes <stdio.h>
-  #include <stdio.h>//引入头文件
+#include <stdio.h>//引入头文件
 int max(int x, int y){
     return x > y ? x : y;
 }
@@ -1716,7 +1700,7 @@ int main(void)
 简单讲：回调函数是由别人的函数执行时调用你实现的函数。
 
 #+begin_src c :includes <stdio.h>
-  #include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>//引入头文件
 //回调函数
 void populate_array (int *array, size_t arraySize, int (*getNextValue)(void))
@@ -1734,22 +1718,23 @@ int main(void){
     int myarray[10];
     populate_array(myarray, 10, getNextRandomValue);
     for (int i = 0; i < 10; i++){
-        printf("%d", myarray[i]);
+        printf("%d\n", myarray[i]);
     }
     printf("\n");
     return 0;
 }
 #+end_src
 
+一直纠结为啥 int *array, 因为array 是数组。
+
 ** #include<stdio.h>
-这行代码在 c 语言中真的是十分常见。stdio.h 文件是所有 c 语言编译器的标准部分，用
-来提供输入和输出的支持。
+
+这行代码在 c 语言中真的是十分常见。stdio.h 文件是所有 c 语言编译器的标准部分，用来提供输入和输出的支持。
 
 stdio.h 的含义是 standard input/output header.
 
 ** int main(void)
-主函数，c 程序规定一个程序中有一个或多个函数，他们是 c 程序的基本模块。但必须有
-且只有一个 main 函数。因为 c 程序的执行将从 main 函数开始，到 main 函数结束而停止。
+主函数，c 程序规定一个程序中有一个或多个函数，他们是 c 程序的基本模块。但必须有且只有一个 main 函数。因为 c 程序的执行将从 main 函数开始，到 main 函数结束而停止。
 
 在 main(void) 的函数申明中，前面的 int 表示 main() 这个函数在执行完成后返回一个
 整数。main 括号里的 void 表示空。
@@ -1764,12 +1749,12 @@ x	以十六进制形式输出无符号整数(不输出前缀 0x)
 U	以十进制形式输出无符号整数
 f	以小数形式输出单、双精度类型实数
 e	以指数形式输出单、双精度实数
-g	以%f 或%e 中较短输出宽度的一种格式输出单、双精度实数
+g	以%f 或%e 中较短输出宽度的一种格式输出单、双精度 fr实数
 C	输出单个字符
 S	输出字符串
 
-    #+begin_src c
-      #include <stdio.h>
+#+begin_src c
+#include <stdio.h>
 int main()
 {
     int a=12;
@@ -1801,6 +1786,11 @@ int main()
 在 c 语言中，运算符&& 的优先级比||的优先级高。
 
 ** C++ 11
+
+C++ 仍以C 为基础，区块（blocks），语句（statements），预处理器（preprocessor），内置数据类型（built-in data types），数组（array），指针等均来自C.
+
+C,object-oriented C++,template C++,STL.
+
 *** auto
 可以用 auto 直接自动定义变量的类型。
 #+begin_src c
@@ -1867,8 +1857,7 @@ int main()
 为什么要写 using namespace std; 这句话呢？
 
 这是 c++ 新引入的一个机制，主要为了解决多个模块间命名冲突的问题，就像现实中的两
-个人重名一个道理，c++ 把相同的名字都放在不同的空间里，来防止名字的冲突。 好像 r
-也有这样的机制！
+个人重名一个道理，c++ 把相同的名字都放在不同的空间里，来防止名字的冲突。 好像 r也有这样的机制！
 
 ** 常用数据类型
 | Type | Description |
@@ -1891,10 +1880,24 @@ ANSI C 语言中的全部转义字符序列如下：
 \v 纵向制表符 \0 值为 0 的字符
 
 *** const
-限定符。任何变量的声明都可以使用 const 限定符限定，该限定符指定变量的值不能被修
-改。对数组而言，const 限定符指定数组所有元素的值都不能被修改。
 
+限定符。任何变量的声明都可以使用 const 限定符限定，该限定符指定变量的值不能被修改。对数组而言，const 限定符指定数组所有元素的值都不能被修改。
 const 变量必须被初始化。
+
+#+begin_src python :results output
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
+using namespace std;
+int main(){
+    const int x = 10;
+    const int y = 10;
+    int z;
+    z = x * y;
+    printf("value of z : %d", z);
+    return 0;
+}
+#+end_src
 
 *** Vector
 
@@ -1905,10 +1908,11 @@ const 变量必须被初始化。
 #+end_src
 
 **** size
+
 向量的大小用 a.size() 来表达。
 
-     #+begin_src C++
-       #include <Rcpp.h>
+#+begin_src C++
+#include <Rcpp.h>
 using namespace Rcpp;
 //[[Rcpp::export]]
 NumericVector convolveCpp(NumericVector a, NumericVector b){
@@ -1928,21 +1932,24 @@ NumericVector convolveCpp(NumericVector a, NumericVector b){
 NumericMatrix M1(nrow,ncol);//创立了一个nrow*ncol的默认初始化的数值型矩阵。
 #+end_src
 *** Multidimensional Array
+
 #+begin_src C++ :includes <Rcpp.h>
-      NumericVector out=NumericVector(Dimension(2,2,3));//创立了一个多维数组。然而我不知道有什么卵用。
+NumericVector out=NumericVector(Dimension(2,2,3));//创立了一个多维数组。然而我不知道有什么卵用。
 #+end_src
 
 *** List
-    #+begin_src c++ :includes <Rcpp.h>
-      NumericMatrix y1(2,2);
+
+#+begin_src c++ :includes <Rcpp.h>
+NumericMatrix y1(2,2);
 NumericVector y2(5);
 List L=List::create(Named("y1")=y1,
                     Named("y2")=y2);
-    #+end_src
+#+end_src
 
 more examples:
+
 #+begin_src c
-  #include <RcppArmadillo.h>
+#include <RcppArmadillo.h>
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export()]]
@@ -1960,6 +1967,7 @@ List a8(int n, int r, double v){
 
 
 *** DataFrame
+
     #+begin_src R :results output graphics :file fig_1.png :exports both
       NumericVector a=NumericVector::create(1,2,3);
       CharacterVector b=CharacterVector::create("a","b","c");
@@ -1972,7 +1980,7 @@ List a8(int n, int r, double v){
 
 *** for 循环
 
-    #+begin_src c
+#+begin_src c
 #include <Rcpp.h>
 using namespace Rcpp;
 //[[Rcpp::export]]
@@ -1988,17 +1996,17 @@ NumericVector convolveCpp(NumericVector a, NumericVector b){
 }
 
 convolveCpp(1:5, 1:3)
-    #+end_src
+#+end_src
 
 从上面的例子可以看出，在 c++ 中，变量函数必须给定数据类型。
 
 函数 convolveCpp 是向量， a.size 是向量的大小。
 
 *** while
-while 循环语句的执行方式是这样的：首先测试圆括号中的条件，如果条件为真
-（fahr<=upper），则执行循环体，然后再重新测试圆括号中的条件，如果为真，则再次执
-行循环体；当圆括号中的条件为假，则停止程序。
-    #+begin_src c :includes <stdio.h>
+
+while 循环语句的执行方式是这样的：首先测试圆括号中的条件，如果条件为真（fahr<=upper），则执行循环体，然后再重新测试圆括号中的条件，如果为真，则再次执 行循环体；当圆括号中的条件为假，则停止程序。
+
+#+begin_src c :includes <stdio.h>
       double main(){
           int fahr, celsius;
           int lower, upper, step;
