@@ -39,6 +39,8 @@
     - [[#tolist][tolist]]
     - [[#title][title]]
     - [[#anyall][Any/All]]
+    - [[#empty][empty]]
+    - [[#empty-1][empty]]
     - [[#range][range]]
     - [[#for-循环][for 循环]]
     - [[#len][len]]
@@ -55,6 +57,7 @@
     - [[#pop][pop]]
     - [[#remove][remove]]
     - [[#timesleep][time.sleep]]
+    - [[#timeit][timeit]]
     - [[#列表解析][列表解析]]
     - [[#if][if]]
     - [[#boolen][boolen]]
@@ -106,6 +109,7 @@
     - [[#melt][melt]]
     - [[#create-ndarray][create ndarray]]
       - [[#astype][astype]]
+      - [[#对象转换][对象转换]]
       - [[#列表属性][列表属性]]
       - [[#npzerosnpempty][np.zeros/np.empty]]
       - [[#nparange][np.arange]]
@@ -126,6 +130,7 @@
       - [[#int-1][int]]
       - [[#float][float]]
     - [[#生成数据][生成数据]]
+    - [[#randompermutation][random.permutation]]
     - [[#npdot][np.dot]]
     - [[#linalgeig][linalg.eig]]
     - [[#npc_][np.c_]]
@@ -160,6 +165,9 @@
       - [[#isnullany][isnull().any()]]
       - [[#isnullall][isnull().all()]]
     - [[#isna][isna]]
+    - [[#reindex][reindex]]
+    - [[#sort_index][sort_index]]
+    - [[#sort_values][sort_values]]
     - [[#insert-na][insert na]]
     - [[#scalar][scalar]]
     - [[#ndarray][ndarray]]
@@ -180,7 +188,9 @@
       - [[#drop][drop]]
       - [[#drop_duplicates][drop_duplicates]]
       - [[#sub][sub]]
+      - [[#比较][比较]]
       - [[#idxmin][idxmin]]
+      - [[#idxmax][idxmax]]
     - [[#function-application][function application]]
       - [[#table-wise-function-application][table-wise function application]]
       - [[#rowcolumn-wise-function-application][row/column wise function application]]
@@ -297,6 +307,8 @@
   - [[#广播][广播]]
   - [[#统计记录个数][统计记录个数]]
   - [[#value_counts][value_counts]]
+  - [[#mode][mode]]
+  - [[#cut][cut]]
   - [[#nlargest][nlargest]]
   - [[#处理缺失值][处理缺失值]]
     - [[#isnull][isnull]]
@@ -352,6 +364,7 @@
     - [[#链表][链表]]
     - [[#hash表][hash表]]
       - [[#hash-冲突][hash 冲突]]
+    - [[#股市量化分析][股市量化分析]]
 
 ** 常见问题
 *** 语法错误
@@ -395,6 +408,15 @@ os.mkdir('work') #建立新目录
 os.rmdir('work') #删除目录
 os.rename('fff.txt','fool.txt') #重命名
 os.remove('h.txt') #删除文件
+#+end_src
+
+文件通配符
+
+glob 模块提供了一个在目录中使用通配符搜索创建文件列表的函数:
+
+#+begin_src python :results output
+import glob
+glob.glob('*.py')
 #+end_src
 
 ** pip install
@@ -802,6 +824,15 @@ def spam(divideBy):
 print(spam(2))
 print(spam(0))
 #+end_src
+try 语句的工作原理如下：
+
+- 首先，执行 try 子句 （try 和 except 关键字之间的（多行）语句）。
+
+- 如果没有异常发生，则跳过 except 子句 并完成 try 语句的执行。
+
+- 如果在执行 try 子句时发生了异常，则跳过该子句中剩下的部分。 然后，如果异常的类型和 except 关键字后面的异常匹配，则执行 except 子句，然后继续执行 try 语句之后的代码。
+
+- 如果发生的异常和 except 子句中指定的异常不匹配，则将其传递到外部的 try 语句中；如果没有找到处理程序，则它是一个 未处理异常，执行将停止并显示如上所示的消息。
 
 当试图一个数除以 0 时，就会发生 ZeroDivisionError. 根据错误信息中给出的行号，我们知道 spam() 中的 return 语句导致了一个错误。
 
@@ -875,6 +906,12 @@ except ValueError as e:
 
 正如之前看到的，raise 不需要带参数。
 
+一个 try 语句可能有多个except 子句，以指定不同异常的处理的程序，最多会执行一个处理程序。处理程序只处理相应的try 子句中发生的异常，而不处理同一 try 语句内其他处理程序中的异常。一个 except 子句可以将多个异常命名为带括号的元组。
+
+#+begin_src python :results output
+except(RuntimeError, TypeError, NameError):
+    pass
+#+end_src
 
 *** isinstance
 isinstance() 布尔函数在判定一个对象是否是另一个给定类的实例时，非常有用。
@@ -1269,17 +1306,14 @@ a.insert(0,"sa")
 # =>
 a
 # => ['sa', 'sa', 'sa', 'df', 'sd']
-b = a.pop(0)
+b = a.pop(0) #pop(0) 是删除第一个元素。
 # => 'sa'
 b.title()
 # => 'Sa'
 #+end_src
 
-pop(0) 是删除第一个元素。
-
 *** Any/All
 逻辑集合。
-
 #+begin_src python
 any([False, True])
 # => True
@@ -1287,17 +1321,33 @@ all([False, True])
 # => False
 #+end_src
 
+*** empty
+通过empty 属性，可以验证pandas 对象是否为空。
+#+begin_src python :results output
+df.empty
+import pandas as pd
+pd.DataFrame(columns=list('ABC')).empty
+# => True
+#+end_src
+
+*** empty
+通过empty 属性，可以验证pandas 对象是否为空。
+
+#+begin_src python :results output
+df.empty
+import pandas as pd
+pd.DataFrame(columns=list('ABC')).empty
+# => True
+#+end_src
+
 *** range
 使用 range() 创建数字列表，可以使用函数 list() 将 range() 的结果直接转换为列表。这个函数类似于 seq.
-
 #+begin_src python
 numbers = list(range(1, 6))
 print(numbers)
 # [1, 2, 3, 4, 5]
 #+end_src
-
 range 函数在python2 和python3 中有区别，python2 中返回的是列表，python3 返回的是迭代器，这样做的目的是节约内存。
-
 *** for 循环
 for 循环中的 print 需要缩进。
 #+begin_src python
@@ -1308,7 +1358,6 @@ for magician in magicians:
 
 *** len
 可以列表的长度。
-
 #+begin_src python
 cars = ['bmw', 'audi']
 len(cars)
@@ -1391,9 +1440,6 @@ a.append("sd")
 a
 a.insert(0,"sa")
 a
-#+end_src
-
-#+begin_src python
 week = ['day1','day2','day3']
 # => ['day1', 'day2', 'day3']
 week.insert(1,'day4')
@@ -1417,10 +1463,8 @@ list 数据中插入\删除操作的时间复杂度
 | list.pop(index) | O(1)       |
 | list.remove     | O(n)       |
 
-
 *** item
 这个函数一般用在字典类型数据。遍历字典时，如果直接遍历字典对象，只能得到字典中的键.使用字典 items() 方法，便可以同时输出键和对应值：
-
 #+begin_src python
 sample = {'a':1, 'b':2, 'c':3}
 for i in sample:
@@ -1437,7 +1481,6 @@ for i in sample.items():
 
 *** get
 获取dict 数据中的value。
-
 #+begin_src python :results output
 sample = {"a":1, "b":2, "c":3}
 sample.get("a")
@@ -1467,7 +1510,6 @@ a = ['honda', "bmw"]
 del a[0]
 a
 #del 可以删除字典中的键，也可以合并字典数据。
-#+begin_src python
 dic = {'name':'zs','age':18}
 dic
 del dic['name']
@@ -1490,8 +1532,8 @@ a
 #+end_src
 
 如果要从列表中删除一个元素，且不再以任何方式使用它，那就用 del 语句；如果要在删除元素后还能继续使用它，就使用方法 pop().
-*** remove
 
+*** remove
 根据值删除元素。a.remove("df")
 
 #+begin_src python
@@ -1513,13 +1555,25 @@ a
 
 *** time.sleep
 sleep 就是推迟程序中线程中进行的时间，参数形式是：
-
 time.sleep(1) 在执行到这句语句时候，python 就会将程序推迟一秒钟后继续下一个语句。
+
+*** timeit
+性能测量函数。
+
+#+begin_src python :results output
+from timeit import Timer
+Timer('t=a;a=b;b=t','a=1;b=2').timeit()
+# => 0.03639837200171314
+Timer('a,b=b,a','a=1;b=2').timeit()
+# => 0.03396420300123282
+#+end_src
 
 *** 列表解析
 列表解析将 for 循环和创建新元素的代码合并一行，并自动附加新元素。
 #+begin_src python
 squres = [value**2 for value in range(1, 11)]
+# => [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+#+end_src
 
 *** if
 #+begin_src python
@@ -1539,6 +1593,7 @@ cars == "bmw"
 #True
 car = "Audi"
 car.lower() == "audi"
+
 
 *** 检查多个条件
 and/or. and 等价于 R 中的&.
@@ -1883,12 +1938,71 @@ else:
 *** for
 for...in 语句是另一种循环语句，其特点是会在一系列对象上进行迭代。
 
-    #+begin_src python
-      for i in range(1,5):
-          print(i)
+#+begin_src python
+for i in range(1,5):
+    print(i)
 else:
     print('The for loop is over')
-    #+end_src
+#+end_src
+
+python 中需要掌握循环优化的基本技巧
+
+1.减少循环内部计算。
+
+第二种运算的计算速率比第一种运算的速率快 40%~ 60%.
+#+begin_src python :results output
+#ex1
+for i in range(iter):
+    d = math.sqrt(y)
+    j + =i*d
+#ex2
+d = math.sqrt(y)
+for i in range(iter):
+    j + =i*d
+#+end_src
+
+2.将显式循环改为隐式循环。
+
+#+begin_src python :results output
+sum = 0
+for i in range(n + 1):
+    sum = sum + i
+#+end_src
+
+隐式循环的缺点在于代码可读性较差。
+
+3.在循环中尽量引用局部变量。
+
+尽量用第二种命名方式，可以将速度提升10%~20%.
+#+begin_src python :results output
+##ex1
+x = [10, 34, 56, 78]
+def f(x):
+    for i in range(len(x)):
+        x[i]=math.sin(x[i])
+    return x
+##ex2
+def g(x):
+    loc_sin = math.sin
+    for i in range(len(x)):
+        x[i]=loc_sin(x[i])
+    return x
+#+end_src
+
+4.关注内层嵌套循环
+重点关注内层嵌套循环，尽量将内层循环的计算往上层移动。建议用第二个例子。
+
+#+begin_src python :results output
+##ex1
+for i in range(len(v1)):
+    for j in range(len(v2)):
+        x = v1[i] + v2[j]
+##ex2
+for i in range(len(v1)):
+    v1i = v1[i]
+    for j in range(len(v2)):
+        x = v1i + v2[j]
+#+end_src
 
 *** _
 
@@ -2205,6 +2319,8 @@ temp1.__iadd__(temp3)
 temp.dtype
 temp1 = temp.astype(np.int64)
 temp1.dtype
+dft1 = pd.DataFrame({'a':[1,0,1],'b':[4,5,6]})
+dft1.astype({'a':np.bool, 'b':np.float64})
 #+end_src
 
 和 R 一样，python 也可以字符串型转为数值型。
@@ -2229,6 +2345,16 @@ df.astype({'列1':'float'}).dtypes
 pd.to_numeric(df.列1,errors = 'coerce')
 #+end_src
 
+**** 对象转换
+pandas 提供了多种函数可以把 object 从一种类型强制转换为另一种类型。这是因为，数据有时存储的是正确类型，但在保存时却存储成 object 类型，此时用 dataframe.infer_objects() 与 Series.infer_objects() 方法即可把数据软转换为正确的类型。
+
+#+begin_src python :results output
+import datetime
+df = pd.DataFrame([[1,2],['a', 'b'],[datetime.datetime(2016,3,2)]])
+df.head()
+df.dtypes
+df.T.infer_objects().dtypes
+#+end_src
 
 **** 列表属性
 - 数据拼接
@@ -2496,6 +2622,14 @@ import pandas
 from dplython import (DplyFrame, X, diamonds, select, sift, sample_n,
                         sample_frac, head, arrange, mutate, group_by, summarize, DelayFunction)
 diamonds >> select(X.carat) >> head(5)
+#+end_src
+
+*** random.permutation
+Randomly permute a sequence, or return a permuted range.
+#+begin_src python :results output
+import numpy as np
+np.random.permutation(10)
+# => array([9, 3, 2, 5, 6, 1, 4, 7, 8, 0])
 #+end_src
 
 *** np.dot
@@ -2973,6 +3107,38 @@ df.isna().sum()
 df.isna().mean() #可以用mean() 函数计算缺失值占比
 #+end_src
 
+*** reindex
+按索引排序，可以重新调整数据排列。
+#+begin_src python :results output
+df.reindex(index=['a', 'd','c','b'],columns=['two','one'])
+#+end_src
+
+*** sort_index
+用于按索引层级对pandas 对象排序。
+
+#+begin_src python :results output
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({
+  'one':pd.Series(np.random.randn(3),index=['a', 'b', 'c']),
+  'two':pd.Series(np.random.randn(4),index=['a', 'b', 'c','d']),
+  })
+
+unsort_df = df.reindex(index=['a', 'd','c','b'],columns=['two','one'])
+unsort_df.sort_index()
+unsort_df.sort_index(ascending=1) #按列降序排序
+unsort_df.sort_index(axis=1) #按行排序
+unsort_df["one"].sort_index() #series
+#+end_src
+
+*** sort_values
+按值排序，可选参数by 用于指定按哪一列排序，该参数的值可以是一列或多列数据。
+#+begin_src python :results output
+unsort_df.sort_values(by = "one")
+unsort_df.sort_values(by = ["one", "two"])
+unsort_df["on"].sort_values(na_position = "first")
+#+end_src
+
 *** insert na
 python 中缺失值也是 None.
 #+begin_src python
@@ -3234,12 +3400,54 @@ df1 = df.sub(df.mean(axis=1), axis=0)
 print(df1)
 #+end_src
 
+#+begin_src python :results output
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({'one':pd.Series(np.random.randn(3),index=['a','b','c']),'two':pd.Series(np.random.randn(4),index=['a','b','c', 'd']),'three':pd.Series(np.random.randn(3),index=['b','c','d'])})
+
+df2 = pd.DataFrame({'one':pd.Series(np.random.randn(3),index=['a','b','c']),'two':pd.Series(np.random.randn(4),index=['a','b','c', 'd']),'three':pd.Series(np.random.randn(3),index=['b','c','d'])})
+
+row = df.iloc[1]
+df.sub(row,axis='columns')
+#+end_src
+
+**** 比较
+
+| 缩写 | 中文     |
+| eq   | 等于     |
+| ne   | 不等于   |
+| lt   | 小于     |
+| gt   | 大于     |
+| le   | 小于等于 |
+| ge   | 大于等于 |
+
+#+begin_src python :results output
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({'one':pd.Series(np.random.randn(3),index=['a','b','c']),'two':pd.Series(np.random.randn(4),index=['a','b','c', 'd']),'three':pd.Series(np.random.randn(3),index=['b','c','d'])})
+
+df2 = pd.DataFrame({'one':pd.Series(np.random.randn(3),index=['a','b','c']),'two':pd.Series(np.random.randn(4),index=['a','b','c', 'd']),'three':pd.Series(np.random.randn(3),index=['b','c','d'])})
+
+df.gt(df2)
+#+end_src
+
 **** idxmin
 有 5 列的 dataframe, 求哪一列的和最小。
 #+begin_src python
 df = pd.DataFrame(np.random.random(size=(5, 5)), columns=list('abcde'))
 print(df)
 df.sum().idxmin()
+#+end_src
+
+**** idxmax
+有 5 列的 dataframe, 求哪一列的和最小。
+#+begin_src python
+import pandas as pd
+import numpy as np
+df = pd.DataFrame(np.random.random(size=(5, 5)), columns=list('abcde'))
+print(df)
+df.sum().idxmax()
+# => 'e'
 #+end_src
 
 *** function application
@@ -3328,6 +3536,16 @@ obj.values
 obj.index
 obj1 = pd.Series([4, 7, -5, 3], index= ['d', 'b', 'a', 'c'])
 obj1.index
+
+#+end_src
+
+也可以使用 to_numpy 来实现 values 功能，或者使用 .array。
+
+#+begin_src python :results output
+import pandas as pd
+ser = pd.Series(pd.date_range('2000', periods=2,tz="CET"))
+ser.to_numpy(dtype=object)
+ser.array
 #+end_src
 
 可以挑选元素大于 0 的元素，这点和 R 一样。
@@ -3545,6 +3763,16 @@ pd.merge(left, right, on = ["subject_id"], how="inner")
 *** date
 python 中可以将 char 型转换成 date 型。
 
+#+begin_src python :results output
+from datetime import date
+now = date.today()
+# => datetime.date(2021, 4, 7)
+birthday = date(1988,4,23)
+age = now - birthday
+age.days
+# => 12037
+#+end_src
+
 #+begin_src python
 import pandas as pd
 today = pd.to_datetime('2020-12-11')
@@ -3760,15 +3988,19 @@ df.assign(is_alphabet_b = lambda df:df.Alphabet.apply(is_b))
 
 *** 统计函数
 **** 方差
+
 #+begin_src python
 import pandas as pd
 import numpy as np
 s1 = pd.Series(np.random.randn(10))
 s2 = pd.Series(np.random.randn(10))
 print(s1.cov(s2))
+#+end_src
+
 ** generator
 生成器可以生成一个有限或无限的数值序列。
-   #+begin_src python
+
+#+begin_src python
 def create_counter(n):
     print("create_counter")
     while True:
@@ -3776,6 +4008,10 @@ def create_counter(n):
         n +=1
 
 gen = create_counter(0)
+
+for _ in range(10):
+    next(gen)
+
 print(next(gen))
 print(next(gen))
 print(next(gen))
@@ -4032,33 +4268,32 @@ alien_0
   print('alien is ' + alien_0['color'])
 #+end_src
 
-这点 python 没有 R 那么的方便，在 R 中，如果打印的话，直接是  print('alien is
-' + alien_0) 即可。
+这点 python 没有 R 那么的方便，在 R 中，如果打印的话，直接是  print('alien is ' + alien_0) 即可。
 
 #+begin_src python
-  alien_0['color'] = 0
-  print('alien is ' + str(alien_0['color']))
+alien_0['color'] = 0
+print('alien is ' + str(alien_0['color']))
 #+end_src
 
 *** 删除键-值对
 使用 del 语句时，必须指定字典名和要删除的键。
-    #+begin_src python
-      alien_0 = {'color':'green', 'point':5}
-      del alien_0['point']
-      alien_0
-      # {'color': 'green'}
-    #+end_src
+#+begin_src python
+alien_0 = {'color':'green', 'point':5}
+del alien_0['point']
+alien_0
+# {'color': 'green'}
+#+end_src
 
 *** 遍历字典
 
 #+begin_src python
-  import pandas as pd
-  import numpy as np
-  user_0 = {
-      'username':'eferni',
-      'first':'enrico',
-      'last':'fermi'
-  }
+import pandas as pd
+import numpy as np
+user_0 = {
+    'username':'eferni',
+    'first':'enrico',
+    'last':'fermi'
+}
 
 for key,value in user_0.items():
     print('\nKey:' + key)
@@ -4097,10 +4332,10 @@ for name in sorted(favorite_lang.keys()):
     # Sarah, thank you for talking the poll.
     #+end_src
 
-上述 for 语句类似于其他 for 语句，但对方法 dictinary.keys() 的结果调用了函数
-sorted().这让 python 列出字典中的所有键，并在遍历前对这个列表进行排序。
+上述 for 语句类似于其他 for 语句，但对方法 dictinary.keys() 的结果调用了函数 sorted().这让 python 列出字典中的所有键，并在遍历前对这个列表进行排序。
 
 *** 遍历字典中的所有值
+
     #+begin_src python
       favorite_lang = {
           'jen':'python',
@@ -4953,12 +5188,72 @@ housing['income_cat'].value_counts()
 count.nlargest(2).index
 #+end_src
 
+** mode
+可以统计series 或dataframe 的众数，即出现频率最高的值。
+#+begin_src python :results output
+s5 = pd.Series([1, 1, 3, 3, 3, 5, 5, 7, 7, 7])
+s5.mode()
+# =>
+#    0    3
+#    1    7
+#    dtype: int64
+#+end_src
+
+** cut
+cut() 函数（以值为依据实现分箱）及 qcut() 函数（以样本分位数为依据实现分箱）用于连续值的离散化。
+
+#+begin_src python :results output
+import numpy as np
+import pandas as pd
+arr = np.random.randn(20)
+pd.cut(arr,4)
+# =>
+#
+# [(-0.444, 0.324], (0.324, 1.092], (1.092, 1.86], (-0.444, 0.324], (-1.215, -0.444], ..., (-0.444, 0.324], (1.092, 1.86], (-1.215, -0.444], (-1.215, -0.444], (1.092, 1.86]]
+# Length: 20
+# Categories (4, interval[float64]): [(-1.215, -0.444] <
+#                                     (-0.444, 0.324] <
+#                                     (0.324, 1.092] <
+#                                     (1.092, 1.86]]
+pd.qcut(arr,[0,0.25,0.5,0.75,1])
+# =>
+#
+# [(-0.297, 0.234], (0.234, 1.354], (1.354, 1.86], (-0.297, 0.234], (-1.2129999999999999, -0.297], ..., (-0.297, 0.234], (1.354, 1.86], (-1.2129999999999999, -0.297], (-1.2129999999999999, -0.297], (1.354, 1.86]]
+# Length: 20
+# Categories (4, interval[float64]): [(-1.2129999999999999, -0.297] <
+#                                     (-0.297, 0.234] <
+#                                     (0.234, 1.354] <
+#                                     (1.354, 1.86]]
+#+end_src
+
+定义分箱时，可以传递无穷值。
+
+#+begin_src python :results output
+pd.cut(arr,[-np.inf,0,np.inf])
+# =>
+#
+# [(0.0, inf], (0.0, inf], (0.0, inf], (0.0, inf], (-inf, 0.0], ..., (0.0, inf], (0.0, inf], (-inf, 0.0], (-inf, 0.0], (0.0, inf]]
+# Length: 20
+# Categories (2, interval[float64]): [(-inf, 0.0] < (0.0, inf]]
+#+end_src
+
 ** nlargest
+本方法返回N 个最大或最小的值。
 
 #+begin_src python :results output
 count = iris.species.value_counts()
 count.nlargest(2)
 #+end_src
+
+dataframe 也支持 nlargest 与 nsmallest 方法。
+#+begin_src python :results output
+df = pd.DataFrame({'a': [-2, -1, 1, 10, 8, 11, -1],
+                       'b': list('abdceff'),
+                       'c': [1.0, 2.0, 4.0, 3.2, np.nan, 3.0, 4.0]})
+df.nsmallest(3, 'a')
+#+end_src
+
+
 
 ** 处理缺失值
 *** isnull
@@ -5287,16 +5582,17 @@ beta
 #+end_src
 
 *** lasso
-    #+begin_src python
-      from sklearn import linear_model
-      clf = linear_model.Lasso(alpha=0.1)
-      clf.fit([[0, 0],
-               [1, 1],
-               [2, 2]],
-              [0, 1, 2])
-      clf.coef_
-      clf.intercept_
-    #+end_src
+
+#+begin_src python
+from sklearn import linear_model
+clf = linear_model.Lasso(alpha=0.1)
+clf.fit([[0, 0],
+         [1, 1],
+         [2, 2]],
+        [0, 1, 2])
+clf.coef_
+clf.intercept_
+#+end_src
 
 ** 数据清理
 *** 数字型变量
@@ -5307,6 +5603,7 @@ housing.drop('total_bedrooms', axis=1)  #删除一个特征
 median = housing['total_bedrooms'].median()
 housing['total_bedrooms'].fillna(median)
 #+end_src
+
 *** 字符串和文本
 **** 使用多个界定符分割字符串
 #+begin_src ipython :session :exports both :results raw drawer
@@ -5315,6 +5612,8 @@ import re
 fields = re.split(r'[;,\s]\s*', line)
 values = fields[::2]
 delimiters = fields[1::2] + ['']
+#+end_src
+
 **** 字符串开头或结尾匹配
 检查字符串开头或结尾的一个简单方法是使用 str.startswith() 或者是 str.endswith() 方法。比如：
 
@@ -5985,3 +6284,99 @@ https://python-data-structures-and-algorithms.readthedocs.io/zh/latest/07_%E5%93
 具体可看上面那个链接。
 
 还有一种开放寻址法，基本思想就是当一个槽被占用的时候，采用一种方式来寻找下一个可用的槽。
+
+*** 股市量化分析
+
+如何知道近期成交量波动较大的股票？
+
+#+begin_src python :results output
+import tushare as ts
+import pandas as pd
+pro = ts.pro_api("f93f38014c933f1a70e35512fa876e7a7c4e6cdba01665b52f9b3531")
+data = pro.query('stock_basic', exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+
+df = pro.trade_cal(exchange='SSE', is_open='1',
+                            start_date='20210101',
+                            end_date='20210407',
+                            fields='cal_date')
+
+def get_daily(ts_code='', trade_date='', start_date='', end_date=''):
+    for _ in range(3):
+      try:
+          if trade_date:
+              df = pro.daily(ts_code=ts_code, trade_date=trade_date)
+          else:
+              df = pro.daily(ts_code=ts_code, start_date=start_date, end_date=end_date)
+      except:
+            time.sleep(1)
+      else:
+          return df
+
+l = pd.DataFrame(data=None)
+for date in df['cal_date'].values:
+     l = pd.concat([l,get_daily(trade_date = date)])
+
+##最近一天的成交量超过5天成交量的均值
+#vol_lastday = l[l.trade_date == "20210406"][["ts_code","vol"]]
+mean_vol_last5days = l[l.trade_date >= "20210331"].groupby("ts_code").agg(
+  mean_last5vol = pd.NamedAgg(column="vol", aggfunc = 'mean'))
+
+mean_vol_last15days = l[l.trade_date >= "20210315"].groupby("ts_code").agg(
+  mean_last15vol = pd.NamedAgg(column="vol", aggfunc = 'mean'))
+
+from dplython import (DplyFrame, X, diamonds, select, sift, sample_n,
+                        sample_frac, head, arrange, mutate, group_by, summarize, DelayFunction)
+
+vol_data = pd.merge(mean_vol_last5days, mean_vol_last15days, on = "ts_code",how = "inner")
+
+vol_data = pd.merge(vol_data, data[["ts_code","name"]], on = "ts_code",how = "inner")
+
+vol_data.head()
+
+result = vol_data.assign(diff = vol_data.mean_last5vol - vol_data.mean_last15vol).sort_values(by = "diff", ascending =False)
+
+result.to_csv("history_A_stock_k_data.csv",encoding="utf_8_sig")
+
+##历史最高值
+stock_price_high = l.groupby("ts_code").agg(
+  max_high = pd.NamedAgg(column='high', aggfunc = 'max')
+  #min_low = pd.NamedAgg(column='low', aggfunc = 'min'),
+  )
+##最近5天股价均值
+stock_price_last5 = l[l.trade_date >= '20210324'].groupby("ts_code").agg(
+  mean_colse = pd.NamedAgg(column='close', aggfunc = 'mean'),
+)
+
+price_data = pd.merge(stock_price_high, stock_price_last5, on="ts_code",how = "inner")
+
+price_data = price_data.assign(decrease_ratio = (price_data.mean_colse-price_data.max_high)/price_data.max_high)
+
+price_data = pd.merge(price_data, data[["ts_code","name"]], on = "ts_code",how = "inner")
+
+price_data = pd.merge(price_data,l,on = "ts_code", how = "inner")
+
+amount_max = price_data[price_data.trade_date > "20210324"].groupby("ts_code").agg(max_amount = pd.NamedAgg(column='vol', aggfunc = 'max'))
+result = pd.merge(price_data[["ts_code","decrease_ratio","name","trade_date","vol"]].rename({"vol":"amount"},axis = 'columns'),amount_max.rename({'max_amount':"amount"},axis = 'columns'),on = ["ts_code","amount"],how = "inner").sort_values(by = ["decrease_ratio", "amount"])
+
+result.head()
+
+result[result.amount > 4000000].sort_values(by = "amount", ascending=False)
+
+result.to_csv("D:\\history_A_stock_k_data.csv",encoding="utf_8_sig")
+
+
+from dplython import (DplyFrame, X, diamonds, select, sift,
+  sample_n, sample_frac, head, arrange, mutate, group_by,
+  summarize, DelayFunction)
+
+
+price_data >> mask(price_data.name == "金徽酒")
+filter(lambda x:"酒" in price_data.name[x],range(len(price_data.name)))
+
+mao_20 = ["长江电力", "贵州茅台", "五粮液", "中国中免", "比亚迪", "恒瑞医药", "牧原股份", "爱尔眼科", "立讯精密", "药明康德", "万华化学", "三一重工",
+"迈瑞医疗","长春高新","宁德时代","美的集团","中国平安","海天味业", "伊利股份"]
+
+longtou = ["恒立液压", "顺丰控股", "立昂微", "隆基股份"]
+
+price_data[price_data.name.str.contains("普路通")].sort_values(by = ["decrease_ratio","max_high"])
+#+end_src

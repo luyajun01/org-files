@@ -37,14 +37,11 @@ java 中的变量类型主要有以下几种：
 
 
 
-
-
-
 ** hello world
 
-   #+begin_src java
-   public class HelloWorld {
-    public static void main(String[] args) {
+#+begin_src java
+public class HelloWorld {
+ public static void main(String[] args) {
         // write your code here
         System.out.println("hello world!");
     }
@@ -95,7 +92,6 @@ Scala 基本语法需要注意以下几点：
 def main(args: Array[String]) - Scala程序从main()方法开始处理，这是每一个Scala程序的强制程序入口部分。
 
 * 数据类型
-
 Byte	8位有符号补码整数。数值区间为 -128 到 127
 Short	16位有符号补码整数。数值区间为 -32768 到 32767
 Int	32位有符号补码整数。数值区间为 -2147483648 到 2147483647
@@ -158,8 +154,8 @@ object helloworld {
 }
 #+end_src
 
-
 ** list
+
 #+begin_src scala
 val list = List("apple","banana",1,2)
 val list2 = "apple" :: "banana" :: 1 :: 2 :: Nil
@@ -167,7 +163,6 @@ val list2 = "apple" :: "banana" :: 1 :: 2 :: Nil
 
 *** count
 计算长度为1 的string 元素的个数。
-
 #+begin_src scala
 onetwothree.count(s => s.length == 1)
 #+end_src
@@ -278,13 +273,11 @@ onetwothree.reverse
 
 *** tail
 返回列表中除第一个元素之外的列表。
-
 #+begin_src scala
 onetwothree.tail
 #+end_src
 
 ** tuple
-
 #+begin_src scala
 val pair = (99, "asd")
 pair._1
@@ -292,11 +285,9 @@ pair._2
 
 var jetset = Set("boe", "add")
 jetset += "lear"
-
 #+end_src
 
 *** contains
-
 #+begin_src scala
 var jetset = Set("boe", "add")
 jetset += "lear"
@@ -335,8 +326,7 @@ lazy val/var 变量名 = 表达式
 #+end_src
 
 * match
-match 对应 Java 里的 switch，但是写在选择器表达式之后。即： 选择器 match {备选项}。
-match 表达式通过以代码编写的先后次序尝试每个模式来完成计算，只要发现有一个匹配的case，剩下的case不会继续匹配。
+match 对应 Java 里的 switch，但是写在选择器表达式之后。即： 选择器 match {备选项}。 match 表达式通过以代码编写的先后次序尝试每个模式来完成计算，只要发现有一个匹配的case，剩下的case不会继续匹配。
 
 #+begin_src scala
 object helloworld {
@@ -364,13 +354,11 @@ object helloworld {
 \\	\u005c	代表一个反斜线字符 '\'
 
 * 访问修饰符
-Scala 访问修饰符基本和Java的一样，分别有：private，protected，public。
-
-如果没有指定访问修饰符，默认情况下，Scala 对象的访问级别都是 public。
-
+Scala 访问修饰符基本和Java的一样，分别有：private，protected，public。 如果没有指定访问修饰符，默认情况下，Scala 对象的访问级别都是 public。
 Scala 中的 private 限定符，比 Java 更严格，在嵌套类情况下，外层类甚至不能访问被嵌套类的私有成员。
 
 * 运算符
+
 #+begin_src scala
 object HelloWorld {
   def main(args: Array[String]) {
@@ -392,7 +380,6 @@ object HelloWorld {
 * 字符串
 ** 插值表达式
 可以有效避免大量字符串的拼接。
-
 #+begin_src scala
 val/var 变量名 = s"${变量／表达式}字符串"
 #+end_src
@@ -506,7 +493,6 @@ if file.getName.endsWith(".scala")
 #+end_src
 
 ** 多层嵌套
-
 可以加入多个<- 子句，可以得到嵌套的“循环”。
 
 #+begin_src scala
@@ -625,7 +611,6 @@ def addThenMultiply(x: Int, y: Int)(multiplier: Int): Int = (x + y) * multiplier
 println(addThenMultiply(1, 2)(3)) // 9
 // 这个方法实现了两个参数相加后，再与第三个参数相乘。
 #+end_src
-
 
 ** 匿名函数
 可以用Scala定义匿名函数（没有名称的函数），比如下面这个例子的函数将返回一个给定的整数+1后的结果。
@@ -826,27 +811,13 @@ object helloworld {
 
 #+begin_src scala
 val fruits = Set("orange","peach","apple","banana")
-#+end_src
-
-
-#+begin_src scala
- var jetSet = Set("Boeing", "Airbus")
-    jetSet += "Lear"
-    println(jetSet)
-    println(jetSet.contains("Cessna")) #False
-#+end_src
-
-这里的map 很像是case_when.
-
-#+begin_src scala
-  val romanNumeral = Map(
-      1 -> "I", 2 -> "II"
-    )
-    println(romanNumeral(1))
+var jetSet = Set("Boeing", "Airbus")
+jetSet += "Lear"
+println(jetSet)
+println(jetSet.contains("Cessna")) #False
 #+end_src
 
 * Map
-
 map 作为高阶函数是指使用其他函数作为参数，或者返回一个函数作为结果的函数。在scala 中函数是一等公民，所以允许定义高阶函数。我们约定，使用函数值作为参数，或者返回值为函数值的“函数” 和 "方法",均称为“高阶函数”。
 
 这个其实和python 中的map 函数是一致的。
@@ -898,7 +869,7 @@ println(romanNumeral(1))
 在Scala中可以嵌套定义方法。例如以下对象提供了一个factorial方法来计算给定数值的阶乘：
 
 #+begin_src scala
-  def main(args: Array[String]): Unit = {
+def main(args: Array[String]): Unit = {
 def factorial(x:Int):Int = {
   def fact(x:Int, accumulator:Int):Int = {
     if(x<=1) accumulator
@@ -911,25 +882,17 @@ def factorial(x:Int):Int = {
   }
 #+end_src
 
-
-
-
-
 * new
 scala 里使用new 实例化对象，在实例化过程中，可以用值和类型使对象参数化。
 
 #+begin_src scala
 val big = new java.math.BigInteger("12345")
-#+end_src
-
-#+begin_src scala
-  val greetStrings = new Array[String](3)
-  greetStrings(0) = "hello"
-  greetStrings(1) = ","
-  greetStrings(2) = "world!\n"
-  for (i <- 0 to 2)
-    print(greetStrings(i))
-}
+val greetStrings = new Array[String](3)
+greetStrings(0) = "hello"
+greetStrings(1) = ","
+greetStrings(2) = "world!\n"
+for (i <- 0 to 2)
+  print(greetStrings(i))
 #+end_src
 
 * :::
@@ -1039,12 +1002,11 @@ val df = Seq((2, 3), (3, 4), (4, 5), (5, 6), (3, 7), (1, 7)).toDF("col1","col2")
 df.show()
 #+end_src
 ** range
-
 #+begin_src scala
 val x = List.range(1,10)
 #+end_src
 ** startsWith
-
+和dplyr 类似
 #+begin_src scala
 val fruits = Set("orange","peach","apple","banana")
 val x = fruits.filter(_.startsWith("a"))
@@ -1054,6 +1016,18 @@ val x = fruits.filter(_.startsWith("a"))
 #+begin_src scala
 val fruits = Set("orange","peach","apple","banana")
 val x = fruits.filter(_.length>5)
+#+end_src
+
+** filter
+
+#+begin_src scala
+object helloworld {
+  def main(args: Array[String]): Unit = {
+    val fruits = Set("orange", "peach", "apple")
+    val x = fruits.filter(_.length>5)
+    println(x)
+  }
+}
 #+end_src
 
 * 类
@@ -1227,6 +1201,7 @@ scala 的版本要适配spark 版本。
 #+begin_src scala
 val textFile = spark.read.textFile("README.md")
 #+end_src
+
 ** read data
 
 #+begin_src scala
@@ -1273,7 +1248,6 @@ df.select("City").show()
 #+end_src
 
 那么，如何选择多列？
-
 #+begin_src scala
 val df = spark.read.json("resources/simple_zipcodes.json")
 df.select("City","Zipcode"+1).show()
@@ -1307,4 +1281,18 @@ map 和python 一样！
 #+begin_src scala
 val primitiveDS = Seq(1, 2, 3).toDS()
 primitiveDS.map(_ + 1).show()
+#+end_src
+
+** 问题
+
+#+begin_src scala
+org.apache.spark.SparkException: Exception thrown in awaitResult:
+#+end_src
+
+解决方法
+
+#+begin_src r
+config = list()
+config$spark.sql.broadcastTimeout = 1200
+sc <- sparkr_init(app_name = "luyajun01", master = "yarn-cluster", version = "2.3", config = config)
 #+end_src

@@ -237,16 +237,16 @@ rm
   objects()
 #+END_SRC
 *** 搜索对象
-apropos() 函数可以在全局环境空间中搜索所有可用对象。当不能确切想起函数名称时，这
-个函数特别有用。
+apropos() 函数可以在全局环境空间中搜索所有可用对象。当不能确切想起函数名称时，这个函数特别有用。
+
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  apropos("str_")
+apropos("str_")
 #+end_src
 
 dir() 函数可以列出一个目录下的所有文件。dir() 函数的 pattern 参数可以是一个正则
 表达式，此时它只返回与这个模式相匹配的文件名。
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  dir(pattern = "\\.Rmd$")
+dir(pattern = "\\.Rmd$")
 #+end_src
 ** 对象大小
    #+begin_src R :results output graphics :file fig_1.png :exports both
