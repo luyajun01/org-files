@@ -174,6 +174,7 @@ F 分布是两个服从卡方分布的随机变量各自除以他们的自由度
 
 *** U 统计量
 U 统计量是非参数统计分析中常用的一类统计量，由于其具有无偏性，一致性与渐近正态性或混合卡方分布等一些良好的性质。
+
 *** 有监督模型
 知名的有监督模型包括：K-近邻算法、线性回归、逐步回归模型、逻辑回归、支持向量机、决策树和随机森林、神经网络等。
 
@@ -823,27 +824,27 @@ $$
 simulation of glm
 
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
-  ##两个特征高度相关
-  library(MASS)
-  n=1000
-  #inv.logit 其实就是 P
-  inv.logit <- function(p){
-      return(exp(p)/(1+exp(p)))
-  }
-  Sigma <- matrix(c(1,0.9,0.9,1),2,2)
-  X=mvrnorm(n = 1000, rep(0, 2), Sigma)
-  beta1=c(0.5,1.5)
-  Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
-  data=data.frame(Y,X)
-  glm(Y~1+.,data = data,family = "binomial")
-  #####特征重复2份
-  library(MASS)
-  x1=rnorm(1000,mean = 0,sd=1)
-  X=matrix(rep(x1,2),nrow = 1000)
-  beta1=c(0.5,1.5)
-  Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
-  data=data.frame(Y,X)
-  glm(Y~1+.,data = data,family = "binomial")
+##两个特征高度相关
+library(MASS)
+n=1000
+#inv.logit 其实就是 P
+inv.logit <- function(p){
+    return(exp(p)/(1+exp(p)))
+}
+Sigma <- matrix(c(1,0.9,0.9,1),2,2)
+X=mvrnorm(n = 1000, rep(0, 2), Sigma)
+beta1=c(0.5,1.5)
+Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
+data=data.frame(Y,X)
+glm(Y~1+.,data = data,family = "binomial")
+#####特征重复2份
+library(MASS)
+x1=rnorm(1000,mean = 0,sd=1)
+X=matrix(rep(x1,2),nrow = 1000)
+beta1=c(0.5,1.5)
+Y=rbinom(n,1,inv.logit(1+X%*%beta1+rnorm(1000,0,1)))
+data=data.frame(Y,X)
+glm(Y~1+.,data = data,family = "binomial")
 #+END_SRC
 
 **** 模型推断
@@ -927,7 +928,7 @@ class OneHotEncoder:
     def __init__(self,optionKeys):
         length=len(optionKeys)
         self.__dict__={optionKeys[j]:[0 if i!=j else 1 for i in range(length)] for j in range(length)}
-
+#+end_src
 感知机是根据输入实例的特征向量 $x$ 对其进行二分类的线性分类模型：
 
 \[
@@ -953,8 +954,8 @@ iris = load_iris()
 https://pic4.zhimg.com/80/v2-9ca0c8f67e8566b7318175406ce19a21_1440w.jpg
 
 从上面的概念可以看出，真与假均是按照实际结果而言，比如假阴性就是真实结果是阳性，预测结果是阴性，那么就称为假阴性。
-
 混淆矩阵：
+
 |      | 预测                   |                  |
 | 实际 | 1                      | 0                |
 |------+------------------------+------------------|
@@ -967,7 +968,9 @@ https://pic4.zhimg.com/80/v2-9ca0c8f67e8566b7318175406ce19a21_1440w.jpg
 \end{equation}
 
 分子是 TP 和 TN,也就是正确预测正确的个数，分母就是混淆矩阵所有元素之和，分子是 TP+TN,即原始是正例正确预测为正例，原始为负例正确预测为负例的样本。 准确率不仅关注正例，还有负例。
+
 **** 正确率
+
 \begin{equation}
  P R E=\frac{T P}{T P+F P}
 \end{equation}
@@ -998,7 +1001,7 @@ K-S 曲线的数据来源以及本质和 ROC 曲线是一致的，只是 ROC 曲
 **** lift
 
 $$
- Lift=\frac{\frac{T P}{T P+F P}}{\frac{T P+F N}{T P+F P+T N+F N}} = \frac{PRE}{实际正例占比}
+Lift=\frac{\frac{T P}{T P+F P}}{\frac{T P+F N}{T P+F P+T N+F N}} = \frac{PRE}{实际正例占比}
 $$
 
 根据以上公式可知，Lift 指标可以这样理解：在不使用模型的情况下，我们用先验概率估计正例的比例，即上式子分母部分，以此作为正例的命中率；利用模型后，我们不需要从整个样本中来挑选正例，只需要从我们预测为正例的那个样本的子集 [公式] 中挑选正例，这时正例的命中率为 [公式] ，后者除以前者即可得提升值 Lift。
@@ -1028,28 +1031,28 @@ PV_plus=Precision (Positive Predicted Value, PV+) = d/b+d=Ptp/depth，正确预�
 Lift= (d/b+d)/(c+d/a+b+c+d)=PV_plus/pi1，提升值
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-   assess_index = function(.data, pred, true){
-       pred = ensym(pred)
-       true = ensym(true)
-       TP <- .data %>% filter(!!pred == 1 & !!true == 1) %>% tally() %>% pull()
-       FN <- .data %>% filter(!!pred == 0 & !!true == 1) %>% tally() %>% pull()
-       FP <- .data %>% filter(!!pred == 1 & !!true == 0) %>% tally() %>% pull()
-       TN <- .data %>% filter(!!pred == 0 & !!true == 0) %>% tally() %>% pull()
-       ##正确率
-       precision = TP/(TP+FP)
-       ##准确率
-       accuracy = (TP+TN)/(FP+FN+TP+TN)
-       ##召回率=真阳性率
-       recall = TP/(TP+FN)
-       ##真阴性率
-       TNR = TN/(FP+TN)
-       ##假阴性率
-       FNR = FN/(TP+FN)
-       ##假阳性率
-       FPR = FP/(FP+TN)
-       ##lift
-       lift = precision/((TP+FN)/(TP+FP+TN+FN))
-       return(data.frame(precision, accuracy, recall, TNR, FNR, FPR, lift))
+assess_index = function(.data, pred, true){
+pred = ensym(pred)
+true = ensym(true)
+TP <- .data %>% filter(!!pred == 1 & !!true == 1) %>% tally() %>% pull()
+FN <- .data %>% filter(!!pred == 0 & !!true == 1) %>% tally() %>% pull()
+FP <- .data %>% filter(!!pred == 1 & !!true == 0) %>% tally() %>% pull()
+TN <- .data %>% filter(!!pred == 0 & !!true == 0) %>% tally() %>% pull()
+##正确率
+precision = TP/(TP+FP)
+##准确率
+accuracy = (TP+TN)/(FP+FN+TP+TN)
+##召回率=真阳性率
+recall = TP/(TP+FN)
+##真阴性率
+TNR = TN/(FP+TN)
+##假阴性率
+FNR = FN/(TP+FN)
+##假阳性率
+FPR = FP/(FP+TN)
+##lift
+lift = precision/((TP+FN)/(TP+FP+TN+FN))
+return(data.frame(precision, accuracy, recall, TNR, FNR, FPR, lift))
 }
 #+end_src
 
@@ -1536,7 +1539,7 @@ Knn 方法的缺陷在于，不好确定 K 的大小，如果 K 过小，那么�
 3.KNN 算法也无法很好处理离散变量，因为无法有效测量离散变量距离。
 
 #+begin_src python
- from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 X, y = load_iris(return_X_y=True)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
@@ -1932,23 +1935,23 @@ shaprio-wilk 作为正态分布检验的方法。原假设 H0：样本符合正�
 两个样本的 W 统计量都接近 1，且 p-value 都大于 0.05，不能拒绝原假设，两组样本数据为正态分布。
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  # 生成随机数
-  set.seed(1)
-  x <- rnorm(50, mean = 0, sd = 2)
-  y <- rnorm(30, mean = 1, sd = 1)
-                                        # 进行F检验
-  var.test(x, y)
-                                        # 进行F检验
-  ## F test to compare two variances
-  ## data:  x and y
-  ## F = 2.6522, num df = 49, denom df = 29, p-value
-  ## = 0.006232
-  ## alternative hypothesis: true ratio of variances is not equal to 1
-  ## 95 percent confidence interval:
-  ##                           1.332510 4.989832
-  ## sample estimates:
-  ##            ratio of variances
-  ## 2.652168
+# 生成随机数
+set.seed(1)
+x <- rnorm(50, mean = 0, sd = 2)
+y <- rnorm(30, mean = 1, sd = 1)
+                                      # 进行F检验
+var.test(x, y)
+                                      # 进行F检验
+## F test to compare two variances
+## data:  x and y
+## F = 2.6522, num df = 49, denom df = 29, p-value
+## = 0.006232
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##                           1.332510 4.989832
+## sample estimates:
+##            ratio of variances
+## 2.652168
 #+end_src
 
 指标解释：
@@ -2196,7 +2199,6 @@ h = lillietest(x) returns a test decision for the null hypothesis that the data 
 
 原假设 $H_{0}:$ 样本来自的总体与指定的理论分布无显著差异。它的检验基本思路是：先将顺序分类资料数据的理论累积频数分布，同观测的经验累计频数 分布加以比较，求出它们最大的偏离值，然后在给定的显著性水平上检验这种偏离值的出现是否是偶然。
 
-
 设随机样本观测值的累计概率分布函数为$S\left(x\right)$,样本量为 $n$, 在原假设成立的
 前提下，我们通过查表得到的相应理论累计概率分布函数为 $F\left(x\right)$. 定义：
 
@@ -2207,19 +2209,13 @@ D=|S_{n}\left(x\right)-F_{O}\left(x\right)|
 K-S 检验主要考察的就是上式那个最大的偏差。如果样本总体的分布与理论分布差异不明显，
 则$D$ 不应该太大，否则样本的总体分布与理论分布差异就较大了。
 
-#+begin_src python
-import numpy as np
-import pandas
-import panda
-import pan
-#+end_src
-
 #+begin_src ipython :session :exports both :results raw drawer
 import numpy as np
 from scipy.stats import kstest
 from scipy import stats
 np.random.seed(987654321)
 stats.kstest(stats.norm.rvs(size=100), 'norm')
+# => KstestResult(statistic=0.058352892479417884, pvalue=0.8853119094415125)
 #+end_src
 
 方法：scipy.stats.kstest (rvs, cdf, args = ( ), N = 20, alternative ='two-sided', mode ='approx')
@@ -2230,15 +2226,18 @@ alternative - 设置单双尾检验，默认为 two-sided
 返回：W - 统计数；p-value - p 值
 
 *** shapiro-wilk 检验
-用于检查数据是否正态分布。
-shapiro-wilk 检验的原假设是数据来自于正态分布。
+
+用于检查数据是否正态分布。shapiro-wilk 检验的原假设是数据来自于正态分布。
 
 #+begin_src python
-  from scipy import stats
-  x = stats.norm.rvs(loc=5, scale = 3, size = 100)
-  stats.shapiro(x)
+from scipy import stats
+x = stats.norm.rvs(loc=5, scale = 3, size = 100)
+stats.shapiro(x)
+# => (0.9810887575149536, 0.1614663451910019)
 #+end_src
+
 *** 卡方检验
+
 卡方检验，主要用来检验观察频数与期望频数是否吻合。卡方检验的零假设$H_{0}:$ 样本
 来源总体的分布与指定的理论分布无显著差异。（看起来与 K-S 检验一样?）
 
@@ -2362,9 +2361,9 @@ def run_test(list_2e):
 个样本来自于相同的分布总体，反之不是。
 
 #+begin_src python
-  data1 = 5 * randn(100) + 50
-  data2 = 5 * randn(100) + 51
-  stat,p = stats.mannwhitneyu(data1, data2)
+data1 = 5 * randn(100) + 50
+data2 = 5 * randn(100) + 51
+stat,p = stats.mannwhitneyu(data1, data2)
 #+end_src
 **** K-S 检验（Kolmogorov-Smirnov 检验）
 也是一个拟合优度检验，适用于探索连续型随机变量的分布，单样本 K-S 检验可以将一个
@@ -2375,49 +2374,51 @@ def run_test(list_2e):
 否有差异。
 
 #+begin_src python
-  np.random.seed(1234)
-  n1 = 200
-  n2 = 300
-  rvs1 = stats.norm.rvs(size = n1, loc = 0, scale = 1)
-  rvs2 = stats.norm.rvs(size = n2, loc = 0.5, scale = 1.5)
-  stats.ks_2samp(rvs1, rvs2)
+np.random.seed(1234)
+n1 = 200
+n2 = 300
+rvs1 = stats.norm.rvs(size = n1, loc = 0, scale = 1)
+rvs2 = stats.norm.rvs(size = n2, loc = 0.5, scale = 1.5)
+stats.ks_2samp(rvs1, rvs2)
 #+end_src
+
 *** K 个独立样本检验
 多样本问题主要涉及如何检验几种不同的方法、决策或处理所产生的结果是否一样。比如在
 生活中不同消费者对不同产品对偏好是否有差异等。
 
 多个独立样本检验是通过分析样本数据，推断样本来自的多个独立总体的分布是否存在显著
 差异，其基本原理与两独立样本检验相同，两独立样本是多个独立样本检验中最基本的形式。
+
 **** Kruskal-Wallis H 检验
 
-     #+begin_src python
-       from scipy import stats
-       x = [1, 3, 5, 7, 9]
-       y = [2, 4, 6, 8, 10]
-       z = [23,12,2,34,2,12]
-       stats.kruskal(x, y, z)
-     #+end_src
+#+begin_src python
+from scipy import stats
+x = [1, 3, 5, 7, 9]
+y = [2, 4, 6, 8, 10]
+z = [23,12,2,34,2,12]
+stats.kruskal(x, y, z)
+# => KruskalResult(statistic=2.162962962962957, pvalue=0.3390927936485238)
+#+end_src
 **** Median(中位数)检验
 
-     #+begin_src python
-       g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
-       g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
-       g3 = [0, 3, 9, 22, 23, 25, 25, 33, 34, 34, 40, 45, 46, 48, 62, 67, 84]
-       from scipy.stats import median_test
-       stat, p, med, tbl = median_test(g1, g2, g3)
-     #+end_src
+#+begin_src python
+g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
+g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
+g3 = [0, 3, 9, 22, 23, 25, 25, 33, 34, 34, 40, 45, 46, 48, 62, 67, 84]
+from scipy.stats import median_test
+stat, p, med, tbl = median_test(g1, g2, g3)
+#+end_src
 *** K 个相关样本检验
-问题：多个相关样本（如配对\配伍组资料）是否来自同一个总体的问题，需要借助多个相
-关样本检验。
+问题：多个相关样本（如配对\配伍组资料）是否来自同一个总体的问题，需要借助多个相关样本检验。
+
 **** friedman 检验
-该检验方法是将各样本按降序从大到小排序，得到 $k$ 个样本的 $k$ 列数据，然后对每行
-的 $k$ 个观测值求秩，通过各样本的总秩次和与平均秩次来判断各样本的分布是否存在显
+该检验方法是将各样本按降序从大到小排序，得到 $k$ 个样本的 $k$ 列数据，然后对每行的 $k$ 个观测值求秩，通过各样本的总秩次和与平均秩次来判断各样本的分布是否存在显
 著性差异。
 
 #+begin_src python
-  import numpy as np
-  g3 = np.random.randn(15)
-  friedmanchisquare(g1, g2, g3)
+import numpy as np
+g3 = np.random.randn(15)
+friedmanchisquare(g1, g2, g3)
 #+end_src
 
 *** 两个相关样本检验
@@ -2431,11 +2432,11 @@ def run_test(list_2e):
 号和绝对值，然后将绝对值差值数据按升序排序后，求出相应的秩；最后分别计算正值的秩
 的平均平均秩及总和，负值的秩的平均秩及总和。
 
-     #+begin_src python
-       g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
-       g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
-       stats.ranksums(g1, g2)
-     #+end_src
+#+begin_src python
+g1 = [10, 14, 14, 18, 20, 22, 24, 25, 31, 31, 32, 39, 43, 43, 48, 49]
+g2 = [28, 30, 31, 33, 34, 35, 36, 40, 44, 55, 57, 61, 91, 92, 99]
+stats.ranksums(g1, g2)
+#+end_src
 **** sign 检验
 符号检验，该检验适用于相关样本资料和定性变量。零假设：样本来自的两配对样本对总体
 分布无显著差异。
@@ -2540,7 +2541,7 @@ $$
 
 我们把上面的例子用不同的 K 去计算，会得到不同的结果。把 K 作为横坐标，DK 作为纵坐标，我们可以得到下面的折线。
 
-     #+begin_src python
+#+begin_src python
 from sklearn.cluster import KMeans
 import numpy as np
 X = np.array([[1, 2], [1, 4], [1, 0],
@@ -2571,7 +2572,7 @@ plt.plot(list(sse.keys()), list(sse.values()))
 plt.xlabel("Number of cluster")
 plt.ylabel("SSE")
 plt.show()
-     #+end_src
+#+end_src
 
 #+begin_src ipython :session :exports both :results raw drawer
 import numpy as np
@@ -2581,18 +2582,15 @@ import numpy as np
 #+end_src
 
 #+begin_src python :results output
-from nump
 from sklearn.cluster import KMeans
 import numpy as np
 X = np.array([[1, 2], [1, 4], [1, 0],
                 [10, 2], [10, 4], [10, 0]])
- kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
- kmeans.labels_
- kmeans.predict([[0, 0], [12, 3]])
- kmeans.cluster_centers_
- #+end_src
-
- #+RESULTS:
+kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+kmeans.labels_
+kmeans.predict([[0, 0], [12, 3]])
+kmeans.cluster_centers_
+#+end_src
 
 ** Gussian mixture model
 
@@ -2810,7 +2808,7 @@ $$
 然求导，就需要链式法则了，比如说 \(\frac{\partial L}{\partial w_{1}}=\frac{\partial L}{\partial y_{p r e d}} \frac{\partial y_{p r e d}}{\partial h_{1}} \frac{\partial h_{1}}{\partial w_{1}}\)。
 
 #+begin_src python
- import numpy as np
+import numpy as np
 
 def sigmoid(x):
   # Sigmoid activation function: f(x) = 1 / (1 + e^(-x))
@@ -2979,14 +2977,8 @@ for t in range(2000):
     b -= learning_rate * grad_b
     c -= learning_rate * grad_c
     d -= learning_rate * grad_d
-
-print(f'Result: y = {a} + {b} x + {c} x^2 + {d} x^3')
-
+    print(f'Result: y = {a} + {b} x + {c} x^2 + {d} x^3')
 #+end_src
-
-
-
-
 
 *** 模型估计
  以下估计方法均是估计 NN 的算法。
@@ -3624,6 +3616,14 @@ https://zhuanlan.zhihu.com/p/88623159
 \begin{equation}
 \hat{\beta}^{\text {iso }}=\underset{\beta \in \mathbb{R}^{n}}{\operatorname{argmin}} \sum_{i=1}^{n}\left(y_{i}-\beta_{i}\right)^{2} \text { subject to } \beta_{1} \leq \ldots \leq \beta_{n}
 \end{equation}
+
+保序回归的含义就是，即不改变 $X$ 的排列顺序，又求的 $Y$ 的平均值。这看起来像是无监督学习。
+
+算法过程：
+
+从该序列的首元素往后观察，一旦出现乱序现象停止该轮观察，从该乱序元素开始逐个吸收元素组成一个序列，直到该序列所有元素的平均值小于或等于下一个待吸收的元素。
+
+具体实例可见：https://www.cnblogs.com/lc1217/p/7015639.html
 
 ** 随机森林
 学习随机森林算法之前有几个问题：

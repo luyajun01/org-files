@@ -48,11 +48,13 @@
     - [[#cdlatex][cdlatex]]
     - [[#org-ref][org-ref]]
     - [[#scimax][scimax]]
+    - [[#diff-hl][diff-hl]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
     - [[#creat-new-yasnippet][creat new yasnippet]]
+  - [[#git-gutter][git-gutter]]
   - [[#others-packages][others packages]]
     - [[#pyim][pyim]]
       - [[#手动加词和删词][手动加词和删词]]
@@ -314,15 +316,10 @@ ctrl + r
 | cc   | delete the line, then insert         | normal |
 | c    | change                               | normal    |
 
-
-
-Spacemacs
 ** multiple-cursor
 这个包可以很方便地删除多行操作。
-
 ** treemacs
 这个包类似于.
-
 ** org
 喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
 *** 配置
@@ -434,6 +431,9 @@ scimax-obi/body 这个 hydra 可以很方便地执行 src-block.
 scimax-jump-to-clock 可以快速跳转代码 code.
 scimax-ob-clone-block 快速复制代码块。
 scimax-ob-jump-to-header 跳到 src block header.
+*** diff-hl
+这个包能够清楚显示出新增记录。
+diff-hl-amend-mode sets the reference revision to the one before recent one.
 
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
@@ -463,6 +463,9 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 
 参考文献：
 https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemacs中为Yasnippet添加自定义snippet.org
+** git-gutter
+emacs 中好玩的东西太多了。这个包就是其中之一。
+
 ** others packages
 *** pyim
 **** 手动加词和删词
@@ -523,10 +526,10 @@ awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
 这个包遇到的坑何其多，所以记录详细配置过程。
 
 #+BEGIN_SRC lisp
-  (ess :variables
-       ess-assign-key "\M--"
-       ;;windows版本需要加以下语法，mac不需要
-       inferior-R-program-name "F:\\LJ\\R-3.6.1\\bin\\x64\\Rterm.exe")
+(ess :variables
+     ess-assign-key "\M--"
+     ;;windows版本需要加以下语法，mac不需要
+     inferior-R-program-name "F:\\LJ\\R-3.6.1\\bin\\x64\\Rterm.exe")
 #+END_SRC
 
 ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉及到环境变量的配置。在 mac 中，环境变量主要在~/.bashrc 和~/.bash_profile 两个文件中。
