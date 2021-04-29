@@ -64,6 +64,7 @@
     - [[#emacs-rime][emacs-rime]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
     - [[#ess][ess]]
+    - [[#elpy][elpy]]
 
 ** 实用技能
 *** 不重新启动 emacs,让.emacs 配置生效
@@ -536,8 +537,16 @@ ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉
   sessionInfo()
   #+END_SRC
 
-#  ov-highlight-data: ((14488 14534 (ov-highlight t face (:background "LightBlue"))) (14488 14534 (ov-highlight t face (:background "LightBlue"))))
+#  ov-highlight-data: nil
 
 # Local Variables:
 # eval: (ov-highlight-load)
 # End:
+*** elpy
+在 emacs 中使用 eply,需要注意乱码问题 ^G^G。需要加上以下代码。
+
+#+begin_src lisp
+  (setq elpy-shell-echo-output nil
+        python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -c exec('__import__(\\'readline\\')') -i")
+#+end_src

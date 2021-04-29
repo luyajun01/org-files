@@ -196,22 +196,22 @@ Assign a Value to a Name.
 判断在环境中 envir 中是否定义了名称 X.
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  exists("ls", fg)
+exists("ls", fg)
 #+end_src
 
 *** ls
 
-    #+begin_src R :results output graphics :file fig_1.png :exports both
-      ls(pattern = "a")
-      ls.str(mode = "list") ##- what are the structured objects I have defined?
-      lsf.str() #列出可以用的函数
-    #+end_src
+#+begin_src R :results output graphics :file fig_1.png :exports both
+ls(pattern = "a")
+ls.str(mode = "list") ##- what are the structured objects I have defined?
+lsf.str() #列出可以用的函数
+#+end_src
 
 *** rm
 
-    #+begin_src R :results output graphics :file fig_1.png :exports both
+#+begin_src R :results output graphics :file fig_1.png :exports both
 rm
-    #+end_src
+#+end_src
 
 *** find
 可以在现有的 package 中查询函数名称。
@@ -5418,24 +5418,21 @@ cross2() returns the product set of the elements of .x and .y. 可以对 2 个�
 #+end_src
 
 *** assign_in
-
 assign_in() takes a data structure and a pluck location, assigns a value there, and returns the modified data structure。对于固定位置变量取值进行替换。
 
 #+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
-  x <- list(list(bar = 1, foo = c(1,2)))
-  x
-  x %>%
-      assign_in(list(1,"foo"),100)
+x <- list(list(bar = 1, foo = c(1,2)))
+x %>%
+    assign_in(list(1,"foo"),100)
 #+END_SRC
 
 *** modify_in
 该函数功能和 assign_in 类似，但是允许取值和变量存在函数映射关系。
 #+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
-#ggplot::results output graphics,plot::results graphics
-  x <- list(list(bar = 1, foo = 2))
-  x %>%
-  modify_in(list(1, "foo"), ~ .x * 200)
-  modify_in(x, list(1,"foo"),`+`,100)
+x <- list(list(bar = 1, foo = 2))
+x %>%
+modify_in(list(1, "foo"), ~ .x * 200)
+modify_in(x, list(1,"foo"),`+`,100)
 #+END_SRC
 *** pluck
 从这个函数名字可以知道，叫摘下。

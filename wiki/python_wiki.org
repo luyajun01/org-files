@@ -336,6 +336,7 @@
       - [[#字符串开头或结尾匹配][字符串开头或结尾匹配]]
       - [[#用-shell-通配符匹配字符串][用 shell 通配符匹配字符串]]
       - [[#字符串搜索和替换][字符串搜索和替换]]
+      - [[#转换-1][转换]]
   - [[#类][类]]
   - [[#面向对象技术简介][面向对象技术简介]]
     - [[#继承][继承]]
@@ -1586,6 +1587,7 @@ for car in cars:
 #+end_src
 
 *** boolen
+布尔是整数类型子类，也就算说 True,False 可直接当做数字使用。
 
 #+begin_src python
 cars = ['audi', 'bmw']
@@ -1594,6 +1596,13 @@ cars == "bmw"
 car = "Audi"
 car.lower() == "audi"
 
+print(issubclass(bool,int))
+# => True
+print(isinstance(True, int))
+# => True
+True == 1
+# => True
+#+end_src
 
 *** 检查多个条件
 and/or. and 等价于 R 中的&.
@@ -5651,10 +5660,21 @@ encoder = LabelBinarizer()
 housing_cat_1hot = encoder.fit_transform(housing_cat)
 housing_cat_1hot
 #+end_src
+**** 转换
+内置多个函数将整数转换为指定进制的字符串，反向操作用 int.
+
+十进制转二进制
+
+#+begin_src python :results output
+print(bin(100))
+# => 0b1100100
+#+end_src
 
 ** 类
 Python 从设计之初就已经是一门面向对象的语言，正因为如此，在 Python 中创建一个类和对象是很容易的。
+
 根据类来创建对象被称为实例化。一个简单的样例如下：使用类几乎可以模拟任何东西。下面一个简单的例子是模拟小狗，对于多数小狗，都会有名字和年龄，那么创造一个类就会包含这两个信息。
+
 #+begin_src python
 class Dog():
     """一次模拟小狗的简单尝试"""

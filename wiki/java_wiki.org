@@ -91,6 +91,24 @@ Scala 基本语法需要注意以下几点：
 
 def main(args: Array[String]) - Scala程序从main()方法开始处理，这是每一个Scala程序的强制程序入口部分。
 
+* 概念
+** RDD
+弹性分布式数据库。
+
+RDD作为分区的集合分布在机器集群上，每个分区包括数据的一个子集。在Spark中，分区定义了并行度的单位。该框架顺序处理一个分区内的对象，并并行处理多个分区。创建RDD最简单的方法之一是在SparkContext上使用并行化方法来创建一个本地对象集合。
+
+#+begin_src scala
+val rdd = sc.parallelize(Array(1,2,3,4),4)
+#+end_src
+
+要从像HDFS这样的分布式文件系统中的文本文件或文本文件目录创建一个RDD，我们可以将文件或目录的名称传递给textFile方法:
+
+#+begin_src scala
+val rdd2 = sc.textFile("hdfs:///some/path.txt")
+#+end_src
+
+当您以本地模式运行Spark时，textFile方法可以访问驻留在本地文件系统上的路径。如果给Spark一个目录而不是一个单独的文件，它会认为该目录下的所有文件都是给定RDD的一部分。
+
 * 数据类型
 Byte	8位有符号补码整数。数值区间为 -128 到 127
 Short	16位有符号补码整数。数值区间为 -32768 到 32767
@@ -416,6 +434,53 @@ object HelloWorld {
   }
 }
 #+end_src
+
+
+* 提取数据
+
+** first
+rdd有很多方法允许我们将数据从集群读取到客户端机器上的Scala REPL中。也许其中最简单的是first，它将RDD的第一个元素返回给客户端:
+
+#+begin_src scala
+val test = spark.sparkContext
+   .textFile("resources/simple_zipcodes.txt")
+println(test.first)
+#+end_src
+
+** take
+我们可以在first和collect之间取得平衡，该方法允许我们将给定数量的记录读入客户机上的数组中。让我们使用take从链接数据集中获取前10行:
+
+#+begin_src scala
+val test = spark.sparkContext
+   .textFile("resources/simple_zipcodes.txt")
+println(test.take(10))
+println(test.take(10).length)
+#+end_src
+
+** collect
+把数据拉倒本地。
+
+#+begin_src scala
+val test = spark.sparkContext
+   .textFile("resources/simple_zipcodes.txt")
+println(test.take(10))
+val head = test.take(10)
+println(test.take(10).length)
+head.foreach(println) #可以将结果打印出来
+#+end_src
+
+** saveAsTextFile
+
+#+begin_src scala
+rdd.saveAsTextFile("hdfs://usr/ds/mynumbers")
+#+end_src
+
+等价的hadoop 命令行命令是
+
+#+begin_src
+hadoop fs -ls /user/ds/mynumbers
+#+end_src
+
 
 * if
 
