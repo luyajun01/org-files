@@ -11,10 +11,10 @@
 
 知识需要定期复习！
 
- #+BEGIN_SRC quote
+#+BEGIN_SRC quote
 如果你对数据绝对没有任何假设，那么你没有理由会更偏好于某个模型。  —— “没有免费午餐定理”
 
-有时，发现问题，比解决问题更困难。
+发现问题，比解决问题更困难。
 
 学而不思则罔！
 
@@ -77,7 +77,6 @@
 重复上面操作；直到每个样本对应类结果不发生变化。
 
 ** 统计学习三要素
-
 模型、策略、算法
 
 - 模型：参数模型、非参数模型、半参数模型
@@ -112,6 +111,20 @@ $$
 
 如何求解损失函数，这里会有很多算法。
 
+一个问题就是为啥分类数据不适合用平方损失来评价模型？
+
+平方损失过于严格，例如，$y_{1}=y_{2}=0.2$, 比$y_{1}=0,y_{2}=0.4$ 的损
+失要小很多，虽然两者都有同样正确的分类预测结果。
+
+改善上述问题的一个方法是使用更适合两个概率分布差异的测量函数。其中，交
+叉熵是一个常用的衡量方法。
+
+$H(y^{i},\hat{y}^{(i)})=-\log\hat{y}^{(i)}$
+
+也就是说，交叉熵只关心对正确类别的预测概率，因为只要其值足够大，就可以
+确保分类的结果正确性。
+
+
 ** 指数分布族
 
 除了正态分布，其他像二项分布，poisson 分布，负指数分布，gamma 分布等也有重要地位，这些分布其实都是 *指数分布族* 。说明这些分布有着共同的特性。
@@ -123,8 +136,94 @@ $$
 
 也就是说 $t(x)$ 保留了所有 $x$ 中所含有关于 $\theta$ 的全部信息量.
 ** 数学基础
+*** 测度论
+**** 勒贝格积分\黎曼积分
+黎曼积分求解步骤：后取分割的极限。整个过程是：有限分割—>近似求和—>取极限。
+
+黎曼积分的缺点出现在有限分割上面！
+
+问题就出在“有限分割”上！为了得到图形的面积的上界，我们需要用有限个简单图形覆盖它，而为了得到下界，我们则需要有限个被该图形覆盖的简单图形。总而言之，都是“有限”。这个有限，对于连续区间是靠谱的，但对于一般的点集却不可行。
+
+为了获得黎曼积分，则需要满足有限分割面积的上界和下界满足一致性。
+
+但是在一般点集，这个有限分割不一定满足。
+
+如果要用有限个区间来覆盖[0,1]区间的全体有理数（覆盖来得到上界），因为有理数是稠密的，因此可以想像，这有限个区间的总长度不会小于1，也就是说，[0,1]区间的全体有理数的总长度上界不会小于1；然而，又因为任意区间都有无理数，因此，有理数无法覆盖任意一个（长度任意小的）区间，从这个角度来看，有理数的总长度下界不会大于0。这说明结果是不收敛的！这就是有限分割带来的问题了。
+
+**** 可测集
+什么是可测集？
+
+以一维为例，一个实数集的子集，如果它能被可数个区间覆盖，那么这些区间的总长度就是它的测度上界，如果它能覆盖可数个区间，那么这些区间的总长度就是它的测度下界，如果上界和下界的极限都相等，那么这就是一个可测集。
+
+太聪明了！
+
+在有了可数分割之后，就可以尝试对黎曼积分进行改进了，因为有了可数分割，可以把一个函数分成若干部分来处理，比如分成正常的点、不正常的点、而不正常的部分又可以细分为第一类不正常、第二类不正常等等，逐一处理，而可数分割就是他们的基础。比如我们要挑选出所有有理数点来，并且要保持区间总长度任意小，就必须要通过可数个区间，有限个区间是做不到的。
+
+因为用了可数分割，勒贝格积分天生具有可数可加性，而相应的，黎曼积分具有有限可加性。
+
 ** 标量\向量\矩阵\张量
-** 2 概率论
+** 概率论
+概率论将统计学中概念公理化.
+*** $\sigma$ 代数
+$S$ 的一族子集如果满足下列三个性质:就称作一个 $\sigma$ 代数 (sigma algebra) 或一个 Borel 域, 记作 \(\mathcal{B}\).
+
+https://cdn.mathpix.com/snip/images/eDOK6AsK2HmBmEvJLaf-aC3Uz6isGW5GdSOQBPVmUAk.original.fullsize.png
+
+实际上,\(\bigcap_{i=1}^{\infty} A_{i} \in \mathcal{B}\).
+
+*** 概率函数
+Kolmogorov 定理(柯尔莫哥洛夫),任何满足概率公理的函数 $P$ 都称作概率函数.
+
+已知样本空间 $S$ 和 $\sigma$ 代数 \(\mathcal{B}\),定义在 \(\mathcal{B}\) 上且满足下列条件的函数 $P$ 称为一个概率函数:
+
+1. 对任意 \(A \in \mathcal{B}, P(A) \geqslant 0 .\)
+
+2. \(P(S)=1\)
+
+3. 若 \(A_{1}, A_{2}, \cdots \in \mathcal{B}\) 且两两不交，则 \(P\left(\bigcup_{i=1}^{\infty} A_{i}\right)=\sum_{i=1}^{\infty} P\left(A_{i}\right) .\)
+
+*** 有限可加性定理
+若 \(A, B \in \mathcal{B}\) 且两者不交，则
+
+\begin{equation}
+P(A \cup B)=P(A)+P(B)
+\end{equation}
+
+在统计学中仅仅假定有限可加性,比假定可数可加性似乎更合理,但有可能引发一些意想不到地麻烦.
+
+Bonferroni 不等式 \(P(A \cap B) \geqslant P(A)+P(B)-1\).这公式可以知道2个集合交的下界.
+
+boole 不等式我觉得也非常重要:
+
+设 $P$ 是一个概率函数,则
+
+a. 对任意划分 \(C_{1}, C_{2}, \cdots\), 都有 \(P(A)=\sum_{i=1}^{\infty} P\left(A \cap C_{i}\right) ;\)
+
+b. 对于任意集合 \(A_{1}, A_{2}, \cdots\), 都有 \(P\left(\bigcup_{i=1}^{\infty} A_{i}\right) \leqslant \sum^{\infty} P\left(A_{i}\right) .\)
+
+*** 独立性原理
+
+设 $A,B$ 为相互独立的事件,则下列几对事件都是独立的:
+
+a. \(A\) 和 \(B^{C}\),
+
+b. \(A^{\text {C }}\) 和 \(B\),
+
+c. \(A^{\mathrm{C}}\) 和 \(B^{\mathrm{C}} .\)
+
+相互独立性原理还有:
+
+称一列事件 $A_{1},A_{2},\cdots,A_{n}$ 相互独立 (mutually independent), 如果对任意 \(A_{i_{1}}, \cdots, A_{i_{k}}\), 都有
+
+\(P\left(\bigcap_{j=1}^{k} A_{i_{j}}\right)=\prod_{i=1}^{k} P\left(A_{i_{j}}\right)\)
+
+随机变量是 *从样本空间映射到实数的函数.*  随机变量常以大写字母,其具体取值用相应的小写字母表示。
+
+*** 同分布
+称随机变量 $X$ 和 $Y$ 同分布,如果对任意集合 \(A \in \mathcal{B}^{1}\), 都有 \(P(X \in A)=P(Y \in A)\).
+
+注意, 同分布的两个随机变量并不一定相等,也就是说,并不表明 $X=Y$.
+
 *** 贝叶斯定理
 
 贝叶斯公式的一般形式如：$P(A | B)=\frac{P(A \cap B)}{P(B)}$,更为一般的形式为$P\left(A_{i} | B\right)=\frac{P\left(B | A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B | A_{j}\right) P\left(A_{j}\right)}$.
@@ -138,7 +237,6 @@ $P(A | B)=\frac{P(A \cap B)}{P(B)}$.
 同样，在事件 A 发生的条件下事件 B 发生的概率$P(B | A)=\frac{P(A \cap B)}{P(A)}$. 整合上述两式，可得：$P(A | B) P(B)=P(A \cap B)=P(B | A) P(A)$,容易得到贝叶斯定理。
 
 *** 收敛理论
-
 依概率收敛：
 \begin{equation}
  \lim _{n \rightarrow \infty} p\left(\left|x_{n}-x\right| \geqslant \varepsilon\right)=0 \quad x_{n} \stackrel{p}{\rightarrow} x
@@ -149,18 +247,27 @@ $P(A | B)=\frac{P(A \cap B)}{P(B)}$.
 \end{equation}
 
 依分布收敛：
+
+convergence in distribution.
+
+$a$
+
 \begin{equation}
  \lim _{n \rightarrow \infty} p\left(x_{n} \leqslant x\right)=P(X \leqslant x) \quad X_{n} \stackrel{d}{\rightarrow} x
 \end{equation}
 
 可以证明依概率收敛可以推出依分布收敛。
 
-** 3 统计理论
+root-n consistent
+       
+*** 大数定律
+
+if the distribution of the i.i.d sample
+
+** 统计理论
 *** 期望和均值区别
 均值针对的是实验观察到的特征样本而言。
-
 期望是针对随机变量而言的一个量，可以理解是一种站在“上帝视角”的值。均值是一个统计量（对观察样本的统计），期望是一种概率论，是一个数学特征。
-
 可以看出期望是与概率值联系在一起的，如果说概率是频率随样本趋于无穷的极限，期望就是平均数随样本趋于无穷的极限，可以看出均值和期望的联系也是大数定理联系起来的。
 
 *** t 分布
@@ -188,17 +295,12 @@ U 统计量是非参数统计分析中常用的一类统计量，由于其具有
 3、倘若自变量因子中，既有属性因子，也有数量因子, **就称为协方差分析模型**.
 
 **** 标准化处理
-我们都知道在实际应用中，样本不同的特征的单位不同，会在求距离时造成很大的影响。比 如：在两个样本中肿瘤大小分别为 1cm 和 5cm,发现时间分别为 100 天和 200 天，那么在求距离
-时，时间差为 100,大小差为 4,那么其结果会被时间所主导，因为肿瘤大小的差距太小了。
-但是如果我们把时间用年做单位，0.27 年与 0.55 年的差距又远小于肿瘤的大小的差距，
-结果又会被大小所主导。
+我们都知道在实际应用中，样本不同的特征的单位不同，会在求距离时造成很大的影响。比 如：在两个样本中肿瘤大小分别为 1cm 和 5cm,发现时间分别为 100 天和 200 天，那么在求距离时，时间差为 100,大小差为 4,那么其结果会被时间所主导，因为肿瘤大小的差距太小了。
+但是如果我们把时间用年做单位，0.27 年与 0.55 年的差距又远小于肿瘤的大小的差距，结果又会被大小所主导。
 
-为了避免上述问题对结果造成影响，就需要对数据做无量纲化处理。常用的数据量纲处理方
-式有 2 种：一是标准化处理（Z-score）方法，二是数据归一化。
+为了避免上述问题对结果造成影响，就需要对数据做无量纲化处理。常用的数据量纲处理方式有 2 种：一是标准化处理（Z-score）方法，二是数据归一化。
 
-Z-score 方法的缺点是该方法需要总体的平均平均值与方差，但是这一值在真实的分析与挖
-掘中很难得到，大多数情况下是用样本的均值与标准差替代。Z-score 对于数据的分布有一
-定的要求，正态分布是最有利于 Z-score 计算的。
+Z-score 方法的缺点是该方法需要总体的平均平均值与方差，但是这一值在真实的分析与挖掘中很难得到，大多数情况下是用样本的均值与标准差替代。Z-score 对于数据的分布有一定的要求，正态分布是最有利于 Z-score 计算的。
 
 minmax 归一化方法：$x = \dfrac{x-min}{max - min}$.
 
@@ -228,15 +330,13 @@ $$
 判定系数 $R^{2}$ 越接近于 1,模型的拟合优度越高。
 
 *** 正态分布分布化
-正则化的过程是将每个样本缩放到单位范数。normalization 主要思想是对每个样本计算其
-p-范数，然后对该样本中每个元素除以该范数。
+正则化的过程是将每个样本缩放到单位范数。normalization 主要思想是对每个样本计算其p-范数，然后对该样本中每个元素除以该范数。
 
 公式：$x = \dfrac{x}{\sqrt{\sum^{d}_{j}(x_{ij})^2}}$.
 
 在分类，聚类算法中，需要使用距离来度量相似相似性的时候，标准化表现更好。
 
-不涉及距离度量，协方差计算，数据不符不符合正态分布时，可以使用区间缩放的归一化方
-法或其他归一化方法。
+不涉及距离度量，协方差计算，数据不符不符合正态分布时，可以使用区间缩放的归一化方法或其他归一化方法。
 
 *** 一般线性回归
 线性回归模型假设有 3 个：
@@ -257,7 +357,7 @@ p-范数，然后对该样本中每个元素除以该范数。
 
 在模型比较过程中，需要注意的是对于不满足正态性假定的模型也可以进行互相比较，但所用方法不是这些基于正态性的检验，可以用 AIC 之类的准则或交叉验证来比较。
 
-#+begin_src ipython :session :exports both :results raw drawer
+#+begin_src python
 import numpy as np
 from sklearn.linear_model import LinearRegression
 X=np.array([[1,1],[1,2],[2,2],[2,3]])
@@ -283,13 +383,11 @@ n = 100
 x = np.arange(n)
 rs = check_random_state(0)
 y = rs.randint(-50, 50, size=(n, )) + 50.*np.log1p(np.arange(n))
-
 ################fit isotonic-regression
 ir = IsotonicRegression()
 y_ = ir.fit_transform(x, y)
 lr = LinearRegression()
 lr.fit(x[:, np.newaxis], y)
-
   segments = [[[i, y[i]], [i, y_[i]]] for i in range(n)]
   lc = LineCollection(segments, zorder=0)
   lc.set_array(np.ones(len(y)))
@@ -353,8 +451,9 @@ https://upload-images.jianshu.io/upload_images/9689089-87402a9996265b0f.png?imag
 
 - 不相关与独立之间的关系
 
-两个变量独立则一定能说明两个变量不相关，反之，不相关不一定能推导出两个变量独立，
-只能说明两个变量不存在线性关系。
+两个变量独立则一定能说明两个变量不相关，反之，不相关不一定能推导出两个变量独立，只能说明两个变量不存在线性关系。
+
+*不相关不一定能推导两个变量的独立性!*
 
 *** 复相关系数
 复相关系数是测量一个变量与其他多个变量之间的线性相关程度指标。测定一个变量 $y$ 与其他多个变量 $x_{1},x_{2},\dots,x_{k}$ 之间的相关系数。不能直接测算
@@ -418,7 +517,6 @@ X_c, Y_c =  cca.transform(X, Y)
 #+end_src
 
 *** 点估计
-
 假设用 $\hat{\theta}(X)$ 估计 $\theta$, 评价该估计好坏的标准是 MSE 均方误差：
 
 $$
@@ -581,17 +679,25 @@ Minimize over one parameter at a time, keeping all others fixed.
 
 where \(S(t, \lambda)=\operatorname{sign}(t)(|t|-\lambda)_{+}, \tilde{y}_{i}^{(j)}=\sum_{k \neq j} x_{i k} \tilde{\beta}_{k}(\lambda)\)
 
-     #+begin_src R :results output graphics :file fig_1.png :exports both
-       # LASSO WITH ALPHA = 1
-       cv1 <- cv.glmnet(mdlX, mdlY, family = "binomial", nfold = 10, type.measure = "deviance", paralle = TRUE, alpha = 1)
-       md1 <- glmnet(mdlX, mdlY, family = "binomial", lambda = cv1$lambda.1se, alpha = 1)
-       coef(md1)
-     #+end_src
+#+begin_src R :results output graphics :file fig_1.png :exports both
+# LASSO WITH ALPHA = 1
+cv1 <- cv.glmnet(mdlX, mdlY, family = "binomial", nfold = 10, type.measure = "deviance", paralle = TRUE, alpha = 1)
+md1 <- glmnet(mdlX, mdlY, family = "binomial", lambda = cv1$lambda.1se, alpha = 1)
+coef(md1)
+#+end_src
+
+lasso 的坐标下降算法关于回归系数 $\beta_{p}$ 的更新公式为
+
+\begin{equation}
+\begin{aligned} \hat{\beta}_{p}=& \operatorname{sign}\left(\hat{\beta}_{p}^{\text {OLS }}\right)\left(\left|\hat{\beta}_{p}^{\text {OLS }}\right|-\lambda\right)_{+} \\=&\left\{\begin{array}{ll}\hat{\beta}_{p}^{\text {OLS }}-\lambda, & \hat{\beta}_{p}^{\text {OLS }}>\lambda \\ 0, & -\lambda \leq \hat{\beta}_{p}^{\text {OLS }} \leq \lambda \\ \hat{\beta}_{p}^{\text {oLs }}+\lambda, & \hat{\beta}_{p}^{\text {oLs }}<-\lambda\end{array}\right.\end{aligned}
+\end{equation}
+
+$\alpha_{ols}$ 落在 $[-\lambda,\lambda]$ 区间内的回归系数向量均被置为0.
+
 *** adaptive lasso
 \(Q(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y}, \mathbf{w})=\frac{1}{2 n}\|\mathbf{y}-\mathbf{X} \boldsymbol{\beta}\|^{2}+\lambda \sum_{j} w_{j}\left|\beta_{j}\right|\)
 
 where \(w_{j}=\left|\widetilde{\beta}_{j}\right|^{-1}\)
-
 *** elasticnet
 
     #+begin_src R :results output graphics :file fig_1.png :exports both
@@ -607,6 +713,7 @@ where \(w_{j}=\left|\widetilde{\beta}_{j}\right|^{-1}\)
     #+end_src
 
 *** SCAD
+
  \begin{equation}
  Q(\boldsymbol{\beta} \mid \mathbf{X}, \mathbf{y})=\frac{1}{2 n}\|\mathbf{y}-\mathbf{X} \boldsymbol{\beta}\|^{2}+\sum_{j=1}^{p} P\left(\beta_{j} \mid \lambda, \gamma\right)
 \end{equation}
@@ -620,6 +727,18 @@ SCAD penalty
 \end{equation}
 
 for $\gamma > 2$
+
+fan 认为惩罚似然函数估计量应当具备以下3种性质:
+
+(1) sparsity.
+
+离散性这个性质,就是能够确保模型解能够确保稀疏. sparsity if \(\min _{t \geq 0}\left\{t+p_{\lambda}^{\prime}(t)\right\}>0\), which holds if \(p^{\prime}(0+)>0\)
+
+也就是说必须得满足 $p^{\prime}(0+)>0$.
+
+(2) unbiasedness.
+
+(3) continuity.
 
 *** MCP
  \begin{equation}
@@ -687,7 +806,6 @@ until convergence
 For MCP/SCAD, we would replace the soft thresholding step withthe appropriate thresholding operatorPatrick BrehenyHigh-Dimensional Data Analysis (BIOS 7600)15/26
 
 *** group mcp
-
 形式和 group lasso 类似，不同的是惩罚项函数，换成 \(P(\boldsymbol{\beta})=\sum_{j} \operatorname{MCP}\left(\left\|\boldsymbol{\beta}_{j}\right\| ; \lambda_{j}, \gamma\right)\)。
 
 *** group scad
@@ -699,7 +817,6 @@ coef(md2)
 #+end_src
 
 *** Cox 模型
-
 生存分析的函数包括：生存函数，危险函数，概率密度函数，累积危险率函数，四个函数只需知道其中一个函数，就可以确定其他三个函数。
 生存函数是描绘个体（贷款）生存时间和生存概率之间的函数。设 $T$ 是研究个体生存时间，那么大于生存时间 $t$ 的生存概率函数 $S(t)$ 基本形式为：
 
@@ -983,7 +1100,9 @@ https://pic4.zhimg.com/80/v2-9ca0c8f67e8566b7318175406ce19a21_1440w.jpg
 \begin{equation}
  T P R=\frac{T P}{T P+F N}
 \end{equation}
+
 **** 假阳性率
+
 \begin{equation}
  F P R=\frac{F P}{F P+T N}
 \end{equation}
@@ -997,6 +1116,8 @@ https://pic1.zhimg.com/80/v2-6cdb7a9866c599d3f312b9dabf6c102a_1440w.jpg
 **** k-s
 K-S 曲线的数据来源以及本质和 ROC 曲线是一致的，只是 ROC 曲线是把真正率和假正率当作横纵轴，而 K-S 曲线是把真正率和假正率都当作是纵轴，横轴则由选定的阈值来充当。
 （一般是 score 进行分箱，比如分了 10 个 bin），计算每个 bin 中的 true positive rate 和 false positive rate.
+
+ruc 的横轴是 false positive rate, 预测为正但实际为负的样本占所有负例样本的比例, 纵轴是 true positive rate 是预测为正且实际为正的样本占所有正例样本的比例。
 
 **** lift
 
@@ -1030,30 +1151,48 @@ PV_plus=Precision (Positive Predicted Value, PV+) = d/b+d=Ptp/depth，正确预�
 
 Lift= (d/b+d)/(c+d/a+b+c+d)=PV_plus/pi1，提升值
 
-#+begin_src R :results output graphics :file fig_1.png :exports both
-assess_index = function(.data, pred, true){
-pred = ensym(pred)
-true = ensym(true)
-TP <- .data %>% filter(!!pred == 1 & !!true == 1) %>% tally() %>% pull()
-FN <- .data %>% filter(!!pred == 0 & !!true == 1) %>% tally() %>% pull()
-FP <- .data %>% filter(!!pred == 1 & !!true == 0) %>% tally() %>% pull()
-TN <- .data %>% filter(!!pred == 0 & !!true == 0) %>% tally() %>% pull()
-##正确率
-precision = TP/(TP+FP)
-##准确率
-accuracy = (TP+TN)/(FP+FN+TP+TN)
-##召回率=真阳性率
-recall = TP/(TP+FN)
-##真阴性率
-TNR = TN/(FP+TN)
-##假阴性率
-FNR = FN/(TP+FN)
-##假阳性率
-FPR = FP/(FP+TN)
-##lift
-lift = precision/((TP+FN)/(TP+FP+TN+FN))
-return(data.frame(precision, accuracy, recall, TNR, FNR, FPR, lift))
-}
+#+begin_src r
+        assess_index = function(.data, pred, true){
+        pred = ensym(pred)
+        true = ensym(true)
+        TP <- .data %>% filter(!!pred == 1 & !!true == 1) %>% tally() %>% pull()
+        FN <- .data %>% filter(!!pred == 0 & !!true == 1) %>% tally() %>% pull()
+        FP <- .data %>% filter(!!pred == 1 & !!true == 0) %>% tally() %>% pull()
+        TN <- .data %>% filter(!!pred == 0 & !!true == 0) %>% tally() %>% pull()
+
+        ## 精确率
+
+        precision = TP/(TP+FP)
+
+      $Precision = P(Y=1 | \hat{Y} = 1)$
+
+        ## 准确率
+
+    accuracy = (TP+TN)/(FP+FN+TP+TN)
+
+        ## 召回率=真阳性率
+
+        recall = TP/(TP+FN)
+
+  recall = sensitivity = P(\hat{Y} = 1 | Y = 1)
+specificity = P(\hat{Y} = 0 | Y = 0)
+
+        ##真阴性率
+
+        TNR = TN/(FP+TN)
+
+        ##假阴性率
+
+        FNR = FN/(TP+FN)
+
+        ##假阳性率
+
+        FPR = FP/(FP+TN)
+
+        ##lift
+        lift = precision/((TP+FN)/(TP+FP+TN+FN))
+        return(data.frame(precision, accuracy, recall, TNR, FNR, FPR, lift))
+        }
 #+end_src
 
 *** 回归诊断
@@ -1372,7 +1511,6 @@ logistic 回归来实现。
 
 独立性检验是两个特征变量之间的计算，它可以用来分析 2 个分类变量是否独立，或者是否有关联。比如某原料质量和产地是否依赖关系，可以理解为一个 $X$ 与另一个 $X$ 是否独立。
 
-
 以年龄变量为例，如何对年龄变量进行卡方分箱？
 
 首先，将年龄从小到大排序，每一个年龄取值为单独一箱，统计对应的违约和不违约的个数，然后进行合并，具体步骤如下：
@@ -1641,7 +1779,6 @@ gnb = GaussianNB()
 y_pred = gnb.fit(X_train, y_train).predict(X_test)
 print("Number of mislabeled points out of a total %d points : %d"
       % (X_test.shape[0], (y_test != y_pred).sum()))
-
 #+end_src
 
 *** 广义线性混合模型（glmm）
@@ -1705,6 +1842,7 @@ l(\boldsymbol{\beta})=\sum_{i=1}^{n} \delta_{i} \mathbf{x}_{i}^{T} \boldsymbol{\
 隐藏的马尔可夫链随机生成的状态的序列，称为 *状态序列*;每个状态生成一个观测，而由此产生的观测的随机序列，称为 *观测序列*,序列的每一个位置又可以看作是一个时刻。
 
 隐马尔可夫模型作了2个基本假设：
+
 (1) 齐次马尔可夫性假设，即假设隐藏的马尔可夫链在任意时刻 $t$ 的状态只依赖于其前一刻的状态。
 
 (2) 观测独立性假设，即假设任意时刻的观测只依赖于该时刻的马尔可夫链的状态，与其他观测及状态无关。
@@ -2470,7 +2608,7 @@ glanced <- map_df(models, broom::glance, .id = "id")
 
 hist(glanced$statistic)
 
-** 5 模型评估
+** 模型评估
 ** VIF
 如何计算多重共线性？
 
@@ -2516,15 +2654,18 @@ https://daviddalpiaz.github.io/r4sl/the-caret-package.html
 
 https://juliasilge.com/blog/intro-tidymodels/
 
-** 6 无监督模型
+** 无监督模型
 知名的无监督模型包括：一系列的聚类算法，包括 k-平均算法、分层聚类分析、最大期望算法以及可视化和降维算法，包括，主成分分析（PCA）、核主成分分析（kernel PCA）、局部线性嵌入（LLE）、t-分布随机近邻嵌入（t- SNE）以及关联规则学习，比如，apriori/eclat 等。
 
 ** k-means
 ![k-means 算法](https://cdn.mathpix.com/snip/images/TGWnw2YiFVePwUyxk_lvOslHhm4tvsMDZ0cFVeE_PNQ.original.fullsize.png)
 
 - 容易理解，聚类效果不错，虽然是局部最优，但往往局部最优就够了；
+
 - 处理大数据集的时候，该算法可以保证较好的伸缩性；
+
 - 当簇近似高斯分布的时候，效果非常不错；
+
 - 算法复杂度低。
 
 2.2 缺点
@@ -2634,12 +2775,12 @@ $$
 \text { similarity }=\cos (\theta)=\frac{A \cdot B}{\|A\|\|B\|}=\frac{\sum_{i=1}^{n} A_{i} \times B_{i}}{\sqrt{\sum_{i=1}^{n}\left(A_{i}\right)^{2} \times \sqrt{\sum_{i=1}^{n}\left(B_{i}\right)^{2}}}}
 \end{equation}
 
-** 7 半监督学习
+** 半监督学习
 有些算法可以处理部分标记的训练数据——通常是大量未标记数据和少量的标记数据。
 
-** 8 不平衡数据
+** 不平衡数据
 ** SMOTE 算法
-合成少数类过采样技术，是基于随机过采样的一种改进方按，由于随机过采样采取简单复制样本的策略来增加少数类样本，这样容易产生模型过拟合的问题。
+合成少数类过采样技术，是基于随机过采样的一种改进方案，由于随机过采样采取简单复制样本的策略来增加少数类样本，这样容易产生模型过拟合的问题。
 
 *SMOTE 算法的基本思想是 对少数类样本进行分析并根据少数类样本人工合成新样本添加到数据集中。*
 
@@ -2659,7 +2800,7 @@ New=x+rand(0,1) \times (x_{i}-x),i=1,2,\cdots,N
 
 https://www.cnblogs.com/Determined22/p/5772538.html 更多的信息可以从这里看到！
 
-** 9 机器学习
+** 机器学习
 学习资料：Andrew Ng 机器学习课程笔记
 
 https://zhuanlan.zhihu.com/p/53826261
@@ -2980,6 +3121,16 @@ for t in range(2000):
     print(f'Result: y = {a} + {b} x + {c} x^2 + {d} x^3')
 #+end_src
 
+*** 常见问题 
+**** 过拟合
+解决过拟合有哪些常见方法?
+
+1.dropout
+
+对隐藏层使用丢弃法时,该层的隐藏单元有一定概率被丢弃掉.
+
+2.加惩罚
+
 *** 模型估计
  以下估计方法均是估计 NN 的算法。
 **** softmax 算法
@@ -3023,8 +3174,21 @@ $$
 所以其收敛速度会快一些，但是有可能出现目标函数值震荡现象，因为高频率的参数更新导致了高方差。
 
 **** Mini-batch Gradient Descent
+即使在我们无法得到解析解的情况下，我们仍然可以有效地训练模型。
 
 小批量梯度下降算法。小批量梯度下降算法是折中方案，选取训练集中一个小批量样本（一般是 2 的倍数，如 32，64,128 等）计算，这样可以保证训练过程更稳定，而且采用批量训练方法也可以利用矩阵计算的优势。这是目前最常用的梯度下降算法。
+
+算法步骤：
+(1) 初始化模型参数的值，如随机初始化；
+(2) 从数据集中随机抽取小批量样本且在负梯度的方向上更新参数。
+
+在求数值解的优化算法中，小批量随机梯度下降（mini-batch stochastic
+gradient descent）在深度学习中被广泛应用。它的算法很简单：先选取一组模
+型参数的初始值，如随机选取；接下来对参数进行多次迭代，使得每次迭代都可
+能降低损失函数的值。在每次迭代中，先随机均匀采样一个由固定数目训练数据
+样本组成的小批量，然后求小批量中数据样本的平均损失有关模型参数的导数
+（梯度），最后用此结果与预先设定的一个正数的乘积作为模型参数在本次迭代
+的减小量。
 
 **** Momentum optimization
 冲量梯度下降算法。理想的梯度下降算法要满足两点：收敛速度要快；而且能全局收敛。
@@ -3735,7 +3899,6 @@ F(x)=\sum_{j=1}^{p} f_{j}\left(x_{j}\right)
 stacking 是一种组合分类器的方法，以两层为例，第一层由多个基学习器组成，其输入为原始训练集，第二层的模型则是以第一层基学习器的输入作为训练集进行再训练（一般用 LR 进行回归组合），从而得到完整的 stacking 模型。
 
 **** XGBoost
-
 https://zhuanlan.zhihu.com/p/258564378
 
 与gbdt,adaboost 一样，属于提升类方法的一种.
@@ -3777,7 +3940,7 @@ XGBOOST 模型需要给定的参数有：
 lambda,alpha
 
 #+begin_src python
-import pandas as pd
+  import pandas as pd
 import xgboost as xgb
 from sklearn.metrics import mean_squared_error
 from sklearn.datasets import load_boston
@@ -4014,9 +4177,6 @@ $$
 
 $P(A) = P(B)=P(C)=P(D)=P(E)=1/5$
 
-
-
-
 *** Bagging
 Bagging is purely a variance-reduction technique, and since trees tend to have high variance, bagging often produces good results.
 
@@ -4032,9 +4192,7 @@ Bagging 对样本重抽样，对每一重采样得到的子样本集训练一个
 #+begin_src python
 from sklearn.ensemble import BaggingClassifier
 from sklearn.tree import DecisionTreeClassifier
-bag_clf = BaggingClassifier(
-
-)
+bag_clf = BaggingClassifier()
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 X, y = load_iris(return_X_y=True)
@@ -4050,9 +4208,12 @@ y_pred
 #+end_src
 
 ** CNN(convolutional neural network)
-
 https://zhuanlan.zhihu.com/p/27908027
 https://chaoge123456.github.io/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E7%8E%B0%E8%A7%A3%E6%9E%90.html/#more
+
+线性意味着单调假设：特征的任何增大都会导致模型输出增大，或者导致模型输出减少（如果对应的权重为负）。
+
+我们可以很容易地找出违反单调性的例子。例如，我们想要根据体温预测死亡率。对于体温高于37摄氏度的人来说，温度越高风险越大。然而，对于体温低于37摄氏度的人来说，温度越高风险就越低。在这种情况下，我们也可以通过一些巧妙的预处理来解决问题。例如，我们可以使用与37摄氏度的距离作为特征。
 
 卷积神经网络，利用卷积运算对图片进行特征提取，再经过 Relu, pooling 等过程进一步实现图像信息的有效提取，从而达到图片特征信息提取的作用，最后经过全连接也就是通常所说的 NN 中的 softmax 算法实现对图片分类目的。
 
@@ -4171,7 +4332,7 @@ $S_{t}$ 的值不仅仅取决于 $X_{t}$, 还取决于 $S_{t-1}$.
 
 *再了解了解基于编码－解码的序列到序列架构*
 
-#+begin_src python :results output
+#+begin_src python
 class RNN:
     def step(self,x,hidden):
         hidden = np.tanh(np.dot(self.W_hh, hidden) + np.dot(self.W_xh, x))
@@ -4186,9 +4347,6 @@ for i in range(seq_len):
 #+end_src
 
 https://blog.csdn.net/qq_41149269/article/details/81567364
-#+begin_src python :results output
-
-#+end_src
 
 *** LSTM
 
@@ -4245,8 +4403,6 @@ example:
 举例其中一种情况：
  P（下雨，下雨，下雨，散步，购物，收拾）=P（第一天下雨）P（第一天下雨去散步）P（第二天接着下雨）P（下雨去购物）P（第三天还下雨）P（下雨回家收拾）=0.6X0.1X0.7X0.4X0.7X0.5=0.00588 当然，这里面的 P（第二天接着下雨）当然是已知第一天下雨的情况下，第二天下雨的概率，为 0.7.将八种情况相加可得，三天的行为为{散步，购物，收拾}的可能性为 0.033612. 看似简单易计算，但是一旦观察序列变长，计算量就会非常庞大（的复杂度，T 为观测序列的长度）。
 
-
-
 ** 迁移学习
 ** 因子分解机
 
@@ -4258,117 +4414,6 @@ example:
 
 ** 不平衡数据分类算法
 *** SMOTE
-** RFM 模型
-这个模型通过一个客户的近期购买行为，购买的总体频率以及花了多少钱三项指标来描述该客户的价值状况。
-
-R:客户最近一次的购买时间是什么时候。
-
-F:客户在限定的期间内所购买的次数。（也就是频率）
-
-M:消费金额
-
-
-
-
-
-
-** 10 主题学习
-*** 联邦学习
-
-根据建模参与方之间的数据分布不同，把联邦学习分为三类：横向联邦学习，纵向联邦学习、联邦迁移学习。
-
-横向联邦学习：特征重叠多，用户重叠少，可以进行样本联合，横向联邦学习适用于参与者业态相同但触达客户不同，即特征重叠多，用户重叠少时的场景，比如不同地区的银行间，他们的业务相似，但用户不同（样本不同）。
-
-步骤：
-
-1.参与方各自从服务器 A 下载最新模型；
-
-2.每个参与方利用本地数据训练模型，加密梯度上传给服务器 A，服务器 A 聚合各用户的梯度更新模型参数；
-
-3. 服务器 A 返回更新后的模型给各参与方；
-
-4.各参与方更新各自模型。
-
-*** 拒绝推断
-
-1.重新分类法
-
-重新分类的核心思想对被拒绝用户做好坏属性的重新划分，比如，当一个被拒绝的申请者具有一些负面特征，比如通过人行征信，我们发现其在过去 3 个月内有逾期行为，则可以把他划分成坏人。
-
-问题：利用第三方数据对拒绝样本进行标注，这些数据只能标注一部分黑样本，白样本很难标注，而且黑的定义和本网贷平台的黑的定义（是否逾期）之间也有黑的差异性。
-
-2.分散打包法
-
-分散打包是指根据前面的“状态值”给被拒绝用户一个随机的好坏状态，假设好人概率 $P(G) = 0.9$, 那么使得被拒绝用户的好人概率是 0.9， 坏人概率是 0.1.还有一种处理方法是在“状态值”上设定一个临界值，使得大于该值的为好人，反之为坏人。
-
-3.重新加权法
-
-重新加权法没有将被拒绝用户加入到样本中，而是将样本中现存的处于相同“状态值”分数段的好坏借款人的权重同步增加，增加幅度是分数段中被拒绝用户的数量。
-
-举例，假设某分数段中有 90 个好人，10 个坏人和 50 个被拒绝用户，每个好坏借款人都被赋予 150/100=1.5 的权重，所以看起来好像该组有 135 个好人和 15 个坏人。
-
-4.展开法
-
-在展开法中，我们试图计算“状态值”，这里的状态值通常指好人概率。我们先假设存在一个统计量 $Z$, 有相同 $Z$ 值的被拒绝用户和授信用户的好人概率相同。数学上表示如下：
-
-\[
-p(G|R,z) = p(G|A,z)
-\]
-
-这里，A = accept，表示授信用户组，R = reject 表示被拒绝用户组；我们可以建立“授信/拒绝”评分卡来区分样本中谁被接受谁被拒绝。Z 是这个评分卡的分数。为了更符合实际，我们假定被拒绝用户组中的好人比例小于授信用户的好人比例，且随 z 变动，即
-
-\[
-P(G|R,z) = k(z)*P(G|A,z), k(z) <1
-\]
-
-得到被拒绝用户的好人概率后，我们就可以使用分散打包法或重新加权法来增加样本容量了。
-
-5.外推法
-
-外推法的依据是存在一些特征 $X$, 在授信用户和被拒绝用户之间没有任何重叠。然后我们构造函数 $g$, 使其将好人概率 $P(G)$ 和 $x$ 关联起来。设授信用户的区域为 XA，被拒绝用户的区域为 XR，则函数 g 可表示为：
-
-\[
-g(x) = P(G|A,x) = P(G|x), x\in X_{A}
-\]
-
-接下来，我们将这个函数外推为 $g~$,有
-
-\[
-g_{~}(x) = P(G|R,x) = P(G|x), x\in X_{R}
-\]
-
-以上各种拒绝推断方法，都是对每个或者部分已拒绝的申请者给出好坏状态值，增加样本总体的大小，从而减少参数估计偏差，从而减小参数估计偏差。
-
-但是，以上方法都是一定程度上假设好人概率 $P(G)$ 在授信用户和被拒绝用户之间的关系，这种假设存在的最大问题是被拒绝用户并非是“随机缺失” （missing not at random,mnr），而是因为在某个或某些维度上体现出了坏人的属性。
-
-因此，如不随机放一些被拒绝用户进来，则无法被实践检验。而如果实践中，我们随机放一些拒绝用户进来，可以想象，必然会造成一笔不小的损失（例如，放进来一批学历低&失业&多头借贷用户）。
-
-
-经典的拒绝推断方法从广义上可分为 2 大类：数据法（data methods）和推断法（inference methods）。
-
-数据法：获取拒绝样本的其它表现数据。
-
-- 接受本该拒绝（reject acceptance）
-
-- 同生表现（cohort performance），又称为重新分类法
-
-- 拒绝原因。（这是啥意思？）
-
-推断法：推断拒绝和放贷样本之间的差异，进而调整建模样本组成来构建模型。
-
-- 展开法：又称为重新加权法
-
-- 打包法：又称为外推法
-
-- 迭代再分类法
-
-- 两阶段法（又称为双变量推断法）
-
-
-
-
-
-
 ** 变量选择
 
 - 绕封法：不断增加或删除预测变量，通过评估包含不同变量的模型找到最优的变量组合。
@@ -4460,6 +4505,7 @@ g_{~}(x) = P(G|R,x) = P(G|x), x\in X_{R}
 1）根据上公式，由 \(\left(\mu^{(j)}, \sigma^{(j)}, \pi^{(j)}\right)\) 求解后验分布
 \(Q^{(j)}=P\left(Z | X ; \theta^{(j)}\right)\).
 
+
 2）再把 $Q^{(j)}$ 代入上公式中，
 
 \begin{equation}
@@ -4539,13 +4585,10 @@ var(x)
 #[1]26.33671
 #+end_src
 
-
 *** 因果推断
 **** 倾向性评分
 
 https://www.jianshu.com/p/6486d2466044
-
-
 
 * References
 

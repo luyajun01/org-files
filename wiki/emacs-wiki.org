@@ -1,72 +1,40 @@
 * emacs wiki                                                            :toc:
   - [[#实用技能][实用技能]]
-    - [[#不重新启动-emacs让emacs-配置生效][不重新启动 emacs,让.emacs 配置生效]]
-    - [[#key-map][key map]]
   - [[#推荐安装包][推荐安装包]]
   - [[#常用快捷键][常用快捷键]]
   - [[#spacemacs][spacemacs]]
+  - [[#编码问题][编码问题]]
   - [[#emacs-mode][emacs mode]]
+  - [[#private-layer][private layer]]
   - [[#company][company]]
-    - [[#company-diag][company-diag]]
   - [[#markdown-mode][markdown mode]]
   - [[#ivy][ivy]]
   - [[#lpy][lpy]]
   - [[#avy][avy]]
   - [[#counsel][counsel]]
-    - [[#counsel-rg][counsel-rg]]
-    - [[#counsel-etags-grep][counsel-etags-grep]]
-    - [[#counsel-descbind][counsel-descbind]]
-    - [[#counsel-mark-ring][counsel-mark-ring]]
-    - [[#counsel-swith-buffer][counsel-swith-buffer]]
-    - [[#counsel-etags-grep-1][counsel-etags-grep]]
-    - [[#counsel-packages][counsel-packages]]
-    - [[#counsel-imenu][counsel-imenu]]
-    - [[#counsel-google][counsel-google]]
-    - [[#counsel-bookmark][counsel-bookmark]]
   - [[#swiper][swiper]]
-    - [[#my-swiper-search][my-swiper-search]]
-    - [[#swiper-all-thing-at-point][swiper-all-thing-at-point.]]
-    - [[#swiper-isearch-thing-at-point][swiper-isearch-thing-at-point.]]
-    - [[#swiper-thing-at-point][swiper-thing-at-point.]]
   - [[#helm][helm]]
   - [[#evil][evil]]
-    - [[#evil-escape][evil-escape]]
   - [[#lazy-set-key][lazy-set-key]]
   - [[#lispy][lispy]]
   - [[#evil-lispy][evil-lispy]]
   - [[#lispyville][lispyville]]
   - [[#multiple-cursor][multiple-cursor]]
+  - [[#elpy][elpy]]
   - [[#treemacs][treemacs]]
+  - [[#ace-windows][ace-windows]]
   - [[#org][org]]
-    - [[#配置][配置]]
-    - [[#evil-org-mode][evil-org-mode]]
-    - [[#smartparens][smartparens]]
-    - [[#olivetti][olivetti]]
-    - [[#toc-org][toc-org]]
-    - [[#org-agenda][org-agenda]]
-    - [[#org-download][org-download]]
-    - [[#cdlatex][cdlatex]]
-    - [[#org-ref][org-ref]]
-    - [[#scimax][scimax]]
-    - [[#diff-hl][diff-hl]]
+  - [[#polymode][polymode]]
+  - [[#git][git]]
+  - [[#flyspell][flyspell]]
   - [[#bm][bm]]
   - [[#hydra][hydra]]
   - [[#shell][shell]]
   - [[#yas-nippet][yas-nippet]]
-    - [[#creat-new-yasnippet][creat new yasnippet]]
   - [[#git-gutter][git-gutter]]
+  - [[#evil-snipe][evil-snipe]]
   - [[#others-packages][others packages]]
-    - [[#pyim][pyim]]
-      - [[#手动加词和删词][手动加词和删词]]
-    - [[#color-rg][color-rg]]
-    - [[#awesome-tab][awesome-tab]]
-    - [[#awesome-pair][awesome-pair]]
-    - [[#pdf-tools][pdf-tools]]
-    - [[#python][python]]
-    - [[#emacs-rime][emacs-rime]]
   - [[#安装各种包遇到的坑][安装各种包遇到的坑]]
-    - [[#ess][ess]]
-    - [[#elpy][elpy]]
 
 ** 实用技能
 *** 不重新启动 emacs,让.emacs 配置生效
@@ -76,17 +44,17 @@
 (4) M-x eval-buffer
 
 emacs 配置坑巨多，那么就需要 debug, 需要执行 toggle-debug-on-error.
+
 *** key map
 可以方便地将 key unset.
 (global-unset-key (kbd "M-<down-mouse-1>"))
 (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 
 ** 推荐安装包
-
 evil,evil-escape,org,.
 
 ** 常用快捷键
-   需要注意的是在 emacs shift 的键是 s.
+需要注意的是在 emacs shift 的键是 s.
 | 功能                                              | 快捷键                 |
 |---------------------------------------------------+------------------------|
 | 切换 read/write mode                              | c-x c-q                |
@@ -115,6 +83,7 @@ evil,evil-escape,org,.
 | ido-find-file                                     | C-x C-f/SPC f f        |
 | evil-insert-new-line                              | SPC i j                |
 | 括号之间的跳转                                    | % evil-matchit         |
+| describe-key                                      | 可以解释               |
 
 在 emacs 中，enter 键对应的 key map 是 c-m.
 
@@ -128,8 +97,52 @@ evil,evil-escape,org,.
   )
 #+end_export
 
+** 编码问题
+
+在windows 下，编码问题是一个老大难问题。
+
+参考了https://emacs-china.org/t/emacs-python-windows/1267
+
+#+begin_src lisp
+  ;;设置编码
+  (cond
+   ((eq system-type 'windows-nt)          ;
+    ;;
+    (set-language-environment "chinese-gbk")
+    (prefer-coding-system 'utf-8)
+    (set-terminal-coding-system 'gbk)
+    ;;
+    (modify-coding-system-alist 'process "*" 'gbk)
+    (defun liu233w/windows-shell-mode-coding ()
+      (set-buffer-file-coding-system 'gbk)
+      (set-buffer-process-coding-system 'gbk 'gbk))
+    (add-hook 'shell-mode-hook #'liu233w/windows-shell-mode-coding)
+    (add-hook 'inferior-python-mode-hook #'liu233w/windows-shell-mode-coding)
+    ;;
+    (defun liu233w//python-encode-in-org-babel-execute (func body params)
+      "org-babel 执行代码时不会自动编码文件，这里通过动态作用域覆盖默认选项"
+      (let ((coding-system-for-write 'utf-8))
+        (funcall func body params)))
+    (advice-add #'org-babel-execute:python :around
+                #'liu233w//python-encode-in-org-babel-execute))
+   (t
+    (set-language-environment "UTF-8")
+    (prefer-coding-system 'utf-8)))
+#+end_src
+
 ** emacs mode
+** private layer
+在spacemacs 中可以很方面的添加私人layer.
+
 ** company
+https://phenix3443.github.io/notebook/emacs/modes/company-mode.html
+
+company 后端参数解释可以参考这篇文章。
+
+如何判断，当前候选项，来自哪个 company-backends？
+
+m-x diminish-undo ，然后选择 company-mode 后，mode-line 会显示当前补全的候选项来自哪个 company-backends。
+
 *** company-diag
 这个函数可以看出当前 company mode 的配置.
 ** markdown mode
@@ -148,13 +161,25 @@ evil,evil-escape,org,.
 |      |     |       |
 
 ** lpy
-我是如此的喜欢这个包。
-但是这个包在使用过程中，需要注意一些问题。
+我是如此的喜欢这个包。但是这个包在使用过程中，需要注意一些问题。
 首先开机使用的时候，应该执行 pyvenv-workon 命令选择虚拟环境，再执行 lpy-mode。
 
 xp now works for shells started with run-python
 
 快捷键 xp 可以选择 run-python shell 真的太爽了！
+
+应该早点看到这个信息！
+
+常用的快捷键是：
+
+  ("h" lispy-outline-demote "left")
+  ("j" lispy-move-down "down")
+  ("k" lispy-move-up "up")
+  ("l" lispy-outline-promote "right")
+  ("v" lpy-outline-edit-below "edit outline" :exit t)
+  ("n" lpy-outline-add "new" :exit t)
+  ("q" nil "quit")
+  ("c" nil "quit")
 
 ** avy
 这个函数可以实现快速跳转！
@@ -162,8 +187,6 @@ xp now works for shells started with run-python
 | avy-move-line | 将目标行快速剪切到到你所在的行 |
 | avy-goto-line | spc-j-l 快速跳转到目标行               |
 | avy-goto-word-1 | spc-w 实现单词跳转,很实用!           |
-|               |                                   |
-
 
 以行/列为单位移动 hjkl
 以词为单位移动 ewb
@@ -179,7 +202,7 @@ xp now works for shells started with run-python
 | 命令              | 快捷键 |
 | counsel-mark-ring | spc-c-m |
 *** counsel-rg
-    这个包可以跨文件搜索 char 关键词。很方便的。
+这个包可以跨文件搜索 char 关键词。很方便的。
 在 windows 里，download 地址 https://github.com/BurntSushi/ripgrep/releases, 然
 后记得把它的文件夹放在 path 里。
 
@@ -232,11 +255,14 @@ describe-function.可以快速了解当前可以还绑定哪些快捷键.
 | kj   | 实现 ese 功能（evil-escape） |
 | .    | 实现 repeat 功能             |
 | e    | 可以实现一行文字间快速跳转   |
+| u    | 回撤                         |
 |      |                              |
 
 以行/列为单位移动 hjkl
 以词为单位移动 ewb
-以段落为单位移动 ]] [[
+以段落为单位移动]
+
+] [[
 行首/行尾 $^
 前进/后退至下一个特定字符 tf
 至特定行 :
@@ -283,19 +309,45 @@ visual mode
 ctrl + r
 *** evil-escape
 可以用 evil-escape，按 kj 或者 fd 就等价于按 esc.
+*** evil-surround
+对应 vim-surround.
+
+我通常用 expand-region 选中一段文本, 然后按 S 或者 M-x evil-surround-region , 再按任意字符 (比如双引号) 就可以在文本 首尾两端附加该字符.
+
+当然它也支持修改删除操作.
+
+| key | behavior             |
+| g s | evil-surround-region |
+|     |                      |
+
 ** lazy-set-key
 这个插件可以很方便地将 emacs 中所以 key 全部清除，然后可以方便地添加新的 key。
 ** lispy
 这个插件做的事情就是 insert 状态下文本编辑状态。
-| key   | behavior            |
-| m-d   | lispy-kill-words    |
-| C-e   | lispy-move-end-line |
-| c-m-b | lispy-back-word     |
-| (     | a string ()         |
-| )     | a string )          |
-| {     | a string {}         |
-| }     | a string []         |
-|       |                     |
+怎么一个爽字了得！
+
+| key   | behavior               |
+| m-d   | lispy-kill-words       |
+| C-e   | lispy-move-end-line    |
+| c-m-b | lispy-back-word        |
+| (     | a string ()            |
+| )     | a string)              |
+| {     | a string {}            |
+| }     | a string []            |
+| q     | lispy-ace-paren        |
+| [     | lispy-backword         |
+| c-1   | lispy-describe-inline  |
+| e     | lispy-eval             |
+| E     | lispy-eval-and-insert  |
+| xr    | lispy-eval-and-replace |
+| k     | lispy-up               |
+| l     | lispy-right            |
+| f     | lispy-flow             |
+| g     | lispy-goto             |
+| b     | lispy-back             |
+| a     | lispy-ace-symbol       |
+| u     | lispy-uodo             |
+|       |                        |
 
 ** evil-lispy
 爽！
@@ -314,18 +366,44 @@ ctrl + r
 | y    | yank (copy)                          | normal |
 | dd   | delete                               | normal |
 | cc   | delete the line, then insert         | normal |
-| c    | change                               | normal    |
+| c    | change                               | normal |
+| ]    | lispyville-next-closing              | normal |
+| (    | lispyville-backword-up-list          | normal |
+| ;{   | lispyville-wrap-braces               | normal |
+| ;[   | lispyville-wrap-brackets             | normal |
+| ,w   | lispyville-move-up                   | normal |
+| ,x   | lispyville-move-down                 | normal |
+|      |                                      |        |
 
 ** multiple-cursor
 这个包可以很方便地删除多行操作。
+** elpy
+这个包能够很方便地处理python.
+
+| 快捷键  | 功能                        |
+| c-c c-n | elpy-flymake-next-error     |
+| c-c c-p | elpy-flymake-previous-error |
+| C-c C-v | elpy-check                  |
+| C-c C-d | elpy-doc                    |
+|         |                             |
+
 ** treemacs
 这个包类似于.
+** ace-windows
+
+| 指令  | 代码     |
+| c-x o | 光标转移 |
+|       |          |
+
 ** org
 喜欢打开 org-indent-mode 这样可以同样 level 下标题能够缩进。
+
+org - show
+
 *** 配置
-    #+begin_src lisp
-      (require 'org-tempo) ;<s能够补全代码块 or org-structure-template-alist C-c C-,
-    #+end_src
+#+begin_src lisp
+(require 'org-tempo)  ;<s能够补全代码块 or org-structure-template-alist C-c C-,
+#+end_src
 
  | 功能                                                 | 快捷键                     |
  |------------------------------------------------------+----------------------------|
@@ -338,23 +416,25 @@ ctrl + r
  | org-table-insert-row                                 |                            |
 
 *** evil-org-mode
-| 功能  | 快捷键                          |
-|-------+---------------------------------|
-| gh    | outline-up-heading              |
-| gj    | org-forward-heading-same-level  |
-| gk    | org-backward-heading-same-level |
-| gl    | outline-next-visible-heading    |
-| t     | org-todo                        |
-| T     | org-insert-todo-heading         |
-| H     | org-shiftleft                   |
-| J     | org-shiftright                  |
-| K     | org-shiftup                     |
-| L     | org-shiftdown                   |
-| o     | always-insert-item              |
-| O     | org-insert-heading              |
-| ’$’ | org-end-of-line                 |
-| ’^’ | org-beginning-of-line           |
-|       |                                 |
+
+| 功能 | 快捷键                          |
+|------+---------------------------------|
+| gh   | outline-up-heading              |
+| gp  | org-previous-heading-same-level |
+| gj   | org-forward-heading-same-level  |
+| gk   | org-backward-heading-same-level |
+| gn  | outline-next-visible-heading    |
+| t    | org-todo                        |
+| T    | org-insert-todo-heading         |
+| H    | org-shiftleft                   |
+| J    | org-shiftright                  |
+| K    | org-shiftup                     |
+| L    | org-shiftdown                   |
+| o    | always-insert-item              |
+| O    | org-insert-heading              |
+| ’$’  | org-end-of-line                 |
+| ’^’  | org-beginning-of-line           |
+|      |                                 |
 
 
 <	org-metaleft
@@ -368,7 +448,7 @@ ctrl + r
 在 org-mode 里面运行 python 真是不容易！可以对 python 代码进行补全，但是必须先运行 run-python!
 
 #+begin_export lisp
-  ;;这个函数很重要！
+;;这个函数很重要！
 (add-hook 'ipython-mode-hook
           (lambda ()
             (setq-local completion-at-point-functions
@@ -391,7 +471,6 @@ ctrl + r
 #+end_export
 
 *** smartparens
-
 *这个插件* 可以快速实现括号内容的直接的跳转。
 
 *** olivetti
@@ -431,9 +510,23 @@ scimax-obi/body 这个 hydra 可以很方便地执行 src-block.
 scimax-jump-to-clock 可以快速跳转代码 code.
 scimax-ob-clone-block 快速复制代码块。
 scimax-ob-jump-to-header 跳到 src block header.
+scimax-org-block/body 这个命令可以跳到下一个src block.
+
 *** diff-hl
 这个包能够清楚显示出新增记录。
 diff-hl-amend-mode sets the reference revision to the one before recent one.
+** polymode
+这个包很重要，可以在org-mode 中使用其他mode,比如python mode。
+这样就可以愉快地使用lpy 啦。
+** git
+| 命令             | 快捷键 |
+| counsel-git-grep | ,gg    |
+|                  |        |
+
+** flyspell 
+这个包可以快速地检查语法错误.
+
+flyspell-auto-correct-word 可以更改错误.
 
 ** bm
 bm-book-line 可以设置 bookmark 用于快速跳转
@@ -448,7 +541,6 @@ hydra-goto-line 用于快速跳转到固定的行，以及标记 mark,真的是�
 | shell | M-X shell  |
 |       |            |
 ** yas-nippet
-
 要使用某个 snippet 很简单,只需要输入缩写然后按下 M-/ or tab 就行了.
 
 | 功能              | 快捷键                      |
@@ -466,6 +558,12 @@ https://github.com/lujun9972/emacs-document/blob/master/emacs-common/在Spacemac
 ** git-gutter
 emacs 中好玩的东西太多了。这个包就是其中之一。
 
+** evil-snipe
+这个包可以快速实现行内移动.
+
+| 快捷键 | 动作         |
+| gs     | evil-snipe-s |
+
 ** others packages
 *** pyim
 **** 手动加词和删词
@@ -477,14 +575,14 @@ emacs 中好玩的东西太多了。这个包就是其中之一。
 
 `pyim-delete-word' 从个人词库中删除当前高亮选择的词条。
 
-
-
 *** color-rg
 挨吗，太好用了！
 https://github.com/manateelazycat/color-rg
 
+#+begin_src
 (add-to-list 'load-path "<path-to-color-rg>") ; add color-rg to your load-path
 (require 'color-rg)
+#+end_src
 
 color-rg-search-input 谁用谁知道。
 *** awesome-tab
@@ -506,7 +604,6 @@ awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
 *** awesome-pair
 因为经常用到（）而 括号不好打，所以将它绑定到 C-q 键。
 *** pdf-tools
-
 看 pdf 神器！
 
 | 快捷键 | 功能   |
@@ -517,14 +614,12 @@ awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
 
 *** python
 在 py 文件中，一定要先运行 pyvenv-workon, run-python 命令否则 emacs 就散退。
-
 *** emacs-rime
 比 rime 好用多了！！
 
 ** 安装各种包遇到的坑
 *** ess
 这个包遇到的坑何其多，所以记录详细配置过程。
-
 #+BEGIN_SRC lisp
 (ess :variables
      ess-assign-key "\M--"
@@ -532,24 +627,24 @@ awesome-tab-switch-group	基于模糊搜索算法切换不同的分组
      inferior-R-program-name "F:\\LJ\\R-3.6.1\\bin\\x64\\Rterm.exe")
 #+END_SRC
 
-ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉及到环境变量的配置。在 mac 中，环境变量主要在~/.bashrc 和~/.bash_profile 两个文件中。
-
 #+BEGIN_SRC R
-  .libPaths()
-  Sys.getenv()
-  sessionInfo()
+.libPaths()
+Sys.getenv()
+sessionInfo()
   #+END_SRC
 
-#  ov-highlight-data: nil
+ess 环境配置比较麻烦，主要要确认系统默认的 R version，这涉及到环境变量的配置。在 mac 中，环境变量主要在~/.bashrc 和~/.bash_profile 两个文件中。
 
+#  ov-highlight-data: nil
 # Local Variables:
 # eval: (ov-highlight-load)
 # End:
+
 *** elpy
 在 emacs 中使用 eply,需要注意乱码问题 ^G^G。需要加上以下代码。
 
 #+begin_src lisp
-  (setq elpy-shell-echo-output nil
-        python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -c exec('__import__(\\'readline\\')') -i")
+(setq elpy-shell-echo-output nil
+      python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--simple-prompt -c exec('__import__(\\'readline\\')') -i")
 #+end_src

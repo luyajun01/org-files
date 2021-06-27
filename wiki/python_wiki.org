@@ -1,15 +1,35 @@
 # -*- org-confirm-babel-evaluate: nil; -*-
 #+PROPERTY: header-args :eval never-export
-                                     
-* Python_wiki                                                           :toc:
+
+* Python_wiki                                                                   :toc:
+  - [[#编程规范][编程规范]]
   - [[#python-版本][python 版本]]
   - [[#虚拟环境][虚拟环境]]
   - [[#工作目录][工作目录]]
   - [[#__code__][__code__]]
+  - [[#python-编辑语法][python 编辑语法]]
+  - [[#常见函数][常见函数]]
+  - [[#正则表达式][正则表达式]]
+  - [[#用户输入和-while-循环][用户输入和 while 循环]]
+  - [[#lambda][lambda]]
+  - [[#class][class]]
+  - [[#向量][向量]]
+  - [[#元组][元组]]
+  - [[#list][list]]
+  - [[#列表长度][列表长度]]
+  - [[#切片操作][切片操作]]
   - [[#推导式][推导式]]
   - [[#重复次数][重复次数]]
   - [[#聚合][聚合]]
   - [[#外积][外积]]
+  - [[#广播][广播]]
+  - [[#枚举][枚举]]
+  - [[#统计记录个数][统计记录个数]]
+  - [[#value_counts][value_counts]]
+  - [[#mode][mode]]
+  - [[#cut][cut]]
+  - [[#nlargest][nlargest]]
+  - [[#处理缺失值][处理缺失值]]
   - [[#合并数据集][合并数据集]]
   - [[#unionintersectiondifference][union/intersection/difference]]
   - [[#eval][eval]]
@@ -23,6 +43,9 @@
   - [[#python-习题][python 习题]]
   - [[#数据结构][数据结构]]
   - [[#股市量化分析][股市量化分析]]
+
+** 编程规范
+1.代码一定要简洁!重复的代码可以用函数型代码来实现! 包括R也是.
 
 *** 数据类型
 **** 基本数据类型
@@ -99,11 +122,16 @@ import glob
 glob.glob('*.py')
 #+end_src
 
+#+begin_src python :results output
+##查看文件编码方式
+sys.getfilesystemencoding()
+# => 'utf-8'
+#+end_src
+
 ** __code__
 这个函数可以用来查看变量参数等信息.
 
-#+begin#+begin_example
-_src python
+#+begin_src python
 def test(x, y = 10):
     x += 100
     print(x, y)
@@ -119,23 +147,25 @@ test.__defaults__ # 参数默认值
 # => (10,)
 test(1)
 # => 101 10
-,#+end_src
+#+end_src
 
-,** python 编辑语法
-,*** \
+** python 编辑语法
+*** \
+
 如果代码太长写成一行不便于阅读 可以使用\对代码进行折行.
-,#+begin_src python
+
+#+begin_src python
 year = int(input('请输入年份: '))
 # 如果代码太长写成一行不便于阅读 可以使用\对代码进行折行
 is_leap = year % 4 == 0 and year % 100 != 0 or \
           year % 400 == 0
 print(is_leap)
-,#+end_src
+#+end_src
  
-,** 常见函数
-,*** def
+** 常见函数
+*** def
 自定义函数可以通过关键字 def 来定义。在定义函数时给定的名称称作“形参（parameters）”， 在调用函数时你所提供函数的值称作“实参”（arguments）。
-,#+begin_src python
+#+begin_src python
 def print_max(a, b):
     if a > b:
     print(a, 'is maximum')
@@ -145,13 +175,13 @@ else:
     print(b, 'is maximum')
 
 print_max(3,4)
-,#+end_src
+#+end_src
 
-,*args 和 **kwargs 主要用于函数定义，你可以将不定数量的参数传递给一个函数，这里的不定的意思是：预先并不知道函数使用者会传递多少个参数给你，所以在这个场景下使用这两个关键字。*
+*args 和 **kwargs 主要用于函数定义，你可以将不定数量的参数传递给一个函数，这里的不定的意思是：预先并不知道函数使用者会传递多少个参数给你，所以在这个场景下使用这两个关键字。*
 
-,*args 是用来发送一个非键值对的可变数量的参数列表给一个函数。
+*args 是用来发送一个非键值对的可变数量的参数列表给一个函数。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 def demo(args_f, *args_v):
     print(args_f)
     for x in args_v:
@@ -164,44 +194,46 @@ demo('a','b','c')
 demo('a', 'b')
 # => a
 #    b
-,#+end_src
+#+end_src
 
-,**kwargs 允许你将不定长度的键值对，作为参数传递给一个函数。如果你想要在一个函数里处理带名字的参数，你应该使用 **kwargs.
+**kwargs 允许你将不定长度的键值对，作为参数传递给一个函数。如果你想要在一个函数里处理带名字的参数，你应该使用 **kwargs.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 def demo(**kwargs):
     for k,v in kwargs.items():
         print(k,v)
 
 demo(name='njcx')
 # => name njcx
-,#+end_src
+#+end_src
 
-,**** 递归函数
+**** 递归函数
 在函数内部，可以调用其他函数。如果一个函数在内部调用自身本身，这个函数就是递归函数。这个在R 中是无法实现的。
-,#+begin_src python
+
+#+begin_src python
 def fact(n):
     if n == 1:
         return 1
     return n * fact(n-1)
 fact(3)
 # => 6
-,#+end_src
+#+end_src
 
-,*** 空函数
+*** 空函数
+
 如果想定义一个什么事也不做的空函数，可以用 pass 语句：
 
-,#+begin_src python
+#+begin_src python
 if age >=18:
     pass
-,#+end_src
+#+end_src
 
 pass 可以用来作为占位符，比如现在还没想好怎么写函数的代码，可以先写一个 pass，让代码能运行起来。
 
-,*** 局部变量
+*** 局部变量
 当在一个函数的定义中声明变量时，它们不会以任何方式与身处函数之外但具有相同名称的变量产生关系，也就是说，这些变量名只存在于函数这一局部（local），这被称为变量作用域（scope）。
 
-,#+begin_src python
+#+begin_src python
 x = 50
 def func(x):
     print("x is", x)
@@ -213,12 +245,12 @@ func(x)
 #    Changed local x to 2
 print("x is still", x)
 # => x is still 50
-,#+end_src
+#+end_src
 
-,*** global 语句
+*** global 语句
 在 def 中如果想要全局使用变量应该要加上 global 字段. 在一个函数内部可以修改全局变量.
 
-,#+begin_src python
+#+begin_src python
 def say_hello():
     print('hello world')
 say_hello()
@@ -250,20 +282,20 @@ func()
 #      File "/Users/luyajun/Documents/坚果云/我的坚果云/github/wiki/python_wiki.org", line 2, in func
 #        #+PROPERTY: header-args :eval never-export
 #    UnboundLocalError: local variable 'x' referenced before assignment
-,#+end_src
+#+end_src
 
 下面 times = 1,就是默认的参数值。
-,#+begin_src ipython
+#+begin_src ipython
 def say(message, times=1):
           print(message * times)
 
 say('hello')
 say('world',5)
-,#+end_src
+#+end_src
 
-,*** 关键字参数
+*** 关键字参数
 
-,#+begin_src python
+#+begin_src python
 def func(a,b=5,c=10):
     print("a is", a, "and b is", b, "and c is", c)
 
@@ -273,32 +305,32 @@ func(25,c=7)
 # => a is 25 and b is 5 and c is 7
 func(c=50, a=100)
 # => a is 100 and b is 5 and c is 50
-,#+end_src
+#+end_src
 
-,*** 可变参数
+*** 可变参数
 有时你可能想定义的函数里面能够有任意数量的变量，也就是参数数量是可变的，这可以通过使用星号来实现。
 
-,*** return
-return 语句用于从函数中返回，也就是中断函数。命名空间（namespace）
+*** return
+return 语句用于从函数中返回，也就是中断函数。命名空间（namespace）.
 
-,*** 命名空间和作用域
+*** 命名空间和作用域
 如果想给一个在程序顶层的变量赋值（也就是说不存在于任何作用域中，无论是函数还是类），那么你必须告诉 python 这一变量并非局部，而是全局（global）。因为在不使用 global 语句的情况下，不可能为一个定义于函数之外的变量赋值。
 
-,*** */**
+*** */**
 为了能让一个函数接受任意数量的位置参数，可以使用一个*参数。例如
 
-,#+begin_src python
+#+begin_src python
 def avg(first, *rest):
     return (first + sum(rest)) / (1 + len(rest))
 
 # Sample use
 avg(1, 2) # 1.5
 avg(1, 2, 3, 4) # 2.5
-,#+end_src
+#+end_src
 
 为了接受任意数量的关键字参数，使用一个以**开头的参数。比如：
 
-,#+begin_src python
+#+begin_src python
 def maximun(x, y):
   if x > y:
       return  x
@@ -308,22 +340,22 @@ def maximun(x, y):
       return y
 
 print(maximun(2, 3))
-,#+end_src
+#+end_src
 
 从上面两个例子可以看出 * 对应的是任意数量的位置参数,而 ** 对应的是任意数量的关键字参数.还有一种情况是只接受关键字参数的函数.将强制关键字参数放到某个 * 参数或者单个 * 后面就能达到这种效果。
 
-,#+begin_src python
+#+begin_src python
 def recv(maxsize, *, block):
    'Receives a message'
    pass
 
 recv(1024, True) # TypeError
 recv(1024, block=True) # Ok
-,#+end_src
+#+end_src
 
 利用这种技术，我们还能在接受任意多个位置参数的函数中指定关键字参数。比如：
 
-,#+begin_src python
+#+begin_src python
 import html
 
 def make_element(name, value, **attrs):
@@ -341,9 +373,9 @@ make_element('item', 'Albatross', size='large', quantity=6)
 
 # Creates '<p>&lt;spam&gt;</p>'
 make_element('p', '<spam>')
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 def minimum(*values, clip=None):
    m = min(values)
    if clip is not None:
@@ -352,15 +384,13 @@ def minimum(*values, clip=None):
 
 minimum(1, 5, 2, -5, 10) # Returns -5
 minimum(1, 5, 2, -5, 10, clip=0) # Returns 0
-,#+end_src
+#+end_src
 
 - 给函数参数增加元信息
 
 好了一个函数，然后想为这个函数的参数增加一些额外的信息，这样的话其他使用者就能清楚的知道这个函数应该怎么使用。函数注解只存储在函数的 __annotations__ 属性中。
 
-import numpy as
-
-,#+begin_src python
+#+begin_src python
 def add(x:int, y:int) -> int:
     return x + y
 
@@ -371,17 +401,16 @@ help(add)
 #> Help on function add in module __main__:
 #>
 #> add(x: int, y: int) -> int
-#>
 
 add.__annotations__
 #> {'x': int, 'y': int, 'return': int}
-,#+end_src
+#+end_src
 
 - 返回多个值的函数
 
 为了能返回多个值,函数直接 return 一个元组即可.
 
-,#+begin_src python
+#+begin_src python
 def myfun():
     return 1,2,3
 
@@ -392,7 +421,7 @@ b
 #2
 c
 #3
-,#+end_src
+#+end_src
 
 从本质上看,尽管 myfun() 看上去返回了多个值,实际上是先创建了一个元组然后返回的.
 
@@ -400,37 +429,37 @@ c
 
 定义一个有可选参数的函数是非常简单的，直接在函数定义中给参数指定一个默认值，并放到参数列表最后就行了。
 
-,#+begin_src python
-  def spam(a, b = 42):
-      print(a, b)
+#+begin_src python
+def spam(a, b = 42):
+    print(a, b)
 
-  spam(1)
-  spam(1, 2)
+spam(1)
+spam(1, 2)
 
-  _no_value = object()
-  def spam(a, b=_no_value):
-      if b is _no_value:
-          print('No b value supplied')
+_no_value = object()
+def spam(a, b=_no_value):
+    if b is _no_value:
+        print('No b value supplied')
 
-  spam(1)
-  spam(1, 2)
-  spam(1,  None)
+spam(1)
+spam(1, 2)
+spam(1,  None)
 
 
-  def spam(a,b=[]):
-      print(b)
-      return b
+def spam(a,b=[]):
+    print(b)
+    return b
 
-  x = spam(1)
-  x.append(99)
-  spam(1)
-,#+end_src
+x = spam(1)
+x.append(99)
+spam(1)
+#+end_src
 
 - 减少可调用对象的参数个数
 
 如果需要减少某个函数的参数个数，你可以使用 functools.partital().
 
-,#+begin_src python
+#+begin_src python
 from functools import partial
 def spam(a, b, c, d):
     print(a, b, c, d)
@@ -445,30 +474,30 @@ s3 = partial(spam, 1, 2, d = 42)
 s3(3)
 s3(4)
 s3(5)
-,#+end_src
+#+end_src
 
 partial 函数允许你给一个或多个参数设置固定的值，减少接下来被调用时的参数个数。
 
 假设要转换大量的二进制字符串，每次都传入 int(x,base=2)非常麻烦，于是，我们想到，可以定义一个int2()的函数，默认把base=2 传进去：
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import functools
 int2 = functools.partial(int, base=2)
 int2('1000000')
-,#+end_src
+#+end_src
 
 需要指出的是这里的 int 是自带函数，而base 是自带参数，只不过partial 确定了参数值。如果没有 partial 函数，那么就需要重新定义int2 函数
 
-,#+begin_src python :results output
+#+begin_src python :results output
 def int2(x, base=2):
     return int(x, base)
-,#+end_src
+#+end_src
 
 - 带额外状态信息的回调函数
 
 你的代码中需要依赖到回调函数的使用(比如事件处理器、等待后台任务完成后的回调等)， 并且你还需要让回调函数拥有额外的状态值，以便在它的内部使用到。
 
-,#+begin_src python
+#+begin_src python
 def apply_async(func, args, *, callback):
     result = func(*args)
     callback(result)
@@ -481,11 +510,11 @@ def add(x,y):
 
 apply_async(add, (2, 3), callback=print_result)
 # Got: 5
-,#+end_src
+#+end_src
 
 - 访问闭包中定义的变量
 
-,#+begin_src python
+#+begin_src python
 def sample():
     n = 0
     def func():
@@ -507,17 +536,17 @@ f()
 # n= 10
 f.get_n()
 # 10
-,#+end_src
+#+end_src
 
 为了说明清楚它如何工作的，有两点需要解释一下。首先，nonlocal 声明可以让我们编写函数来修改内部变量的值。其次，函数属性允许我们用一种很简单的方式将访问方法绑定到闭包函数上，这个跟实例方法很像(尽管并没有定义任何类)。
 
 有一个例子可以说明生成器，yield,偏函数的作用！
-,#+begin_src python :results output
+
+#+begin_src python :results output
 def multiply():
     return (lambda x: i * x for i in range(4))
 
 print([m(100) for m in multiply()])
-
 
 def multiply():
     for i in range(4):
@@ -532,18 +561,20 @@ def multiply():
     return [partial(__mul__, i) for i in range(4)]
 
 print([m(100) for m in multiply()])
-,#+end_src
+#+end_src
 
-,**** 异常处理
+**** 异常处理
+
 到目前为止，在 python 程序中遇到错误，或“异常”，意味着整个程序崩溃。我们不希望这发生在真实世界中，相反希望程序能检测到错误，处理它们，然后继续运行。
 
-,#+begin_src python
+#+begin_src python
 def spam(divideBy):
     return 42/ divideBy
 
 print(spam(2))
 print(spam(0))
-,#+end_src
+#+end_src
+
 try 语句的工作原理如下：
 
 - 首先，执行 try 子句 （try 和 except 关键字之间的（多行）语句）。
@@ -558,7 +589,7 @@ try 语句的工作原理如下：
 
 错误可以由 try 和 except 语句处理，那些可能出错的语句被放在 try 子句中。如果错误发生，程序执行就转到接下来的 except 子句开始处。
 
-,#+begin_src python
+#+begin_src python
 def spam(divideBy):
     try:
         return 42/ divideBy
@@ -566,14 +597,13 @@ def spam(divideBy):
         print('Error:Invalid argument.')
 
 print(spam(0))
-,#+end_src
+#+end_src
 
 try..except..else 没有捕获到异常,执行else 语句. 
 
 try..except..finally 不管是否捕获到异常,都执行finally 语句.
 
-
-,#+begin_src python
+#+begin_src python
 def divide(a,b):
     try:
         return a/b
@@ -606,40 +636,40 @@ divide(1, 0)
 #    ValueError: Invalid inputs
 divide(1,1)
 # => 1.0
-,#+end_src
+#+end_src
 
 或者
 
-,#+begin_src python
+#+begin_src python
 try:
     print(spam(2))
     print(spam(0))
 except ZeroDivisionError:
     print('Error:Invalid argument.')
-,#+end_src
+#+end_src
 
 在实际工作中，try 一般紧跟抛异常函数 raise。
 
-,#+begin_src python
+#+begin_src python
 try:
     a = input("输入一个数：")
     if(not a.isdigit()):
         raise ValueError("a 必须是数字")
 except ValueError as e:
     print({"引发异常：", repr(e)})
-,#+end_src
+#+end_src
 
 正如之前看到的，raise 不需要带参数。
 
 一个 try 语句可能有多个except 子句，以指定不同异常的处理的程序，最多会执行一个处理程序。处理程序只处理相应的try 子句中发生的异常，而不处理同一 try 语句内其他处理程序中的异常。一个 except 子句可以将多个异常命名为带括号的元组。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 except(RuntimeError, TypeError, NameError):
     pass
-,#+end_src
+#+end_src
 
 自定义异常用raise 抛出异常。
-,#+begin_src python
+#+begin_src python
  def fn():
     try:
         for i in range(5):
@@ -649,28 +679,50 @@ except(RuntimeError, TypeError, NameError):
         print(ret)
 
 fn()
-,#+end_src
+#+end_src
 
-,*** isinstance
+*** isinstance
 isinstance() 布尔函数在判定一个对象是否是另一个给定类的实例时，非常有用。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 class myclass(object):
     def __init__(self):
         self.foo = 100
 myinst = myclass()
 isinstance(myinst, myclass)
-,#+end_src
+# => True
+#+end_src
 
-,*** super
+这个函数和type 类似.
+
+#+begin_src python :results output
+type(1)
+# => <class 'int'>
+class A:
+    pass
+class B(A):
+    pass
+isinstance(A(), A)
+#+end_src
+
+isinstance() 与type() 区别:
+
+type() 不会认为子类是一种父类类型,不考虑继承关系. isinstance() 会认为子类是一种父类类型,考虑继承关系.
+
+值得注意的是,数据的类型type,需要取出数据的一个值才能确定数据类型.
+
+#+begin_src python :results output
+type(df.weight[0])
+#+end_src
+
+*** super
 super() 函数是用于调用父类（超类）的一个方法。 super() 是用来解决多重继承问题的，直接用类名调用父类方法在使用单继承的时候没有问题，但是如果使用多继承，会涉及到查找顺序（MRO），重复调用等种种问题。
 
 调用父类同名方法有2种方式：
 
 1.调用未绑定的父类方法
 
-
-,#+begin_src python :results output
+#+begin_src python :results output
 class Base(object):
     def greet(self):
         print("hi, i am base")
@@ -685,24 +737,23 @@ a = A()
 a.greet()
 # => hi, i am base
 #    hi, i am A
-,#+end_src
+#+end_src
+
 这种方式简单还可以，如果在多重继承中就会有问题。
 
 2.使用super 函数来调用
 
-,#+begin_src python :results output
+#+begin_src python :results output
 class Base(object):
     def __init__(self):
         print("enter Base")
         print("leave Base")
-
 
 class A(Base):
     def __init__(self):
         print("enter A")
         Base.__init__(self) #调用父类的构造函数进行初始化
         print("leave A")
-
 
 class B(Base):
     def __init__(self):
@@ -765,7 +816,7 @@ c = C()
 #    <__repl__.C object at 0x10898d3c8>
 C.mro()
 # => [__repl__.C, __repl__.A, __repl__.Base, __repl__.B, __repl__.Base, object]
-,#+end_src
+#+end_src
 
 类C继承自A,B，而A和B又分别继承类Base，每一个类的构造函数分别被调用了一次。
 
@@ -782,11 +833,11 @@ MRO 就是类的方法解析顺序表，其实也就是继承父类方法时的�
 
 super() 方法的语法：
 
-,#+begin_src python :results output
+#+begin_src python :results output
 super(type[, object-or-type])
-,#+end_src
+#+end_src
 
-,#+begin_src python :results output
+#+begin_src python :results output
 class People:
     def __init__(self, name):
         self.name = name
@@ -807,12 +858,12 @@ class Person(People, Animal):
 
 per = Person("zhangsan", "熟食")
 per.say()
+# => 我是人，名字为： zhangsan
 per.display()
-,#+end_src
+# => 我是动物，我吃 熟食
+#+end_src
 
-,#+begin_src python :results output
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
+#+begin_src python :results output
 class FooParent(object):
     def __init__(self):
         self.parent = 'I\'m the parent.'
@@ -835,11 +886,11 @@ class FooChild(FooParent):
 if __name__ == '__main__':
     fooChild = FooChild()
     fooChild.bar('HelloWorld')
-,#+end_src
+#+end_src
 
 如何理解smo 呢？用一个事例来说明。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 class Bird:
     def __init__(self):
         self.hungry = True
@@ -859,17 +910,15 @@ class SongBird(Bird):
 sb = SongBird()
 sb.sing()
 sb.eat()
-,#+end_src
+#+end_src
 
-,*** 魔法函数
-
+*** 魔法函数
 所谓的魔法函数是python 的一种高级语法，允许你在类中自定义函数（函数名格式一般为 __xx__  ），并绑定到类的特殊方法中，比如在类A 中自定义 __str__()函数，则再调用str(A()) 时，会自动调用__str__()函数，并返回相应的结果。在我们平时的使用中，可能经常使用 __init__()函数（构造函数）和 __del__()函数（）
 
-,*** __slots__
-
+*** __slots__
 限制实例的属性就需要 __slot__()
 
-,#+begin_src python :results output
+#+begin_src python :results output
 class Student(object):
     __slots__ = ('name', 'age')
 
@@ -877,62 +926,95 @@ s = Student()
 s.name = 'Michael'
 s.age = 25
 s.score = 99
-,#+end_src
+#+end_src
 
-,*** int
+*** int
 如果传入base参数，就可以做N进制的转换：
-,#+begin_src python :results output
+#+begin_src python :results output
 int('1234', base=8)
-,#+end_src
+#+end_src
 
-,*** set
+*** set
 集合，是 python 一种数据类型，可以去重。
 
-,#+begin_src python
+#+begin_src python
 basket = ['apple', 'orange', 'apple']
 
 set(basket)
 #> {'apple', 'orange'}
-,#+end_src
+#+end_src
 
 python 去重一般通过set,然后再转成对应的数据类型。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 list1 = [11,12,13,12,15]
 [x for x in set(list1)]
-,#+end_src
+#+end_src
 
-,*** help
+*** help
 
-,#+begin_src python
+#+begin_src python
 help() #可以获取帮助文档
 #比如:
 help(re.match)
-,#+end_src
+#+end_src
 
-,*** list
+*** list
 python 中的 list 转变为 array.
 
-,#+begin_src python
+#+begin_src python
 items = [1, 2, 3, 4, 5]
 type(items)
 # => <class 'list'>
 l = np.array(items)
 l
 type(l)
-,#+end_src
+#+end_src
+
+值得注意的是list 和 np.array 对数值计算的差异.
+
+#+begin_src python
+##list
+x = [1, 2, 3, 4]
+y = [5, 6, 7, 8]
+x*2
+
+##numpy array
+import numpy as np
+ax = np.array([1, 2, 3, 4])
+ay = np.array([5, 6, 7, 8])
+ax*2
+ax + 10
+# => array([11, 12, 13, 14])
+ax*ay
+
+a = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+a
+# =>
+# array([[1, 2, 3, 4],
+#        [5, 6, 7, 8]])
+a[1]
+# => array([5, 6, 7, 8])
+a + [10, 11, 12, 13]
+# =>
+# array([[11, 13, 15, 17],
+#        [15, 17, 19, 21]])
+a
+# =>
+# array([[1, 2, 3, 4],
+#        [5, 6, 7, 8]])
+
+np.where(a < 4, a, 10)
+# =>
+# array([[ 1,  2,  3, 10],
+#        [10, 10, 10, 10]])
+#+end_src
 
 列表还支持合并操作：
 
-,#+begin_src python :results output
-square = [1, 4, 98]
-square + [36, 90]
-# => [1, 4, 98, 36, 90]
-,#+end_src
-
 字符串是immutable, 而列表是 mutable.不可变数据类型:数值型,字符串型,元组型.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 s = "abc"
 s[0] = "c"
 # =>
@@ -948,16 +1030,16 @@ s[0] = "c"
 #          5   - [[#常见问题][常见问题]]
 #
 #    TypeError: 'str' object does not support item assignment
-,#+end_src
+#+end_src
 
-,**** count
+**** count
 
-,#+begin_src python
+#+begin_src python
 a = [66.25, 333, 333, 1, 1234]
 print(a.count(333), a.count(66.25), a.count('x'))
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 some_data = ['a','a','b','c']
 count_freq = dict()
 for item in some_data:
@@ -967,9 +1049,9 @@ for item in some_data:
         count_freq[item] = 1
 count_freq
 # => {'a': 2, 'b': 1, 'c': 1}
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 from collections import Counter
 some_data = ['a', '2', 2, 4]
 Counter(some_data)
@@ -980,22 +1062,22 @@ Counter("success")
 
 可以使用elements() 方法来获取Counter 中的key 值。
 
-,#+begin_src python
+#+begin_src python
 list(Counter("success").elements())
 # => ['s', 's', 's', 'u', 'c', 'c', 'e']
-,#+end_src
+#+end_src
 
 利用most_common() 方法可以找出前 N 个出现频率最高的元素以及它们对应的次数。
 
-,#+begin_src python
+#+begin_src python
 from collections import Counter
 some_data = ['a', '2', 2, 4]
 Counter(some_data).most_common(2)
-,#+end_src
+#+end_src
 
 当访问不存在的元素时，默认返回为0 而不是抛出 KeyError 异常。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 from collections import Counter
 some_data = ['a', '2', 2, 4]
 Counter(some_data).most_common(2)
@@ -1010,12 +1092,12 @@ c
 c.subtract('successfully')
 c
 # => Counter({'s': 0, 'c': 0, 'e': 0, 'u': -1, 'f': -1, 'y': -1, 'l': -2})
-,#+end_src
+#+end_src
 
-,**** deque
+**** deque
 可以把列表当做队列用，只是在队列里第一加入的元素，第一个取出来；但是拿列表用作这样的目的效率不高。在列表的最后添加或者弹出元素速度快，然而在列表里插入或者从头部弹出速度却不快（因为所有其他的元素都得一个一个地移动）。
 
-,#+begin_src python
+#+begin_src python
 from collections import deque
 queue = deque(['eric', 'john', 'michael'])
 queue.append('terry')
@@ -1024,11 +1106,11 @@ queue.popleft() ##the first to arrive now leaves
 queue
 queue.popleft()
 queue
-,#+end_src
+#+end_src
 
-,**** 嵌套列表解析
+**** 嵌套列表解析
 可以将 3*4 的矩阵列表转换为 4*3 列表。
-,#+begin_src python
+#+begin_src python
 matrix = [
     [1, 2, 3, 4],
     [5, 6, 7, 8],
@@ -1036,30 +1118,30 @@ matrix = [
 ]
 
 [[row[i] for row in matrix] for i in range(4)]
-,#+end_src
+#+end_src
 
-,*** print
+*** print
 在 python 中，print 的功能要比 R 要丰富的多。类似于是 glue。
 
-,#+begin_src python
+#+begin_src python
 new_points = alien_0['color']
 print("you just earned " + str(new_points) + " points!")
-,#+end_src
+#+end_src
 
-,*** tolist
+*** tolist
 array 转变成 list.
-,#+begin_src python
+#+begin_src python
 import array as arr
 a = arr.array("i", [10, -20, 30])
 print("type of a:", type(a))
 print("a is:", a)
 list1 = list()
 a.tolist()
-,#+end_src
+#+end_src
 
-,*** title
+*** title
 Python title() 方法返回"标题化"的字符串,就是说所有单词都是以大写开始，其余字母均为小写(见 istitle())。
-,#+begin_src python
+#+begin_src python
 a = []
 a.append("df")
 a.append("sd")
@@ -1071,18 +1153,18 @@ b = a.pop(0) #pop(0) 是删除第一个元素。
 # => 'sa'
 b.title()
 # => 'Sa'
-,#+end_src
+#+end_src
 
-,*** Any/All
+*** Any/All
 逻辑集合。
-,#+begin_src python
+#+begin_src python
 any([False, True])
 # => True
 all([False, True])
 # => False
-,#+end_src
+#+end_src
 
-,*** empty
+*** empty
 
 通过empty 属性，可以验证pandas 对象是否为空。
 ,#+begin_src python :results output
@@ -1422,11 +1504,11 @@ for alien_number in range(30):
 alien
 len(alien)
 # => 30
-,#+end_src
+#+end_src
 
-,*** 在字典中存储列表
+*** 在字典中存储列表
 字典中还有列表型数据。
-,#+begin_src python
+#+begin_src python
 favorite_lang = {
     'jen':['python', 'ruby'],
     'sarah':['c'],
@@ -1438,10 +1520,11 @@ for name, languages in favorite_lang.items():
     print("\n" + name.title() + "'s favorite languages are:")
     for languages in languages:
         print('\t' + languages.title())
-,#+end_src
+#+end_src
 
-,*** 字典中还有字典
-    ,#+begin_src python
+*** 字典中还有字典
+
+    #+begin_src python
       users = {
           'aeinstein':{
               'first':'albert',
@@ -1461,11 +1544,11 @@ for username, user_info in users.items():
     location = user_info['location']
     print("\tFull name: " + full_name.title())
     print("\tLocation: " + location.title())
-    ,#+end_src
+    #+end_src
 
-,*** 字典推导
+*** 字典推导
 
-,#+begin_src python
+#+begin_src python
 Dial_codes = [
     (86, 'china'),
 (91, 'india'),
@@ -1474,79 +1557,96 @@ Dial_codes = [
 Dial_codes
 country_code = {country:code for code, country in Dial_codes}
 country_code
-,#+end_src
+#+end_src
 
-,** 正则表达式
+** 正则表达式
 在 python 中 re 模块可以完成对文本的正则化处理。匹配对象的两种方法：group() 和 groups().
-,*** re.match
+*** re.match
 在正则表达式中，通常会选用 | 符号匹配多个字符串。
 
-,#+begin_src python
+#+begin_src python
 import re
 bt = 'bat|bet|bit'
 m = re.match(bt, "bat")
 m.group()
-,#+end_src
+titles = '你好，hello, 世界'
+pattern = re.compile(r'[\u4e00-\u9fa5]+')
+results = pattern.findall(titles)
+# => ['你好', '世界']
+
+s = "小明年龄18岁 工资10000"
+res = re.search(r"\d+", s).group()
+
+res = re.findall(r"\d+", s)
+
+res = re.match("小明", s).group()
+
+##不加group 匹配不到
+res = re.match(r"\d+", s)
+
+##工资不是字符串开头，匹配不到
+res = re.match("工资", s).group()
+#+end_src
 
 这里会涉及到贪婪匹配和非贪婪匹配。
 
-,#+begin_src python
+#+begin_src python
 s = "<a>哈哈</a><a>呵呵</a>"
 import re
 res1 = re.findall("<a>(.*)</a>", s)
 # => ['哈哈</a><a>呵呵']
 res2 = re.findall("<a>(.*?)</a>", s)
 # => ['哈哈', '呵呵']
-,#+end_src
+#+end_src
 
-,*** 匹配任何单个字符
-,**** .可以匹配任何字符
+*** 匹配任何单个字符
+**** .可以匹配任何字符
 python 和 r 不同，在正则表达式中，模式在前，字符串在后面。
-,#+begin_src python
+#+begin_src python
 import re
 anyend = '.end'
 m = re.match(anyend, 'bend')
 m.group()
-,#+end_src
-,** 用户输入和 while 循环
-,*** 函数 input
+#+end_src
+** 用户输入和 while 循环
+*** 函数 input
 
-,#+begin_src python
+#+begin_src python
 message = input("tell me something, and I will repeat it back to you:")
 print(message)
-,#+end_src
+#+end_src
 
- ,#+begin_src python
+#+begin_src python
  import numpy as np
  import pandas as pd
  name = input("Please enter your name: ")
  print("Hello, " + name + "!")
- ,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 x = eval(input('Enter a number'))
 print(x, type(x))
-,#+end_src
+#+end_src
 
-,*** int() 获取数值输入
+*** int() 获取数值输入
 
-,#+begin_src python
+#+begin_src python
 age = input("how old are you?")
 age
 21
-,#+end_src
+#+end_src
 
-,*** %
+*** %
 求模运算%, 这点和 R 一样。
-,#+begin_src python
+#+begin_src python
 4 % 3
 # 1
-,#+end_src
+#+end_src
 
-,*** while
+*** while
 for 循环用于针对集合中的每个元素的一个代码块，而 while 循环不断地运行，直到指定的条件不满足为此。
 
-,#+begin_src python
+#+begin_src python
 current_num = 1
 while current_num <= 5:
     print(current_num)
@@ -1554,39 +1654,39 @@ while current_num <= 5:
 
 current_num
 # => 6
-,#+end_src
+#+end_src
 
-,*** def
+*** def
 定义函数：
 
-,#+begin_src python
+#+begin_src python
 def function_name(para_1,...,para_n=defau_n,..., para_m=defau_m):
     expressions
-,#+end_src
+#+end_src
 函数声明只需要在需要默认参数的地方用 = 号给定即可, 但是要注意所有的默认参数都不能出现在非默认参数的前面。
 
-,**** 向函数传递信息
+**** 向函数传递信息
 
-,#+begin_src python
+#+begin_src python
 def greet_user(usename):
     print("Hello, " + usename.title() + "!")
 
 greet_user('jesse')
 # => Hello, Jesse!
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 def greet_user():
     """显示简单的问候语"""
     print("Hello!")
 
 greet_user()
 #Hello!
-,#+end_src
+#+end_src
 
 在上面的函数参数中，usename 是形参，jesse 是实参。和 R 不同，python 可以返回字典。
 
-,#+begin_src python
+#+begin_src python
 def build_person(first_name, last_name):
     person = {'first': first_name, 'last': last_name}
     return person
@@ -1594,11 +1694,11 @@ def build_person(first_name, last_name):
 musician = build_person('jimi', 'hendrix')
 print(musician)
 # {'first': 'jimi', 'last': 'hendrix'}
-,#+end_src
+#+end_src
 
-,**** 传递列表
+**** 传递列表
 
-,#+begin_src python
+#+begin_src python
 def greet_user(names):
     for name in names:
         msg = "Hello, " + name.title() + "!"
@@ -1609,21 +1709,21 @@ greet_user(usernames)
 # => Hello, Hannah!
 #    Hello, Ty!
 #    Hello, Margot!
-,#+end_src
+#+end_src
 
-,**** 传递任意数量的实参
+**** 传递任意数量的实参
 
-,#+begin_src python
+#+begin_src python
 def make_pizza(*toppings):
     print(toppings)
 
 make_pizza('pepperoni')
 make_pizza('pepperoni','green peppers')
-,#+end_src
+#+end_src
 
 形参名*toppings 中的星号让 python 创建一个名为 toppings 的空元组，并将收到的所有值都封装到这个元组中。这点跟 R 不一样。
 
-,**** 可更改（mutable）与不可更改（immutable）对象
+**** 可更改（mutable）与不可更改（immutable）对象
 
 在 python 中，strings,tuples 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
 
@@ -1639,7 +1739,7 @@ python 函数的参数传递：
 
 python 传不可变对象实例
 
-,#+begin_src python
+#+begin_src python
 def change(a):
     print(id(a))
     a=10
@@ -1651,11 +1751,11 @@ print(id(a))
 change(a)
 # => 4430828656
 #    4430828944
-,#+end_src
+#+end_src
 
 传可变对象实例
 
-,#+begin_src python
+#+begin_src python
 def changeme(mylist):
     ""
     mylist.append([1, 2, 3, 4])
@@ -1668,53 +1768,53 @@ changeme(mylist)
 # => 函数内取值： [10, 20, 30, [1, 2, 3, 4], [1, 2, 3, 4]]
 print("函数外取值：", mylist)
 # => 函数外取值： [10, 20, 30, [1, 2, 3, 4], [1, 2, 3, 4]]
-,#+end_src
+#+end_src
 
-,*** 导入整个模块
+*** 导入整个模块
 这块类似于 R 中的.R 执行文件，文件中可以包含 function 函数。
 
 要让函数是可导入的，得先创建模块。模块是扩展名为.py 的文件。
 
-,*** 导入特定的函数
+*** 导入特定的函数
 
-,#+begin_src python
+#+begin_src python
 from module_name import function_name
-,#+end_src
+#+end_src
 
 通过用逗号分隔函数名，可根据需要从模块中导入任意数量的函数。
 
-,#+begin_src python
+#+begin_src python
 from module_name import function_0, function_1, function_2
-,#+end_src
+#+end_src
 
 使用 as 给函数指定别名，如：
 
-,#+begin_src python
+#+begin_src python
 import numpy as np
-,#+end_src
+#+end_src
 
 指定别名的通用语法如下：
 
-,#+begin_src python
+#+begin_src python
 from module_name import function_name as fn
-,#+end_src
+#+end_src
 
-,*** 使用 as 给模块指定别名
+*** 使用 as 给模块指定别名
 不光可以给函数命名，还可以给模块命名。
 
-,#+begin_src python
+#+begin_src python
 import pizza as p
 p.make_pizza(16, 'pepperoni')
-,#+end_src
+#+end_src
 
-,*** 导入模块中的所有函数
+*** 导入模块中的所有函数
 
-,#+begin_src python
+#+begin_src python
 from pizza import *
 make_pizza(16, 'pepperoni')
-,#+end_src
+#+end_src
 
-,** lambda
+** lambda
 
 lambda 函数也叫匿名函数或内联函数，即没有具体名称的函数，它允许快速定义单行函数，可以用在任何需要函数的地方。这区别于 def 定义的函数。
 lambda 与 def 的区别：
@@ -1727,15 +1827,15 @@ lambda 与 def 的区别：
 
 4）lambda 表达式” : “后面，只能有一个表达式，def 则可以有多个。
 
-,#+begin_src python
+#+begin_src python
 names = ['tony',  'bob']
 sorted(names, key = lambda name:name.split()[-1].lower())
 # => ['bob', 'tony']
-,#+end_src
+#+end_src
 
 匿名函数需要注意的地方是:你用 lambda 定义了一个匿名函数，并想在定义时捕获到某些变量的值。
 
-,#+begin_src python
+#+begin_src python
 x = 10
 a = lambda y:x + y
 x = 20
@@ -1744,11 +1844,11 @@ a(10)
 #> 30
 b(10)
 #> 30
-,#+end_src
+#+end_src
 
 从上面例子可以知道 lambda 表达式中的 x 是一个自由变量，在运行时绑定值，而不是定义时就绑定，这跟函数的默认值参数定义是不同的。
 
-,** class
+** class
 类与对象是面向对象编程的两个主要方面。一个类（class）能够创建一种新的类型（type），其中对象（object）就是类的实例（instance）。python 中的 self 相当于 c++ 中的 this 指针及 java 与 C# 中的 this 引用。面向对象编程，在编写类时，定义一大类对象都有通用的行为。
 
 类方法与普通函数只有一种特定的区别——前者必须多加一个参数在参数列表开头，这个名字必须添加到参数列表的开头，但是你不用在你调用这个功能时为这个参数赋值，Python 会为它提供。这种特定的变量引用的是对象本身，按照惯例，它被赋予 self 这一名称，以表示该类自身。
@@ -1757,20 +1857,20 @@ b(10)
 
 如果类的定义是这样：
 
-,#+begin_src python
+#+begin_src python
 class MyClass:
      """A simple example class"""
      i = 12345
 
 def f(self):
     return 'hello world'
-,#+end_src
+#+end_src
 
 那么 MyClass.i 和 MyClass.f 就是有效的属性引用，将分别返回一个整数和一个函数对象。类属性也可以被赋值，因此可以通过赋值来更改 MyClass.i 的值。__doc__ 也是一个有效属性，将返回所属类的文档字符串："""A simple example class"""。
 
 类的实例化使用函数表示法。可以把类对象视为是返回该类的一个新实例的不带参数的函数。
 
-,#+begin_src python
+#+begin_src python
 class Complex:
    def __init__(self, realpart, imagpart):
        self.r = realpart
@@ -1779,9 +1879,9 @@ class Complex:
 x = Complex(3.0, -4.5)
 x.r,x.i
 # => (3.0, -4.5)
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 class Dog:
     kind = 'canine'
 
@@ -1794,24 +1894,24 @@ d.kind
 # 'canine'
 e.kind
 # 'canine'
-,#+end_src
+#+end_src
 
-,*** 字符串
+*** 字符串
 isdecima(),isdigit(),isalpha(),isalnum().可以测试字符串 S 是否是数字\字母\字母或数字，对于非 Unicode 字符串。
 
-,#+begin_src python
+#+begin_src python
 print('34'.isdigit())
 # => True
 print('34'.isalnum())
 # => True
 print('34'.isdecimal())
 # => True
-,#+end_src
+#+end_src
 
-,** 向量
-,*** 将序列分解为单独变量
+** 向量
+*** 将序列分解为单独变量
 
-,#+begin_src python
+#+begin_src python
 p = (4, 5)
 x, y =p
 x
@@ -1821,14 +1921,14 @@ data = ['a', 50, 10, {2012,12,30}]
 name, share, price, date =data
 print(name, share, price, date)
 # => a 50 10 {2012, 12, 30}
-,#+end_src
+#+end_src
 
 实际上不仅仅是元组或列表，只要对象恰好是可迭代的，那么就可以执行分解操作。这包括字符串\文件\迭代器及生成器。
 
-,*** 从任意长度的可迭代对象中分解元素
+*** 从任意长度的可迭代对象中分解元素
 如果需要从某个可迭代对象中分解出 N 个元素，但是这个可迭代对象的长度可能超过 N.
 
-,#+begin_src python
+#+begin_src python
 import pandas as pd
 import numpy as np
 def drop_first_last(grades):
@@ -1837,89 +1937,89 @@ def drop_first_last(grades):
 
 drop_first_last((1,2,3,4))
 # => 2.5
-,#+end_src
+#+end_src
 
 可以利用*表达式解决这个问题，这个表达式有点类似于 R 中的 everything。
 
-,#+begin_src python
+#+begin_src python
 record = ("a", 'b', '1',"2")
 a, b, *other = record
 a
 b
 other
 # => ['1', '2']
-,#+end_src
+#+end_src
 
-,*** 找到最大或最小的 N 个元素
+*** 找到最大或最小的 N 个元素
 heapq 模块中有两个函数－nlargest() 和 nsmallest().
-,#+begin_src python
+#+begin_src python
 import heapq
 nums = [1, 8, 2, 23, 7, -4]
 print(heapq.nlargest(3, nums))#最大的3个数字
 # => [23, 8, 7]
 print(heapq.nsmallest(3, nums))
 # => [-4, 1, 2]
-,#+end_src
+#+end_src
 
-,*** set
+*** set
 当需要对一个列表进行去重操作的时候，set()函数就派上用场了。
-,#+begin_src python
+#+begin_src python
 a = [1, 5, 2, 1, 9]
 set(a)
 # {1, 2, 5, 9}
-,#+end_src
+#+end_src
 
 要向set 中增加元素，可以通过 add 方法。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 s = set([1,2,3,4])
 s.add(5)
 s
 # => {1, 2, 3, 4, 5}
 set([1, 2, 3, 4]).add(5) #这种就有问题
-,#+end_src
+#+end_src
 
 移除一个元素，可以通过remove 的方法：
 
-,#+begin_src python :results output
+#+begin_src python :results output
 s = set([1,2,3,4])
 s.remove(4)
 s
 # => {1, 2, 3}
-,#+end_src
+#+end_src
 
-,*** lambda
+*** lambda
 一个 lambda 函数是一个小的匿名函数。匿名函数不需要显示地定义函数名，使用【lambda + 参数 +表达式】的方式，语法是：
 
-,#+begin_src python
+#+begin_src python
 lambda arguments:expression
 x = lambda a : a + 10
 x(5)
 # => 15
-,#+end_src
+#+end_src
 
 lambda functions can take any number of arguments.
 
-,#+begin_src python
+#+begin_src python
 x = lambda a, b : a*b
 x(5,6)
 # => 30
 x = lambda a,b,c: a+b+c
 print(x(5,6,2))
 # => 13
-,#+end_src
+#+end_src
 
 与 def 区别：
 https://pic1.zhimg.com/80/v2-061aa0744539a1f7bfc301015e9594a2_720w.jpg
 
-,#+begin_src python
+#+begin_src python
 def f(x,y):
     return x*y
 f(1,2)
 
 func = lambda x,y: x*y
 func(1,2)
-,#+end_src
+#+end_src
 
 匿名函数的优点：
 
@@ -1929,87 +2029,89 @@ func(1,2)
 
 - 语法结构简单，不用使用 def 函数名(参数名):这种方式定义，直接使用 lambda 参数:返回值 定义即可
 
-,*** 全为 0/1 的数组
+*** 全为 0/1 的数组
 
-,#+begin_src python
+#+begin_src python
 import numpy as np
 np.ones((2, 2, 3))
 np.zeros((2, 2, 3))
 np.empty((2, 2, 3) )
-,#+end_src
+#+end_src
 
-,** 元组
+python 中,++1 就是1,而--1,则为1,负负得正, 在python 中,++1 不是自增操作.
+
+** 元组
 元组是一个固定长度，不可改变的 python 序列对象。创建元组的最简单方式，用用逗号分隔一列值：
 tuple 和 list 非常类似（一个用圆括号，一个用方括号），主要区别在于 tuple 不能增减或更改其元素，而 dict 则是有索引的多元组（用花括号表示），有其方便的地方。tuple 和 list 之间可以相互切换，list(tup)
 
-,#+begin_src python
+#+begin_src python
 tup = 4, 5, 6
 tup
 # (4, 5, 6)
 list(tup)
 # => [4, 5, 6]
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 nested_tup = (4,5,6),(7,8)
 nested_tup
 # ((4, 5, 6), (7, 8))
-,#+end_src
+#+end_src
 
 用 tuple 可以将任意序列或迭代器转换成元组：
-,#+begin_src python
+#+begin_src python
 tuple([4,0,2])
 # (4, 0, 2)
 tuple('string')
 # ('s', 't', 'r', 'i', 'n', 'g')
-,#+end_src
+#+end_src
 
 如果元组中的某个对象是可变的，比如列表，可以在原位进行修改。
 
-,#+begin_src python
+#+begin_src python
 tup = tuple(['foo', [1,2], True])
 tup[1].append(3)
 tup
 # ('foo', [1, 2, 3], True)
-,#+end_src
+#+end_src
 
 可以用加号运算符将远组串联起来。
-,#+begin_src python
+#+begin_src python
 (4,None,'foo') + (6,0) + ('bar',)
 # (4, None, 'foo', 6, 0, 'bar')
-,#+end_src
+#+end_src
 
 元组乘以一个整数，像列表一样，会将几个元组的复制串联起来：
 
-,#+begin_src python
+#+begin_src python
 ('foo', 'bar')*4
 # ('foo', 'bar', 'foo', 'bar', 'foo', 'bar', 'foo', 'bar')
-,#+end_src
+#+end_src
 
 创建元组可以用小括号（），也可以什么也不用，为了可读性，建议还是用（）。此外对于含单个元素的元组，务必记住要多加一个逗号。
 
-,#+begin_src python
+#+begin_src python
 print(type(('ok')))
 # => <class 'str'>
 print(type(('ok', )))
 # => <class 'tuple'>
-,#+end_src
+#+end_src
 
 元组也可以创建二维元组
 
-,#+begin_src python
+#+begin_src python
 nested = ((1,10,'python'),('data'))
 nested
 # => ((1, 10, 'python'), 'data')
 type(nested)
 # => <class 'tuple'>
-,#+end_src
+#+end_src
 
 索引和切片
 
 元组中可以用整数来对它进行索引和切片。
 
-,#+begin_src python
+#+begin_src python
 nested = ((1,10,'python'),('data'))
 type(nested)
 # => <class 'tuple'>
@@ -2017,13 +2119,13 @@ nested[0]
 # => (1, 10, 'python')
 print(nested[0][0], nested[0][1], nested[0][2])
 # => 1 10 python
-,#+end_src
+#+end_src
 
 不可更改
 
 元组具有不可更改性。虽然不可更改，但是可以通过以下方式来更改。
 
-,#+begin_src python
+#+begin_src python
 t = ('ok',[1,2],True)
 t[2] = False
 # => Traceback (most recent call last):
@@ -2031,11 +2133,11 @@ t[2] = False
 #      File "/Users/luyajun/Documents/坚果云/我的坚果云/github/wiki/python_wiki.org", line 1, in <module>
 #        # -*- org-confirm-babel-evaluate: nil; -*-
 #    TypeError: 'tuple' object does not support item assignment
-,#+end_src
+#+end_src
 
 当tuple 只有一个元素时，必须加逗号, 来消除歧义
 
-,#+begin_src python
+#+begin_src python
 tuple = ('a','b','c','d','e')
 tuple[1:3]
 # => ('b', 'c')
@@ -2051,101 +2153,102 @@ t[2][0] = 'X' #tuple 里的list 型可以更改对象
 t[0] =  'C'
 t
 # => ('a', 'b', ['X', 'B'])
-,#+end_src
+#+end_src
 
 但是只要元组中的元素可更改（mutable），那么我们可直接更改其元素。
 
-,#+begin_src python
+#+begin_src python
 t[1].append(3)
 t
-,#+end_src
+#+end_src
 
 元组大小和内容都不可更改，因此只有 count 和 index 两种方法。
 
-,#+begin_src python
+#+begin_src python
 t = (1,10.31,'python')
 t.count('python')
 # => 1
 t.index(10.31)
 # => 1
-,#+end_src
+#+end_src
 
 这两个方法返回值都是 1，但意思完全不同。index(10.31) 是找到该元素在元组的索引。
 
 元组拼接
 元组拼接有 2 种方式，用 + 和 *，前者首尾拼接，后者复制拼接。
 
-,#+begin_src python
+#+begin_src python
 (1,10,'python') + ('data',11) + ('ok',)
 # => (1, 10, 'python', 'data', 11, 'ok')
 (1,10,'python') * 2
 # => (1, 10, 'python', 1, 10, 'python')
-,#+end_src
+#+end_src
 
 解压元组
 
 解压（unpack）一堆元组（有几个元素左边括号定义几个变量）
 
-,#+begin_src python
+#+begin_src python
 t = (1,10,'python')
 (a, b, c) = t
 print(a,b,c)
 # => 1 10 python
-,#+end_src
+#+end_src
 
 解压二维元组（按照元组里的元组结构来定义变量）
 
-,#+begin_src python
+#+begin_src python
 t = (1,10,('ok', 'python'))
 (a,b,(c,d)) = t
 print(a,b,c,d)
 # => 1 10 ok python
-,#+end_src
+#+end_src
 
 如果元素数目对不上，会报错。
 
-,#+begin_src python
+#+begin_src python
 p = (4, 5)
 x, y, z =  p
-,#+end_src
+#+end_src
 
 如果你只想要元组其中几个元素，用通配符*，在计算机语言中代表一个或多个元素，下例就是把多个元素给了 reset 变量。
 
-,#+begin_src python
+#+begin_src python
 t = 1,2,3,4,5
 a,b,*rest,c = t
 print(a,b,c)
 # => 1 2 5
 print(rest)
 # => [3, 4]
-,#+end_src
+#+end_src
 
 解压缩对象不仅仅局限于tuple，list, 还包括有string.files, iterators, generators.
 
 可以通过_ 来扔掉某些你不想要的变量。
-,#+begin_src python
+
+#+begin_src python
 data = ['a','b',23,1]
 _,shares,price,_ = data
 print(shares, price)
-,#+end_src
+#+end_src
 
 star unpacking can also be useful when combined with certain kinds of string processing operations, such as splitting.
 
-,#+begin_src python
+#+begin_src python
 line = "nobody:*-2:-2:unpsdfdf:/sdsdsd"
 uname,*filesd,hoer,sh = line.split(":")
 uname
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 record = ('as',50,12,(1,2,3))
 name, *_,(*_,year) = record
 year
-,#+end_src
+#+end_src
 
-,*** keeping the last N items
+*** keeping the last N items
 确保向量保留固定位数数字。
-,#+begin_src python :results output
+#+begin_src python :results output
 from collections import deque
 q = deque(maxlen=3)
 q.append(1)
@@ -2160,33 +2263,33 @@ q.pop()
 # => 3
 q.popleft()
 # => 4
-,#+end_src
+#+end_src
 
-,*** finding the largest or smallest n items
+*** finding the largest or smallest n items
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import heapq
 nums = [1,8,2,12,23,1]
 print(heapq.nlargest(3, nums))
 # => [23, 12, 8]
 print(heapq.nsmallest(3, nums))
 # => [1, 1, 2]
-,#+end_src
+#+end_src
 
 对于多个变量数组，可以指定 key 这种方式来选定特定的列。
-,#+begin_src python :results output
+#+begin_src python :results output
 portfolio = [
   {'name':'IBM', 'share':100, 'price':91.1},
   {'name':'aapl', 'share':50, 'price':2343.1}
 ]
 
 heapq.nsmallest(1, portfolio, key = lambda s:s['price'])
-,#+end_src
+#+end_src
 
-,*** mapping keys to multiple values in a dictinary
+*** mapping keys to multiple values in a dictinary
 if you want to map keys to multiple values.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 d = {
   'a': [1, 2,3],
   'b': [4, 5]
@@ -2195,9 +2298,9 @@ d = {
 d['a'].append(1)
 d
 # => {'a': [1, 2, 3, 1], 'b': [4, 5]}
-,#+end_src
+#+end_src
 
-,*** keeping dictinaries in order
+*** keeping dictinaries in order
 这里的顺序，其实是添加数据的顺序。
 
 ,#+begin_src python :results output
@@ -2215,12 +2318,12 @@ for key in d:
    #    bar 2
    #    spam 3
    #    grok 4
-,#+end_src
+#+end_src
 
-,*** calculating with dictinaries
+*** calculating with dictinaries
 如何统计字典型数据的最大，最小及排序值。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 prices = {'ACme': 45.23,'A':231.120,"sdfg":234}
 
 min_price = min(zip(prices.values(), prices.keys()))
@@ -2232,22 +2335,22 @@ max_price
 sort_price = sorted(zip(prices.values(), prices.keys()))
 sort_price
 # => [(45.23, 'ACme'), (231.12, 'A'), (234, 'sdfg')]
-,#+end_src
+#+end_src
 
 注意对比，min,max,sorted 结果。
 
-,#+begin_src ipython :results output
+#+begin_src ipython :results output
 min(price)
 min(price.values())
 max(price)
 max(price.values())
 sorted(price)
-,#+end_src
+#+end_src
 
-,*** finding commonalities in two dictinaries
+*** finding commonalities in two dictinaries
 找到2个字典数据共有的keys, same values.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 a = {'x':1, 'y':1, 'z':3}
 b = {'w':2, "x":11, "y":2}
 # find keys in common
@@ -2259,18 +2362,18 @@ a.keys() - b.keys()
 # find (key, value) pairs in common
 a.items() & b.items()
 # => set()
-,#+end_src
+#+end_src
 
 these kinds of operations can also be used to alter or filter dictinary contents.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 c = {key:a[key] for key in a.keys() - {'z', 'w'}}
-,#+end_src
+#+end_src
 
-,*** removing duplicates from a sequence while maintaining order
+*** removing duplicates from a sequence while maintaining order
 如果不要保持序的话，set 即可满足这个条件。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 def dedupe(items):
   seen = set()
   for item in items:
@@ -2281,10 +2384,10 @@ def dedupe(items):
 a = [1, 5, 2, 1, 9]
 list(dedupe(a))
 # => [1, 5, 2, 9]
-,#+end_src
+#+end_src
 
 如果数据类型是 unhashable.
-,#+begin_src python :results output
+#+begin_src python :results output
 def dedupe(items, key=None):
 	seen =  set()
 	for item in items:
@@ -2292,12 +2395,12 @@ def dedupe(items, key=None):
 		if val not in seen:
 			yield item
 			seen.add(val)
-,#+end_src
+#+end_src
 
-,*** naming a slice
+*** naming a slice
 对切片重新命名？
 
-,#+begin_src python :results output
+#+begin_src python :results output
 items = [0, 1, 2, 3, 4, 5, 6]
 a =  slice(2, 4)
 a
@@ -2307,20 +2410,20 @@ items[a] =  [10,11]
 items
 del items[a]
 items
-,#+end_src
+#+end_src
 
 if you have a slice instance s, you can get more information about it by looking at its s.start, s.stop and s.step attributes.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 a =  slice(10, 50, 2)
 a.start
 a.stop
 a.step
-,#+end_src
+#+end_src
 
-,*** determining the most frequently occuring items in a sequence
+*** determining the most frequently occuring items in a sequence
 
-,#+begin_src python :results output
+#+begin_src python :results output
 words = [
 	'look', 'into', 'my', 'eyes', 'look', 'into', 'my', 'eyes',
 	'the', 'eyes', 'the', 'eyes', 'the', 'eyes', 'not', 'around', 'the',
@@ -2333,20 +2436,20 @@ word_counts =  Counter(words)
 word_counts
 top_three =  word_counts.most_common(3)
 # => [('eyes', 8), ('the', 5), ('look', 4)]
-,#+end_src
+#+end_src
 
 if you want to increment the count manually, simply use addition:
 
-,#+begin_src python :results output
+#+begin_src python :results output
 morewords =  ['my', 'look', 'b', 'c', 'b']
 for word in morewords:
 	word_counts[word] += 1
 
 word_counts
-,#+end_src
+#+end_src
 
 更简单的操作是：
-,#+begin_src python :results output
+#+begin_src python :results output
 word_counts.update(morewords)
 a =  Counter(words)
 b =  Counter(morewords)
@@ -2356,11 +2459,11 @@ c
 #subtract counts
 d = a - b
 d
-,#+end_src
+#+end_src
 
-,*** sorting a list of dictionaries by a common key
+*** sorting a list of dictionaries by a common key
 
-,#+begin_src python :results output
+#+begin_src python :results output
 rows = [
 	{'fname': 'Brian', 'lname': 'Jones', 'uid': 1003},
 	{'fname': 'David', 'lname': 'Beazley', 'uid': 1002},
@@ -2378,32 +2481,32 @@ row_by_fname = sorted(rows,  key =itemgetter('fname'))
 row_by_uid = sorted(rows,  key =itemgetter('uid'))
 rows_by_lfname = sorted(rows, key = itemgetter('lname', 'fname'))
 rows_by_lfname
-,#+end_src
+#+end_src
 
 the functionality of itemgetter() is sometimes replaced by lambda expression.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 rows_by_fname = sorted(rows, key=lambda x:x['fname'])
 rows_by_lfname = sorted(rows, key=lambda x:(x['lname'], x['fname']))
-,#+end_src
+#+end_src
 
-,#+begin_src python :results output
+#+begin_src python :results output
 min(rows,key=itemgetter('uid'))
 max(rows,key=itemgetter('uid'))
-,#+end_src
+#+end_src
 
-,*** sorting objects without native comparison support
+*** sorting objects without native comparison support
 
-,#+begin_src python :results output
+#+begin_src python :results output
 for date, items in groupby(rows, key =itemgetter('date')):
 	print(date)
 	for i in items:
 		print("    ", i)
-,#+end_src
+#+end_src
 
-,*** grouping records together based on a field
+*** grouping records together based on a field
 
-,#+begin_src python :results output
+#+begin_src python :results output
 rows = [
 	{'address': '5412 N CLARK', 'date': '07/01/2012'},
 	{'address': '5148 N CLARK', 'date': '07/04/2012'},
@@ -2436,35 +2539,28 @@ for date, items in groupby(rows, key =itemgetter('date')):
 		# 07/04/2012
 		#      {'address': '5148 N CLARK', 'date': '07/04/2012'}
 		#      {'address': '1039 W GRANVILLE', 'date': '07/04/2012'}
-,#+end_src
+#+end_src
 
-,*** filtering sequence elements
+*** filtering sequence elements
 The easiest way to filter sequence data is often to use a list comprehension.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 mylist = [1,24,-5,10,-7]
 [n for n in mylist if n > 0]
 [n for n in mylist if n < 0]
-,#+end_src
-
-,#+begin_src ipython :session :exports both :results raw drawer
-import numpy as np
-,#+end_src
+#+end_src
 
 也可以是一个生成器（generator），you can use generator expression to produce the filtered values iteratively.
 
-for example:
-
-,#+begin_src python :results output
+#+begin_src python :results output
 pos =  (n for n in mylist if n > 0)
-pos
 for i in pos:
 	print(i)
-,#+end_src
+#+end_src
 
 还有一种类型数据不好用list comprehension 或者 generator expression 来进行过滤，需要通过特定的filter() function 来进行过滤。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 values = ["1", "2", "-3", "-", "4", "N?A"]
 
 def is_int(val):
@@ -2476,24 +2572,19 @@ def is_int(val):
 
 ivals = list(filter(is_int,values))
 ivals
-,#+end_src
+#+end_src
 
-filter() create an iterator, so if you want to create a list of results, make sure you also use list() as shown.
+filter() create an iterator, so if you want to create a list of results, make sure you also use list() as shown.在过滤的同时，还能进行变形。
 
-在过滤的同时，还能进行变形。
-
-,#+begin_src python :results output
+#+begin_src python :results output
 mylist = [1,24,-5,10,-7]
 [n if n > 0 else 0 for n in mylist]
-,#+end_src
+# => [1, 24, 0, 10, 0]
+#+end_src
 
 another notable filtering tool is itertools.compress(), which takes an iterable and an accompanying boolean selector sequence as input.
-
-   
-
-
       
-,#+begin_src python :results output
+#+begin_src python :results output
 addresses = [
 '5412 N CLARK',
 '5148 N CLARK',
@@ -2511,14 +2602,14 @@ more5
 # => [False, False, True, False, True, True, False]
 list(compress(addresses, more5))
 # => ['5800 E 58TH', '1060 W ADDISON', '4801 N BROADWAY']
-,#+end_src
+#+end_src
 
 the compress() function then picks out the items corresponding to True values.
 
-,*** extracting a subset of a dictionary
+*** extracting a subset of a dictionary
 you want to make a dictionary that is a subset of another dictionary.
 
-,#+begin_src python
+#+begin_src python
 prices = {
 'ACME': 45.23,
 'AAPL': 612.78,
@@ -2536,22 +2627,16 @@ p2 = {key:value for key,value in prices.items() if key in tech_names}
 # => {'AAPL': 612.78, 'IBM': 205.55, 'HPQ': 37.2}
 p2 = {key:prices[key] for key in prices.keys() & tech_names}
 # => {'IBM': 205.55, 'HPQ': 37.2, 'AAPL': 612.78}
-,#+end_src
+#+end_src
 
-,*** mapping names to sequence elements
-if you are building large data structures involving dictionaries, use of a namedtuple will be more efficient.
+*** mapping names to sequence elements
+if you are building large data structures involving dictionaries, use of a namedtuple will be more efficient.be aware that unlike a dictionary, a namedtuple is immutable.
 
-be aware that unlike a dictionary, a namedtuple is immutable.
+如果实在有需求需要更改数据，就用 _replace 进行修改。namedtuple 第一个参数就是类名,后面肯定会跟着一个数据格式例子.
 
-如果实在有需求需要更改数据，就用 _replace 进行修改。
-
-namedtuple 第一个参数就是类名,后面肯定会跟着一个数据格式例子.
-
-从这第一个
-
-,#+begin_src python
+#+begin_src python
 from collections import namedtuple
-subscribe =namedtuple('subscribe',['addr', 'joined'])
+subscribe = namedtuple('subscribe',['addr', 'joined'])
 sub = subscribe('ab@sina.com', '2012-10-01')
 sub
 # => subscribe(addr='ab@sina.com', joined='2012-10-01')
@@ -2593,12 +2678,12 @@ dict_to_stock(a)
 b = {'name': 'b', 'share':1003.55, 'price':1003.55, 'date':'12/17/2016'}
 dict_to_stock(b)
 # => stock(name='b', share=1003.55, price=1003.55, date='12/17/2016', time=None)
-,#+end_src
+#+end_src
 
-,*** transform and reducing data at the same time
+*** transform and reducing data at the same time
 you need to execute a reduction fuction (e.g., sum(), min(), max()), but first need to transform or filter the data.
 
-,#+begin_src python
+#+begin_src python
 nums =[1, 2, 3, 4, 5]
 s = sum(x*x for x in nums)
 # => 55
@@ -2612,11 +2697,12 @@ portfolio
 min_share = min(s['share'] for s in portfolio)
 # => 50
 # => acs,50,100.45
-,#+end_src
+#+end_src
 
-,*** combining multiple mapping into a single
-a chainmap is particularly useful when working with scoped values such as variables in a programming language.
-,#+begin_src python :results output
+*** combining multiple mapping into a single
+A chainmap is particularly useful when working with scoped values such as variables in a programming language.
+
+#+begin_src python :results output
 a ={'x':1, 'z':2}
 b ={'y':1, 'z':2}
 from collections import ChainMap
@@ -2667,47 +2753,49 @@ values =values.parents
 values['x']
 values
 # => ChainMap({'x': 2}, {'x': 1})
-,#+end_src
+#+end_src
 
 as an alternative to chainmap, you might consider merging dictionary together using the update() method.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 from collections import ChainMap
 a ={'x':1, 'z':3}
 b ={'y':2, 'z':4}
 merged =dict(b)
 merged.update(a)
 merged
-# => {'y': 2, 'z': 3, 'x': 1}
+# => {'y': 2, 'z': 3, 'x': 1} #将z的值进行更新
+##如果想保留z 值的话, 可以用chainmap 命令
 a ={'x':1, 'z':3}
 b ={'y':2, 'z':4}
 merged = ChainMap(a, b)
 merged['x']
 # => 1
-a['x'] = 42
+a['x'] = 42 #进行更新
 merged['x']
 # => 42
-,#+end_src
+#+end_src
 
 从上面的例子可以看出，dict 会对取值作去重处理。
 
-,*** splitting string on any of multiple delimiter
+*** splitting string on any of multiple delimiter
+
 you need to split a string into fields, but the delimiters aren't consistent throughout the strings.
 
 r,表示需要原始字符串，不转义特殊字符。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import re
 line ='asdf fjdk;afed, fjek, asdf'
 re.split(r'[;,\s]\s*', line)
 # => ['asdf', 'fjdk', 'afed', 'fjek', 'asdf']
-,#+end_src
+#+end_src
 
-,*** matching text at the start or end of a string
-
-,#+begin_src python :results output
+*** matching text at the start or end of a string
+字符匹配。
+#+begin_src python :results output
 filename ='spam.txt'
-filename.endswith('.txt')
+filename.endswith('.txt') #判定结尾是否以确定的字符结尾
 # => True
 filename.startswith('file:')
 # => False
@@ -2720,26 +2808,26 @@ filenames
 [name for name in filenames if name.endswith('.org')]
 any(name.endswith('.py') for name in filenames)
 # => False
-,#+end_src
+#+end_src
 
-,#+begin_src python :results output
+#+begin_src python :results output
 filename ='spam.txt'
 filename[-4:] =='.txt'
 # => True
 url ='http://www.python.org'
 url[:5] =='http:' or url[:6] =='https:' or url[:4] == 'ftp:'
 # => True
-,#+end_src
+#+end_src
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import re
 url ='http://www.python.org'
 re.match('http:|https:|ftp:', url)
-,#+end_src
+#+end_src
 
-,*** matching strings using shell wildcard patterns
+*** matching strings using shell wildcard patterns
 
-,#+begin_src python :results output
+#+begin_src python :results output
 from fnmatch import fnmatch,fnmatchcase
 fnmatch('foo.txt', '*.txt')
 # => True
@@ -2750,18 +2838,18 @@ fnmatch('Dat45.csv', 'Dat[0-9]*')
 names =['Dat1.csv', 'Dat2.csv', 'config.ini']
 [name for name in names if fnmatch(name, 'Dat*.csv')]
 # => ['Dat1.csv', 'Dat2.csv']
-,#+end_src
+#+end_src
 
 use fnmatchcase() instead, it matches exactly based on the lower- and uppercase conventions that you supply.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 fnmatchcase('foo.txt', '*.TXT')
 # => False
-,#+end_src
+#+end_src
 
-,*** matching and searching for text patterns
+*** matching and searching for text patterns
 
-,#+begin_src python :results output
+#+begin_src python :results output
 text = 'yeah, but no, but yeah, but no, but yeah'
 text == 'yeah'
 # => False
@@ -2781,11 +2869,11 @@ if re.match(r'\d+/\d+/\d+', text1):
 else:
 	print('no')
 	# => yes
-,#+end_src
+#+end_src
 
 if you are going to perform a lot of matches using the same pattern, it usually to precompile the regular expression pattern into a pattern object first.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 datepart =re.compile(r'\d+/\d+/\d+')
 if datepart.match(text1):
     print('yes')
@@ -2805,11 +2893,11 @@ for month, day, year in datepart.findall(text):
 
 for m in datepat.finditer(text):
 	print(m.groups())
-,#+end_src
+#+end_src
 
-,*** searching and replacing text
+*** searching and replacing text
 
-,#+begin_src python :results output
+#+begin_src python :results output
 text = 'Yeah, but no, but Yeah'
 text.replace('yeah', 'yep')
 # => 'Yeah, but no, but Yeah'
@@ -2817,33 +2905,33 @@ text.replace('yeah', 'yep')
 text ='Today is 11/27/2012. Pycon starts 3/13/2013.'
 import re
 re.sub(r'(\d+)/(\d+)/(\d+)', r'\3-\1-\2', text)
-,#+end_src
+#+end_src
 
 the first argument to sub() is the pattern to match and the second argument is the replacement pattern.
 
 re.compile 是将正则表达式编译成一个对象,加快速度义,并重复使用.   
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import re
 datepat =re.compile(r'(\d+)/(\d+)/(\d+)')
 newtext, n= datepat.sub(r'\3-\1-\2', text)
 newtext
-,#+end_src
+#+end_src
 
-,*** searching and replacing case - insensitive text
+*** searching and replacing case - insensitive text
 
-,#+begin_src python :results output
+#+begin_src python :results output
 text='Upper Python, lower python, mixed python'
 re.findall('python', text, flags=re.IGNORECASE)
 # => ['Python', 'python', 'python']
 re.sub('python', 'snake', text, flags=re.IGNORECASE)
 # => 'Upper snake, lower snake, mixed snake'
-,#+end_src
+#+end_src
 
-,*** specifying a regular expression for the shortest match
+*** specifying a regular expression for the shortest match
 This problem often aries in patterns that try to match text enclosed inside a pair of starting and ending delimiters.
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import re
 str_pat =re.compile(r'\"(.*)"')
 text1 ='Computer says "no."'
@@ -2852,11 +2940,47 @@ str_pat.findall(text1)
 text2 ='Computer says "no." phone says "yes"'
 str_pat.findall(text2)
 # => ['no." phone says "yes']
-,#+end_src
+#+end_src
 
-,*** aligning text strings
+*** count strings
+统计字符出现次数。
+#+begin_src python :results output
+str = '张三 美国 张 三 哈哈'
+str.count('张三')
+#+end_src
 
-,#+begin_src python :results output
+*** 字符串大小写
+
+#+begin_src python :results output
+str = "HHHuuu"
+print(str.upper())
+# => HHHUUU
+print(str.lower())
+# => hhhuuu
+#+end_src
+
+*** 去除空格
+
+#+begin_src python :results output
+str = 'hello world ha ha'
+str.replace(" ", "")
+list = str.split(" ")
+"".join(list)
+# => 'helloworldhaha'
+#+end_src
+
+*** 匹配中文
+
+#+begin_src python :results output
+titles = '你好，hello, 世界'
+pattern = re.compile(r'[\u4e00-\u9fa5]+')
+results = pattern.findall(titles)
+# => ['你好', '世界']
+#+end_src
+
+*** aligning text strings
+
+#+begin_src python :results output
 text ='hello world'
 text.ljust(20)
 import re
@@ -2886,11 +3010,11 @@ format(x, '^10.2f')
 # => '   1.34   '
 '%-20s' % text
 # => 'hello world         '
-,#+end_src
+#+end_src
 
-,*** combining and concatenating strings
+*** combining and concatenating strings
 
-,#+begin_src python :results output
+#+begin_src python :results output
 parts = ['Is', 'chiao', 'not', 'chiago']
 ", ".join(parts)
 ''.join(parts)
@@ -2901,31 +3025,31 @@ a + ' ' +b
 join = ['Is', '']
 print(a + ':' + b)
 print(a + ':' + b)
-,#+end_src
+#+end_src
 
-,*** interpolating variables in strings
+*** interpolating variables in strings
 you want to create a string in which embedded variables names are substituted with a string representation of a variable's value.
 
-,#+begin_src python
+#+begin_src python
 s = '{name} has {n} messages.'
 s.format(name='Guidao', n=37)
 # => 'Guidao has 37 messages.'
-,#+end_src
+#+end_src
 
-,*** performing accurate decimal calculations
+*** performing accurate decimal calculations
 
-,#+begin_src python :results output
+#+begin_src python :results output
 a = 4.2
 b = 2.1
 a + b
 # => 6.300000000000001
 (a + b) == 6.3
 # => False
-,#+end_src
+#+end_src
 
 需要引用 decimal.
 
-,#+begin_src python
+#+begin_src python
 from decimal import Decimal
 a = Decimal('1.3')
 b = Decimal('2.2')
@@ -2935,9 +3059,9 @@ print(a + b)
 # => 3.5
 (a + b) == Decimal('3.5')
 # => True
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 from decimal import localcontext
 a = Decimal('4.2')
 b = Decimal('1.2')
@@ -2947,21 +3071,41 @@ with localcontext() as ctx:
      ctx.prec = 3
      print(a/b)
 
-,#+end_src
+#+end_src
 
-,#+begin_src python
+#+begin_src python
 nums = [1.23e+18, 1, -1.23e+18]
 sum(nums)
 # => 0.0
 import math
 math.fsum(nums)
 # => 1.0
-,#+end_src
+#+end_src
 
-,*** formatting numbers for output
+在判断两个字符串是否相等的时候,混用is 和== 是很多初学者经常犯的错误,造成大结果是程序在不同情况下表现不一.
+
+#+begin_src python
+a = 'Hi'
+b = 'Hi'
+a is b
+# => True
+a == b
+# => True
+a1 = "I am lu"
+b1 = 'I am lu'
+a1 is b1
+# => False
+a1 == b1
+# => True
+#+end_src
+
+不一致的原因在于 is 是表示的是对象标示符(object identity),而 == 表示的意思是相等(equal), 显然两者不是一个东西.
+
+
+*** formatting numbers for output
 to format a single number for output, use the built-in format() function.
 
-,#+begin_src python
+#+begin_src python
 x = 1234.34045
 format(x, '0.2f')
 # => '1234.34'
@@ -2971,21 +3115,21 @@ format(x, '<10.1f')
 # => '1234.3    '
 format(x,',')
 # => '1,234.34045'
-,#+end_src
+#+end_src
 
-,** list
+** list
 与元组对比，列表的长度可变，内容可以被修改。属于 mutable.
 
-,#+begin_src python
+#+begin_src python
 tup = ('foo', 'bar')
 b_list = list(tup)
 b_list
 b_list[1] = 'peekaboo'
 b_list
-,#+end_src
+#+end_src
 附加（append，extend），插入（insert），删除（remove,pop）这些操作都可以用在它身上。
 
-,#+begin_src python
+#+begin_src python
 l = [1,10,'python']
 l.append([4,3])
 l
@@ -2997,28 +3141,43 @@ l.extend([4, 33]
    l.extend([1,2,'ok'])
    l
    # => [1, 10, 'python', 1, 2, 'ok']
-,#+end_src
+#+end_src
 
 严格来说 append 是追加，把一个东西整体添加在列表后，而 extend 是扩展，把一个东西里的所有元素添加在列表后。对着上面结果感受一下区别。
 
-,** 列表长度
+enumerate 可以获得序列迭代的索引和值:
 
-,#+begin_src python
+#+begin_src python
+li = ['a', 'b', 'c']
+for i, e in enumerate(li):
+    print("index:", i)
+    print("element", e)
+    # => index: 0
+    #    element a
+    #    index: 1
+    #    element b
+    #    index: 2
+    #    element c
+#+end_src
+
+** 列表长度
+
+#+begin_src python
 len([1,2,3])
 # => 3
-,#+end_src
+#+end_src
 
-,*** 笛卡尔积
+*** 笛卡尔积
 python 真的很喜欢用 for 循环。
 
-,#+begin_src python
+#+begin_src python
 colors = ['black', 'white']
 sizes = ['S', 'M', 'L']
 tshirts = [(color, size) for color in colors for size in sizes]
 # [('black', 'S'), ('black', 'M'), ('black', 'L'), ('white', 'S'), ('white', 'M'), ('white', 'L')]
-,#+end_src
+#+end_src
 
-,** 切片操作
+** 切片操作
 在 python 里，像列表（list）\元组（tuple）\字符串（str）这类序列类型都支持切片操作。
 
 #+begin_src python
@@ -3084,6 +3243,38 @@ data.loc[1:3]
 # => 1    a
 #    3    b
 #    dtype: object
+#+end_src
+
+*** iterating on items in separate containers
+多个数据类型数据放在一起迭代需要用一些特别的手段。
+
+#+begin_src python :results output
+from itertools import chain
+a = [1, 2, 3, 4]
+b = ['x', 'y', 'z']
+for x in chain(a, b):
+    print(x)
+# => 1
+#    2
+#    3
+#    4
+#    x
+#    y
+#    z
+
+for x in a + b:
+    print(x)
+#+end_src
+
+
+*** iterating in sorted order over merged sorted iterable
+将2个列表元素依照一定顺序排列。
+#+begin_src python :results output
+import heapq
+a = [1, 4, 7, 10]
+b = [2, 5, 6, 11]
+for c in heapq.merge(a, b):
+    print(c)
 #+end_src
 
 ** 推导式
@@ -3165,32 +3356,59 @@ np.multiply.outer(x, x)
 # array([[0, 0, 0],
 #        [0, 1, 2],
 #        [0, 2, 4]])
-,#+end_src
+#+end_src
 
-,** 广播
+** 广播
 对于同样大小的数组，二进制操作是对相应元素逐个计算：
 
-,#+begin_src python
+#+begin_src python
 a = np.array([0, 1, 2])
 b = np.array([5, 5, 5])
 a + b
 # => array([5, 6, 7])
 a = np.array([0, 1, 2])
 a + 5
-,#+end_src
+#+end_src
 
-,** 枚举
+** 枚举
 在多数语言里,枚举是面向编译器,类似数字常量的存在.但到了python 这里,事情变得有些复杂.首先,需要定义枚举类型,随后由内部代码生成对应的枚举值.
                                                        
-,#+begin_src python
+#+begin_src python
 import enum
 color = enum.Enum("color", "black yellow blue red")
-,#+end_src
+color.black
+# => <color.black: 1>
+#+end_src
 
-,** 统计记录个数
+也可以使用类属性来表达枚举值.
+
+#+begin_src python
+class Seasons:
+    Spring = 0
+    Summer = 1
+    Autumn = 2
+    Winter = 3
+
+Seasons.Spring
+##or
+class Seasons:
+    Spring, Summer, Autumn, Winter = range(4)
+    # =>
+Seasons.Spring
+# => 0
+#+end_src
+
+也可以使用namedtuple 来实现枚举值.
+
+#+begin_src python
+seasons = namedtuple('Seasons', 'Spring Summer Autumn Winter')._make(range(4))
+# => Seasons(Spring=0, Summer=1, Autumn=2, Winter=3)
+#+end_src
+
+** 统计记录个数
 如果需要统计布尔数组中 True 记录的个数，可以使用 np.count_nonzero 函数。
 
-,#+begin_src python
+#+begin_src python
 X = np.random.random((2, 3))
 X.mean(0) #对列进行统计
 # => array([0.50275777, 0.77663369, 0.52202549])
@@ -3202,34 +3420,35 @@ X < 0.2 #对所有元素进行判断
 #        [False, False, False]])
 np.count_nonzero(X<0.2) #统计True 的个数
 # => 0
-,#+end_src
+#+end_src
 
-,** value_counts
+** value_counts
 value_counts() 相当于 dplyr 包中的 count(). 相当于 R 中的 table.具体用法是 df.colName.value_counts().
 
-,#+begin_src python
+#+begin_src python          
+import numpy as np
 X= np.random.random((10, 3))
 X.value_counts()
 housing['income_cat'].value_counts()
 count.nlargest(2).index
-,#+end_src
+#+end_src
 
-,** mode
+** mode
 可以统计series 或dataframe 的众数，即出现频率最高的值。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 s5 = pd.Series([1, 1, 3, 3, 3, 5, 5, 7, 7, 7])
 s5.mode()
 # =>
 #    0    3
 #    1    7
 #    dtype: int64
-,#+end_src
+#+end_src
 
-,** cut
+** cut
 cut() 函数（以值为依据实现分箱）及 qcut() 函数（以样本分位数为依据实现分箱）用于连续值的离散化。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 import numpy as np
 import pandas as pd
 arr = np.random.randn(20)
@@ -3251,40 +3470,40 @@ pd.qcut(arr,[0,0.25,0.5,0.75,1])
 #                                     (-0.297, 0.234] <
 #                                     (0.234, 1.354] <
 #                                     (1.354, 1.86]]
-,#+end_src
+#+end_src
 
 定义分箱时，可以传递无穷值。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 pd.cut(arr,[-np.inf,0,np.inf])
 # =>
 #
 # [(0.0, inf], (0.0, inf], (0.0, inf], (0.0, inf], (-inf, 0.0], ..., (0.0, inf], (0.0, inf], (-inf, 0.0], (-inf, 0.0], (0.0, inf]]
 # Length: 20
 # Categories (2, interval[float64]): [(-inf, 0.0] < (0.0, inf]]
-,#+end_src
+#+end_src
 
-,** nlargest
+** nlargest
 本方法返回N 个最大或最小的值。
 
-,#+begin_src python :results output
+#+begin_src python :results output
 count = iris.species.value_counts()
 count.nlargest(2)
-,#+end_src
+#+end_src
 
 dataframe 也支持 nlargest 与 nsmallest 方法。
-,#+begin_src python :results output
+#+begin_src python :results output
 df = pd.DataFrame({'a': [-2, -1, 1, 10, 8, 11, -1],
                        'b': list('abdceff'),
                        'c': [1.0, 2.0, 4.0, 3.2, np.nan, 3.0, 4.0]})
 df.nsmallest(3, 'a') #'a' 列第3小的元素
-,#+end_src
+#+end_src
 
-,** 处理缺失值
-,*** isnull
+** 处理缺失值
+*** isnull
 python 中np.nan 与 None 是等价关系？
 
-,#+begin_src python
+#+begin_src python
 import pandas as pd
 import numpy as np
 df1 = pd.Series([1, np.nan, 2, None])
@@ -3303,13 +3522,13 @@ df1[df1.notnull()]
 # => 0    1.0
 #    2    2.0
 #    dtype: float64
-,#+end_src
+#+end_src
 
 在 series 里使用的 isnull() 和 notnull() 同样适用于 dataframe
-,*** fillna
+*** fillna
 df.fillna(),将缺失值填充为给定值.
 
-,#+begin_src python
+#+begin_src python
 df1
 # => 0    1.0
 #    1    NaN
@@ -3322,14 +3541,13 @@ df1.fillna(0)
 #    2    2.0
 #    3    0.0
 #    dtype: float64
-,#+end_src
+#+end_src
 
-,*** dropna
+*** dropna
 分别是 dropna() (剔除缺失值) 和 fillna() (填充缺失值).可以按着行或者列筛选 NA 值。
 
-,#+begin_src python
-import #+end_example
-pandas as pd
+#+begin_src python
+import pandas as pd
 df1 = pd.Series([1, np.nan, 2, None])
 # => 0    1.0
 #    1    NaN
@@ -3345,7 +3563,7 @@ df1.dropna()
 默认情况下，dropna() 会剔除任何包含缺失值的整行数据。
 
 #+begin_src python
-import numpy as np 
+import numpy as np
 df = pd.DataFrame([[1, np.nan, 2],
                   [2, 3, 5],
                   [np.nan, 4, 6]])
@@ -3381,6 +3599,59 @@ df.dropna(axis='rows', thresh=3)
 #+begin_src python
 import datetime
 datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '   星期:' + str(datetime.datetime.now().isoweekday())
+#+end_src
+
+*** 时间数据处理
+
+#+begin_src python :results output
+from datetime import timedelta
+a = timedelta(days=2, hours=6)
+# => datetime.timedelta(2, 21600)
+b = timedelta(hours=4.5)
+# => datetime.timedelta(0, 16200)
+c = a + b
+# => datetime.timedelta(2, 37800)
+c.days
+# => 2
+c.seconds
+# => 37800
+c.seconds/3600
+# => 10.5
+c.total_seconds()/3600
+# => 58.5
+
+from datetime import datetime
+a = datetime(2021, 9, 23)
+# => datetime.datetime(2021, 9, 23, 0, 0)
+print(a + timedelta(days=10))
+b = datetime(2012, 12, 21)
+# => datetime.datetime(2012, 12, 21, 0, 0)
+d = b - a
+d.days
+# => -3198
+now = datetime.today()
+# => datetime.datetime(2021, 6, 14, 20, 51, 4, 691339)
+print(now)
+# => 2021-06-14 20:51:04.691339
+print(now + timedelta(minutes=10))
+#+end_src
+
+*** Converting strings into datetime
+
+#+begin_src python :results output
+from datetime import datetime
+text = '2012-09-20'
+y = datetime.strptime(text,'%Y-%m-%d')
+z = datetime.now()
+diff = z - y
+# => datetime.timedelta(3189, 75454, 620153)
+diff
+#+end_src
+
+*** manipulating dates involving time zone
+
+#+begin_src python :results output
+from datetime import datetime
 #+end_src
 
 ** 合并数据集
@@ -3455,6 +3726,20 @@ random.random()
 # => 0.14252352294885373
 #+end_src
 
+如果只是想简单洗牌,那么就可以用random.shuffle.
+
+#+begin_src python :results output
+import random
+import numpy as np
+values = 5
+random.shuffle()
+np.random.normal #从正态分布中抽取数据
+s = np.random.permutation(5) #随机生成一个序列
+# => array([3, 0, 1, 4, 2])
+s[:3]
+# => array([3, 1, 0])
+#+end_src
+
 ** union/intersection/difference
 基本模块的集合运算不能直接用于 list，但可以用于通过函数 set()转换的 list,这些计算包括集合的差（difference），并（union），交（intersection）。
 
@@ -3470,6 +3755,16 @@ set.union(set(['a',2,'5']),set(['a',7]))
 # => {2, '5', 7, 'a'}
 set.intersection(set(['a',2,'5']),set(['a',7]))
 # => {'a'}
+a = [1, 2, 3, 4]
+b = [4, 3, 5, 6]
+
+[i for i in a if i in b]
+set(a).intersection(set(b)) #交集
+# => {3, 4}
+set(a).union(set(b)) #并集
+# => {1, 2, 3, 4, 5, 6}
+set(a).difference(set(b))
+# => {1, 2}
 #+end_src
 
 ** eval
@@ -3482,8 +3777,10 @@ eval('x**2')
 # => 49
 #+end_src
 
+应该尽量避免使用eval,在需要使用eval 的地方可用更加safe的ast.literal_eval 替代.
+
 ** assert
-可以 check 等式是否成立.
+利用assert来发现问题 .可以 check 等式是否成立. 加上-O 参数可以禁用断言,如 python -O asserttest.py. 对于类似数组越界\类型不匹配\除0之类的错误,不建议使用断言来进行处理.
 
 #+begin_src python
 a = 3
@@ -3496,13 +3793,17 @@ assert(b>7)
 #      File "<stdin>", line 1, in <module>
 #    AssertionError
 print("断言失败，程序报错")
+
+x = 1
+y = 2
+assert x == y, "not equals"
+# => Traceback (most recent call last):
+#      File "<stdin>", line 1, in <module>
+#    AssertionError: not equals
 #+end_src
 
 ** 统计
 *** 最小值和最大值
-#+begin_src python
-min(L),max(L)
-#+end_src
 
 #+begin_src python
 import numpy as np
@@ -3544,12 +3845,21 @@ np.cumsum(x)
 #+begin_src python :results output
 sum(filter(None, [1,2,3,None]))
 # => 6
+seq = [0, 1, 2, 3, 5, 8]
+filter(lambda x:x % 2 != 0, seq)
+# => [1, 3, 5]
+filter(None, [1,2,3,None])
+# => [1, 2, 3]
 #+end_src
 
 array 变成矩阵，可以通过限定 shape 来确定矩阵维数。
 
 #+begin_src python
 x = np.array([32, -12, 3, 5])
+x.reshape((2, 2))
+# =>
+# array([[ 32, -12],
+#        [  3,   5]])
 x.shape = 2, 2
 x
 # =>
@@ -3633,8 +3943,6 @@ np.argmin(x, 0)
 # => array([0, 1])
 #+end_src
 
-arange,range
-
 #+begin_src python
 np.arange(3,5,.5) #从3到5(不包含5)等间隔为0.5 的数列
 # => array([3. , 3.5, 4. , 4.5])
@@ -3660,9 +3968,9 @@ np.shape(y)
 
 转置
 #+begin_src python
+import numpy as np
 x = [[2,3],[7,5]]
 z = np.asmatrix(x)
-z
 # =>
 # matrix([[2, 3],
 #         [7, 5]])
@@ -3672,9 +3980,12 @@ print(z.T*z)
 #+end_src
 
 维数和大小
+
 #+begin_src python
 np.ndim(z)
+# => 2
 z.shape
+# => (2, 2)
 #+end_src
 
 *** 画图
@@ -3768,6 +4079,7 @@ clf.intercept_
 ** 数据清理
 *** 数字型变量
 删除缺失值，删除一个特征，将缺失值填充为一个固定值。
+
 #+begin_src python
 housing.dropna(subset=['total_bedrooms']) #option 1 可以理解为删除缺失值
 housing.drop('total_bedrooms', axis=1)  #删除一个特征
@@ -3782,19 +4094,20 @@ housing['total_bedrooms'].fillna(median)
 line ='asdf fjjdk; afed, fjek'
 import re
 fields = re.split(r'[;,\s]\s*', line)
-fields
 # => ['asdf', 'fjjdk', 'afed', 'fjek']
 values = fields[::2]
 delimiters = fields[1::2] + ['']
 #+end_src
+
 **** 去除空格
 
 #+begin_src python
-a = (i for i in range(3))
+a = [i for i in range(3)]
+# => [0, 1, 2]
 a = " heheheh "
 a.strip()
+# => 'heheheh'
 #+end_src
-
 
 **** 字符串开头或结尾匹配
 检查字符串开头或结尾的一个简单方法是使用 str.startswith() 或者是 str.endswith() 方法。比如：
@@ -3880,10 +4193,6 @@ class Dog():
 
 在 python 中，首字母大写的名称就是类。这个类定义中的括号是空的。
 
-#+begin_src python
-print("RMSE: %f" % (rmse))
-#+end_src
-
 ** 面向对象技术简介
 
 *类(Class):* 用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
@@ -3907,6 +4216,7 @@ print("RMSE: %f" % (rmse))
 对象：通过类定义的数据结构实例。对象包括两个数据成员（类变量和实例变量）和方法。
 
 类的定义：
+
 #+begin_src python
 class ClassName:
     <statement-1>
@@ -3936,6 +4246,7 @@ class myclass(object):
         self.foo = 100
 
 myinst = myclass()
+
 hasattr(myinst, 'foo')
 getattr(myinst, 'foo')
 hasattr(myinst, 'bar')
@@ -4033,6 +4344,7 @@ class Complex:
 
 x = Complex(3, -4.5)
 print(x.r, x.i)
+# => 3 -4.5
 #+end_src
 
 self 代表类的实例，而非类
@@ -4327,6 +4639,156 @@ from pipe import *
 [1,2,3,4] | where (lambda x:x%2) | tail(2) | select(lambda x: x*x) | add
 #+end_src
 
+- 加法
+
+#+begin_src python :results output
+from pipe import *
+[1, 2, 3, 4] | add
+# => 10
+#+end_src
+
+- select 函数,相当于map 映射操作
+
+#+begin_src python :results output
+x = [1.0, 2.0, 3.0]
+x | select(lambda x:float(x + 1)) | as_list
+# => [2.0, 3.0, 4.0]
+#+end_src
+
+- 聚合函数
+
+可以使用lambda 函数自定义
+
+#+begin_src python :results output
+(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) | aggregate(lambda x, y:x + y)
+# => 55
+#+end_src
+
+- 筛选和过滤
+
+#+begin_src python :results output
+[1, 2, 3, 4] | where(lambda x:x % 2 == 0) | as_list
+# => [2, 4]
+[1, 2, 3, 4] | take_while(lambda x:x < 3) | concat
+# => '1, 2'
+[1, 2, 3, 4] | where(lambda x:x < 3) | concat
+# => '1, 2'
+#+end_src
+
+#+begin_src python :results output
+[1, 2, 3] | take(2)
+# => [1, 2]
+[1, 2, 3, 4] | take(2) | as_list | where(lambda x:x == 2) | as_list | count
+# => 1
+[1, 2, 3] | count
+# => 3
+#平均数, 使用自定义函数, 必须在函数前面加上@pipe装饰
+[1, 2, 3] | select(lambda x:x*x) | average
+# => 4.666666666666667
+#相当于flatmap
+[[1, 2], [3, 4], [5]] | chain | as_list
+# => [1, 2, 3, 4, 5]
+#将生成器转换成list 列表
+[1, 2, 3, 4] | as_list
+# => [1, 2, 3, 4]
+#平均数
+[1, 2, 3] | average
+# => 2.0
+#使用islice 截取从下表2到7, 按照索引截取数组中的元素
+(1, 2, 3, 4, 5, 6, 7,8, 9) | islice(2, 8) | as_list
+# => [3, 4, 5, 6, 7, 8]
+(1, 2, 3, 4, 5, 6, 7,8, 9) | islice(2, 8) | concat
+# => '3, 4, 5, 6, 7, 8'
+(1, 2, 3, 4, 5, 6, 7,8, 9) | islice(0, 1) | as_list
+# => [1]
+#两个列表实现zip函数
+(1, 2, 3, 4, 5, 6, 7,8, 9) | izip([9, 8, 7, 6, 5, 4, 3, 2, 1]) | concat
+# => '(1, 9), (2, 8), (3, 7), (4, 6), (5, 5), (6, 4), (7, 3), (8, 2), (9, 1)'
+#+end_src
+
+- any
+any(),只要存在一个就返回true.
+#+begin_src python :results output
+(1, 2, 3, 4, 5, 6, 7,8, 9) | any(lambda x:x >= 7)
+# => True
+(1, 2, 3, 4, 5, 6, 7,8, 9) | any(lambda x:x >9)
+# => False
+#+end_src
+
+- all
+all(),必须全部满足才会返回true.
+#+begin_src python :results output
+(1, 2, 3, 4, 5, 6, 7,8, 9) | all(lambda x:x < 7)
+# => False
+(1, 2, 3, 4, 5, 6, 7,8, 9) | all(lambda x:x  <=  9)
+# => True
+#+end_src
+
+- max
+
+#+begin_src python :results output
+('aa', 'b', 'fosdfdfo', 'qwerty') | max(key=len)
+# => 'fosdfdfo'
+('aa', 'b', 'fosdfdfo', 'qwerty') | max()
+# => 'qwerty'
+('aa', 'b', 'fosdfdfo', 'qwerty') | max
+# => 'qwerty'
+#+end_src
+
+- groupby() 对列表实现分组计算
+
+#+begin_src python
+(1, 2, 3, 4, 5, 6, 7,8, 9) | groupby(lambda x:x % 2 and "Even" or "Odd") | select(lambda x: "%s : %s" % (x[0], (x[1] | concat(', ')))) | concat(' / ')
+# => 'Even : 1, 3, 5, 7, 9 / Odd : 2, 4, 6, 8'
+#+end_src
+
+- sort() 列表实现排序,其中key 为指定的自定义函数,reverse 则指定是顺序排还是逆序排
+
+#+begin_src python :results output
+"python" | sort(key=lambda x:len(x), reverse=True) | concat('')
+[5, -4, 3, -2, 1] | sort(key=abs) | concat
+# => '1, -2, 3, -4, 5'
+#+end_src
+
+- dedup deduplicate value 删除重复值
+
+#+begin_src python :results output
+[1, 1, 2, 3, 2, 1, 3, 4] | dedup | as_list
+# => [1, 2, 3, 4]
+#+end_src
+
+#uniq 是删除连续大且重复的值
+#+begin_src python :results output
+[1, 1, 2, 3, 2, 1, 3, 4] | uniq | as_list
+# => [1, 2, 3, 2, 1, 3, 4]
+#+end_src
+
+- reverse 逆转
+
+#+begin_src python :results output
+[1, 2, 3] | reverse | concat
+# => '3, 2, 1'
+#+end_src
+
+- index
+
+#+begin_src python :results output
+[1, 2, 3, 2, 1] | index(value=2, start=2, stop=4)
+# => 3
+[1, 2, 3, 2, 1] |index(3)
+# => 2
+#+end_src
+
+- 构造自己的pipe 管道函数
+
+#+begin_src python :results output
+stdout = Pipe(lambda x: sys.stdout.write(str(x)))
+select = Pipe(lambda iterable, pred: (pred(x) for x in iterable))
+# 或者
+@Pipe
+def stdout(x):
+    sys.stdout.write(str(x))
+#+end_
 *** pytorch
 为啥选择pytorch?
 
@@ -4335,6 +4797,8 @@ from pipe import *
 - Pytorch所有的网络在nn包里，我们待会会实现经典的Lenet5模型。
 
 - Pytorch计算GPU和CPU切换很快，直接使用x.cuda()即可
+
+torch 的数据输入格式是float 型。
 
 #+begin_src python
 import torch
@@ -4409,6 +4873,10 @@ x = Variable(torch.ones(2, 2), requires_grad = True)
 # tensor([[1., 1.],
 #         [1., 1.]], requires_grad=True)
 #+end_src
+
+参数 .requires_grad 设为 True, 它将开始追踪在其上的所有操作。完成计算
+后，可以调用.backward() 来完成所有梯度计算。此tensor 的梯度将累积到
+.grad 属性中。 
 
 一些简单的例子
 
@@ -4771,6 +5239,129 @@ dir(models)
 #+begin_src python
 import torch
 help(torch.ones)
+#+end_src
+
+**** 线性回归模型
+
+
+#+begin_src python :results output
+import torch
+import numpy as np
+num_inputs = 2
+num_examples = 1000
+true_w = [2, -3.4]
+true_b = 4.2
+
+features = torch.tensor(np.random.normal(0, 1, (num_examples, num_inputs)), dtype=torch.float)
+
+labels =  true_w[0]*features[:,0] + true_w[1]*features[:, 1] +true_b
+labels += torch.tensor(np.random.normal(0, 0.01, size=labels.size()), dtype=torch.float)
+
+import torch.utils.data as Data
+
+batch_size = 10
+
+#将训练数据的特征和标签组合
+dataset = Data.TensorDataset(features, labels)
+
+##随机读取小批量
+data_iter = Data.DataLoader(dataset, batch_size, shuffle=True)
+
+for X, y in data_iter:
+    print(X, y)
+    break
+# =>
+# tensor([[-0.2252,  0.0214],
+#         [ 0.7237, -0.4518],
+#         [-0.4106, -0.7014],
+#         [ 0.6191, -2.3008],
+#         [ 1.1712, -1.1639],
+#         [ 2.2405, -1.2257],
+#         [ 0.7237, -0.2411],
+#         [ 0.0244, -1.0514],
+#         [ 0.3218,  1.5080],
+#         [-0.7785, -0.2904]]) tensor([ 3.6409,  7.1837,  5.7593, 13.2561, 10.4963, 12.8525,  6.4600,  7.8083,
+#         -0.2865,  3.6394])
+
+from torch import nn
+class LinearNet(nn.Module):
+    def __init__(self, n_feature):
+        super(LinearNet, self).__init__()
+        self.linear = nn.Linear(n_feature,1)
+
+    #forward 定义前向传播
+    def forward(self,x):
+        y = self.linear(x)
+        return y
+
+net = LinearNet(num_inputs)
+print(net)
+# =>
+# LinearNet(
+#   (linear): Linear(in_features=2, out_features=1, bias=True)
+# )
+
+##nn.Sequential
+net = nn.Sequential(
+    nn.Linear(num_inputs, 1)
+)
+
+for param in net.parameters():
+    print(param)
+# =>
+# Parameter containing:
+# tensor([[0.5903, 0.3842]], requires_grad=True)
+# Parameter containing:
+# tensor([-0.2702], requires_grad=True)
+
+##参数初始化
+from torch.nn import init
+init.normal_(net[0].weight, mean=0, std=0.01)
+init.constant_(net[0].bias, val=0)
+
+##定义损失函数
+loss = nn.MSELoss()
+
+import torch.optim as optim
+optimizer = optim.SGD(net.parameters(), lr=0.03)
+# =>
+# SGD (
+# Parameter Group 0
+#     dampening: 0
+#     lr: 0.03
+#     momentum: 0
+#     nesterov: False
+#     weight_decay: 0
+# )
+
+optimizer = optim.SGD([
+    {'param':net.subnet1.parameters()},
+    {'param':net.subnet2.parameters(), 'lr':0.01},
+], lr=0.03)
+
+for para_group in optimizer.param_groups:
+    para_group['lr'] *= 0.1
+
+#训练模型
+num_epochs = 10
+for epoch in range(1, num_epochs + 1):
+    for X, y in data_iter:
+        output = net(X)
+        l = loss(output,  y.view(-1, 1))
+        optimizer.zero_grad() #梯度清零
+        l.backward()
+        optimizer.step()
+    print('epoch %d, loss: %f' %(epoch, l.item()))
+
+dense = net[0]
+print(true_w, dense.weight)
+# =>
+# [2, -3.4] Parameter containing:
+# tensor([[ 1.7423, -2.8988]], requires_grad=True)
+print(true_b, dense.bias)
+# =>
+# 4.2 Parameter containing:
+# tensor([3.5837], requires_grad=True)
 #+end_src
 
 ** python 习题

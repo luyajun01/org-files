@@ -36,7 +36,6 @@ java 中的变量类型主要有以下几种：
 
 
 
-
 ** hello world
 
 #+begin_src java
@@ -48,6 +47,62 @@ public class HelloWorld {
 }
    #+end_src
 String args[] 与 String[] args 都可以执行，但推荐使用 String[] args，这样可以避免歧义和误读.为什么是 String[] args，这个 args 是干嘛的？String[] args 可以看出来它是一个数组。
+
+* Spark_wiki
+Spark 的一个主要特点就是能够在内存中进行计算，因而更快。
+
+** 初始化sparkcontext
+一旦完成了应用与spark 的连接，接下来就需要在你的程序中导入spark 包并且创建sparkcontext,可以先创建一个sparkconf 对象来配置你的应用.
+
+#+begin_src scala
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+
+val conf = new SparkConf().setMaster("local").setAppName("My App")
+val sc = new SparkContext(conf)
+#+end_src
+
+这些例子展示了创建 SparkContext 的最基本的方法，你只需传递两个参数：
+
+• 集群 URL：告诉 Spark 如何连接到集群上。在这几个例子中我们使用的是 local ，这个 特殊值可以让 Spark 运行在单机单线程上而无需连接到集群。
+
+• 应用名 ：在例子中我们使用的是 My App 。当连接到一个集群时，这个值可以帮助你在集群管理器的用户界面中找到你的应用。
+
+关闭spark 可以调用sparkcontext 的stop() 方法，或者直接退出应用（sysyem.exit(0)或者 sys.exit()）。
+
+比如创建一个单词数统计应用
+
+#+begin_src scala
+//创建一个scala 版本的spark context
+val conf=new SparkConf().setAppName("wordCount")
+val sc = new SparkContext(conf)
+//读取data
+val input = sc.textFile(inputFile)
+//把它切分成一个个单词
+val words = input.flatMap(line => line.split(" "))
+// 转换为键值对并计数
+val counts = words.map(word => (word,1)).reduceByKey{case (x,y) => x+y}
+//将统计出来的单词总数存入一个文本文件，引发求值
+counts.saveAsTextFile(outputFile)
+#+end_src
+
+** RDD
+弹性分布式数据库。RDD 其实就是分布式的元素集合，在Spark 中，对数据的所有操作不外乎创建RDD\转换已有RDD以及调用RDD 操作进行求值。而在这一切背后，Spark 会自动将RDD 中的数据分发到集群上，并将操作并行化执行。
+
+RDD作为分区的集合分布在机器集群上，每个分区包括数据的一个子集。在Spark中，分区定义了并行度的单位。该框架顺序处理一个分区内的对象，并并行处理多个分区。创建RDD最简单的方法之一是在SparkContext上使用并行化方法来创建一个本地对象集合。
+
+#+begin_src scala
+val rdd = sc.parallelize(Array(1,2,3,4),4)
+#+end_src
+
+要从像HDFS这样的分布式文件系统中的文本文件或文本文件目录创建一个RDD，我们可以将文件或目录的名称传递给textFile方法:
+
+#+begin_src scala
+val rdd2 = sc.textFile("hdfs:///some/path.txt")
+#+end_src
+
+当您以本地模式运行Spark时，textFile方法可以访问驻留在本地文件系统上的路径。如果给Spark一个目录而不是一个单独的文件，它会认为该目录下的所有文件都是给定RDD的一部分。
 
 * Scala_wiki
 Scala 与 java 最大的区别是：scala 语句末尾的分号；是可选的。
@@ -90,24 +145,6 @@ Scala 基本语法需要注意以下几点：
 示例: 假设"HelloWorld"是对象的名称。那么该文件应保存为'HelloWorld.scala"
 
 def main(args: Array[String]) - Scala程序从main()方法开始处理，这是每一个Scala程序的强制程序入口部分。
-
-* 概念
-** RDD
-弹性分布式数据库。
-
-RDD作为分区的集合分布在机器集群上，每个分区包括数据的一个子集。在Spark中，分区定义了并行度的单位。该框架顺序处理一个分区内的对象，并并行处理多个分区。创建RDD最简单的方法之一是在SparkContext上使用并行化方法来创建一个本地对象集合。
-
-#+begin_src scala
-val rdd = sc.parallelize(Array(1,2,3,4),4)
-#+end_src
-
-要从像HDFS这样的分布式文件系统中的文本文件或文本文件目录创建一个RDD，我们可以将文件或目录的名称传递给textFile方法:
-
-#+begin_src scala
-val rdd2 = sc.textFile("hdfs:///some/path.txt")
-#+end_src
-
-当您以本地模式运行Spark时，textFile方法可以访问驻留在本地文件系统上的路径。如果给Spark一个目录而不是一个单独的文件，它会认为该目录下的所有文件都是给定RDD的一部分。
 
 * 数据类型
 Byte	8位有符号补码整数。数值区间为 -128 到 127

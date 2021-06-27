@@ -3669,7 +3669,6 @@ select(data3, num_range("x", 8:11, width = 1))
 #+END_SRC
 
 **** select_all(),select_at(),select_if()
-
 select_all(.tbl, .funs = list(), ...)
 select_at(.tbl, .vars, .funs = list(), ...)
 
@@ -4644,7 +4643,7 @@ models %>% do(data.frame(
 #+end_src
 
 *** slice()
-    slice 可于选择数据的行，相对于 select 选择列数据。
+slice 可于选择数据的行，相对于 select 选择列数据。
 #+BEGIN_SRC R :exports both :results graphics :file ./fig_1.png
   mtcars %>% slice(1:10)#选择前 10 行
   mtcars %>% slice(-1) #删除第一行
@@ -4664,7 +4663,6 @@ slice_sample(): dplyr (data.frame).
 #+begin_src R ::results output graphics :file fig_1.png :exports both
 
 #+end_src
-
 
 *** between()
 This is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables.
@@ -5311,7 +5309,6 @@ array_branch(x) %>% str()
 
 #+end_src
 
-
 **** array_tree
 array_tree() creates an hierarchical list (a tree) that has as many levels as dimensions specified in margin.
      #+begin_src R :results output graphics :file fig_1.png :exports both
@@ -5428,12 +5425,14 @@ x %>%
 
 *** modify_in
 该函数功能和 assign_in 类似，但是允许取值和变量存在函数映射关系。
+
 #+BEGIN_SRC R :results output graphics :file fig_1.png :exports both
 x <- list(list(bar = 1, foo = 2))
 x %>%
 modify_in(list(1, "foo"), ~ .x * 200)
 modify_in(x, list(1,"foo"),`+`,100)
 #+END_SRC
+
 *** pluck
 从这个函数名字可以知道，叫摘下。
 select an element by name or index,pluck(x,"b").这个函数类似于 select。pluck 还是挺方便的，对于不存在的元素还可以赋值 na。
@@ -5511,6 +5510,7 @@ string, or the function has side-effects.
 #+end_src
 *** every
 Do every or some elements of a list satisfy a predicate?
+
 #+begin_src R :results output graphics :file fig_1.png :exports both
   y <- list(0:10, 5.5)
   y %>% every(is.numeric)
@@ -5518,6 +5518,7 @@ Do every or some elements of a list satisfy a predicate?
   y %>% every(is.integer)
   ## [1] FALSE
 #+end_src
+
 *** some
 类似于 is.character
 

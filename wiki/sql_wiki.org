@@ -10,48 +10,41 @@
 - Related: [[wiki:R_WIKI][R]]
 
 * sql_wiki                                                              :toc:
+  - [[#安装mysql][安装mysql]]
   - [[#常见错误][常见错误]]
   - [[#名词解释][名词解释]]
-    - [[#外键][外键]]
-    - [[#索引][索引]]
   - [[#创建数据库][创建数据库]]
   - [[#选择数据库][选择数据库]]
   - [[#数据类型][数据类型]]
-    - [[#数值类型][数值类型]]
-    - [[#日期和时间][日期和时间]]
-    - [[#字符串][字符串]]
   - [[#创建数据表][创建数据表]]
   - [[#删除数据库][删除数据库]]
   - [[#插入数据][插入数据]]
   - [[#查询数据][查询数据]]
-    - [[#分页查询][分页查询]]
-    - [[#聚合查询][聚合查询]]
-    - [[#多表查询][多表查询]]
-    - [[#连接查询][连接查询]]
   - [[#update][update]]
   - [[#delete][delete]]
   - [[#head][head]]
   - [[#regexp][RegExp]]
   - [[#where][where]]
-    - [[#like][like]]
-    - [[#in][in]]
-    - [[#between-and][between and]]
-    - [[#unionunion-all][union/union all]]
+  - [[#concat][concat]]
   - [[#ordering-and-limiting][ordering and limiting]]
   - [[#averaging-and-grouping][Averaging and Grouping]]
   - [[#nested-select][nested select]]
   - [[#join][join]]
   - [[#inner_join][inner_join]]
+  - [[#distinct][distinct]]
   - [[#插入变量][插入变量]]
   - [[#summarise][summarise]]
-    - [[#count][count]]
-    - [[#meanvar][mean/var]]
+  - [[#sqldf][sqldf]]
   - [[#string-截取][string 截取]]
   - [[#练习][练习]]
-    - [[#查询-01-课程比-02-课程成绩高的学生的信息及课程分数][查询" 01 "课程比" 02 "课程成绩高的学生的信息及课程分数]]
-    - [[#查询同时存在-01-课程和-02-课程的情况][查询同时存在" 01 "课程和" 02 "课程的情况]]
-- [[#spark_wiki][Spark_wiki]]
 - [[#hive_wiki][Hive_wiki]]
+
+** 安装mysql
+在vs code中,安装mysql.
+
+https://blog.csdn.net/Gineyc/article/details/103227874
+
+记住密码是:luyajun01@qq.com
 
 ** 常见错误
 数据库按照数据结构来组织，存储和管理数据，实际上，数据库一共有3种模型：
@@ -71,8 +64,7 @@ use sys
 
 ** 名词解释
 *** 外键
-外键：可以通过特定的指标，实现与其他表关联，这种列就称为外键。
-外键并不是通过列名实现的，而是通过定义外键约束实现的：
+外键：可以通过特定的指标，实现与其他表关联，这种列就称为外键。外键并不是通过列名实现的，而是通过定义外键约束实现的：
 
 #+begin_src sql
 ALTER TABLE students
@@ -113,18 +105,15 @@ ALTER TABLE students
 ADD INDEX idx_name_score (name, score);
 #+end_src
 
-
-
 ** 创建数据库
-
-   #+begin_src sql
-     create database samp_db character set gbk;
-     drop database samp_db; --删除库名为samp_db
-     show databases;
-     use samp_db ;--选择创建的数据库samp_db
-     show tables;--显示samp_db下面所有的表名字
-     describe
-   #+end_src
+#+begin_src sql
+create database samp_db character set gbk;
+drop database samp_db; --删除库名为samp_db
+show databases;
+use samp_db ;--选择创建的数据库samp_db
+show tables;--显示samp_db下面所有的表名字
+describe
+#+end_src
 
    #+begin_src sql
   CREATE DATABASE IF NOT EXISTS RUNOOB DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -141,9 +130,20 @@ ADD INDEX idx_name_score (name, score);
      use course; -- course是数据库名
    #+end_src
 
+#+begin_src sql
+查看列：desc 表名;
+修改表名：alter table t_book rename to bbb;
+添加列：alter table 表名 add column 列名 varchar(30);
+删除列：alter table 表名 drop column 列名;
+修改列名MySQL： alter table bbb change nnnnn hh int;
+修改列名SQLServer：exec sp_rename't_student.name','nn','column';
+修改列名Oracle：lter table bbb rename column nnnnn to hh int;
+修改列属性：alter table t_book modify name varchar(22);
+删除行: delete from course where Cname = ''
+#+end_src
+
 ** 数据类型
 *** 数值类型
-
 | 类型         | 用途           |
 | TINYINT      | 小整数值       |
 | SMALLINT     | 大整数值       |
@@ -155,7 +155,6 @@ ADD INDEX idx_name_score (name, score);
 | DECIMAL      | 小数值         |
 
 *** 日期和时间
-
 | 类型      | 用途                     |
 | DATE      | 日期值                   |
 | TIME      | 时间值或持续时间         |
@@ -164,7 +163,6 @@ ADD INDEX idx_name_score (name, score);
 | TIMESTAMP | 混合日期和时间值，时间戳 |
 
 *** 字符串
-
 | 类型     | 用途         |
 | CHAR     | 定长字符串   |
 | VARCHAR  | 变长字符串   |
@@ -174,11 +172,8 @@ ADD INDEX idx_name_score (name, score);
 char(n) 和 varchar(n) 中括号里n 代表字符的个数，并不代表字节的个数，比如CHAR(30) 就可以存储30个字符。
 
 ** 创建数据表
-
    创建数据表需要包括以下信息：表名，表字段名，定义每个表字段。
-
    创建mysql 数据表的SQL 通用语法是：
-
 
    #+begin_src sql
    create table table_name (column_name column_type);
@@ -242,6 +237,20 @@ insert into table_name (field1, field2,...,fieldN)
 INSERT INTO students (class_id, name, gender, score) VALUES (2, '大牛', 'M', 80);
 #+end_src
 
+*** SQL别名
+通过使用SQL,可以为表名称或列名称指定别名。分列的SQL 别名和表的SQL 别名写法。
+
+列的SQL 别名用法
+#+begin_src sql
+select column_name AS alias_name from table_name;
+#+end_src
+
+表的SQL 别名用法
+
+#+begin_src sql
+select column_name from table_name AS alias_name
+#+end_src
+
 ** 查询数据
 
 #+begin_src sql
@@ -256,7 +265,6 @@ FROM table_name
 你可以使用 LIMIT 属性来设定返回的记录数。你可以通过OFFSET指定SELECT语句开始查询的数据偏移量。默认情况下偏移量为0。
 
 *** 分页查询
-
 使用SELECT查询时，如果结果集数据量很大，比如几万行数据，放在一个页面显示的话数据量太大，不如分页显示，每次显示100条。
 
 要实现分页功能，实际上就是从结果集中显示第1~100条记录作为第1页，显示第101~200条记录作为第2页，以此类推。
@@ -287,8 +295,7 @@ OFFSET计算公式为pageSize * (pageIndex - 1)。
 这样就能正确查询出第N页的记录集。
 
 *** 聚合查询
-
-count
+count, 察看数据的行数
 
 #+begin_src sql
 SELECT COUNT(*) FROM students;
@@ -296,13 +303,11 @@ SELECT COUNT(*) num FROM students;
 #+end_src
 
 分组
-
 #+begin_src sql
 SELECT COUNT(*) num FROM students GROUP BY class_id;
 #+end_src
 
 *** 多表查询
-
 SELECT查询不但可以从一张表查询数据，还可以从多张表同时查询数据。查询多张表的语法是：SELECT * FROM <表1> <表2>。
 
 例如，同时从students表和classes表的“乘积”，即查询数据，可以这么写：
@@ -382,7 +387,6 @@ FULL OUTER JOIN classes c
 ON s.class_id = c.id;
 #+end_src
 
-
 ** update
 UPDATE <表名> SET 字段1=值1, 字段2=值2, ... WHERE ...;
 
@@ -416,11 +420,10 @@ delete from STUDENT where  SNAME = '曾华'
 R 中 head 一般是展示 6 行数据的功能。sql 语句可以写成如下：
 
 #+begin_src sql
-  a1s <- sqldf("select * from iris limit 6")
+a1s <- sqldf("select * from iris limit 6")
 #+end_src
 
 R 语句
-
 #+begin_src R :results output graphics :file fig_1.png :exports both
   iris %>%
       head()
@@ -443,84 +446,102 @@ R 语句
 #+begin_src sql
 select * from STUDENT where SNAME regexp '王'
 #+end_src
-** where
-sql 语句中的 filter 是 where.
-*** like
 
+** where
+sql 语句中的 filter 是 where.这一节属于条件查询。
+*** like
 我们知道在 MySQL 中使用 SQL SELECT 命令来读取数据， 同时我们可以在 SELECT 语句中使用 WHERE 子句来获取指定的记录。
 WHERE 子句中可以使用等号 = 来设定获取数据的条件，如 "runoob_author = 'RUNOOB.COM'"。
 但是有时候我们需要获取 runoob_author 字段含有 "COM" 字符的所有记录，这时我们就需要在 WHERE 子句中使用 SQL LIKE 子句。
 
 #+begin_src sql
 #从iris 数据集中筛选出Species 开头是"set" 的记录
-  sqldf("select * from iris where Species like 'set%'")
+sqldf("select * from iris where Species like 'set%'")
 #+end_src
 
 #+begin_src sql
 select * from STUDENT where SNAME like "匡%"
 #+end_src
 
+like 通常紧跟通配符 "%",代表匹配0个以上的字符。找到所有电影名为“WALL-” 开头的电影。
+
+#+begin_src sql
+SELECT * FROM movies where title like "%WALL-%"
+#+end_src
 
 R 语句可以这么写
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  library(data.table)
-  iris %>%
-      filter(Species %like%  'set')
+library(data.table)
+iris %>%
+    filter(Species %like%  'set')
 #+end_src
 *** in
 这个 in 很熟悉的。
-    #+begin_src sql
-      sqldf("select * from iris where Species in ('setosa','versicolor')")
-    #+end_src
+
+#+begin_src sql
+sqldf("select * from iris where Species in ('setosa','versicolor')")
+#+end_src
 
 R 语句
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  iris %>%
-      filter(Species %in% c('setosa','versicolor'))
+iris %>%
+    filter(Species %in% c('setosa','versicolor'))
 #+end_src
 
 当然还有更直接的＝语句
 
 #+begin_src
-  sqldf("select * from iris where Species = 'setosa'")
+sqldf("select * from iris where Species = 'setosa'")
 #+end_src
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
   iris %>% filter(Species == 'setosa')
 #+end_src
 
+*** not in
+    Number does not exist in a list 不在一个列表里。
+
+#+begin_src sql
+SELECT * FROM movies where id not in ("1","2");
+#+end_src
+
 *** between and
 上面的语句是针对的是离散变量，如果变量是连续变量，那么就需要用到 between and 了。
 #+begin_src sql
-  sqldf("select * from mtcars where wt between 3 and 4")
+sqldf("select * from mtcars where wt between 3 and 4")
 #+end_src
 
 还能进一步显示行名，
-#+begin_src R :results output graphics :file fig_1.png :exports both
-  sqldf("select * from mtcars where wt between 3 and 4", row.names = T)
-#+end_src
 
+#+begin_src R :results output graphics :file fig_1.png :exports both
+sqldf("select * from mtcars where wt between 3 and 4", row.names = T)
+#+end_src
 
 R 语句为
 
 #+begin_src R :results output graphics :file fig_1.png :exports both
-  mtcars %>%
-      filter(wt %>% between(3,4))
+mtcars %>% filter(wt %>% between(3,4))
 #+end_src
 
+#+begin_src R :results output graphics :file fig_1.png :exports both
+sqldf('select Abbr, avg("Sepal.Length")  from iris where Species in ('','') by Species')
+#+end_src
 
-   #+begin_src R :results output graphics :file fig_1.png :exports both
-     sqldf('select Abbr, avg("Sepal.Length")  from iris where Species in ('','') by Species')
-   #+end_src
+*** not between and
+Number is not within range of two values (inclusive) 不在2个数之间。
+
+#+begin_src sql
+sqldf("select * from mtcars where wt not between 3 and 4", row.names = T)
+#+end_src
 
 *** union/union all
 数据集的合并，类似于 R 中的 rbind.
 
-    #+begin_src R :results output graphics :file fig_1.png :exports both
-      sqldf("select * from a1 union all select * from a2")
-    #+end_src
+#+begin_src R :results output graphics :file fig_1.png :exports both
+sqldf("select * from a1 union all select * from a2")
+#+end_src
 
 必须注意 union 与 union all 之间的区别。
 
@@ -532,29 +553,38 @@ R 语句为
       )")
     #+end_src
 
+** concat
+数据链接需要用到的命令是Concat.
+
+#+begin_src sql
+select name, concat(url,',',alexa,',',country) AS site_info from websites
+#+end_src
+
 ** ordering and limiting
 数据排序。
 order by var desc 降序排列。
-   #+begin_src R :results output graphics :file fig_1.png :exports both
-library(datasets)
-library(tidyverse)
-library(sqldf)
-                                   #> Loading required package: gsubfn
-                                   #> Loading required package: proto
-                                   #> Loading required package: RSQLite
-sqldf('select * from iris order by "Sepal.Length" desc limit 3')
-                                   #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
-                                   #> 1          7.9         3.8          6.4         2.0 virginica
-                                   #> 2          7.7         3.8          6.7         2.2 virginica
-                                   #> 3          7.7         2.6          6.9         2.3 virginica
-iris %>%
-    arrange(desc(Sepal.Length)) %>%
-    head(3)
-                                   #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
-                                   #> 1          7.9         3.8          6.4         2.0 virginica
-                                   #> 2          7.7         3.8          6.7         2.2 virginica
-                                   #> 3          7.7         2.6          6.9         2.3 virginica
-   #+end_src
+
+#+begin_src r
+  library(datasets)
+  library(tidyverse)
+  library(sqldf)
+                                     #> Loading required package: gsubfn
+                                     #> Loading required package: proto
+                                     #> Loading required package: RSQLite
+  sqldf('select * from iris order by "Sepal.Length" desc limit 3')
+                                     #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+                                     #> 1          7.9         3.8          6.4         2.0 virginica
+                                     #> 2          7.7         3.8          6.7         2.2 virginica
+                                     #> 3          7.7         2.6          6.9         2.3 virginica
+  iris %>%
+      arrange(desc(Sepal.Length)) %>%
+      head(3)
+                                     #>   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+                                     #> 1          7.9         3.8          6.4         2.0 virginica
+                                     #> 2          7.7         3.8          6.7         2.2 virginica
+                                     #> 3          7.7         2.6          6.9         2.3 virginica
+#+end_src
+
 ** Averaging and Grouping
 这个就属于 summarise 范畴啦。
    #+begin_src R :results output graphics :file fig_1.png :exports both
@@ -613,8 +643,8 @@ iris %>%
 #+end_src
 
 ** join
-
 数据连接方式，R and SQL 不同的地方。
+
 | R               | SQL                                                                |
 | inner_join()    | SELECT * FROM x JOIN y ON x.a = y.a                                |
 | left_join()     | SELECT * FROM x LEFT JOIN y ON x.a = y.a                           |
@@ -676,6 +706,7 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
 
 ** inner_join
 在 flights 数据集中，对 year,group 进行分组，筛选出大于均值 dep_time 的记录。
+
    #+begin_src R :results output graphics :file fig_1.png :exports both
      flights %>%
          group_by(year,month) %>%
@@ -703,9 +734,9 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
 查询所有学生的 sname，cno，degree 列
 
    #+begin_src sql
-          select SNAME,CNO,DEGREE from (select SNAME, SNO from STUDENT) as A
-     inner join (select SNO, CNO, DEGREE from  SCORE) as B
-     on A.SNO = B.SNO
+   select SNAME,CNO,DEGREE from (select SNAME, SNO from STUDENT) as A
+   inner join (select SNO, CNO, DEGREE from  SCORE) as B
+   on A.SNO = B.SNO
    #+end_src
 
    #+begin_src sql
@@ -722,6 +753,9 @@ sqldf("select * from SNP4 left join SNP1x using (Animal, Marker) limit 5")
      join (select * from SCORE) as B
      on A.SNO = B.SNO
    #+end_src
+
+** distinct
+选取出唯一的结果的语法.
 
 ** 插入变量
 用$ 可以插入变量。
@@ -773,15 +807,126 @@ SELECT `year`, `month`, AVG(`dep_time`) AS `mean(dep_time)`
 FROM `nycflights13::flights`
 GROUP BY `year`, `month`
    #+end_src
+
+*** having
+在sql
+
+** sqldf
+在R 中，有一个包可以很快的学习SQL,就是sqldf.在python 中，也有类似的package, 也是sqldf.
+
+dbplyr 包有一个功能特别棒就是show_query,可以把dplyr 语言翻译成sql.
+
+*** filter
+
+	#+begin_src sql
+   sqldf::sqldf('select * from iris where Species = "setosa"')
+ #+end_src
+
+*** group by
+
+ #+begin_src sql
+   sqldf("SELECT `Species`, AVG(`Sepal.Length`) AS `mean(Sepal.Length)`
+   FROM (SELECT `Species`, `Sepal.Length`
+   FROM `iris`)
+   GROUP BY `Species`")
+ #+end_src
+
+*** arrange
+
+#+begin_src python :results output
+sqldf::sqldf('select * from iris where Species = "setosa" order by `Petal.Length`') #默认是升序排列
+sqldf::sqldf('select * from iris where Species = "setosa" order by `Petal.Length`') #默认是升序排列
+sqldf::sqldf('select * from iris where Species = "setosa" order by `Petal.Length` desc') #默认是升序排列
+#+end_src
+
+*** mutate
+生成新的一列。
+#+begin_src python :results output
+sqldf::sqldf('select *, 1 as new_var from iris')
+#+end_src
+
+*** case when
+
+#+begin_src r
+  iris_db %>%
+  select(Species, Sepal.Length) %>%
+		  mutate(tag = case_when(Sepal.Length <= 2 ~ "low",
+								 Sepal.Length > 2 ~ "high"))
+#+end_src
+
+上面的dplyr 语句等价于下面的代码.
+
+#+begin_src python :results output
+sqldf("SELECT `Species`, `Sepal.Length`, CASE
+WHEN (`Sepal.Length` <= 2.0) THEN ('low')
+WHEN (`Sepal.Length` > 2.0) THEN ('high')
+END AS `tag`
+FROM `iris`")
+#+end_src
+
+*** ifelse
+
+#+begin_src r
+  iris_db %>%
+  select(Species, Sepal.Length) %>%
+		  mutate(tag = case_when(Sepal.Length <= 2 ~ "low",
+								 Sepal.Length > 2 ~ "high"))
+#+end_src
+
+#+begin_src sql
+  sqldf(
+  "SELECT `Species`, `Sepal.Length`, CASE WHEN (`Sepal.Length` > 5) THEN (1.0) WHEN NOT (`Sepal.Length` > 5) THEN (0.0) END AS `tag` FROM `iris`"
+)
+#+end_src
+
+*** NA
+在sql 中，na 缺失值是Null.
+
+#+begin_src r
+sqldf("select `Species`, `Sepal.Length`, NULL AS `tag` FROM `iris`")
+#+end_src
+
+*** distinct
+去重操作。
+#+begin_src R
+sqldf("select distinct `Species`, `Sepal.Length` from iris")
+#+end_src
+
+*** summarise
+统计量操作。
+**** mean
+
+ #+begin_src R
+ sqldf("select distinct `Species`, avg(`Sepal.Length`) as `mean(Sepal.Length)` from iris group by Species")
+ #+end_src
+
+**** sum
+
+ #+begin_src R
+ sqldf("select distinct `Species`, sum(`Sepal.Length`) as `sum(Sepal.Length)` from iris group by Species")
+ #+end_src
+
+**** min
+
+ #+begin_src R
+ sqldf("select distinct `Species`, min(`Sepal.Length`) as `min(Sepal.Length)` from iris group by Species")
+ #+end_src
+
+**** max
+
+ #+begin_src R
+ sqldf("select distinct `Species`, max(`Sepal.Length`) as `max(Sepal.Length)` from iris group by Species")
+ #+end_src
+
 ** string 截取
 从左截取字符串。
 
 #+begin_src sql
 select left(SBIRTHDAY, 4) from STUDENT where SNO = "108"
 #+end_src
+
 ** 练习
 *** 查询" 01 "课程比" 02 "课程成绩高的学生的信息及课程分数
-
 
 *** 查询同时存在" 01 "课程和" 02 "课程的情况
 
@@ -792,8 +937,6 @@ select left(SBIRTHDAY, 4) from STUDENT where SNO = "108"
 
 
 
-
-* Spark_wiki
 * Hive_wiki
 Hive 是 Hadoop 家族中一款数据仓库产品，Hive 最大的特点就是提供了类 SQL 的语法，封装了底层的 MapReduce 过程，让有 SQL 基础的业务人员，也可以直接利用 Hadoop 进行大数据的操作。就是这一个点，解决了原数据分析人员对于大数据分析的瓶颈。
 
